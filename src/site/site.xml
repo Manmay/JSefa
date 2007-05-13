@@ -14,6 +14,7 @@
 		</links>
 		<menu name="General">
 			<item name="Introduction" href="index.html"/>
+			<item name="Dependencies" href="dependencies.html"/>
 			<item name="Changes" href="changes-report.html"/>
 			<item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=190735"/>
 		</menu> 
