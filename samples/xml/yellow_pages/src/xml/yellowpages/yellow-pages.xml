@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<yellowPages xmlns="www.a-simple-namespace-sample.org/yellowPages">
+  <headquarters>
+  <department name="Development">
+    <employees>
+	  <employee>
+	    <name>Erwin Schmidt</name>
+	    <role>senior developer</role>
+	    <executive>true</executive>
+	    <birthDate>23.5.1964</birthDate>
+	    <score type="performance">7.83</score>
+	  </employee>
+	  <employee>
+	    <name>Betty Müller</name>
+	    <role>junior developer</role>
+	    <birthDate>1.1.1984</birthDate>
+	    <score type="performance">4.28</score>
+	  </employee>
+	</employees>    
+  </department>
+  </headquarters>
+  <subsidiary name="Germany">
+  <department name="Sales">
+    <employees>
+	  <employee>
+	    <name>Thomas Stumm</name>
+	    <role>account manager</role>
+	    <birthDate>12.3.1979</birthDate>
+	    <score type="performance">6.17</score>
+	  </employee>
+	  <employee>
+	    <name>Michaela Meier</name>
+	    <role>key account manager</role>
+	    <birthDate>7.6.1974</birthDate>
+	    <score type="performance">8.73</score>
+	  </employee>
+	</employees>    
+  </department>
+  </subsidiary>
+</yellowPages>

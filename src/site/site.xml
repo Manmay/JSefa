@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSefa">
+	<publishDate format="dd MMM yyyy" />
+	<poweredBy>
+		<logo name="sourceforge.net" href="http://sf.net/projects/jsefa"
+			img="http://sflogo.sourceforge.net/sflogo.php?group_id=190735&amp;type=1"/>
+		<logo name="Maven2" href="http://maven.apache.org"
+			img="images/maven-button-1.png" />
+	</poweredBy>
+
+	<body>
+		<links>
+			<item name="Projects Homepage" href="http://sf.net/projects/jsefa" />
+		</links>
+		<menu name="General">
+			<item name="Introduction" href="index.html"/>
+			<item name="Changes" href="changes-report.html"/>
+			<item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=190735"/>
+		</menu> 
+				
+		$reports
+
+	</body>
+</project>

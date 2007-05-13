@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jsefa</groupId>
+  <artifactId>jsefa</artifactId>
+  <name>Java Simple Exchange Format API</name>
+  <version>1.0</version>
+  <url>http://jsefa.sf.net</url>
+  <description>JSefa (Java Simple exchange format api) is a simple library for stream-based serialization of java objects to XML, CSV, FLR or any other format and back again using an iterator-style interface independent of the serialization format. The mapping between java object types and types of the serialization format (e. g. xml complex element types) can be defined either by annotating the java classes or programmatically using a simple API. The current implementation supports XML, CSV and FLR - for XML it is based on JSR 173.</description>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>manual</distribution>
+      <comments>The Apache License, Version 2.0</comments>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>nlahme</id>
+      <name>Norman Lahme-Hütig</name>
+      <email>nlahme@users.sf.net</email>
+      <url>http://sf.net/users/nlahme</url>
+      <timezone>CET</timezone>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mkovacevic</id>
+      <name>Marko Kovacevic</name>
+      <email>mkovacevic@users.sf.net</email>
+      <url>http://sf.net/users/mkovacevic</url>
+      <timezone>CET</timezone>
+      <roles>
+        <role>tester</role>
+      </roles>
+    </developer>
+  </developers>
+  <packaging>jar</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>      
+    </plugins>
+  </reporting>
+  <dependencies>
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>woodstox</groupId>
+      <artifactId>wstx-asl</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+<!--    <dependency>
+      <groupId>com.sun.xml.stream</groupId>
+      <artifactId>sjsxp</artifactId>
+      <version>1.0</version>
+    </dependency>
+-->    
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.4.ga</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Maven Repository Switchboard</name>
+      <layout>default</layout>
+      <url>http://repo1.maven.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>java.net</id>
+      <url>https://maven-repository.dev.java.net/nonav/repository</url>
+      <layout>legacy</layout>
+    </repository>
+    <repository>
+      <id>mvnrepository.com</id>
+      <url>http://mvnrepository.com/</url>
+      <layout>legacy</layout>
+    </repository>
+    <repository>
+      <id>maven-plugins</id>
+      <name>Maven Plugins</name>
+      <url>http://repo1.maven.org/maven2/maven-plugins/</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <site>
+      <id>sf.net</id>
+      <name>sf.net</name>
+      <url>scp://shell.sf.net/home/groups/j/js/jsefa/htdocs/</url>
+    </site>
+  </distributionManagement>
+
+</project>

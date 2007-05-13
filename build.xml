@@ -1,0 +1,92 @@
+<project name="jsefa" default="usage" basedir=".">
+
+    <property name="source_dir" location="src/main/java" />
+    <property name="build_dir" value="target"/>
+    <property name="target_dir" value="${build_dir}/classes"/>
+    <property name="javadoc_dir" value="${build_dir}/javadoc"/>
+    <property name="test_source_dir" location="src/test/java" />
+    <property name="test_target_dir" location="${build_dir}/test-classes"/>
+    <property name="jar_file" location="${build_dir}/jsefa.jar" />
+
+    <path id="default.classpath">
+        <fileset dir="lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <target name="usage">
+        <echo message=""/>
+        <echo message="JSefa build script"/>
+        <echo message="-----------------------------------------"/>
+        <echo message=""/>
+        <echo message="Available targets (among others):"/>
+        <echo message=""/>
+        <echo message="build-all   --> compiles source and test, creates jar file and javadoc"/>
+        <echo message="compile     --> compile source"/>
+        <echo message="create-jar  --> create the jar file"/>
+        <echo message="run-tests   --> run tests"/>
+        <echo message=""/>
+    </target>
+
+    <target name="clean" description="clean everything">
+        <delete dir="${target_dir}"/>
+        <delete dir="${test_target_dir}"/>
+        <delete dir="${javadoc_dir}"/>
+    </target>
+
+    <target name="compile" depends="clean" description="compiles the jsefa classes">
+        <mkdir dir="${target_dir}" />
+        <javac source="5" destdir="${target_dir}" srcdir="${source_dir}" debug="on" deprecation="off" encoding="ISO-8859-1">
+            <classpath>
+                <path refid="default.classpath" />
+            </classpath>
+            <include name="**/*.java" />
+        </javac>
+    </target>
+
+    <target name="create-jar" depends="clean,compile" description="package jsefa classes">
+        <jar destfile="${jar_file}" basedir="${target_dir}">
+        </jar>
+    </target>
+
+    <target name="compile-junit" depends="clean, create-jar" description="compile the jsefa test classes">
+        <mkdir dir="${test_target_dir}" />
+        <javac source="5" destdir="${test_target_dir}" srcdir="${test_source_dir}" debug="on" deprecation="off" encoding="ISO-8859-1">
+            <classpath>
+                <path refid="default.classpath" />
+                <pathelement location="${jar_file}" />
+            </classpath>
+            <include name="**/*.java" />
+        </javac>
+    </target>
+
+    <target name="run-tests" depends="compile-junit" description="run all junit tests">
+        <mkdir dir="test-results"/>
+        <junit haltonfailure="no" printsummary="on">
+            <classpath >
+                <path refid="default.classpath" />
+                <pathelement location="${jar_file}" />
+                <pathelement location="${test_target_dir}"/>
+                <pathelement location="lib/junit.jar"/>
+                <pathelement location="."/>
+            </classpath>
+            <formatter type="brief" usefile="false"/>
+            <formatter type="xml" />
+            <batchtest todir="test-results" >
+                <fileset dir="${test_target_dir}" includes="**/*Test.class"/>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="javadoc" description="create javadoc">
+        <javadoc destdir="${javadoc_dir}" Windowtitle="JSefa - Java Simple Exchange Format API" source="5" maxmemory="256m" encoding="iso-8859-1">
+            <packageset dir="${source_dir}" defaultexcludes="yes">
+                <include name="**" />
+            </packageset>
+        </javadoc>
+    </target>
+
+    <target name="build-all" depends="create-jar, javadoc, compile-junit" description="package jsefa classes"/>
+
+
+</project>
