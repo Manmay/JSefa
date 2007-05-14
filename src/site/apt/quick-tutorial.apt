@@ -1,0 +1,254 @@
+   ------------------
+   Quick Tutorial
+   ------------------
+   Norman Lahme-Hütig
+   ------------------
+   13.05.2007
+   ------------------
+   
+Quick Tutorial
+
+* Introduction
+
+  This tutorial provides a short introduction in using JSefa for serializing java objects to XML, CSV, or FLR and back again.
+  
+* XML
+
+** Annotation
+
+  Let's start with serializing a simple java object to XML. Consider the following simple class:
+  
+----------------------------------------------------------------------------
+public class Person {
+	String name;
+	Date birthDate;
+}
+----------------------------------------------------------------------------
+
+  The typical way to make it serializable with JSefa is to annotate the class and its fields:
+  
+----------------------------------------------------------------------------
+@XmlDataType(defaultElementName = "person")
+public class Person {
+    @XmlElement(pos = 1)
+	String name;
+    
+    @XmlElement(name = "birth-date", pos = 2, format = "dd.MM.yyyy")
+	Date birthDate;
+}
+----------------------------------------------------------------------------
+  
+  The first annotation states that the annotated class describes a xml data type and that elements with this data type will be named <<<person>>> by default.
+  
+  The seconds annotation states that the field <<<name>>> should be mapped to the first child element of <<<person>>>. The element gets its name from the annotated field by default, so its named <<<name>>>.
+  
+  With the third annotation the field <<<birthDate>>> is mapped to the second child element of <<<person>>>. The name of the element is set to <<<birth-date>>>. Furthermore a format for the content is given with <<<dd.MM.yyyy>>>. The notation for the date format is the same as for <<<java.text.SimpleDateFormat>>>.
+  
+** Serialization
+
+  Now its time to create our first XML document. We need a <<<XmlSerializer>>> capable of serializing objects of the class <<<Person>>>, so we write:
+  
+----------------------------------------------------------------------------
+XmlSerializer serializer = XmlIOFactory.createFactory(Person.class).createSerializer();
+----------------------------------------------------------------------------
+
+  Next we need a <<<Writer>>> to write the xml to. Let's create a simple writer and open the serialization stream:
+  
+----------------------------------------------------------------------------
+StringWriter writer = new StringWriter();
+serializer.open(writer);
+----------------------------------------------------------------------------
+
+  Now we can serialize an object of our class <<<Person>>>. Say that <<<person>>> contains such an object, then:
+  
+----------------------------------------------------------------------------
+serializer.write(person);
+----------------------------------------------------------------------------
+    
+  To finish we just write
+  
+----------------------------------------------------------------------------
+serializer.close(true);
+----------------------------------------------------------------------------
+  
+  The boolean value indicates that the writer should be closed, too.
+  
+  When serializing more than one object, one needs to create a xml root element. You can explicitly start and finish an element by using the <<<XmlLowLevelSerializer>>>. Let's also add a xml declaration:
+
+----------------------------------------------------------------------------
+serializer.open(writer);
+serializer.getLowLevelSerializer().writeXmlDeclaration("1.0", "ISO-8859-1");
+serializer.getLowLevelSerializer().startElement(QName.create("persons"));
+// call serializer.write for every object to serialize
+serializer.getLowLevelSerializer().finishElement();
+serializer.close(true);
+----------------------------------------------------------------------------
+
+  The resulting document could look like this:
+  
+----------------------------------------------------------------------------
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<persons>
+  <person>
+    <name>Erwin Schmidt</name>
+    <birth-date>23.05.1964</birth-date>
+  </person>
+  <person>
+    <name>Thomas Stumm</name>
+    <birth-date>12.03.1979</birth-date>
+  </person>
+</persons>  
+----------------------------------------------------------------------------
+
+** Deserialization
+
+  Next we want to deserialize the <<<Person>>> objects from the just created xml document. We need a <<<XmlDeserializer>>> capable of deserializing objects of the class <<<Person>>>, so we write:
+  
+----------------------------------------------------------------------------
+XmlDeserializer deserializer = XmlIOFactory.createFactory(Person.class).createDeserializer();
+----------------------------------------------------------------------------
+
+  If you think that it should be possible to use the same factory for creating a serializer and a deserializer, then you are right - it is possible.
+  The creation of the factory is the part that is time consuming - the creation of one or more serializers and deserializers from one factory is a very simple operation.
+  
+  But let's continue with writing the code. We need a <<<Reader>>> first which provides to us the xml document, and we need to open the deserialization stream with it:
+
+----------------------------------------------------------------------------
+StringReader reader = new StringReader(writer.toString());
+deserializer.open(reader);
+----------------------------------------------------------------------------
+  
+  Now we are ready to iteratively deserialize all <<<Person>>> objects:
+  
+----------------------------------------------------------------------------
+while (deserializer.hasNext()) {
+    Person p = (Person) deserializer.next();
+    // do something useful with it
+}
+----------------------------------------------------------------------------
+
+  Finally we should close the deserialization stream:
+
+----------------------------------------------------------------------------
+deserializer.close(true);
+----------------------------------------------------------------------------
+
+* CSV
+
+  Now we want to do the same as above, but now with using CSV.
+
+** Annotation
+
+  The annotations for CSV are similar to the XML ones.
+
+----------------------------------------------------------------------------
+@CsvDataType()
+public class Person {
+    @CsvField(pos = 1)
+    String name;
+
+    @CsvField(pos = 2, format = "dd.MM.yyyy")
+    Date   birthDate;
+}
+----------------------------------------------------------------------------
+
+  Of course it is possible to annotate the same class with XML and CSV (and FLR) annotations at the same time.
+
+** Serialization
+
+  We need a <<<CsvSerializer>>> capable of serializing objects of the class <<<Person>>>:
+  
+----------------------------------------------------------------------------
+Serializer serializer = CsvIOFactory.createFactory(Person.class).createSerializer();
+----------------------------------------------------------------------------
+
+  This time we used the super interface <<<Serializer>>>, so that we can abstract from the choosen format type (XML, CSV, FLR) in the following code.
+  
+  The next should be no surprise:
+  
+----------------------------------------------------------------------------
+serializer.open(writer);
+// call serializer.write for every object to serialize
+serializer.close(true);
+----------------------------------------------------------------------------
+
+  The result could be  
+  
+----------------------------------------------------------------------------
+Erwin Schmidt;23.05.1964
+Thomas Stumm;12.03.1979  
+----------------------------------------------------------------------------
+
+** Deserialization
+
+  To deserialize all <<<Person>>> objects again, we just write
+  
+----------------------------------------------------------------------------
+Deserializer deserializer = CsvIOFactory.createFactory(Person.class).createDeserializer();
+StringReader reader = new StringReader(writer.toString());
+deserializer.open(reader);
+while (deserializer.hasNext()) {
+    Person p = (Person) deserializer.next();
+    // do something useful with it
+}
+deserializer.close(true);
+----------------------------------------------------------------------------
+
+* FLR
+
+  Last but not least we want to do the same as we did now twice, but now with using FLR.
+
+** Annotation
+
+  The annotations for FLR are similar to the CSV ones.
+
+----------------------------------------------------------------------------
+@FlrDataType()
+public class Person {
+    @FlrField(pos = 1, length = 30)
+    String name;
+
+    @FlrField(pos = 2, length = 10, format = "dd.MM.yyyy", align = Align.RIGHT)
+    Date   birthDate;
+}
+----------------------------------------------------------------------------
+
+  As FLR fields are not delimited we need to declare the length of each field. Furthermore we can specify the alignment if the <<<String>>> representation of a value is shorter then the field length.
+
+** Serialization
+
+  I guess you already have the following in mind:
+
+----------------------------------------------------------------------------
+Serializer serializer = FlrIOFactory.createFactory(Person.class).createSerializer();
+StringWriter writer = new StringWriter();
+serializer.open(writer);
+// call serializer.write for every object to serialize
+serializer.close(true);
+----------------------------------------------------------------------------
+
+  The resulting document may look like
+  
+----------------------------------------------------------------------------
+Erwin Schmidt                 23.05.1964
+Thomas Stumm                  12.03.1979 
+----------------------------------------------------------------------------
+
+** Deserialization
+
+  To deserialize all <<<Person>>> objects again, we just write
+  
+----------------------------------------------------------------------------
+Deserializer deserializer = FlrIOFactory.createFactory(Person.class).createDeserializer();
+StringReader reader = new StringReader(writer.toString());
+deserializer.open(reader);
+while (deserializer.hasNext()) {
+    Person p = (Person) deserializer.next();
+    // do something useful with it
+}
+deserializer.close(true);
+----------------------------------------------------------------------------
+
+* What's next?
+
+  This tutorial serves only as a starting point in your life with JSefa. For further examinations please have a look at the provided samples, the javadoc and the JUnit tests.
