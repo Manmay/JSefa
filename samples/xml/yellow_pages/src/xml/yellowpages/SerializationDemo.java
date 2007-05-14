@@ -23,7 +23,6 @@ import java.util.Date;
 
 import org.jsefa.common.converter.DateConverter;
 import org.jsefa.xml.QName;
-import org.jsefa.xml.XmlConstants;
 import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.XmlSerializer;
 
@@ -44,9 +43,6 @@ public final class SerializationDemo {
         serializer.getLowLevelSerializer().writeXmlDeclaration("1.0", "ISO-8859-1");
         serializer.getLowLevelSerializer().startElement(
                 QName.create("www.a-simple-namespace-sample.org/yellowPages", "yellowPages"));
-        serializer.getLowLevelSerializer().writeAttribute(
-                QName.create(XmlConstants.XML_SCHEMA_INSTANCE_URI, "noNamespaceSchemaLocation"),
-                "Zahlungserinnerung.xsd");
 
         Department department = createDepartment("Development");
 
