@@ -18,6 +18,7 @@ package org.jsefa.rbf;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,8 @@ public abstract class RbfSerializer implements Serializer {
     private Writer writer;
 
     private int columnIndex;
+    
+    private IdentityHashMap<Object, Object> complexObjectsOnPath;
 
     /**
      * Constructs a new <code>RbfSerializerImpl</code>.
@@ -60,6 +63,7 @@ public abstract class RbfSerializer implements Serializer {
         this.typeMappingRegistry = typeMappingRegistry;
         this.lineSeparator = System.getProperty("line.separator");
         this.withPrefix = (entryPoints.values().iterator().next().getDesignator().length() > 0);
+        this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
     }
 
     /**
@@ -67,6 +71,7 @@ public abstract class RbfSerializer implements Serializer {
      */
     public final void open(Writer writer) {
         this.writer = writer;
+        this.complexObjectsOnPath.clear();
     }
 
     /**
@@ -184,6 +189,11 @@ public abstract class RbfSerializer implements Serializer {
     }
 
     private void writeComplexValue(Object object, RbfComplexTypeMapping typeMapping) {
+        if (this.complexObjectsOnPath.containsKey(object)) {
+            throw new SerializationException("Cycle detected while serializing " + object);
+        } else if (object != null) {
+            this.complexObjectsOnPath.put(object, object);
+        }
         for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
             Object fieldValue = null;
             if (object != null) {
@@ -218,6 +228,7 @@ public abstract class RbfSerializer implements Serializer {
                 }
             }
         }
+        this.complexObjectsOnPath.remove(object);
     }
 
     private TypeMapping getTypeMapping(String dataTypeName) {

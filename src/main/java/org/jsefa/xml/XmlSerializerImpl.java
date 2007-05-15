@@ -17,10 +17,10 @@
 package org.jsefa.xml;
 
 import java.io.Writer;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jsefa.DeserializationException;
 import org.jsefa.SerializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.mapping.TypeMapping;
@@ -45,12 +45,15 @@ public final class XmlSerializerImpl implements XmlSerializer {
     private final Map<Class, NodeModel> entryNodeModels;
 
     private final XmlLowLevelSerializer lowLevelSerializer;
+    
+    private IdentityHashMap<Object, Object> complexObjectsOnPath;
 
     XmlSerializerImpl(XmlConfiguration config, XmlTypeMappingRegistry typeMappingRegistry,
             Map<Class, NodeModel> entryNodeModels) {
         this.typeMappingRegistry = typeMappingRegistry;
         this.entryNodeModels = entryNodeModels;
         this.lowLevelSerializer = config.getLowLevelDriver().createSerializer(config.getLowLevelConfig());
+        this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
     }
 
     /**
@@ -58,6 +61,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
      */
     public void open(Writer writer) {
         this.lowLevelSerializer.open(writer);
+        this.complexObjectsOnPath.clear();
     }
 
     /**
@@ -141,6 +145,11 @@ public final class XmlSerializerImpl implements XmlSerializer {
         if (object == null) {
             return;
         }
+        if (this.complexObjectsOnPath.containsKey(object)) {
+            throw new SerializationException("Cycle detected while serializing " + object);
+        } else {
+            this.complexObjectsOnPath.put(object, object);
+        }
         ObjectAccessor objectAccessor = typeMapping.getObjectAccessor();
         writeStartElement(nodeModel);
         for (String fieldName : typeMapping.getFieldNames(NodeType.ATTRIBUTE)) {
@@ -169,13 +178,14 @@ public final class XmlSerializerImpl implements XmlSerializer {
                 }
                 NodeModel childNodeModel = typeMapping.getNodeModel(fieldName, fieldClass);
                 if (childNodeModel == null) {
-                    throw new DeserializationException("Unable to serialize field class " + fieldClass.getName()
+                    throw new SerializationException("Unable to serialize field class " + fieldClass.getName()
                             + " for field " + fieldName + " within object type " + typeMapping.getObjectType());
                 }
                 serializeElement(fieldValue, childNodeModel);
             }
         }
         this.lowLevelSerializer.finishElement();
+        this.complexObjectsOnPath.remove(object);
     }
 
     private void serializeListElement(List listObject, NodeModel nodeModel, XmlListTypeMapping typeMapping) {

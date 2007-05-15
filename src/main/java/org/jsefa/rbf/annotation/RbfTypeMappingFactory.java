@@ -122,10 +122,10 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
             RbfComplexTypeMapping complexTypeMapping = new RbfComplexTypeMapping(objectType, dataTypeName,
                     getObjectAccessorProvider().get(objectType));
+            getTypeMappingRegistry().register(complexTypeMapping);
             addFields(complexTypeMapping);
             addSubRecords(complexTypeMapping);
             complexTypeMapping.finish();
-            getTypeMappingRegistry().register(complexTypeMapping);
         }
         return dataTypeName;
     }
@@ -199,6 +199,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                 throw new ConfigurationException("No FlrSubRecordList annotation with proper content found");
             }
             RbfListTypeMapping listTypeMapping = new RbfListTypeMapping(dataTypeName);
+            getTypeMappingRegistry().register(listTypeMapping);
             for (Record record : getRecords(subRecordListAnnotation)) {
                 String listItemDataTypeName = AnnotationDataProvider.get(record, DATA_TYPE_NAME);
                 Class listItemObjectType = AnnotationDataProvider.get(record, OBJECT_TYPE);
@@ -229,7 +230,6 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                 listTypeMapping.register(listItemDataTypeName, prefix, listItemObjectType);
             }
             listTypeMapping.finish();
-            getTypeMappingRegistry().register(listTypeMapping);
         }
         return dataTypeName;
     }

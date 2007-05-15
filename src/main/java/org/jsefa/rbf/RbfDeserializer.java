@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.jsefa.DeserializationException;
 import org.jsefa.Deserializer;
-import org.jsefa.SerializationException;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.mapping.NodeModel;
@@ -309,7 +308,7 @@ public abstract class RbfDeserializer implements Deserializer {
     private TypeMapping getTypeMapping(String dataTypeName) {
         TypeMapping typeMapping = this.typeMappingRegistry.get(dataTypeName);
         if (typeMapping == null) {
-            throw new SerializationException("Unknown data type name: " + dataTypeName);
+            throw new DeserializationException("Unknown data type name: " + dataTypeName);
         }
         return typeMapping;
 

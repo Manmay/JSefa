@@ -219,6 +219,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                 throw new ConfigurationException("No XmlElementList annotation with proper content found");
             }
             XmlListTypeMapping listMapping = new XmlListTypeMapping(dataTypeName, xmlElementList.implicit());
+            getTypeMappingRegistry().register(listMapping);
             for (ListItem listItem : xmlElementList.items()) {
                 QName listItemDataTypeName = null;
                 Class listItemObjectType = AnnotationDataProvider.get(listItem, OBJECT_TYPE);
@@ -250,7 +251,6 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                 }
             }
             listMapping.finish();
-            getTypeMappingRegistry().register(listMapping);
         }
         return dataTypeName;
     }
