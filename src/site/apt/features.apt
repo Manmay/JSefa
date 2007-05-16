@@ -1,0 +1,124 @@
+   ------------------
+   Features
+   ------------------
+   Norman Lahme-Hütig
+   ------------------
+   15.05.2007
+   ------------------
+   
+Feature Highlights
+
+* General
+
+  * Stream-based serialization of Java objects and back again with support for XML, CSV, and FLR
+  
+    It is possible to serialize java objects of different classes into the same stream (even for CSV and FLR) as well as to deserialize them.
+    
+  * Selective deserialization
+  
+    Say that you have a large XML document with a lot of different elements and you are interested in <<< <product> >>> elements only.
+    Furthermore these elements may contain a lot of different sub elements, but you are interested only in a subset of these.
+    You can state this with JSefa and you get only what you want. And if the underlying xml schema evolves (new child elements),
+    your deserialization code still works. Something similar to this is possible also with CSV and FLR.      
+  
+  * Usage is independent of the target format
+  
+    Only the code to construct an <<<IOFactory>>> depends on the target format (XML, CSV, FLR) - its usage to create a new <<<Serializer>>> or <<<Deserializer>>> as well as their usage
+    does not depend on it.
+  
+  * Extensible to support other formats as well
+
+  * Optimized for high throughput (it's fast)
+  
+    For example, XML serialization of 100.000 java objects consisting of 10 <<<String>>> fields each takes 2 seconds only (on my non-pimped Thinkpad Z61m).
+    
+  * Low memory footprint
+  
+  * Usage of annotations - no binding file nor design-time code generation needed
+  
+    The mappings between java types and the types of the target format (XML, CSV, FLR) can be defined using annotating the java class and its fields.
+    JSefa also provides an API for constructing mappings, so it is amenable to alternative ways of mapping declarations (e. g. mapping creation based on a xml schema)
+    
+  * Easy declaration of simple types with specific format and converter
+  
+    For example you can specify the format of a field of type <<<Date>>> to be <<<dd.MM.yyyy>>> just by adding <<<format = "dd.MM.yyyy">>> to the annotation.
+    You can also write your own converter and state that this converter should be used for this specific field. By providing a converter you can define additional simple types.
+    
+  * Different scopes for converter
+  
+    You can set the scope of validity for a converter to global or local. For example you can state that for each <<<Date>>>
+    the <<<XmlDateTimeConverter>>> should be responsible (in contrast to the default <<<DateConverter>>> to be compliant to XML Schema date notation)
+    no matter to which class the respective field belongs. You can also declare that for a specific field of a specific class another converter should be used (this overrides the global setting).
+  
+  * Inheritance
+    
+    All annotations of the super class (and its super class and so on) of a given class are taken into account
+    
+  * Type reduction
+  
+    When serializing an object of type A, but no mapping is registered for A but for B with A beeing a subtype of B, then
+    A is serialized according to the mapping for B. Thus the type of the object is reduced to B when serializing it.
+    
+    Note: JSefa supports also polymorphism as an alternative to type reduction, but only for XML (see below).
+    
+  * Detection of cycles in the object graph during serialization
+    
+* XML
+
+  * Namespaces
+  
+    JSefa allows for individual namespace prefix registration to be used on serialization. If no prefix is registered for a given URI, one is automatically created.
+  
+  * Explicit and implicit list of elements
+  
+  * Polymorphism
+  
+    If you have a class with a field of type A whereas A has relevant subclasses, then JSefa can handle this by adding a
+    <<<xsi:type>>> attribute to the respective xml element to denote the actual type.
+    For each involved class you can specify which type name should be used in such cases.
+    
+  * Compliant to XML Schema on names of standard simple types (xs:string etc.)
+  
+  * Automatic encoding detection on deserialization
+  
+    JSefa provides a <<<XmlReaderFactory>>> which creates a <<<Reader>>> for several alternative input sources (e. g. <<<InputStream>>>) with automatic encoding detection.
+    The encoding detection takes into account the BOM (Byte Order Mark), the first 4 bytes of the input source and the <<<encoding>>> pseudo attribute of the xml declaration.
+    
+  * Exchangeable low level serializer/deserializer
+  
+    The JSefa XML serializer/deserializer is based on a low level serializer/deserializer, which operates directly on elements, attributes and text content.
+    JSefa provides an abstraction of the low level task of serialization/deserialization and thus allows for different implementations.
+    The current default implementation is based on JSR 173 (Stax) for which in turn different implementations exist.
+
+  * Support for direct usage of low level serializer/deserializer
+  
+    If you do not need high level serialization/deserialization and want to use the low level serializer/deserializer directly, you are free to use an implementation of <<<XmlLowLevelDriver>>> directly (e. g. the <<<StaxDriver>>>).
+
+  * Access to low level serializer during high level serialization
+  
+    The high level JSefa XML serializer gives you access to the underlying low level XML serializer. The latter allows for explicitly writing a xml declaration, start tags, attributes, text content and end tags.    
+  
+* CSV and FLR
+  
+  * Multi type serialization/deserialization
+  
+    JSefa allows for serializing objects of different types into the same stream and deserializing them back again.
+    The different record types are denoted by a prefix which is the first field of each record (if multi type serialization/deserialization is choosen).
+    
+  * Field embedding
+  
+    For example you can serialize an object of class <<<Employee>>> with a field of type <<<Address>>>.
+    For each <<<Employee>>> one CSV or FLR record is created (one line) with the <<<Address>>> fields embedded. This works recursively.
+    
+  * Sub records and sub record lists
+  
+    As an alternative to field embedding one can serialize/deserialize deep object hierarchies by defining sub records and sub record lists.
+    This way the serialization of an <<<Employee>>> would result in a record for the <<<Employee>>> itself and another record (a sub record of the first) for the <<<Address>>>.
+    This is achieved by prefixing the records.
+    
+    In contrast to field embedding this technique allows for serialization/deserialization of lists of objects.
+  
+        
+    
+  
+    
