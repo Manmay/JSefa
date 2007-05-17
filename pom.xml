@@ -79,6 +79,14 @@
             </reports>
           </reportSet>
         </reportSets>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/bin/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
       </plugin>      
     </plugins>
   </reporting>
@@ -87,22 +95,27 @@
       <groupId>javax.xml.stream</groupId>
       <artifactId>stax-api</artifactId>
       <version>1.0</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>woodstox</groupId>
       <artifactId>wstx-asl</artifactId>
       <version>3.2.1</version>
+      <scope>runtime</scope>
     </dependency>
 <!--    <dependency>
       <groupId>com.sun.xml.stream</groupId>
       <artifactId>sjsxp</artifactId>
       <version>1.0</version>
+      <scope>runtime</scope>
     </dependency>
 -->    
     <dependency>
       <groupId>jboss</groupId>
       <artifactId>javassist</artifactId>
       <version>3.4.ga</version>
+      <scope>compile</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>

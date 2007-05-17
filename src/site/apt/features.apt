@@ -36,8 +36,8 @@ Feature Highlights
   
   * Usage of annotations - no binding file nor design-time code generation needed
   
-    The mappings between java types and the types of the target format (XML, CSV, FLR) can be defined using annotating the java class and its fields.
-    JSefa also provides an API for constructing mappings, so it is amenable to alternative ways of mapping declarations (e. g. mapping creation based on a xml schema)
+    The mappings between java types and the types of the target format (XML, CSV, FLR) can be defined via annotating the java class and its fields.
+    JSefa also provides an API for constructing mappings, so it is amenable to alternative ways of mapping declarations (e. g. mapping creation based on an xml schema)
     
   * Easy declaration of simple types with specific format and converter
   
@@ -56,7 +56,7 @@ Feature Highlights
     
   * Type reduction
   
-    When serializing an object of type A, but no mapping is registered for A but for B with A beeing a subtype of B, then
+    When serializing an object of type A, but no mapping is registered for A but for B with A being a subtype of B, then
     A is serialized according to the mapping for B. Thus the type of the object is reduced to B when serializing it.
     
     Note: JSefa supports also polymorphism as an alternative to type reduction, but only for XML (see below).
@@ -86,7 +86,7 @@ Feature Highlights
     
   * Exchangeable low level serializer/deserializer
   
-    The JSefa XML serializer/deserializer is based on a low level serializer/deserializer, which operates directly on elements, attributes and text content.
+    The JSefan XML serializer/deserializer is based on a low level serializer/deserializer, which operates directly on elements, attributes and text content.
     JSefa provides an abstraction of the low level task of serialization/deserialization and thus allows for different implementations.
     The current default implementation is based on JSR 173 (Stax) for which in turn different implementations exist.
 
@@ -96,7 +96,7 @@ Feature Highlights
 
   * Access to low level serializer during high level serialization
   
-    The high level JSefa XML serializer gives you access to the underlying low level XML serializer. The latter allows for explicitly writing a xml declaration, start tags, attributes, text content and end tags.    
+    The high level JSefa XML serializer gives you access to the underlying low level XML serializer. The latter allows for explicitly writing an xml declaration, start tags, attributes, text content and end tags.    
   
 * CSV and FLR
   
