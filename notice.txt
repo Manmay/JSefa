@@ -1,0 +1,5 @@
+This software is released under the terms of the Apache License Version 2.
+Please have a look at the file license.txt for details.
+
+This software depends on third party libraries. For details see the file
+lib/readme.txt.

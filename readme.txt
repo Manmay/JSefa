@@ -1,3 +1,9 @@
+-------------------------------------------------------------------------------
+JSefa ${version}
+-------------------------------------------------------------------------------
+
+1. INTRODUCTION
+
 JSefa (Java Simple exchange format api) is a simple library for stream-based
 serialization of java objects to XML, CSV or any other format and back again
 using an iterator-style interface independent of the serialization format.
@@ -21,5 +27,29 @@ the serialization format type (XML, CSV or whatever). The current
 implementation provides implementations of these interfaces for XML, CSV, and
 FLR.
 
+2. RELEASE INFO
 
+JSefa ${version} requires J2SE 1.5 and some external jar files (see lib directory
+and the including readme.txt).
 
+Contents:
+* lib
+  Contains third party jar files
+* ${artifactId}-${version}.jar
+  The JSefa jar file
+* ${artifactId}-${version}-src.zip
+  The zipped JSefa source code. You can use this file as a source attachment
+  to the ${artifactId}-${version}.jar when including JSefa into your project.
+* readme.txt
+  This readme file
+* notice.txt
+  Contains some notes.
+* license.txt
+  JSefa is released under the terms of the Apache License Version 2 a copy of 
+  which is contained in this file.
+
+3. WHERE TO START?
+
+A quick tutorial is available at http://jsefa.sourceforge.net/quick-tutorial.html
+Some samples are shipped with the JSefa distribution. See the samples directory.
+  
