@@ -330,6 +330,7 @@ public abstract class RbfDeserializer implements Deserializer {
                 this.currentEntryPoint = this.entryPoint;
                 return true;
             } else {
+                this.currentEntryPoint = null;
                 return false;
             }
         }
