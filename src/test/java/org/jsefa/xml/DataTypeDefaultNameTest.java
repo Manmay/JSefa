@@ -73,7 +73,7 @@ public class DataTypeDefaultNameTest extends TestCase {
 
     @SuppressWarnings("unchecked")
     private <T> T deserialize(Class<T> objectType, String dataTypeName, String fieldContent) {
-        StringBuffer xmlString = new StringBuffer();
+        StringBuilder xmlString = new StringBuilder();
         xmlString.append("<");
         xmlString.append(objectType.getSimpleName());
         xmlString.append(">\n");

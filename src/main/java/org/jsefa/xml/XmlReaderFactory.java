@@ -150,7 +150,7 @@ public final class XmlReaderFactory {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(bytes, 0,
                     lengthInBytes), encoding));
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {
                 result.append(line);

@@ -90,7 +90,7 @@ public class XmlReaderFactoryTest extends TestCase {
     }
 
     private String readTestFile() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         File file = new File(System.getProperty("java.io.tmpdir"), "xml-test-file.xml");
         BufferedReader reader = new BufferedReader(XmlReaderFactory.create(file));
         try {

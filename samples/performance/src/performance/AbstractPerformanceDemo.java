@@ -94,7 +94,7 @@ abstract class AbstractPerformanceDemo {
 
     void start(long... dtoCountArray) {
         System.out.println("Starting JSefa " + this.targetFormatName + " Performance Test\n\n");
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append("JSefa " + this.targetFormatName
                 + " Performance Test Result (write/read in milliseconds)\n\n");
         print("", NAME_FIELD_LENGTH, result);
@@ -116,11 +116,11 @@ abstract class AbstractPerformanceDemo {
         System.out.println(result);
     }
 
-    private void print(String content, int columnLength, StringBuffer buffer) {
+    private void print(String content, int columnLength, StringBuilder buffer) {
         print(content, columnLength, ' ', buffer);
     }
 
-    private void print(String content, int columnLength, char padChar, StringBuffer buffer) {
+    private void print(String content, int columnLength, char padChar, StringBuilder buffer) {
         if (content.length() >= columnLength) {
             buffer.append(content.substring(0, columnLength));
         } else {
