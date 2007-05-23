@@ -67,7 +67,6 @@
                 <path refid="default.classpath" />
                 <pathelement location="${jar_file}" />
                 <pathelement location="${test_target_dir}"/>
-                <pathelement location="lib/junit.jar"/>
                 <pathelement location="."/>
             </classpath>
             <formatter type="brief" usefile="false"/>

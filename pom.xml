@@ -86,6 +86,7 @@
           <descriptors>
             <descriptor>src/main/assembly/bin/bin-src.xml</descriptor>
             <descriptor>src/main/assembly/bin/bin.xml</descriptor>
+            <descriptor>src/main/assembly/src/src.xml</descriptor>
           </descriptors>
         </configuration>
       </plugin>      

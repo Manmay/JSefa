@@ -24,7 +24,7 @@ gap by providing a high-level stream-based API for serializing java objects to
 XML and back again using an iterator-style interface. Furthermore JSefa
 provides iterator-style interfaces (Serializer and Deserializer) independent of
 the serialization format type (XML, CSV or whatever). The current
-implementation provides implementations of these interfaces for XML, CSV, and
+version provides implementations of these interfaces for XML, CSV, and
 FLR.
 
 2. RELEASE INFO
@@ -43,13 +43,15 @@ Contents:
 * readme.txt
   This readme file
 * notice.txt
-  Contains some notes.
+  Contains some notes
 * license.txt
   JSefa is released under the terms of the Apache License Version 2 a copy of 
   which is contained in this file.
 
 3. WHERE TO START?
 
-A quick tutorial is available at http://jsefa.sourceforge.net/quick-tutorial.html
-Some samples are shipped with the JSefa distribution. See the samples directory.
+A quick tutorial is available at http://jsefa.sourceforge.net/quick-tutorial.html.
+Some samples are shipped with all JSefa distributions. See the samples directory.
+A lot of JUnit tests are shipped with the JSefa source distribution; they may be
+of additional help to you in getting started with JSefa.
   
