@@ -49,9 +49,7 @@ public final class XmlConfiguration extends Configuration {
         super(other);
         this.dataTypeDefaultNameRegistry = new XmlDataTypeDefaultNameRegistry();
         getDataTypeDefaultNameRegistry().registerAll(other.getDataTypeDefaultNameRegistry());
-        getLowLevelConfig().setDataTypeAttributeName(other.getLowLevelConfig().getDataTypeAttributeName());
-        getLowLevelConfig().setFormattingConfig(other.lowLevelConfig.getFormattingConfig());
-        getLowLevelConfig().getNamespaceManager().registerAll(other.lowLevelConfig.getNamespaceManager());
+        setLowLevelConfig(other.getLowLevelConfig().createCopy());
         setLowLevelDriver(other.getLowLevelDriver());
     }
 

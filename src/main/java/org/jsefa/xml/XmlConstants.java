@@ -48,5 +48,15 @@ public interface XmlConstants {
      * The URI of automatically created data type names.
      */
     String DEFAULT_DATA_TYPE_NAMES_URI = "http://www.jsefa.org/xml/types/defaults/object-types";
+    
+    /**
+     * The default line break used if none is explicitly given.
+     */
+    String DEFAULT_LINE_BREAK = "\n";
+    
+    /**
+     * The default line indentation used if none is explicitly given.
+     */
+    String DEFAULT_LINE_INDENTATION = "  ";
 
 }

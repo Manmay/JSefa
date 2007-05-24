@@ -75,7 +75,6 @@ public class XmlReaderFactoryTest extends TestCase {
         writeTestFile(encoding, TEST_TEXT);
         String fileContent = readTestFile();
         assertTrue(fileContent.indexOf(TEST_TEXT) != -1);
-        System.out.println(TEST_TEXT);
     }
 
     private void writeTestFile(String encoding, String text) {

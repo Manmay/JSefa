@@ -206,14 +206,14 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
     }
 
     private void writeLineBreak() throws XMLStreamException {
-        this.streamWriter.writeCharacters(this.config.getFormattingConfig().getLineBreak());
+        this.streamWriter.writeCharacters(this.config.getLineBreak());
     }
 
     private void writeIdent() throws XMLStreamException {
-        String lineIdenter = this.config.getFormattingConfig().getLineIdenter();
-        if (lineIdenter.length() > 0) {
+        String lineIndentation = this.config.getLineIndentation();
+        if (lineIndentation.length() > 0) {
             for (int i = 0; i < this.depth; i++) {
-                this.streamWriter.writeCharacters(lineIdenter);
+                this.streamWriter.writeCharacters(lineIndentation);
             }
         }
     }

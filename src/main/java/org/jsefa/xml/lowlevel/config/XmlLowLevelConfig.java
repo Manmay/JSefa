@@ -19,14 +19,13 @@ package org.jsefa.xml.lowlevel.config;
 import org.jsefa.xml.NamespaceManager;
 import org.jsefa.xml.QName;
 import org.jsefa.xml.XmlConstants;
-import org.jsefa.xml.config.XmlFormattingConfig;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
 
 /**
  * Configuration object for creating a {@link XmlLowLevelSerializer} or
  * {@link XmlLowLevelDeserializer}. It uses lazy initialization with standard
- * values for not explicity given settings.
+ * values for not explicitly given settings.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -34,22 +33,24 @@ import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
 public final class XmlLowLevelConfig {
     private NamespaceManager namespaceManager;
 
-    private XmlFormattingConfig formattingConfig;
-
     private QName dataTypeAttributeName;
 
+    private String lineBreak;
+
+    private String lineIndentation;
+    
     /**
-     * Returns the <code>XmlFormattingConfig</code> to be used for
-     * serialization only.
-     * 
-     * @return a <code>XmlFormattingConfig</code>
+     * Constructs a new <code>XmlLowLevelConfig</code>.
      */
-    public XmlFormattingConfig getFormattingConfig() {
-        if (this.formattingConfig == null) {
-            this.formattingConfig = XmlFormattingConfig.STANDARD;
-        }
-        return this.formattingConfig;
+    public XmlLowLevelConfig() {
     }
+
+    private XmlLowLevelConfig(XmlLowLevelConfig other) {
+        getNamespaceManager().registerAll(other.getNamespaceManager());
+        setDataTypeAttributeName(other.getDataTypeAttributeName());
+        setLineBreak(other.getLineBreak());
+        setLineIndentation(other.getLineIndentation());
+    }    
 
     /**
      * Returns the name of the attribute denoting a data type.
@@ -75,6 +76,30 @@ public final class XmlLowLevelConfig {
         }
         return this.namespaceManager;
     }
+    
+    /**
+     * Returns the line break used for serializing.
+     * 
+     * @return the line break
+     */
+    public String getLineBreak() {
+        if (this.lineBreak == null) {
+            this.lineBreak = XmlConstants.DEFAULT_LINE_BREAK;
+        }
+        return this.lineBreak;
+    }
+    
+    /**
+     * Returns the line indentation used for serializing.
+     * 
+     * @return the line indentation
+     */
+    public String getLineIndentation() {
+        if (this.lineIndentation == null) {
+            this.lineIndentation = XmlConstants.DEFAULT_LINE_INDENTATION;
+        }
+        return this.lineIndentation;
+    }
 
     /**
      * Sets the namespace manager.
@@ -86,15 +111,6 @@ public final class XmlLowLevelConfig {
     }
 
     /**
-     * Sets the formatting configuration.
-     * 
-     * @param formattingConfig the formatting configuration
-     */
-    public void setFormattingConfig(XmlFormattingConfig formattingConfig) {
-        this.formattingConfig = formattingConfig;
-    }
-
-    /**
      * Sets the name of the attribute that denotes the data type of the
      * respective element.
      * 
@@ -102,6 +118,31 @@ public final class XmlLowLevelConfig {
      */
     public void setDataTypeAttributeName(QName dataTypeAttributeName) {
         this.dataTypeAttributeName = dataTypeAttributeName;
+    }
+    
+    /**
+     * Sets the line indentation to be used for serializing.
+     * @param lineIndentation the line indentation
+     */
+    public void setLineIndentation(String lineIndentation) {
+        this.lineIndentation = lineIndentation;
+    }
+    
+    /**
+     * Sets the line break to be used for serializing.
+     * @param lineBreak the line break
+     */
+    public void setLineBreak(String lineBreak) {
+        this.lineBreak = lineBreak;
+    }
+    
+    /**
+     * Creates a copy of this <code>XmlLowLevelConfig</code>.
+     * 
+     * @return a copy of this <code>XmlLowLevelConfig</code>
+     */
+    public XmlLowLevelConfig createCopy() {
+        return new XmlLowLevelConfig(this);
     }
 
 }
