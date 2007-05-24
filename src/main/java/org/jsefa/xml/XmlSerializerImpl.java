@@ -52,7 +52,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
             Map<Class, NodeModel> entryNodeModels) {
         this.typeMappingRegistry = typeMappingRegistry;
         this.entryNodeModels = entryNodeModels;
-        this.lowLevelSerializer = config.getLowLevelDriver().createSerializer(config.getLowLevelConfig());
+        this.lowLevelSerializer = config.getLowLevelDriver().createSerializer(config.getLowLevelConfiguration());
         this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
     }
 

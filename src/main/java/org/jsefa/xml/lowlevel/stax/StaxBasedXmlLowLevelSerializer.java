@@ -28,7 +28,7 @@ import org.jsefa.xml.NamespaceManager;
 import org.jsefa.xml.QName;
 import org.jsefa.xml.XmlConstants;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
-import org.jsefa.xml.lowlevel.config.XmlLowLevelConfig;
+import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 
 /**
  * Stax based implementation of {@link XmlLowLevelSerializer}.
@@ -37,7 +37,7 @@ import org.jsefa.xml.lowlevel.config.XmlLowLevelConfig;
  * 
  */
 public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializer {
-    private final XmlLowLevelConfig config;
+    private final XmlLowLevelConfiguration config;
 
     private Writer writer;
 
@@ -54,7 +54,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
      * 
      * @param config the configuration object
      */
-    public StaxBasedXmlLowLevelSerializer(XmlLowLevelConfig config) {
+    public StaxBasedXmlLowLevelSerializer(XmlLowLevelConfiguration config) {
         this.config = config;
     }
 

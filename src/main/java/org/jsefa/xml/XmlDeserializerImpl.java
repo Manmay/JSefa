@@ -59,7 +59,7 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
             Collection<XmlEntryPoint> entryPoints) {
         this.typeMappingRegistry = typeMappingRegistry;
         this.entryPoints = entryPoints;
-        this.lowLevelDeserializer = config.getLowLevelDriver().createDeserializer(config.getLowLevelConfig());
+        this.lowLevelDeserializer = config.getLowLevelDriver().createDeserializer(config.getLowLevelConfiguration());
     }
 
     /**

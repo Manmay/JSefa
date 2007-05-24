@@ -16,7 +16,7 @@
 
 package org.jsefa.xml.lowlevel;
 
-import org.jsefa.xml.lowlevel.config.XmlLowLevelConfig;
+import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 
 /**
  * Provides implementations of {@link XmlLowLevelDeserializer} and
@@ -34,7 +34,7 @@ public interface XmlLowLevelDriver {
      * @param config the configuration object
      * @return a <code>XmlLowLevelDeserializer</code>
      */
-    XmlLowLevelDeserializer createDeserializer(XmlLowLevelConfig config);
+    XmlLowLevelDeserializer createDeserializer(XmlLowLevelConfiguration config);
 
     /**
      * Creates a <code>XmlLowLevelSerializer</code> configured with the given
@@ -43,6 +43,6 @@ public interface XmlLowLevelDriver {
      * @param config the configuration object
      * @return a <code>XmlLowLevelSerializer</code>
      */
-    XmlLowLevelSerializer createSerializer(XmlLowLevelConfig config);
+    XmlLowLevelSerializer createSerializer(XmlLowLevelConfiguration config);
 
 }

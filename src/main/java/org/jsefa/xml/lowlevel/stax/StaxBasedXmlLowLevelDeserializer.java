@@ -29,7 +29,7 @@ import org.jsefa.xml.lowlevel.Attribute;
 import org.jsefa.xml.lowlevel.XmlItem;
 import org.jsefa.xml.lowlevel.XmlItemType;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
-import org.jsefa.xml.lowlevel.config.XmlLowLevelConfig;
+import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
@@ -41,7 +41,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
  */
 
 public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeserializer {
-    private final XmlLowLevelConfig config;
+    private final XmlLowLevelConfiguration config;
 
     private Reader reader;
 
@@ -62,7 +62,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
      * 
      * @param config the configuration object
      */
-    public StaxBasedXmlLowLevelDeserializer(XmlLowLevelConfig config) {
+    public StaxBasedXmlLowLevelDeserializer(XmlLowLevelConfiguration config) {
         this.config = config;
     }
 

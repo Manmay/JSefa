@@ -20,7 +20,7 @@ import org.jsefa.Configuration;
 import org.jsefa.xml.XmlDataTypeDefaultNameRegistry;
 import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.lowlevel.XmlLowLevelDriver;
-import org.jsefa.xml.lowlevel.config.XmlLowLevelConfig;
+import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 import org.jsefa.xml.lowlevel.stax.StaxDriver;
 
 /**
@@ -34,7 +34,7 @@ public final class XmlConfiguration extends Configuration {
 
     private XmlDataTypeDefaultNameRegistry dataTypeDefaultNameRegistry;
 
-    private XmlLowLevelConfig lowLevelConfig;
+    private XmlLowLevelConfiguration lowLevelConfig;
 
     private XmlLowLevelDriver lowLevelDriver;
 
@@ -49,7 +49,7 @@ public final class XmlConfiguration extends Configuration {
         super(other);
         this.dataTypeDefaultNameRegistry = new XmlDataTypeDefaultNameRegistry();
         getDataTypeDefaultNameRegistry().registerAll(other.getDataTypeDefaultNameRegistry());
-        setLowLevelConfig(other.getLowLevelConfig().createCopy());
+        setLowLevelConfiguration(other.getLowLevelConfiguration().createCopy());
         setLowLevelDriver(other.getLowLevelDriver());
     }
 
@@ -67,9 +67,9 @@ public final class XmlConfiguration extends Configuration {
      * 
      * @return the low level configuration object
      */
-    public XmlLowLevelConfig getLowLevelConfig() {
+    public XmlLowLevelConfiguration getLowLevelConfiguration() {
         if (this.lowLevelConfig == null) {
-            this.lowLevelConfig = new XmlLowLevelConfig();
+            this.lowLevelConfig = new XmlLowLevelConfiguration();
         }
         return this.lowLevelConfig;
     }
@@ -79,7 +79,7 @@ public final class XmlConfiguration extends Configuration {
      * 
      * @param lowLevelConfig the xml low level configuration object.
      */
-    public void setLowLevelConfig(XmlLowLevelConfig lowLevelConfig) {
+    public void setLowLevelConfiguration(XmlLowLevelConfiguration lowLevelConfig) {
         this.lowLevelConfig = lowLevelConfig;
     }
 

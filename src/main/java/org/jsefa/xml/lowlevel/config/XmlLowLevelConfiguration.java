@@ -30,7 +30,7 @@ import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class XmlLowLevelConfig {
+public final class XmlLowLevelConfiguration {
     private NamespaceManager namespaceManager;
 
     private QName dataTypeAttributeName;
@@ -42,10 +42,10 @@ public final class XmlLowLevelConfig {
     /**
      * Constructs a new <code>XmlLowLevelConfig</code>.
      */
-    public XmlLowLevelConfig() {
+    public XmlLowLevelConfiguration() {
     }
 
-    private XmlLowLevelConfig(XmlLowLevelConfig other) {
+    private XmlLowLevelConfiguration(XmlLowLevelConfiguration other) {
         getNamespaceManager().registerAll(other.getNamespaceManager());
         setDataTypeAttributeName(other.getDataTypeAttributeName());
         setLineBreak(other.getLineBreak());
@@ -141,8 +141,8 @@ public final class XmlLowLevelConfig {
      * 
      * @return a copy of this <code>XmlLowLevelConfig</code>
      */
-    public XmlLowLevelConfig createCopy() {
-        return new XmlLowLevelConfig(this);
+    public XmlLowLevelConfiguration createCopy() {
+        return new XmlLowLevelConfiguration(this);
     }
 
 }

@@ -19,7 +19,7 @@ package org.jsefa.xml.lowlevel.stax;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
 import org.jsefa.xml.lowlevel.XmlLowLevelDriver;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
-import org.jsefa.xml.lowlevel.config.XmlLowLevelConfig;
+import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 
 /**
  * Stax-based implementation of {@link XmlLowLevelDriver}.
@@ -45,14 +45,14 @@ public final class StaxDriver implements XmlLowLevelDriver {
     /**
      * {@inheritDoc}
      */
-    public XmlLowLevelDeserializer createDeserializer(XmlLowLevelConfig config) {
+    public XmlLowLevelDeserializer createDeserializer(XmlLowLevelConfiguration config) {
         return new StaxBasedXmlLowLevelDeserializer(config);
     }
 
     /**
      * {@inheritDoc}
      */
-    public XmlLowLevelSerializer createSerializer(XmlLowLevelConfig config) {
+    public XmlLowLevelSerializer createSerializer(XmlLowLevelConfiguration config) {
         return new StaxBasedXmlLowLevelSerializer(config);
     }
 
