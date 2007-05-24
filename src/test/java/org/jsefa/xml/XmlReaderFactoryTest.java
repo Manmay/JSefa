@@ -34,7 +34,7 @@ import junit.framework.TestCase;
  * 
  */
 public class XmlReaderFactoryTest extends TestCase {
-    private static final String TEST_TEXT = "abcäöüß";
+    private static final String TEST_TEXT = "abc\u00E4\u00F6\u00FC\u00DF";
     
     /**
      * Tests for correct detection of ISO-8859-1 character set encoding.
@@ -75,6 +75,7 @@ public class XmlReaderFactoryTest extends TestCase {
         writeTestFile(encoding, TEST_TEXT);
         String fileContent = readTestFile();
         assertTrue(fileContent.indexOf(TEST_TEXT) != -1);
+        System.out.println(TEST_TEXT);
     }
 
     private void writeTestFile(String encoding, String text) {
