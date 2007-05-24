@@ -17,6 +17,7 @@
 package org.jsefa.flr.config;
 
 import org.jsefa.Configuration;
+import org.jsefa.flr.FlrConstants;
 import org.jsefa.flr.FlrIOFactory;
 
 /**
@@ -28,16 +29,20 @@ import org.jsefa.flr.FlrIOFactory;
  */
 public final class FlrConfiguration extends Configuration {
 
+    private String lineBreak;
+
     /**
      * Constructs a new <code>FlrConfiguration</code>.
      */
     public FlrConfiguration() {
+        this.lineBreak = FlrConstants.DEFAULT_LINE_BREAK;
     }
 
     private FlrConfiguration(FlrConfiguration other) {
         super(other);
+        this.lineBreak = other.lineBreak;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -45,4 +50,22 @@ public final class FlrConfiguration extends Configuration {
     public FlrConfiguration createCopy() {
         return new FlrConfiguration(this);
     }
+
+    /**
+     * Returns the line break <code>String</code>.
+     * 
+     * @return the line break <code>String</code>
+     */
+    public String getLineBreak() {
+        return this.lineBreak;
+    }
+    
+    /**
+     * Sets the line break <code>String</code>.
+     * @param lineBreak the line break <code>String</code>
+     */
+    public void setLineBreak(String lineBreak) {
+        this.lineBreak = lineBreak;
+    }    
+
 }

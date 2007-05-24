@@ -40,7 +40,7 @@ public final class CsvSerializerImpl extends RbfSerializer implements CsvSeriali
 
     CsvSerializerImpl(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
             Map<Class, RbfEntryPoint> entryPoints) {
-        super(typeMappingRegistry, entryPoints);
+        super(typeMappingRegistry, entryPoints, config.getLineBreak());
         this.config = config;
     }
 

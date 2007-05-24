@@ -24,6 +24,7 @@ import java.lang.annotation.Target;
 
 import org.jsefa.common.annotation.NoConverterClass;
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.flr.FlrConstants;
 import org.jsefa.flr.mapping.Align;
 
 /**
@@ -72,7 +73,7 @@ public @interface FlrField {
     /**
      * The pad character used to fill empty space.
      */
-    char padCharacter() default ' ';
+    char padCharacter() default FlrConstants.DEFAULT_PAD_CHARACTER;
 
     /**
      * The alignment of values which length is less than the required fixed

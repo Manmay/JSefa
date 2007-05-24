@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package org.jsefa.csv;
+package org.jsefa.flr;
+
 
 /**
  * A collection of constants concerning the CSV format type.
@@ -22,25 +23,16 @@ package org.jsefa.csv;
  * @author Norman Lahme-Huetig
  * 
  */
-public interface CsvConstants {
-    /**
-     * Character for escaping.
-     */
-    char ESCAPE_CHARACTER = '\\';
-
-    /**
-     * The default field delimiter character used if none is explicitly given.
-     */
-    char DEFAULT_FIELD_DELIMITER = ';';
-
-    /**
-     * The default quote character used if none is explicitly given.
-     */
-    char DEFAULT_QUOTE_CHARACTER = '\"';
+public interface FlrConstants {
     
     /**
      * The default line break used if none is explicitly given.
      */
     String DEFAULT_LINE_BREAK = "\n";
+    
+    /**
+     * The default pad character used if none is explicitly given.
+     */
+    char DEFAULT_PAD_CHARACTER = ' ';
 
 }

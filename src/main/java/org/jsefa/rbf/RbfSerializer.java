@@ -44,12 +44,12 @@ public abstract class RbfSerializer implements Serializer {
 
     private final boolean withPrefix;
 
-    private final String lineSeparator;
+    private final String lineBreak;
 
     private Writer writer;
 
     private int columnIndex;
-    
+
     private IdentityHashMap<Object, Object> complexObjectsOnPath;
 
     /**
@@ -57,11 +57,13 @@ public abstract class RbfSerializer implements Serializer {
      * 
      * @param typeMappingRegistry the type mapping registry
      * @param entryPoints a map which maps object types to entry points.
+     * @param lineBreak the line break <code>String</code>
      */
-    protected RbfSerializer(RbfTypeMappingRegistry typeMappingRegistry, Map<Class, RbfEntryPoint> entryPoints) {
+    protected RbfSerializer(RbfTypeMappingRegistry typeMappingRegistry, Map<Class, RbfEntryPoint> entryPoints,
+            String lineBreak) {
         this.entryPoints = entryPoints;
         this.typeMappingRegistry = typeMappingRegistry;
-        this.lineSeparator = System.getProperty("line.separator");
+        this.lineBreak = lineBreak;
         this.withPrefix = (entryPoints.values().iterator().next().getDesignator().length() > 0);
         this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
     }
@@ -171,7 +173,7 @@ public abstract class RbfSerializer implements Serializer {
 
     private void writeNewLine() {
         try {
-            this.writer.write(this.lineSeparator);
+            this.writer.write(this.lineBreak);
         } catch (IOException e) {
             throw new SerializationException(e);
         }

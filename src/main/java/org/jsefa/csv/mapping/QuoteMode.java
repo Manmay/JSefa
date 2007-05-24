@@ -32,7 +32,7 @@ public enum QuoteMode {
 
     /**
      * Denotes that a field value is surrounded by quotes only if it contains
-     * the delimiter char or line separator.
+     * the delimiter char or line break.
      */
     ON_DEMAND,
 

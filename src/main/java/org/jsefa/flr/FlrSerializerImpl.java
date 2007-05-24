@@ -38,7 +38,7 @@ public final class FlrSerializerImpl extends RbfSerializer implements FlrSeriali
 
     FlrSerializerImpl(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
             Map<Class, RbfEntryPoint> entryPoints) {
-        super(typeMappingRegistry, entryPoints);
+        super(typeMappingRegistry, entryPoints, config.getLineBreak());
     }
 
     /**
