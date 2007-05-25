@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.csv.config.CsvConfiguration;
+import org.jsefa.csv.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
 import org.jsefa.rbf.annotation.RbfTypeMappingFactory;
@@ -39,6 +40,8 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
 
     private static final RbfAnnotations ANNOTATIONS = new RbfAnnotations(CsvDataType.class, CsvField.class,
             CsvSubRecord.class, CsvSubRecordList.class);
+    
+    private final CsvConfiguration config;
 
     /**
      * Constructs a new <code>CsvTypeMappingFactory</code>.
@@ -49,6 +52,7 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
      */
     public CsvTypeMappingFactory(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry) {
         super(config, typeMappingRegistry, ANNOTATIONS);
+        this.config = config;
     }
 
     /**
@@ -57,7 +61,11 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
     protected TypeMapping<String> createSimpleTypeMapping(Class objectType, String dataTypeName,
             SimpleTypeConverter converter, Field field) {
         CsvField fieldAnnotation = field.getAnnotation(CsvField.class);
-        return new CsvSimpleTypeMapping(objectType, dataTypeName, converter, fieldAnnotation.quoteMode());
+        QuoteMode quoteMode = fieldAnnotation.quoteMode();
+        if (quoteMode.equals(QuoteMode.DEFAULT)) {
+            quoteMode = this.config.getDefaultQuoteMode();
+        }
+        return new CsvSimpleTypeMapping(objectType, dataTypeName, converter, quoteMode);
     }
 
 }

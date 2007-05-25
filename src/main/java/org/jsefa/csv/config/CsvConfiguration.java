@@ -34,6 +34,8 @@ public final class CsvConfiguration extends Configuration {
 
     private EscapeMode quoteCharacterEscapeMode;
 
+    private QuoteMode defaultQuoteMode;
+
     private boolean useDelimiterAfterLastField;
 
     private String lineBreak;
@@ -44,7 +46,8 @@ public final class CsvConfiguration extends Configuration {
     public CsvConfiguration() {
         this.fieldDelimiter = CsvConstants.DEFAULT_FIELD_DELIMITER;
         this.quoteCharacter = CsvConstants.DEFAULT_QUOTE_CHARACTER;
-        this.quoteCharacterEscapeMode = EscapeMode.DOUBLING;
+        this.quoteCharacterEscapeMode = CsvConstants.DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE;
+        this.defaultQuoteMode = CsvConstants.DEFAULT_QUOTE_MODE;
         this.useDelimiterAfterLastField = false;
         this.lineBreak = CsvConstants.DEFAULT_LINE_BREAK;
     }
@@ -52,8 +55,9 @@ public final class CsvConfiguration extends Configuration {
     private CsvConfiguration(CsvConfiguration other) {
         this.fieldDelimiter = other.fieldDelimiter;
         this.useDelimiterAfterLastField = other.useDelimiterAfterLastField;
-        this.quoteCharacter = other.getQuoteCharacter();
-        this.quoteCharacterEscapeMode = other.getQuoteCharacterEscapeMode();
+        this.quoteCharacter = other.quoteCharacter;
+        this.quoteCharacterEscapeMode = other.quoteCharacterEscapeMode;
+        this.defaultQuoteMode = other.defaultQuoteMode;
         this.lineBreak = other.lineBreak;
     }
 
@@ -86,10 +90,19 @@ public final class CsvConfiguration extends Configuration {
     /**
      * Returns the escape mode for the quote character.
      * 
-     * @return an escape mode.
+     * @return an escape mode
      */
     public EscapeMode getQuoteCharacterEscapeMode() {
-        return quoteCharacterEscapeMode;
+        return this.quoteCharacterEscapeMode;
+    }
+
+    /**
+     * Returns the default quote mode.
+     * 
+     * @return a quote mode
+     */
+    public QuoteMode getDefaultQuoteMode() {
+        return this.defaultQuoteMode;
     }
 
     /**
@@ -101,7 +114,7 @@ public final class CsvConfiguration extends Configuration {
     public boolean getUseDelimiterAfterLastField() {
         return this.useDelimiterAfterLastField;
     }
-    
+
     /**
      * Returns the line break <code>String</code>.
      * 
@@ -109,7 +122,7 @@ public final class CsvConfiguration extends Configuration {
      */
     public String getLineBreak() {
         return this.lineBreak;
-    }    
+    }
 
     /**
      * Sets the delimiter to be used to separate the CSV fields.
@@ -147,9 +160,21 @@ public final class CsvConfiguration extends Configuration {
     public void setQuoteCharacterEscapeMode(EscapeMode quoteCharacterEscapeMode) {
         this.quoteCharacterEscapeMode = quoteCharacterEscapeMode;
     }
-    
+
+    /**
+     * Sets the default quote mode. It must be different from {@link QuoteMode#DEFAULT}.
+     * 
+     * @param defaultQuoteMode a quote mode
+     */
+    public void setDefaultQuoteMode(QuoteMode defaultQuoteMode) {
+        if (!defaultQuoteMode.equals(QuoteMode.DEFAULT)) {
+            this.defaultQuoteMode = defaultQuoteMode;
+        }
+    }
+
     /**
      * Sets the line break <code>String</code>.
+     * 
      * @param lineBreak the line break <code>String</code>
      */
     public void setLineBreak(String lineBreak) {

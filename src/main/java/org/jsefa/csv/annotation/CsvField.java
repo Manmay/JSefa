@@ -24,8 +24,8 @@ import java.lang.annotation.Target;
 
 import org.jsefa.common.annotation.NoConverterClass;
 import org.jsefa.common.converter.SimpleTypeConverter;
-import org.jsefa.csv.CsvConstants;
-import org.jsefa.csv.mapping.QuoteMode;
+import org.jsefa.csv.config.CsvConfiguration;
+import org.jsefa.csv.config.QuoteMode;
 
 /**
  * CSV field annotation.
@@ -34,7 +34,7 @@ import org.jsefa.csv.mapping.QuoteMode;
  * 
  */
 @Retention(RUNTIME)
-@Target({FIELD})
+@Target({ FIELD })
 public @interface CsvField {
 
     /**
@@ -60,10 +60,10 @@ public @interface CsvField {
 
     /**
      * The quote mode to use for the CSV field this annotation describes. If not
-     * set, characters will be escaped with the escape character
-     * {@link CsvConstants#ESCAPE_CHARACTER}.
+     * set, the default quote mode ({@link CsvConfiguration#setDefaultQuoteMode})
+     * will be used.
      */
-    QuoteMode quoteMode() default QuoteMode.NEVER;
+    QuoteMode quoteMode() default QuoteMode.DEFAULT;
 
     /**
      * The format to be used to construct a <code>SimpleTypeConverter</code>

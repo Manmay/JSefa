@@ -16,6 +16,9 @@
 
 package org.jsefa.csv;
 
+import org.jsefa.csv.config.EscapeMode;
+import org.jsefa.csv.config.QuoteMode;
+
 /**
  * A collection of constants concerning the CSV format type.
  * 
@@ -42,5 +45,15 @@ public interface CsvConstants {
      * The default line break used if none is explicitly given.
      */
     String DEFAULT_LINE_BREAK = "\n";
+    
+    /**
+     * The default quote character escape mode used if none is explicitly given.
+     */
+    EscapeMode DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE = EscapeMode.DOUBLING;
+    
+    /**
+     * The default quote mode used if none is explicitly given.
+     */
+    QuoteMode DEFAULT_QUOTE_MODE = QuoteMode.NEVER;
 
 }

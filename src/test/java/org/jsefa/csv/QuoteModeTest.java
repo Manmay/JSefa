@@ -25,7 +25,7 @@ import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
 import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.csv.config.EscapeMode;
-import org.jsefa.csv.mapping.QuoteMode;
+import org.jsefa.csv.config.QuoteMode;
 
 /**
  * Tests to test the CSV serialization/deserialization with different quote mode.
@@ -118,9 +118,38 @@ public class QuoteModeTest extends TestCase {
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
 
+    /**
+     * Test with mode "default" where the default is set to "always" via the configuration.
+     */
+    public void testQuoteDefaultAsAlways() {
+        QuoteDefaultDTO obj = new QuoteDefaultDTO();
+        obj.fieldA = "the ; field \"value \n with line break";
+        obj.fieldB = obj.fieldA;
+
+        CsvConfiguration config = createConfig(QuoteMode.ALWAYS, EscapeMode.DOUBLING);
+        String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertTrue(serializationResult.charAt(0) == config.getQuoteCharacter());
+        assertTrue(serializationResult.indexOf("\"\"") > 0);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+
+        config = createConfig(QuoteMode.ALWAYS, EscapeMode.ESCAPE_CHARACTER);
+        obj.fieldA = "the ; field \"value";
+        obj.fieldB = obj.fieldA;
+        serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertTrue(serializationResult.charAt(0) == config.getQuoteCharacter());
+        assertFalse(serializationResult.indexOf("\"\"") > 0);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+    }
 
     private CsvConfiguration createConfig(EscapeMode escapeMode) {
         CsvConfiguration config = new CsvConfiguration();
+        config.setQuoteCharacterEscapeMode(escapeMode);
+        return config;
+    }
+    
+    private CsvConfiguration createConfig(QuoteMode defaultQuoteMode, EscapeMode escapeMode) {
+        CsvConfiguration config = new CsvConfiguration();
+        config.setDefaultQuoteMode(defaultQuoteMode);
         config.setQuoteCharacterEscapeMode(escapeMode);
         return config;
     }
@@ -140,6 +169,15 @@ public class QuoteModeTest extends TestCase {
         String fieldA;
 
         @CsvField(pos = 2, quoteMode = QuoteMode.ON_DEMAND)
+        String fieldB;
+    }
+
+    @CsvDataType()
+    static final class QuoteDefaultDTO extends AbstractTestDTO {
+        @CsvField(pos = 1)
+        String fieldA;
+
+        @CsvField(pos = 2)
         String fieldB;
     }
 

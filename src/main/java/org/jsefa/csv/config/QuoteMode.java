@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jsefa.csv.mapping;
+package org.jsefa.csv.config;
 
 /**
  * Enum for the different modes of quoting.
@@ -40,5 +40,11 @@ public enum QuoteMode {
      * Denotes that a field value is never surrounded by quotes whereas single
      * characters may be escaped instead.
      */
-    NEVER
+    NEVER,
+
+    /**
+     * Denotes that the quote mode which is declared as the default one should
+     * be used.
+     */
+    DEFAULT;
 }
