@@ -18,6 +18,7 @@ package org.jsefa.xml.mapping;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.jsefa.xml.QName;
  * 
  */
 public final class XmlComplexTypeMapping extends TypeMapping<QName> {
-    private final Map<NodeType, List<String>> fieldNamesByNodeType;
+    private final EnumMap<NodeType, List<String>> fieldNamesByNodeType;
 
     private final Map<NodeDescriptor, NodeModel> nodeModelsByNodeDescriptor;
 
@@ -58,7 +59,7 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
     public XmlComplexTypeMapping(Class objectType, QName dataTypeName, ObjectAccessor objectAccessor) {
         super(objectType, dataTypeName);
         this.objectAccessor = objectAccessor;
-        this.fieldNamesByNodeType = new HashMap<NodeType, List<String>>();
+        this.fieldNamesByNodeType = new EnumMap<NodeType, List<String>>(NodeType.class);
         this.nodeModelsByNodeDescriptor = new HashMap<NodeDescriptor, NodeModel>();
         this.nodeModelsByTypedField = new HashMap<TypedField, NodeModel>();
         this.nodeModelsByFieldName = new HashMap<String, NodeModel>();

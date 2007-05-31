@@ -114,14 +114,7 @@ public abstract class NodeDescriptor {
         } else if (!name.equals(other.name)) {
             return false;
         }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        return true;
+        return type == other.type;
     }
 
     /**
@@ -139,7 +132,7 @@ public abstract class NodeDescriptor {
         int hashCode = 1;
         hashCode = 31 * hashCode + ((dataTypeName == null) ? 0 : dataTypeName.hashCode());
         hashCode = 31 * hashCode + ((name == null) ? 0 : name.hashCode());
-        hashCode = 31 * hashCode + ((type == null) ? 0 : type.hashCode());
+        hashCode = 31 * hashCode + type.hashCode();
         return hashCode;
 
     }
