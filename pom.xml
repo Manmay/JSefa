@@ -94,25 +94,6 @@
   </reporting>
   <dependencies>
     <dependency>
-      <groupId>javax.xml.stream</groupId>
-      <artifactId>stax-api</artifactId>
-      <version>1.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>woodstox</groupId>
-      <artifactId>wstx-asl</artifactId>
-      <version>3.2.1</version>
-      <scope>runtime</scope>
-    </dependency>
-<!--    <dependency>
-      <groupId>com.sun.xml.stream</groupId>
-      <artifactId>sjsxp</artifactId>
-      <version>1.0</version>
-      <scope>runtime</scope>
-    </dependency>
--->    
-    <dependency>
       <groupId>jboss</groupId>
       <artifactId>javassist</artifactId>
       <version>3.4.ga</version>
@@ -132,33 +113,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <repositories>
-    <repository>
-      <id>central</id>
-      <name>Maven Repository Switchboard</name>
-      <layout>default</layout>
-      <url>http://repo1.maven.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>java.net</id>
-      <url>https://maven-repository.dev.java.net/nonav/repository</url>
-      <layout>legacy</layout>
-    </repository>
-    <repository>
-      <id>mvnrepository.com</id>
-      <url>http://mvnrepository.com/</url>
-      <layout>legacy</layout>
-    </repository>
-    <repository>
-      <id>maven-plugins</id>
-      <name>Maven Plugins</name>
-      <url>http://repo1.maven.org/maven2/maven-plugins/</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
   <distributionManagement>
     <site>
       <id>sf.net</id>
@@ -167,4 +121,35 @@
     </site>
   </distributionManagement>
 
+  <profiles>
+    <profile>
+      <id>java-1.5</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <jdk>1.5</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>javax.xml.stream</groupId>
+          <artifactId>stax-api</artifactId>
+          <version>1.0</version>
+          <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>woodstox</groupId>
+          <artifactId>wstx-asl</artifactId>
+          <version>3.2.0</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+      <repositories>
+        <!-- for StAX API -->
+        <repository>
+          <id>java.net</id>
+          <url>https://maven-repository.dev.java.net/nonav/repository</url>
+          <layout>legacy</layout>
+        </repository>
+      </repositories>
+    </profile> 
+  </profiles>
 </project>
