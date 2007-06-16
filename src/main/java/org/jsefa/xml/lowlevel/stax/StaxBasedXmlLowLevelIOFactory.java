@@ -17,29 +17,29 @@
 package org.jsefa.xml.lowlevel.stax;
 
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
-import org.jsefa.xml.lowlevel.XmlLowLevelDriver;
+import org.jsefa.xml.lowlevel.XmlLowLevelIOFactory;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
 import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 
 /**
- * Stax-based implementation of {@link XmlLowLevelDriver}.
+ * Stax-based implementation of {@link XmlLowLevelIOFactory}.
  * <p>
  * It is thread-safe.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public final class StaxDriver implements XmlLowLevelDriver {
+public final class StaxBasedXmlLowLevelIOFactory implements XmlLowLevelIOFactory {
 
-    private static final StaxDriver INSTANCE = new StaxDriver();
+    private static final StaxBasedXmlLowLevelIOFactory INSTANCE = new StaxBasedXmlLowLevelIOFactory();
 
     /**
      * Returns the single <code>StaxDriver</code>.
      * 
      * @return the single <code>StaxDriver</code>.
      */
-    public static StaxDriver getInstance() {
-        return StaxDriver.INSTANCE;
+    public static StaxBasedXmlLowLevelIOFactory getInstance() {
+        return StaxBasedXmlLowLevelIOFactory.INSTANCE;
     }
 
     /**

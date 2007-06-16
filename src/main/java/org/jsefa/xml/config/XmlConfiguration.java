@@ -19,9 +19,9 @@ package org.jsefa.xml.config;
 import org.jsefa.Configuration;
 import org.jsefa.xml.XmlDataTypeDefaultNameRegistry;
 import org.jsefa.xml.XmlIOFactory;
-import org.jsefa.xml.lowlevel.XmlLowLevelDriver;
+import org.jsefa.xml.lowlevel.XmlLowLevelIOFactory;
 import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
-import org.jsefa.xml.lowlevel.stax.StaxDriver;
+import org.jsefa.xml.lowlevel.stax.StaxBasedXmlLowLevelIOFactory;
 
 /**
  * A configuration object used when creating a {@link XmlIOFactory}.
@@ -36,7 +36,7 @@ public final class XmlConfiguration extends Configuration {
 
     private XmlLowLevelConfiguration lowLevelConfig;
 
-    private XmlLowLevelDriver lowLevelDriver;
+    private XmlLowLevelIOFactory lowLevelIOFactory;
 
     /**
      * Constructs a new <code>XmlConfiguration</code>.
@@ -50,7 +50,7 @@ public final class XmlConfiguration extends Configuration {
         this.dataTypeDefaultNameRegistry = new XmlDataTypeDefaultNameRegistry();
         getDataTypeDefaultNameRegistry().registerAll(other.getDataTypeDefaultNameRegistry());
         setLowLevelConfiguration(other.getLowLevelConfiguration().createCopy());
-        setLowLevelDriver(other.getLowLevelDriver());
+        setLowLevelIOFactory(other.getLowLevelIOFactory());
     }
 
     /**
@@ -84,24 +84,24 @@ public final class XmlConfiguration extends Configuration {
     }
 
     /**
-     * Returns the xml low level driver.
+     * Returns the xml low level IO factory.
      * 
-     * @return the xml low level driver
+     * @return the xml low level IO factory
      */
-    public XmlLowLevelDriver getLowLevelDriver() {
-        if (this.lowLevelDriver == null) {
-            this.lowLevelDriver = StaxDriver.getInstance();
+    public XmlLowLevelIOFactory getLowLevelIOFactory() {
+        if (this.lowLevelIOFactory == null) {
+            this.lowLevelIOFactory = StaxBasedXmlLowLevelIOFactory.getInstance();
         }
-        return this.lowLevelDriver;
+        return this.lowLevelIOFactory;
     }
 
     /**
-     * Sets the xml low level driver.
+     * Sets the xml low level IO factory.
      * 
-     * @param lowLevelDriver the xml low level driver
+     * @param lowLevelIOFactory the xml low level IO factory
      */
-    public void setLowLevelDriver(XmlLowLevelDriver lowLevelDriver) {
-        this.lowLevelDriver = lowLevelDriver;
+    public void setLowLevelIOFactory(XmlLowLevelIOFactory lowLevelIOFactory) {
+        this.lowLevelIOFactory = lowLevelIOFactory;
     }
 
     /**

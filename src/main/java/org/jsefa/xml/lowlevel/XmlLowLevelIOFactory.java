@@ -19,13 +19,13 @@ package org.jsefa.xml.lowlevel;
 import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 
 /**
- * Provides implementations of {@link XmlLowLevelDeserializer} and
- * {@link XmlLowLevelSerializer}.
+ * Factory for creating {@link XmlLowLevelDeserializer}s and
+ * {@link XmlLowLevelSerializer}s.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public interface XmlLowLevelDriver {
+public interface XmlLowLevelIOFactory {
 
     /**
      * Creates a <code>XmlLowLevelDeserializer</code> configured with the
