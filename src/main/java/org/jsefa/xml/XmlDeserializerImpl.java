@@ -187,10 +187,9 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         } else {
             int childDepth = getCurrentDepth() + 1;
             while (moveToNextElement(childDepth)) {
-                QName listItemDataTypeName = typeMapping.getNodeModel(getCurrentElementDescriptor())
-                        .getDataTypeName();
-                if (listItemDataTypeName != null) {
-                    listValue.add(deserializeElement(listItemDataTypeName));
+                NodeModel listItemNodeModel = typeMapping.getNodeModel(getCurrentElementDescriptor());
+                if (listItemNodeModel != null) {
+                    listValue.add(deserializeElement(listItemNodeModel.getDataTypeName()));
                 }
             }
         }
