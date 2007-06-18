@@ -78,9 +78,9 @@ serializer.close(true);
 ----------------------------------------------------------------------------
 serializer.open(writer);
 serializer.getLowLevelSerializer().writeXmlDeclaration("1.0", "ISO-8859-1");
-serializer.getLowLevelSerializer().startElement(QName.create("persons"));
+serializer.getLowLevelSerializer().writeStartElement(QName.create("persons"));
 // call serializer.write for every object to serialize
-serializer.getLowLevelSerializer().finishElement();
+serializer.getLowLevelSerializer().writeEndElement();
 serializer.close(true);
 ----------------------------------------------------------------------------
 

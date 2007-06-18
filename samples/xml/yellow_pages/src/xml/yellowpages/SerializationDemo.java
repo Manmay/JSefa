@@ -41,7 +41,7 @@ public final class SerializationDemo {
         StringWriter writer = new StringWriter();
         serializer.open(writer);
         serializer.getLowLevelSerializer().writeXmlDeclaration("1.0", "ISO-8859-1");
-        serializer.getLowLevelSerializer().startElement(
+        serializer.getLowLevelSerializer().writeStartElement(
                 QName.create("www.a-simple-namespace-sample.org/yellowPages", "yellowPages"));
 
         Department department = createDepartment("Development");
@@ -50,7 +50,7 @@ public final class SerializationDemo {
                 new BigDecimal(7.5)));
 
         serializer.write(department);
-        serializer.getLowLevelSerializer().finishElement();
+        serializer.getLowLevelSerializer().writeEndElement();
         serializer.close(true);
         System.out.println("Resulting document:");
         System.out.println(writer.toString());

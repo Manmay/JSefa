@@ -52,7 +52,7 @@ public interface XmlLowLevelSerializer {
      * 
      * @param name the name of the element
      */
-    void startElement(QName name);
+    void writeStartElement(QName name);
 
     /**
      * Writes the start tag of an element.
@@ -60,7 +60,7 @@ public interface XmlLowLevelSerializer {
      * @param name the name of the element
      * @param dataTypeName the name of its data type
      */
-    void startElement(QName name, QName dataTypeName);
+    void writeStartElement(QName name, QName dataTypeName);
 
     /**
      * Writes an attribute with the given name and value.
@@ -81,7 +81,7 @@ public interface XmlLowLevelSerializer {
     /**
      * Writes the end tag of the current element.
      */
-    void finishElement();
+    void writeEndElement();
 
     /**
      * Closes the serialization stream. The underlying writer will be closed

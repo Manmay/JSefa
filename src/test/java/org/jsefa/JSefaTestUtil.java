@@ -246,13 +246,13 @@ public final class JSefaTestUtil {
         StringWriter writer = new StringWriter();
         serializer.open(writer);
         if (serializer instanceof XmlSerializer) {
-            ((XmlSerializer) serializer).getLowLevelSerializer().startElement(QName.create("root"));
+            ((XmlSerializer) serializer).getLowLevelSerializer().writeStartElement(QName.create("root"));
         }
         for (Object dto : inputDTOs) {
             serializer.write(dto);
         }
         if (serializer instanceof XmlSerializer) {
-            ((XmlSerializer) serializer).getLowLevelSerializer().finishElement();
+            ((XmlSerializer) serializer).getLowLevelSerializer().writeEndElement();
         }
         serializer.close(true);
         return writer.toString();

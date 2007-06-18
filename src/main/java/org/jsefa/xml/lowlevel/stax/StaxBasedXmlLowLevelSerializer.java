@@ -88,14 +88,14 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
     /**
      * {@inheritDoc}
      */
-    public void startElement(QName name) {
-        startElement(name, null);
+    public void writeStartElement(QName name) {
+        writeStartElement(name, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void startElement(QName name, QName dataTypeName) {
+    public void writeStartElement(QName name, QName dataTypeName) {
         this.depth++;
         this.namespaceManager = NamespaceManager.createWithParent(this.namespaceManager);
         try {
@@ -174,7 +174,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
     /**
      * {@inheritDoc}
      */
-    public void finishElement() {
+    public void writeEndElement() {
         try {
             if (!this.lastWasStartElement) {
                 writeIdent();

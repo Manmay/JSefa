@@ -138,7 +138,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
         String elementValue = simpleTypeMapping.getSimpleTypeConverter().toString(object);
         writeStartElement(nodeModel);
         this.lowLevelSerializer.writeText(elementValue);
-        this.lowLevelSerializer.finishElement();
+        this.lowLevelSerializer.writeEndElement();
     }
 
     private void serializeComplexElement(Object object, NodeModel nodeModel, XmlComplexTypeMapping typeMapping) {
@@ -184,7 +184,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
                 serializeElement(fieldValue, childNodeModel);
             }
         }
-        this.lowLevelSerializer.finishElement();
+        this.lowLevelSerializer.writeEndElement();
         this.complexObjectsOnPath.remove(object);
     }
 
@@ -204,7 +204,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
             serializeElement(listItemValue, listItemNodeModel);
         }
         if (!typeMapping.isImplicit()) {
-            this.lowLevelSerializer.finishElement();
+            this.lowLevelSerializer.writeEndElement();
         }
 
     }
@@ -215,10 +215,10 @@ public final class XmlSerializerImpl implements XmlSerializer {
 
     private void writeStartElement(NodeModel nodeModel) {
         if (nodeModel.requiresDataTypeAttribute()) {
-            this.lowLevelSerializer.startElement(nodeModel.getNodeDescriptor().getName(), nodeModel
+            this.lowLevelSerializer.writeStartElement(nodeModel.getNodeDescriptor().getName(), nodeModel
                     .getDataTypeName());
         } else {
-            this.lowLevelSerializer.startElement(nodeModel.getNodeDescriptor().getName(), null);
+            this.lowLevelSerializer.writeStartElement(nodeModel.getNodeDescriptor().getName(), null);
         }
     }
 

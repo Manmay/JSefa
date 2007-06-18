@@ -53,7 +53,7 @@ public class XmlPerformanceDemo extends AbstractPerformanceDemo {
     @Override
     protected void afterStart(Serializer serializer) {
         super.afterStart(serializer);
-        ((XmlSerializer) serializer).getLowLevelSerializer().startElement(QName.create("root"));
+        ((XmlSerializer) serializer).getLowLevelSerializer().writeStartElement(QName.create("root"));
     }
 
     /**
@@ -62,7 +62,7 @@ public class XmlPerformanceDemo extends AbstractPerformanceDemo {
     @Override
     protected void beforeFinish(Serializer serializer) {
         super.beforeFinish(serializer);
-        ((XmlSerializer) serializer).getLowLevelSerializer().finishElement();
+        ((XmlSerializer) serializer).getLowLevelSerializer().writeEndElement();
     }
 
     /**
