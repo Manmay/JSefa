@@ -36,7 +36,8 @@ public @interface Record {
 
     /**
      * The name of the data type this <code>Record</code> describes. If not
-     * set, it must be determinable from the given object type.
+     * set, it must be determinable from the given object type or from the
+     * generic parameter argument of the annotated field.
      * <p>
      * It should be explicitly set if the type mapping should not be created
      * from the annotations given in the class <code>objectType</code>. This
@@ -48,7 +49,9 @@ public @interface Record {
     /**
      * The type of the object this <code>Record</code> describes. From this
      * the data type must be determinable if it is not explicity given. If the
-     * object type is not set, the data type name must be given explicitly.
+     * object type is not set or determinable from the generic parameter
+     * argument of the annotated field, the data type name must be given
+     * explicitly.
      * <p>
      * The object type will be ignored if the data type name is given
      * explicitly.

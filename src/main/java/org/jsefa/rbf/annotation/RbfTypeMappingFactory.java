@@ -30,6 +30,7 @@ import java.lang.reflect.Field;
 
 import org.jsefa.Configuration;
 import org.jsefa.ConfigurationException;
+import org.jsefa.common.ReflectionUtil;
 import org.jsefa.common.annotation.AnnotatedFieldsProvider;
 import org.jsefa.common.annotation.AnnotationDataProvider;
 import org.jsefa.common.annotation.TypeMappingFactory;
@@ -200,10 +201,14 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
             }
             RbfListTypeMapping listTypeMapping = new RbfListTypeMapping(dataTypeName);
             getTypeMappingRegistry().register(listTypeMapping);
-            for (Record record : getRecords(subRecordListAnnotation)) {
+            Record[] records = getRecords(subRecordListAnnotation);
+            for (Record record : records) {
                 String listItemDataTypeName = AnnotationDataProvider.get(record, DATA_TYPE_NAME);
                 Class listItemObjectType = AnnotationDataProvider.get(record, OBJECT_TYPE);
                 if (listItemDataTypeName == null) {
+                    if (listItemObjectType == null && records.length == 1) {
+                        listItemObjectType = ReflectionUtil.getListEntryObjectType(field);
+                    }
                     if (listItemObjectType == null) {
                         throw new ConfigurationException(
                                 "Neither dataTypeName nor objectType is given for list item of field: "
@@ -214,9 +219,9 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                     }
                     if (!hasComplexType(listItemObjectType)) {
                         throw new ConfigurationException("The sub record object type "
-                                + record.objectType().getName() + " must have a data type annotation");
+                                + listItemObjectType.getName() + " must have a data type annotation");
                     }
-                    listItemDataTypeName = createComplexTypeMappingIfAbsent(record.objectType());
+                    listItemDataTypeName = createComplexTypeMappingIfAbsent(listItemObjectType);
                 } else {
                     assertTypeMappingExists(listItemDataTypeName);
                     listItemObjectType = getTypeMappingRegistry().get(listItemDataTypeName).getObjectType();

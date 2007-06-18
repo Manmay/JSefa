@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import org.jsefa.ConfigurationException;
+import org.jsefa.common.ReflectionUtil;
 import org.jsefa.common.annotation.AnnotatedFieldsProvider;
 import org.jsefa.common.annotation.AnnotationDataProvider;
 import org.jsefa.common.annotation.TypeMappingFactory;
@@ -237,6 +238,8 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                         throw new ConfigurationException("No lists inside lists allowed!");
                     }
                     listItemDataTypeName = createIfAbsent(listItem.objectType());
+                } else if (xmlElementList.items().length == 1 && ReflectionUtil.getListEntryObjectType(field) != null) {
+                    listItemDataTypeName = createIfAbsent(ReflectionUtil.getListEntryObjectType(field));
                 } else {
                     throw new ConfigurationException(
                             "Neither dataTypeName nor objectType is given for list item of field: "

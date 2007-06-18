@@ -68,7 +68,8 @@ public class SubRecordTest extends TestCase {
     }
 
     /**
-     * Tests a DTO with a single sub record list (FLR).
+     * Tests a DTO with a single sub record list using the short annotation
+     * syntax (FLR).
      */
     public void testSingleSubRecordListFLR() {
         SingleSubRecordListDTO dto = createSingleSubRecordListDTO();
@@ -103,8 +104,8 @@ public class SubRecordTest extends TestCase {
         @FlrField(pos = 1, length = 25)
         String fieldA;
 
-        @CsvSubRecordList(pos = 2, records = {@Record(prefix = "ST", objectType = SimpleDTO.class)})
-        @FlrSubRecordList(pos = 2, records = {@Record(prefix = "ST", objectType = SimpleDTO.class)})
+        @CsvSubRecordList(pos = 2, records = { @Record(prefix = "ST", objectType = SimpleDTO.class) })
+        @FlrSubRecordList(pos = 2, records = { @Record(prefix = "ST") })
         List<SimpleDTO> subRecordListField = new ArrayList<SimpleDTO>();
 
     }

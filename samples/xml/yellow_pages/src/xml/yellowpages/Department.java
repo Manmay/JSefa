@@ -37,7 +37,7 @@ public class Department {
     @XmlAttribute()
     String name;
 
-    @XmlElementList(items = {@ListItem(name = "employee", objectType = Employee.class)})
+    @XmlElementList(items = {@ListItem(name = "employee")})
     List<Employee> employees;
 
 }

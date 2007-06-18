@@ -19,10 +19,13 @@ package org.jsefa.common;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 
 /**
  * Utility class for reflection.
@@ -99,6 +102,23 @@ public final class ReflectionUtil {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * Returns the first argument of the type of the given field or null if it does not exist.
+     * @param field the field
+     * @return a class or null
+     */
+    public static Class getListEntryObjectType(Field field) {
+        Type type = field.getGenericType();
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            Type typeArg = parameterizedType.getActualTypeArguments()[0];
+            if (typeArg instanceof Class) {
+                return (Class) typeArg;
+            }
+        }
+        return null;
     }
 
     private ReflectionUtil() {
