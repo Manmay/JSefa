@@ -71,8 +71,8 @@ public final class EnumConverter implements SimpleTypeConverter {
         this.aliasToNameMap = new HashMap<String, String>();
         for (Field field : ReflectionUtil.getAllFields(enumType)) {
             if (field.isAnnotationPresent(EnumConstant.class)) {
-                this.nameToAliasMap.put(field.getName(), field.getAnnotation(EnumConstant.class).displayName());
-                this.aliasToNameMap.put(field.getAnnotation(EnumConstant.class).displayName(), field.getName());
+                this.nameToAliasMap.put(field.getName(), field.getAnnotation(EnumConstant.class).value());
+                this.aliasToNameMap.put(field.getAnnotation(EnumConstant.class).value(), field.getName());
             }
         }
         if (format != null) {

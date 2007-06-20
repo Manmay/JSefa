@@ -25,15 +25,15 @@ import org.jsefa.common.annotation.EnumConstant;
  * 
  */
 enum Role {
-    @EnumConstant(displayName = "senior developer")
+    @EnumConstant("senior developer")
     SENIOR_DEVELOPER,
 
-    @EnumConstant(displayName = "junior developer")
+    @EnumConstant("junior developer")
     JUNIOR_DEVELOPER,
 
-    @EnumConstant(displayName = "account manager")
+    @EnumConstant("account manager")
     ACCOUNT_MANAGER,
 
-    @EnumConstant(displayName = "key account manager")
+    @EnumConstant("key account manager")
     KEY_ACCOUNT_MANAGER;
 }

@@ -35,5 +35,5 @@ public @interface EnumConstant {
     /**
      * The display name of the enum constant.
      */
-    String displayName();
+    String value();
 }
