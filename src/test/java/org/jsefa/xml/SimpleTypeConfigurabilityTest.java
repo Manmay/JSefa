@@ -18,7 +18,9 @@ package org.jsefa.xml;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import junit.framework.TestCase;
@@ -26,9 +28,11 @@ import junit.framework.TestCase;
 import static org.jsefa.JSefaTestUtil.FormatType.XML;
 import org.jsefa.JSefaTestUtil;
 import org.jsefa.common.converter.XmlDateTimeConverter;
+import org.jsefa.xml.annotation.ListItem;
 import org.jsefa.xml.annotation.XmlAttribute;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
+import org.jsefa.xml.annotation.XmlElementList;
 import org.jsefa.xml.annotation.XmlTextContent;
 
 /**
@@ -121,6 +125,41 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T14:21:27.000-01:00") >= 0);
     }
 
+    /**
+     * Tests the format configuration for an element list.
+     */
+    public void testElementListWithFormat() {
+        ElementListWithFormatTestDTO obj = new ElementListWithFormatTestDTO();
+        obj.elementList = new ArrayList<Date>();
+        obj.elementList.add(getDateForFormat("28.02.2007:15:21:27"));
+        obj.elementList.add(getDateForFormat("01.03.2007:15:21:27"));
+        assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("28.02.2007:15:21:27") >= 0);
+        assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("01.03.2007:15:21:27") >= 0);
+    }
+
+    /**
+     * Tests the converter class configuration for an element list.
+     */
+    public void testElementListWithConverterClass() {
+        ElementListWithConverterClassTestDTO obj = new ElementListWithConverterClassTestDTO();
+        obj.elementList = new ArrayList<Date>();
+        obj.elementList.add(getDateForConverter("28.02.2007:15:21:27"));
+        obj.elementList.add(getDateForConverter("01.03.2007:15:21:27"));
+        assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T15:21:27.000Z") >= 0);
+        assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-03-01T15:21:27.000Z") >= 0);
+    }
+
+    /**
+     * Tests the format and converter class configuration for an element list.
+     */
+    public void testElementListWithFormatAndConverterClass() {
+        ElementListWithFormatAndConverterClassTestDTO obj = new ElementListWithFormatAndConverterClassTestDTO();
+        obj.elementList = new ArrayList<Date>();
+        obj.elementList.add(getDateForFormatAndConverter("28.02.2007:15:21:27"));
+        obj.elementList.add(getDateForFormatAndConverter("01.03.2007:15:21:27"));
+        assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T14:21:27.000-01:00") >= 0);
+        assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-03-01T14:21:27.000-01:00") >= 0);
+    }
     private Date getDateForFormat(String inputString) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy:HH:mm:ss");
         try {
@@ -204,4 +243,22 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
         Date textContent;
     }
 
+    @XmlDataType()
+    static final class ElementListWithFormatTestDTO {
+        @XmlElementList(items = @ListItem(name = "item", format = "dd.MM.yyyy:HH:mm:ss"))
+        List<Date> elementList;
+    }
+
+    @XmlDataType()
+    static final class ElementListWithConverterClassTestDTO {
+        @XmlElementList(items = @ListItem(name = "item", converterClass = XmlDateTimeConverter.class))
+        List<Date> elementList;
+    }
+
+    @XmlDataType()
+    static final class ElementListWithFormatAndConverterClassTestDTO {
+        @XmlElementList(items = @ListItem(name = "item", format = "GMT-1:00",
+                converterClass = XmlDateTimeConverter.class))
+        List<Date> elementList;
+    }
 }

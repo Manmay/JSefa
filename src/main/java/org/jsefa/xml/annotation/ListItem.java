@@ -17,6 +17,8 @@
 package org.jsefa.xml.annotation;
 
 import org.jsefa.common.annotation.NoClass;
+import org.jsefa.common.annotation.NoConverterClass;
+import org.jsefa.common.converter.SimpleTypeConverter;
 
 /**
  * Annotation describing the object type and element name of a list item.
@@ -57,5 +59,21 @@ public @interface ListItem {
      * explicitly.
      */
     Class objectType() default NoClass.class;
+
+    /**
+     * The format to be used to construct a <code>SimpleTypeConverter</code>
+     * for the xml element which must have a simple data type (no children, no
+     * data holding attributes). The <code>SimpleTypeConverter</code> class
+     * will be determined using the type of the java field with this annotation.
+     */
+    String[] format() default {};
+
+    /**
+     * Specifies the converter class to be used for the xml element which must
+     * have a simple data type (no children, no data holding attributes). In the
+     * default case the converter class is determined using the type of the list
+     * item.
+     */
+    Class<? extends SimpleTypeConverter> converterClass() default NoConverterClass.class;
 
 }
