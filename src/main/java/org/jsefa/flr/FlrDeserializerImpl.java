@@ -19,7 +19,7 @@ package org.jsefa.flr;
 import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
-import org.jsefa.flr.config.FlrConfiguration;
+import org.jsefa.flr.lowlevel.FlrLowLevelDeserializer;
 import org.jsefa.flr.mapping.Align;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
 import org.jsefa.rbf.RbfDeserializer;
@@ -35,18 +35,21 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
  */
 public final class FlrDeserializerImpl extends RbfDeserializer implements FlrDeserializer {
 
+    private final FlrLowLevelDeserializer lowLevelDeserializer;
+
     private final int prefixLength;
 
     FlrDeserializerImpl(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
             Map<String, RbfEntryPoint> entryPointsByPrefixes) {
         super(typeMappingRegistry, entryPointsByPrefixes);
         this.prefixLength = entryPointsByPrefixes.keySet().iterator().next().length();
+        this.lowLevelDeserializer = config.getLowLevelIOFactory().createDeserializer(config.getLowLevelConfiguration());
     }
 
-    FlrDeserializerImpl(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            RbfEntryPoint entryPoint) {
+    FlrDeserializerImpl(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry, RbfEntryPoint entryPoint) {
         super(typeMappingRegistry, entryPoint);
         this.prefixLength = 0;
+        this.lowLevelDeserializer = config.getLowLevelIOFactory().createDeserializer(config.getLowLevelConfiguration());
     }
 
     /**
@@ -54,7 +57,8 @@ public final class FlrDeserializerImpl extends RbfDeserializer implements FlrDes
      */
     protected Object readSimpleValue(SimpleTypeMapping typeMapping) {
         FlrSimpleTypeMapping flrTypeMapping = (FlrSimpleTypeMapping) typeMapping;
-        String stringValue = trim(nextString(flrTypeMapping.getLength()), flrTypeMapping);
+        String stringValue = this.lowLevelDeserializer.nextField(flrTypeMapping.getLength(), flrTypeMapping.getAlign(),
+                flrTypeMapping.getPadCharacter());
         if (stringValue.length() != 0) {
             return typeMapping.getSimpleTypeConverter().fromString(stringValue);
         } else {
@@ -66,34 +70,14 @@ public final class FlrDeserializerImpl extends RbfDeserializer implements FlrDes
      * {@inheritDoc}
      */
     protected String readPrefix() {
-        return nextString(this.prefixLength);
+        return this.lowLevelDeserializer.nextField(this.prefixLength, Align.LEFT, ' ');
     }
 
-    private String trim(String stringValue, FlrSimpleTypeMapping mapping) {
-        if (mapping.getAlign() == Align.LEFT) {
-            int endIndex = stringValue.length() - 1;
-            while ((endIndex >= 0) && (stringValue.charAt(endIndex) == mapping.getPadCharacter())) {
-                endIndex--;
-            }
-            if (endIndex < 0) {
-                return "";
-            } else {
-                return stringValue.substring(0, endIndex + 1);
-            }
-        } else if (mapping.getAlign() == Align.RIGHT) {
-            int startIndex = 0;
-            while ((startIndex < stringValue.length())
-                    && (stringValue.charAt(startIndex) == mapping.getPadCharacter())) {
-                startIndex++;
-            }
-            if (startIndex == stringValue.length()) {
-                return "";
-            } else {
-                return stringValue.substring(startIndex);
-            }
-        } else {
-            throw new UnsupportedOperationException("Unknown align type: " + mapping.getAlign());
-        }
+    /**
+     * {@inheritDoc}
+     */
+    protected FlrLowLevelDeserializer getLowLevelDeserializer() {
+        return this.lowLevelDeserializer;
     }
 
 }

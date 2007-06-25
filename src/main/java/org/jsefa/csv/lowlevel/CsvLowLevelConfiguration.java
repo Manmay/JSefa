@@ -14,59 +14,53 @@
  * limitations under the License.
  */
 
-package org.jsefa.csv.config;
+package org.jsefa.csv.lowlevel;
 
-import org.jsefa.Configuration;
 import org.jsefa.csv.CsvConstants;
-import org.jsefa.csv.CsvIOFactory;
+import org.jsefa.csv.EscapeMode;
 
 /**
- * A configuration object used when creating a {@link CsvIOFactory}.
+ * Configuration object for creating a {@link CsvLowLevelSerializer} or
+ * {@link CsvLowLevelDeserializer}.
  * 
- * @see Configuration
  * @author Norman Lahme-Huetig
  * 
  */
-public final class CsvConfiguration extends Configuration {
+public final class CsvLowLevelConfiguration {
     private char fieldDelimiter;
 
     private char quoteCharacter;
 
     private EscapeMode quoteCharacterEscapeMode;
 
-    private QuoteMode defaultQuoteMode;
-
     private boolean useDelimiterAfterLastField;
 
     private String lineBreak;
 
     /**
-     * Constructs a new <code>CsvConfiguration</code>.
+     * Constructs a new <code>CsvLowLevelConfiguration</code>.
      */
-    public CsvConfiguration() {
-        this.fieldDelimiter = CsvConstants.DEFAULT_FIELD_DELIMITER;
-        this.quoteCharacter = CsvConstants.DEFAULT_QUOTE_CHARACTER;
-        this.quoteCharacterEscapeMode = CsvConstants.DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE;
-        this.defaultQuoteMode = CsvConstants.DEFAULT_QUOTE_MODE;
-        this.useDelimiterAfterLastField = false;
-        this.lineBreak = CsvConstants.DEFAULT_LINE_BREAK;
+    public CsvLowLevelConfiguration() {
+        setFieldDelimiter(CsvConstants.DEFAULT_FIELD_DELIMITER);
+        setQuoteCharacter(CsvConstants.DEFAULT_QUOTE_CHARACTER);
+        setQuoteCharacterEscapeMode(CsvConstants.DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE);
+        setUseDelimiterAfterLastField(false);
+        setLineBreak(CsvConstants.DEFAULT_LINE_BREAK);
     }
 
-    private CsvConfiguration(CsvConfiguration other) {
-        this.fieldDelimiter = other.fieldDelimiter;
-        this.useDelimiterAfterLastField = other.useDelimiterAfterLastField;
-        this.quoteCharacter = other.quoteCharacter;
-        this.quoteCharacterEscapeMode = other.quoteCharacterEscapeMode;
-        this.defaultQuoteMode = other.defaultQuoteMode;
-        this.lineBreak = other.lineBreak;
+    private CsvLowLevelConfiguration(CsvLowLevelConfiguration other) {
+        setFieldDelimiter(other.getFieldDelimiter());
+        setUseDelimiterAfterLastField(other.getUseDelimiterAfterLastField());
+        setQuoteCharacter(other.getQuoteCharacter());
+        setQuoteCharacterEscapeMode(other.getQuoteCharacterEscapeMode());
+        setLineBreak(other.getLineBreak());
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public CsvConfiguration createCopy() {
-        return new CsvConfiguration(this);
+    public CsvLowLevelConfiguration createCopy() {
+        return new CsvLowLevelConfiguration(this);
     }
 
     /**
@@ -94,15 +88,6 @@ public final class CsvConfiguration extends Configuration {
      */
     public EscapeMode getQuoteCharacterEscapeMode() {
         return this.quoteCharacterEscapeMode;
-    }
-
-    /**
-     * Returns the default quote mode.
-     * 
-     * @return a quote mode
-     */
-    public QuoteMode getDefaultQuoteMode() {
-        return this.defaultQuoteMode;
     }
 
     /**
@@ -159,17 +144,6 @@ public final class CsvConfiguration extends Configuration {
      */
     public void setQuoteCharacterEscapeMode(EscapeMode quoteCharacterEscapeMode) {
         this.quoteCharacterEscapeMode = quoteCharacterEscapeMode;
-    }
-
-    /**
-     * Sets the default quote mode. It must be different from {@link QuoteMode#DEFAULT}.
-     * 
-     * @param defaultQuoteMode a quote mode
-     */
-    public void setDefaultQuoteMode(QuoteMode defaultQuoteMode) {
-        if (!defaultQuoteMode.equals(QuoteMode.DEFAULT)) {
-            this.defaultQuoteMode = defaultQuoteMode;
-        }
     }
 
     /**

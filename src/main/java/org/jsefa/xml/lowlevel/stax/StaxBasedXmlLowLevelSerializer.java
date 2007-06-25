@@ -27,8 +27,8 @@ import org.jsefa.SerializationException;
 import org.jsefa.xml.NamespaceManager;
 import org.jsefa.xml.QName;
 import org.jsefa.xml.XmlConstants;
+import org.jsefa.xml.lowlevel.XmlLowLevelConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
-import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 
 /**
  * Stax based implementation of {@link XmlLowLevelSerializer}.

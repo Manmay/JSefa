@@ -24,8 +24,8 @@ import java.lang.annotation.Target;
 
 import org.jsefa.common.annotation.NoConverterClass;
 import org.jsefa.common.converter.SimpleTypeConverter;
-import org.jsefa.csv.config.CsvConfiguration;
-import org.jsefa.csv.config.QuoteMode;
+import org.jsefa.csv.CsvConfiguration;
+import org.jsefa.csv.QuoteMode;
 
 /**
  * CSV field annotation.

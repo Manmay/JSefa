@@ -19,7 +19,7 @@ package org.jsefa.flr;
 import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
-import org.jsefa.flr.config.FlrConfiguration;
+import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
 import org.jsefa.flr.mapping.Align;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
 import org.jsefa.rbf.RbfEntryPoint;
@@ -36,9 +36,12 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 public final class FlrSerializerImpl extends RbfSerializer implements FlrSerializer {
 
+    private final FlrLowLevelSerializer lowLevelSerializer;
+
     FlrSerializerImpl(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
             Map<Class, RbfEntryPoint> entryPoints) {
-        super(typeMappingRegistry, entryPoints, config.getLineBreak());
+        super(typeMappingRegistry, entryPoints);
+        this.lowLevelSerializer = config.getLowLevelIOFactory().createSerializer(config.getLowLevelConfiguration());
     }
 
     /**
@@ -50,26 +53,24 @@ public final class FlrSerializerImpl extends RbfSerializer implements FlrSeriali
         if (value == null) {
             value = "";
         }
-        if (value.length() >= flrMapping.getLength()) {
-            writeString(value.substring(0, flrMapping.getLength()));
-        } else {
-            if (flrMapping.getAlign() == Align.LEFT) {
-                writeString(value);
-                writePadCharacters(value, flrMapping);
-            } else {
-                writePadCharacters(value, flrMapping);
-                writeString(value);
-            }
-
-        }
+        this.lowLevelSerializer.writeField(value, flrMapping.getLength(), flrMapping.getAlign(), flrMapping
+                .getPadCharacter());
     }
-
-    private void writePadCharacters(String value, FlrSimpleTypeMapping flrMapping) {
-        char padChar = flrMapping.getPadCharacter();
-        int padCount = flrMapping.getLength() - value.length();
-        for (int i = 0; i < padCount; i++) {
-            writeChar(padChar);
-        }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void writePrefix(String prefix) {
+        this.lowLevelSerializer.writeField(prefix, prefix.length(), Align.LEFT, ' ');
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected FlrLowLevelSerializer getLowLevelSerializer() {
+        return this.lowLevelSerializer;
     }
 
 }

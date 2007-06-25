@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.lowlevel;
+package org.jsefa.flr.lowlevel;
 
 
 /**
- * Factory for creating {@link XmlLowLevelDeserializer}s and
- * {@link XmlLowLevelSerializer}s.
+ * Factory for creating {@link FlrLowLevelDeserializer}s and
+ * {@link FlrLowLevelSerializer}s.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public interface XmlLowLevelIOFactory {
-
+public interface FlrLowLevelIOFactory {
     /**
-     * Creates a <code>XmlLowLevelDeserializer</code> configured with the
+     * Creates a <code>FlrLowLevelDeserializer</code> configured with the
      * given configuration object.
      * 
      * @param config the configuration object
-     * @return a <code>XmlLowLevelDeserializer</code>
+     * @return a <code>FlrLowLevelDeserializer</code>
      */
-    XmlLowLevelDeserializer createDeserializer(XmlLowLevelConfiguration config);
+    FlrLowLevelDeserializer createDeserializer(FlrLowLevelConfiguration config);
 
     /**
-     * Creates a <code>XmlLowLevelSerializer</code> configured with the given
+     * Creates a <code>FlrLowLevelSerializer</code> configured with the given
      * configuration object.
      * 
      * @param config the configuration object
-     * @return a <code>XmlLowLevelSerializer</code>
+     * @return a <code>FlrLowLevelSerializer</code>
      */
-    XmlLowLevelSerializer createSerializer(XmlLowLevelConfiguration config);
-
+    FlrLowLevelSerializer createSerializer(FlrLowLevelConfiguration config);
 }

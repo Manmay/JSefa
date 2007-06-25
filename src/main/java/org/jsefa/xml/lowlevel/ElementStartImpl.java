@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.lowlevel.stax;
+package org.jsefa.xml.lowlevel;
 
 import org.jsefa.xml.QName;
-import org.jsefa.xml.lowlevel.Attribute;
-import org.jsefa.xml.lowlevel.ElementStart;
-import org.jsefa.xml.lowlevel.XmlItemType;
 
 /**
  * Implementation of {@link ElementStart}.
@@ -36,7 +33,7 @@ import org.jsefa.xml.lowlevel.XmlItemType;
  * @author Norman Lahme-Huetig
  * 
  */
-final class ElementStartImpl implements ElementStart {
+public final class ElementStartImpl implements ElementStart {
     private final Attribute[] attributes;
 
     private final QName dataTypeName;
@@ -46,7 +43,7 @@ final class ElementStartImpl implements ElementStart {
     private final QName name;
 
     /**
-     * Creates a new <code>ElementStartImpl</code>.
+     * Constructs a new <code>ElementStartImpl</code>.
      * <p>
      * Note: the new <code>ElementStartImpl</code> takes control of the given
      * <code>attributes</code> list; it makes no defensive copy of it.

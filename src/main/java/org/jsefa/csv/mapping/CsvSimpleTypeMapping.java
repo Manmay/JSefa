@@ -19,7 +19,7 @@ package org.jsefa.csv.mapping;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.csv.config.QuoteMode;
+import org.jsefa.csv.QuoteMode;
 
 /**
  * A mapping between a java object type and a simple CSV data type.

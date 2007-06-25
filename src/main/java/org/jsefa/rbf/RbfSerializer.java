@@ -16,7 +16,6 @@
 
 package org.jsefa.rbf;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.jsefa.SerializationException;
 import org.jsefa.Serializer;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
 import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
@@ -44,26 +44,17 @@ public abstract class RbfSerializer implements Serializer {
 
     private final boolean withPrefix;
 
-    private final String lineBreak;
-
-    private Writer writer;
-
-    private int columnIndex;
-
-    private IdentityHashMap<Object, Object> complexObjectsOnPath;
+    private final IdentityHashMap<Object, Object> complexObjectsOnPath;
 
     /**
      * Constructs a new <code>RbfSerializerImpl</code>.
      * 
      * @param typeMappingRegistry the type mapping registry
      * @param entryPoints a map which maps object types to entry points.
-     * @param lineBreak the line break <code>String</code>
      */
-    protected RbfSerializer(RbfTypeMappingRegistry typeMappingRegistry, Map<Class, RbfEntryPoint> entryPoints,
-            String lineBreak) {
-        this.entryPoints = entryPoints;
+    protected RbfSerializer(RbfTypeMappingRegistry typeMappingRegistry, Map<Class, RbfEntryPoint> entryPoints) {
         this.typeMappingRegistry = typeMappingRegistry;
-        this.lineBreak = lineBreak;
+        this.entryPoints = entryPoints;
         this.withPrefix = (entryPoints.values().iterator().next().getDesignator().length() > 0);
         this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
     }
@@ -72,7 +63,7 @@ public abstract class RbfSerializer implements Serializer {
      * {@inheritDoc}
      */
     public final void open(Writer writer) {
-        this.writer = writer;
+        getLowLevelSerializer().open(writer);
         this.complexObjectsOnPath.clear();
     }
 
@@ -83,41 +74,19 @@ public abstract class RbfSerializer implements Serializer {
         if (object == null) {
             return;
         }
-        RbfEntryPoint entryPoint = this.entryPoints.get(object.getClass());
-        if (entryPoint == null) {
-            Class objectType = object.getClass().getSuperclass();
-            while (objectType != null) {
-                entryPoint = this.entryPoints.get(objectType);
-                if (entryPoint != null) {
-                    break;
-                }
-                objectType = objectType.getSuperclass();
-            }
-        }
-        if (entryPoint == null) {
-            throw new SerializationException("The following class was not registered for serialization: "
-                    + object.getClass());
-        }
-        this.columnIndex = 0;
+        RbfEntryPoint entryPoint = getEntryPoint(object.getClass());
         if (this.withPrefix) {
-            writeString(entryPoint.getDesignator());
-            this.columnIndex++;
+            writePrefix(entryPoint.getDesignator());
         }
         writeValue(object, getTypeMapping(entryPoint.getDataTypeName()));
-        terminateLine();
+        getLowLevelSerializer().finishRecord();
     }
 
     /**
      * {@inheritDoc}
      */
     public final void close(boolean closeWriter) {
-        if (closeWriter) {
-            try {
-                this.writer.close();
-            } catch (IOException e) {
-                throw new SerializationException(e);
-            }
-        }
+        getLowLevelSerializer().close(closeWriter);
     }
 
     /**
@@ -129,60 +98,22 @@ public abstract class RbfSerializer implements Serializer {
     protected abstract void writeSimpleValue(Object value, SimpleTypeMapping mapping);
 
     /**
-     * Called before terminating a line. Override to perform extra action on
-     * line termination.
+     * Writes the prefix.
+     * 
+     * @param prefix the prefix
      */
-    protected void beforeEOL() {
-
-    }
+    protected abstract void writePrefix(String prefix);
 
     /**
-     * Returns the index of the current column (beginning with 0).
+     * Returns the low level serializer.
      * 
-     * @return the index of the current column
+     * @return the low level serializer.
      */
-    protected final int getColumnIndex() {
-        return this.columnIndex;
-    }
-
-    /**
-     * Writes the given character to the stream.
-     * 
-     * @param character the character.
-     */
-    protected final void writeChar(int character) {
-        try {
-            this.writer.write(character);
-        } catch (IOException e) {
-            throw new SerializationException(e);
-        }
-    }
-
-    /**
-     * Writes the given <code>String</code> value as it is to the stream.
-     * 
-     * @param value the <code>String</code> value.
-     */
-    protected final void writeString(String value) {
-        try {
-            this.writer.write(value);
-        } catch (IOException e) {
-            throw new SerializationException(e);
-        }
-    }
-
-    private void writeNewLine() {
-        try {
-            this.writer.write(this.lineBreak);
-        } catch (IOException e) {
-            throw new SerializationException(e);
-        }
-    }
+    protected abstract RbfLowLevelSerializer getLowLevelSerializer();
 
     private void writeValue(Object object, TypeMapping typeMapping) {
         if (typeMapping instanceof SimpleTypeMapping) {
             writeSimpleValue(object, (SimpleTypeMapping) typeMapping);
-            this.columnIndex++;
         } else if (typeMapping instanceof RbfComplexTypeMapping) {
             writeComplexValue(object, (RbfComplexTypeMapping) typeMapping);
         } else {
@@ -196,6 +127,14 @@ public abstract class RbfSerializer implements Serializer {
         } else if (object != null) {
             this.complexObjectsOnPath.put(object, object);
         }
+        writeFields(object, typeMapping);
+        if (object != null) {
+            writeSubRecords(object, typeMapping);
+            this.complexObjectsOnPath.remove(object);
+        }
+    }
+
+    private void writeFields(Object object, RbfComplexTypeMapping typeMapping) {
         for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
             Object fieldValue = null;
             if (object != null) {
@@ -204,9 +143,9 @@ public abstract class RbfSerializer implements Serializer {
             String fieldDataTypeName = typeMapping.getNodeModel(fieldName).getDataTypeName();
             writeValue(fieldValue, getTypeMapping(fieldDataTypeName));
         }
-        if (object == null) {
-            return;
-        }
+    }
+
+    private void writeSubRecords(Object object, RbfComplexTypeMapping typeMapping) {
         for (String fieldName : typeMapping.getFieldNames(NodeType.SUB_RECORD)) {
             Object fieldValue = typeMapping.getObjectAccessor().getValue(object, fieldName);
             if (fieldValue == null) {
@@ -215,22 +154,19 @@ public abstract class RbfSerializer implements Serializer {
             NodeModel nodeModel = typeMapping.getNodeModel(fieldName);
             TypeMapping subRecordTypeMapping = getTypeMapping(nodeModel.getDataTypeName());
             if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
-                terminateLine();
-                writeString(nodeModel.getPrefix());
-                this.columnIndex++;
+                getLowLevelSerializer().finishRecord();
+                writePrefix(nodeModel.getPrefix());
                 writeValue(fieldValue, subRecordTypeMapping);
             } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
                 RbfListTypeMapping listTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
                 for (Object listItem : (List) fieldValue) {
-                    terminateLine();
+                    getLowLevelSerializer().finishRecord();
                     NodeModel itemNodeModel = listTypeMapping.getNodeModel(listItem.getClass());
-                    writeString(itemNodeModel.getPrefix());
-                    this.columnIndex++;
+                    writePrefix(itemNodeModel.getPrefix());
                     writeValue(listItem, getTypeMapping(itemNodeModel.getDataTypeName()));
                 }
             }
         }
-        this.complexObjectsOnPath.remove(object);
     }
 
     private TypeMapping getTypeMapping(String dataTypeName) {
@@ -241,10 +177,23 @@ public abstract class RbfSerializer implements Serializer {
         return typeMapping;
     }
 
-    private void terminateLine() {
-        beforeEOL();
-        writeNewLine();
-        this.columnIndex = 0;
+    private RbfEntryPoint getEntryPoint(Class originalObjectType) {
+        RbfEntryPoint entryPoint = this.entryPoints.get(originalObjectType);
+        if (entryPoint == null) {
+            Class objectType = originalObjectType.getSuperclass();
+            while (objectType != null) {
+                entryPoint = this.entryPoints.get(objectType);
+                if (entryPoint != null) {
+                    break;
+                }
+                objectType = objectType.getSuperclass();
+            }
+        }
+        if (entryPoint == null) {
+            throw new SerializationException("The following class was not registered for serialization: "
+                    + originalObjectType);
+        }
+        return entryPoint;
     }
 
 }

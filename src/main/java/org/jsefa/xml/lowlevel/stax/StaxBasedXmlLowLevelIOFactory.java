@@ -16,10 +16,10 @@
 
 package org.jsefa.xml.lowlevel.stax;
 
+import org.jsefa.xml.lowlevel.XmlLowLevelConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
 import org.jsefa.xml.lowlevel.XmlLowLevelIOFactory;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
-import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 
 /**
  * Stax-based implementation of {@link XmlLowLevelIOFactory}.
@@ -34,9 +34,9 @@ public final class StaxBasedXmlLowLevelIOFactory implements XmlLowLevelIOFactory
     private static final StaxBasedXmlLowLevelIOFactory INSTANCE = new StaxBasedXmlLowLevelIOFactory();
 
     /**
-     * Returns the single <code>StaxDriver</code>.
+     * Returns the single <code>StaxBasedXmlLowLevelIOFactory</code>.
      * 
-     * @return the single <code>StaxDriver</code>.
+     * @return the single <code>StaxBasedXmlLowLevelIOFactory</code>.
      */
     public static StaxBasedXmlLowLevelIOFactory getInstance() {
         return StaxBasedXmlLowLevelIOFactory.INSTANCE;

@@ -26,14 +26,14 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.jsefa.csv.CsvConfiguration;
 import org.jsefa.csv.CsvIOFactory;
-import org.jsefa.csv.config.CsvConfiguration;
+import org.jsefa.flr.FlrConfiguration;
 import org.jsefa.flr.FlrIOFactory;
-import org.jsefa.flr.config.FlrConfiguration;
 import org.jsefa.xml.QName;
+import org.jsefa.xml.XmlConfiguration;
 import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.XmlSerializer;
-import org.jsefa.xml.config.XmlConfiguration;
 
 /**
  * Utility class for the JSefa tests.

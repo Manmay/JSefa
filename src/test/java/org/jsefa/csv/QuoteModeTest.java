@@ -23,9 +23,6 @@ import org.jsefa.AbstractTestDTO;
 import org.jsefa.JSefaTestUtil;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
-import org.jsefa.csv.config.CsvConfiguration;
-import org.jsefa.csv.config.EscapeMode;
-import org.jsefa.csv.config.QuoteMode;
 
 /**
  * Tests to test the CSV serialization/deserialization with different quote mode.

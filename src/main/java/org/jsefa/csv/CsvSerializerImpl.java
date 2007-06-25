@@ -19,16 +19,15 @@ package org.jsefa.csv;
 import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
-import org.jsefa.csv.config.CsvConfiguration;
-import org.jsefa.csv.config.EscapeMode;
-import org.jsefa.csv.config.QuoteMode;
+import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.RbfEntryPoint;
 import org.jsefa.rbf.RbfSerializer;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**
- * Default implementation of {@link CsvSerializer}.
+ * Default implementation of {@link CsvSerializer} based on
+ * {@link RbfSerializer}.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -36,98 +35,36 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 public final class CsvSerializerImpl extends RbfSerializer implements CsvSerializer {
 
-    private final CsvConfiguration config;
+    private final CsvLowLevelSerializer lowLevelSerializer;
 
     CsvSerializerImpl(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
             Map<Class, RbfEntryPoint> entryPoints) {
-        super(typeMappingRegistry, entryPoints, config.getLineBreak());
-        this.config = config;
+        super(typeMappingRegistry, entryPoints);
+        this.lowLevelSerializer = config.getLowLevelIOFactory().createSerializer(config.getLowLevelConfiguration());
     }
 
     /**
      * {@inheritDoc}
      */
     protected void writeSimpleValue(Object object, SimpleTypeMapping mapping) {
-        if (getColumnIndex() > 0) {
-            writeChar(this.config.getFieldDelimiter());
-        }
         String value = mapping.getSimpleTypeConverter().toString(object);
-        encodeAndWrite(value, ((CsvSimpleTypeMapping) mapping).getQuoteMode());
+        this.lowLevelSerializer.writeField(value, ((CsvSimpleTypeMapping) mapping).getQuoteMode());
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void beforeEOL() {
-        if (this.config.getUseDelimiterAfterLastField()) {
-            writeChar(this.config.getFieldDelimiter());
-        }
+    @Override
+    protected void writePrefix(String prefix) {
+        this.lowLevelSerializer.writeField(prefix, QuoteMode.NEVER);
     }
 
-    private void encodeAndWrite(String value, QuoteMode quoteMode) {
-        if (value == null) {
-            return;
-        }
-        switch (quoteMode) {
-        case ALWAYS:
-            encodeAndWriteUsingQuotes(value);
-            break;
-        case ON_DEMAND:
-            encodeAndWriteUsingQuotesOnDemand(value);
-            break;
-        case NEVER:
-            encodeAndWriteUsingEscapeCharacter(value);
-            break;
-        default:
-            throw new UnsupportedOperationException("The quote mode is not supported: " + quoteMode);
-        }
-    }
-
-    private void encodeAndWriteUsingQuotes(String value) {
-        char quoteChar = this.config.getQuoteCharacter();
-        char escapeCharacter = CsvConstants.ESCAPE_CHARACTER;
-        if (this.config.getQuoteCharacterEscapeMode().equals(EscapeMode.DOUBLING)) {
-            escapeCharacter = quoteChar;
-        }
-        writeChar(quoteChar);
-        int index = 0;
-        while (index < value.length()) {
-            char currentChar = value.charAt(index++);
-            if (currentChar == quoteChar) {
-                writeChar(escapeCharacter);
-            }
-            writeChar(currentChar);
-        }
-        writeChar(this.config.getQuoteCharacter());
-    }
-
-    private void encodeAndWriteUsingQuotesOnDemand(String value) {
-        if (needsQuotes(value)) {
-            encodeAndWriteUsingQuotes(value);
-        } else {
-            writeString(value);
-        }
-    }
-
-    private boolean needsQuotes(String value) {
-        for (int i = 0; i < value.length(); i++) {
-            char currentChar = value.charAt(i);
-            if (currentChar == CsvConstants.ESCAPE_CHARACTER || currentChar == this.config.getFieldDelimiter()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void encodeAndWriteUsingEscapeCharacter(String value) {
-        int index = 0;
-        while (index < value.length()) {
-            char currentChar = value.charAt(index++);
-            if (currentChar == CsvConstants.ESCAPE_CHARACTER || currentChar == this.config.getFieldDelimiter()) {
-                writeChar(CsvConstants.ESCAPE_CHARACTER);
-            }
-            writeChar(currentChar);
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected CsvLowLevelSerializer getLowLevelSerializer() {
+        return this.lowLevelSerializer;
     }
 
 }

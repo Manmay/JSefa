@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.lowlevel.config;
+package org.jsefa.xml.lowlevel;
 
 import org.jsefa.xml.NamespaceManager;
 import org.jsefa.xml.QName;
 import org.jsefa.xml.XmlConstants;
-import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
-import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
 
 /**
  * Configuration object for creating a {@link XmlLowLevelSerializer} or
- * {@link XmlLowLevelDeserializer}. It uses lazy initialization with standard
- * values for not explicitly given settings.
+ * {@link XmlLowLevelDeserializer}. It uses lazy initialization for the
+ * namespace manager.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -38,11 +36,14 @@ public final class XmlLowLevelConfiguration {
     private String lineBreak;
 
     private String lineIndentation;
-    
+
     /**
      * Constructs a new <code>XmlLowLevelConfig</code>.
      */
     public XmlLowLevelConfiguration() {
+        setDataTypeAttributeName(XmlConstants.XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME);
+        setLineBreak(XmlConstants.DEFAULT_LINE_BREAK);
+        setLineIndentation(XmlConstants.DEFAULT_LINE_INDENTATION);
     }
 
     private XmlLowLevelConfiguration(XmlLowLevelConfiguration other) {
@@ -50,18 +51,15 @@ public final class XmlLowLevelConfiguration {
         setDataTypeAttributeName(other.getDataTypeAttributeName());
         setLineBreak(other.getLineBreak());
         setLineIndentation(other.getLineIndentation());
-    }    
+    }
 
     /**
-     * Returns the name of the attribute denoting a data type.
+     * Creates a copy of this <code>XmlLowLevelConfig</code>.
      * 
-     * @return the data type attribute name
+     * @return a copy of this <code>XmlLowLevelConfig</code>
      */
-    public QName getDataTypeAttributeName() {
-        if (this.dataTypeAttributeName == null) {
-            this.dataTypeAttributeName = XmlConstants.XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME;
-        }
-        return this.dataTypeAttributeName;
+    public XmlLowLevelConfiguration createCopy() {
+        return new XmlLowLevelConfiguration(this);
     }
 
     /**
@@ -76,28 +74,31 @@ public final class XmlLowLevelConfiguration {
         }
         return this.namespaceManager;
     }
-    
+
+    /**
+     * Returns the name of the attribute denoting a data type.
+     * 
+     * @return the data type attribute name
+     */
+    public QName getDataTypeAttributeName() {
+        return this.dataTypeAttributeName;
+    }
+
     /**
      * Returns the line break used for serializing.
      * 
      * @return the line break
      */
     public String getLineBreak() {
-        if (this.lineBreak == null) {
-            this.lineBreak = XmlConstants.DEFAULT_LINE_BREAK;
-        }
         return this.lineBreak;
     }
-    
+
     /**
      * Returns the line indentation used for serializing.
      * 
      * @return the line indentation
      */
     public String getLineIndentation() {
-        if (this.lineIndentation == null) {
-            this.lineIndentation = XmlConstants.DEFAULT_LINE_INDENTATION;
-        }
         return this.lineIndentation;
     }
 
@@ -119,30 +120,23 @@ public final class XmlLowLevelConfiguration {
     public void setDataTypeAttributeName(QName dataTypeAttributeName) {
         this.dataTypeAttributeName = dataTypeAttributeName;
     }
-    
+
     /**
      * Sets the line indentation to be used for serializing.
+     * 
      * @param lineIndentation the line indentation
      */
     public void setLineIndentation(String lineIndentation) {
         this.lineIndentation = lineIndentation;
     }
-    
+
     /**
      * Sets the line break to be used for serializing.
+     * 
      * @param lineBreak the line break
      */
     public void setLineBreak(String lineBreak) {
         this.lineBreak = lineBreak;
-    }
-    
-    /**
-     * Creates a copy of this <code>XmlLowLevelConfig</code>.
-     * 
-     * @return a copy of this <code>XmlLowLevelConfig</code>
-     */
-    public XmlLowLevelConfiguration createCopy() {
-        return new XmlLowLevelConfiguration(this);
     }
 
 }

@@ -24,7 +24,6 @@ import java.util.Map;
 import org.jsefa.SerializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
 import org.jsefa.xml.mapping.NodeModel;
 import org.jsefa.xml.mapping.NodeType;

@@ -14,37 +14,24 @@
  * limitations under the License.
  */
 
-package org.jsefa.csv.config;
+package org.jsefa.csv.lowlevel;
+
+import org.jsefa.csv.QuoteMode;
+import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
 
 /**
- * Enum for the different modes of quoting.
+ * Low level CSV Serializer.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-
-public enum QuoteMode {
-
+public interface CsvLowLevelSerializer extends RbfLowLevelSerializer {
+    
     /**
-     * Denotes that a field value is always surrounded by quotes.
+     * Writes the next field.
+     * @param value the field value
+     * @param quoteMode the quote mode to use
      */
-    ALWAYS,
+    void writeField(String value, QuoteMode quoteMode);
 
-    /**
-     * Denotes that a field value is surrounded by quotes only if it contains
-     * the delimiter char or line break.
-     */
-    ON_DEMAND,
-
-    /**
-     * Denotes that a field value is never surrounded by quotes whereas single
-     * characters may be escaped instead.
-     */
-    NEVER,
-
-    /**
-     * Denotes that the quote mode which is declared as the default one should
-     * be used.
-     */
-    DEFAULT;
 }

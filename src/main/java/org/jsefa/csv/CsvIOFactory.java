@@ -24,7 +24,6 @@ import org.jsefa.Deserializer;
 import org.jsefa.Serializer;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvTypeMappingFactory;
-import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.rbf.RbfEntryPoint;
 import org.jsefa.rbf.RbfIOFactory;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;

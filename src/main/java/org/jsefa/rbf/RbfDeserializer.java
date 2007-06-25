@@ -16,8 +16,6 @@
 
 package org.jsefa.rbf;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +25,7 @@ import org.jsefa.DeserializationException;
 import org.jsefa.Deserializer;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
 import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
@@ -48,15 +47,7 @@ public abstract class RbfDeserializer implements Deserializer {
 
     private final boolean withPrefix;
 
-    private BufferedReader reader;
-
     private RbfEntryPoint currentEntryPoint;
-
-    private String currentLine;
-
-    private boolean linePrefetched;
-
-    private int currentIndex;
 
     /**
      * Constructs a new <code>AbstractRbfDeserializer</code>.
@@ -89,14 +80,8 @@ public abstract class RbfDeserializer implements Deserializer {
      * {@inheritDoc}
      */
     public final void open(Reader reader) {
-        this.currentLine = null;
+        getLowLevelDeserializer().open(reader);
         this.currentEntryPoint = null;
-        this.linePrefetched = false;
-        if (reader instanceof BufferedReader) {
-            this.reader = (BufferedReader) reader;
-        } else {
-            this.reader = new BufferedReader(reader);
-        }
     }
 
     /**
@@ -128,13 +113,7 @@ public abstract class RbfDeserializer implements Deserializer {
      * {@inheritDoc}
      */
     public final void close(boolean closeReader) {
-        if (closeReader) {
-            try {
-                this.reader.close();
-            } catch (IOException e) {
-                throw new DeserializationException(e);
-            }
-        }
+        getLowLevelDeserializer().close(closeReader);
     }
 
     /**
@@ -153,89 +132,11 @@ public abstract class RbfDeserializer implements Deserializer {
     protected abstract String readPrefix();
 
     /**
-     * Reads the next line.
+     * Returns the low level deserializer.
      * 
-     * @return the next line.
+     * @return the low level deserializer.
      */
-    protected final boolean readNextLine() {
-        this.currentIndex = 0;
-        if (this.linePrefetched) {
-            this.linePrefetched = false;
-            return this.currentLine != null;
-        }
-        try {
-            this.currentLine = this.reader.readLine();
-            while (this.currentLine != null && this.currentLine.trim().length() == 0) {
-                this.currentLine = this.reader.readLine();
-            }
-            return this.currentLine != null;
-        } catch (IOException e) {
-            throw new DeserializationException(e);
-        }
-    }
-
-    /**
-     * Returns true, if there is another character on the current line to read.
-     * 
-     * @return true, if there is another character on the current line to read;
-     *         false otherwise.
-     */
-    protected final boolean hasNextChar() {
-        return this.currentIndex < this.currentLine.length();
-    }
-
-    /**
-     * Returns the next character of the current line and moves one character
-     * forward.
-     * 
-     * @return a character
-     */
-    protected final char nextChar() {
-        try {
-            return this.currentLine.charAt(this.currentIndex++);
-        } catch (IndexOutOfBoundsException e) {
-            throw new DeserializationException("Unexpected end of line reached");
-        }
-    }
-
-    /**
-     * Returns the next <code>String</code> with the given length of the
-     * current line and moves forward accordingly.
-     * 
-     * @param length the length of the <code>String</code> to return
-     * @return a <code>String</code>
-     */
-    protected final String nextString(int length) {
-        try {
-            String value = this.currentLine.substring(this.currentIndex, this.currentIndex + length);
-            this.currentIndex += length;
-            return value;
-        } catch (IndexOutOfBoundsException e) {
-            throw new DeserializationException("Unexpected end of line reached");
-        }
-    }
-
-    /**
-     * Returns the current character of the current line.
-     * 
-     * @return a character
-     */
-    protected final char peekChar() {
-        try {
-            return this.currentLine.charAt(this.currentIndex);
-        } catch (IndexOutOfBoundsException e) {
-            throw new DeserializationException("Unexpected end of line reached");
-        }
-    }
-
-    /**
-     * Returns the number of remaining characters in the current line.
-     * 
-     * @return the number of remaining characters in the current line.
-     */
-    protected final int remainingLineLength() {
-        return this.currentLine.length() - this.currentIndex;
-    }
+    protected abstract RbfLowLevelDeserializer getLowLevelDeserializer();
 
     private Object readValue(TypeMapping typeMapping) {
         if (typeMapping instanceof SimpleTypeMapping) {
@@ -249,60 +150,73 @@ public abstract class RbfDeserializer implements Deserializer {
 
     private Object readComplexValue(RbfComplexTypeMapping typeMapping) {
         Object object = typeMapping.getObjectAccessor().createObject();
-        boolean isEmpty = true;
+        boolean hasNonEmptyFields = readFields(object, typeMapping);
+        boolean hasNonEmptySubRecords = readSubRecords(object, typeMapping);
+        if (hasNonEmptyFields || hasNonEmptySubRecords) {
+            return object;
+        } else {
+            return null;
+        }
+    }
+    
+    private boolean readFields(Object object, RbfComplexTypeMapping typeMapping) {
+        boolean hasContent = false;
         for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
             String fieldDataTypeName = typeMapping.getNodeModel(fieldName).getDataTypeName();
             Object fieldValue = readValue(getTypeMapping(fieldDataTypeName));
             if (fieldValue != null) {
                 typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
+                hasContent = true;
             }
-            isEmpty = isEmpty && (fieldValue == null);
         }
+        return hasContent;
+    }
+    
+    private boolean readSubRecords(Object object, RbfComplexTypeMapping typeMapping) {
+        boolean hasContent = false;
         if (!typeMapping.getFieldNames(NodeType.SUB_RECORD).isEmpty()) {
-            readNextLine();
+            boolean hasRecord = getLowLevelDeserializer().readNextRecord();
             for (String fieldName : typeMapping.getFieldNames(NodeType.SUB_RECORD)) {
-                if (this.currentLine == null) {
+                if (!hasRecord) {
                     break;
                 }
                 NodeModel subRecordNodeModel = typeMapping.getNodeModel(fieldName);
                 TypeMapping subRecordTypeMapping = getTypeMapping(subRecordNodeModel.getDataTypeName());
                 if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
-                    if (subRecordNodeModel.getPrefix().equals(getPrefix())) {
+                    if (subRecordNodeModel.getPrefix().equals(readPrefix())) {
                         Object fieldValue = readValue(subRecordTypeMapping);
                         if (fieldValue != null) {
                             typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
+                            hasContent = true;
                         }
-                        isEmpty = isEmpty && (fieldValue == null);
-                        readNextLine();
+                        hasRecord = getLowLevelDeserializer().readNextRecord();
                     }
                 } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
                     List<Object> fieldValue = new ArrayList<Object>();
                     RbfListTypeMapping subRecordListTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
-                    while (subRecordListTypeMapping.getPrefixes().contains(getPrefix())) {
-                        TypeMapping listItemTypeMapping = getTypeMapping(subRecordListTypeMapping.getNodeModel(
-                                getPrefix()).getDataTypeName());
+                    String prefix = readPrefix();
+                    while (subRecordListTypeMapping.getPrefixes().contains(prefix)) {
+                        TypeMapping listItemTypeMapping = getTypeMapping(subRecordListTypeMapping.getNodeModel(prefix)
+                                .getDataTypeName());
                         Object listItemValue = readValue(listItemTypeMapping);
                         if (listItemValue != null) {
                             fieldValue.add(listItemValue);
                         }
-                        if (!readNextLine()) {
+                        if (getLowLevelDeserializer().readNextRecord()) {
+                            prefix = readPrefix();
+                        } else {
                             break;
                         }
                     }
                     if (!fieldValue.isEmpty()) {
                         typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
-                    } else {
-                        isEmpty = true;
+                        hasContent = true;
                     }
                 }
             }
-            this.linePrefetched = true;
+            getLowLevelDeserializer().unreadRecord();
         }
-        if (!isEmpty) {
-            return object;
-        } else {
-            return null;
-        }
+        return hasContent;
     }
 
     private TypeMapping getTypeMapping(String dataTypeName) {
@@ -317,8 +231,8 @@ public abstract class RbfDeserializer implements Deserializer {
     private boolean moveToNextEntryPoint() {
         if (this.withPrefix) {
             this.currentEntryPoint = null;
-            while (readNextLine()) {
-                String prefix = getPrefix();
+            while (getLowLevelDeserializer().readNextRecord()) {
+                String prefix = readPrefix();
                 this.currentEntryPoint = this.entryPointsByPrefix.get(prefix);
                 if (this.currentEntryPoint != null) {
                     return true;
@@ -326,7 +240,7 @@ public abstract class RbfDeserializer implements Deserializer {
             }
             return false;
         } else {
-            if (readNextLine()) {
+            if (getLowLevelDeserializer().readNextRecord()) {
                 this.currentEntryPoint = this.entryPoint;
                 return true;
             } else {
@@ -334,11 +248,6 @@ public abstract class RbfDeserializer implements Deserializer {
                 return false;
             }
         }
-    }
-
-    private String getPrefix() {
-        this.currentIndex = 0;
-        return readPrefix();
     }
 
 }

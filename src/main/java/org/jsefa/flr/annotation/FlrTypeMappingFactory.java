@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import org.jsefa.ConfigurationException;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.flr.config.FlrConfiguration;
+import org.jsefa.flr.FlrConfiguration;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
 import org.jsefa.rbf.annotation.RbfTypeMappingFactory;

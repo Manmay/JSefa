@@ -20,8 +20,8 @@ import java.lang.reflect.Field;
 
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.csv.config.CsvConfiguration;
-import org.jsefa.csv.config.QuoteMode;
+import org.jsefa.csv.CsvConfiguration;
+import org.jsefa.csv.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
 import org.jsefa.rbf.annotation.RbfTypeMappingFactory;

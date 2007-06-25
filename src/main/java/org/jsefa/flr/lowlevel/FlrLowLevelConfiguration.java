@@ -14,41 +14,37 @@
  * limitations under the License.
  */
 
-package org.jsefa.flr.config;
+package org.jsefa.flr.lowlevel;
 
-import org.jsefa.Configuration;
 import org.jsefa.flr.FlrConstants;
-import org.jsefa.flr.FlrIOFactory;
 
 /**
- * A configuration object used when creating a {@link FlrIOFactory}.
+ * Configuration object for creating a {@link FlrLowLevelSerializer} or
+ * {@link FlrLowLevelDeserializer}.
  * 
- * @see Configuration
  * @author Norman Lahme-Huetig
  * 
  */
-public final class FlrConfiguration extends Configuration {
+public class FlrLowLevelConfiguration {
 
     private String lineBreak;
 
     /**
-     * Constructs a new <code>FlrConfiguration</code>.
+     * Constructs a new <code>FlrLowLevelConfiguration</code>.
      */
-    public FlrConfiguration() {
-        this.lineBreak = FlrConstants.DEFAULT_LINE_BREAK;
+    public FlrLowLevelConfiguration() {
+        setLineBreak(FlrConstants.DEFAULT_LINE_BREAK);
     }
 
-    private FlrConfiguration(FlrConfiguration other) {
-        super(other);
-        this.lineBreak = other.lineBreak;
+    private FlrLowLevelConfiguration(FlrLowLevelConfiguration other) {
+        setLineBreak(other.getLineBreak());
     }
     
     /**
      * {@inheritDoc}
      */
-    @Override
-    public FlrConfiguration createCopy() {
-        return new FlrConfiguration(this);
+    public FlrLowLevelConfiguration createCopy() {
+        return new FlrLowLevelConfiguration(this);
     }
 
     /**
@@ -67,5 +63,4 @@ public final class FlrConfiguration extends Configuration {
     public void setLineBreak(String lineBreak) {
         this.lineBreak = lineBreak;
     }    
-
 }

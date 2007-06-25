@@ -16,8 +16,6 @@
 
 package org.jsefa.csv;
 
-import org.jsefa.csv.config.EscapeMode;
-import org.jsefa.csv.config.QuoteMode;
 
 /**
  * A collection of constants concerning the CSV format type.

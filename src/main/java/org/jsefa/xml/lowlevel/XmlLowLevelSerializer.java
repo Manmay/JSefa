@@ -22,7 +22,7 @@ import org.jsefa.SerializationException;
 import org.jsefa.xml.QName;
 
 /**
- * Low level XML Serlializer.
+ * Low level XML Serializer.
  * 
  * @author Norman Lahme-Huetig
  * 

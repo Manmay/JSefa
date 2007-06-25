@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.lowlevel;
+package org.jsefa.csv.lowlevel;
 
 
 /**
- * Factory for creating {@link XmlLowLevelDeserializer}s and
- * {@link XmlLowLevelSerializer}s.
+ * Factory for creating {@link CsvLowLevelDeserializer}s and
+ * {@link CsvLowLevelSerializer}s.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public interface XmlLowLevelIOFactory {
-
+public interface CsvLowLevelIOFactory {
     /**
-     * Creates a <code>XmlLowLevelDeserializer</code> configured with the
+     * Creates a <code>CsvLowLevelDeserializer</code> configured with the
      * given configuration object.
      * 
      * @param config the configuration object
-     * @return a <code>XmlLowLevelDeserializer</code>
+     * @return a <code>CsvLowLevelDeserializer</code>
      */
-    XmlLowLevelDeserializer createDeserializer(XmlLowLevelConfiguration config);
+    CsvLowLevelDeserializer createDeserializer(CsvLowLevelConfiguration config);
 
     /**
-     * Creates a <code>XmlLowLevelSerializer</code> configured with the given
+     * Creates a <code>CsvLowLevelSerializer</code> configured with the given
      * configuration object.
      * 
      * @param config the configuration object
-     * @return a <code>XmlLowLevelSerializer</code>
+     * @return a <code>CsvLowLevelSerializer</code>
      */
-    XmlLowLevelSerializer createSerializer(XmlLowLevelConfiguration config);
-
+    CsvLowLevelSerializer createSerializer(CsvLowLevelConfiguration config);
 }

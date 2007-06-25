@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.lowlevel;
+package org.jsefa.rbf.lowlevel;
 
 import java.io.Reader;
 
 import org.jsefa.DeserializationException;
 
 /**
- * Low level XML Deserializer.
+ * Low level RBF Deserializer.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public interface XmlLowLevelDeserializer {
+public interface RbfLowLevelDeserializer {
 
     /**
      * Opens a new deserialization stream based on the given reader.
@@ -37,42 +37,20 @@ public interface XmlLowLevelDeserializer {
     void open(Reader reader);
 
     /**
-     * Returns true if another xml item can be deserialized from the stream.
+     * Reads the next record from the stream. Returns true, if it could be read
+     * and false otherwise.
      * 
-     * @return true, if another xml item can be deserialized from the stream,
-     *         otherwise false.
+     * @return true, if another record could be read from the stream, otherwise
+     *         false.
      * @throws DeserializationException
      */
-    boolean hasNext();
+    boolean readNextRecord();
 
     /**
-     * Moves to the next xml item which can be deserialized.
+     * Unreads the already read record so that it can be read again with
+     * {@link #readNextRecord()}.
      */
-    void moveToNext();
-
-    /**
-     * Returns the type of the current xml item. See {@link XmlItemType} for the
-     * different values allowed.
-     * 
-     * @return the type of the current xml item.
-     */
-    XmlItemType currentType();
-
-    /**
-     * Returns the current xml item.
-     * 
-     * @return the current xml item.
-     */
-    XmlItem current();
-
-    /**
-     * Returns the current element depth.
-     * <p>
-     * The depth of the root element is 0.
-     * 
-     * @return the current depth.
-     */
-    int currentDepth();
+    void unreadRecord();
 
     /**
      * Closes the deserialization stream. The underlying reader will be closed
@@ -82,4 +60,5 @@ public interface XmlLowLevelDeserializer {
      * @throws DeserializationException
      */
     void close(boolean closeReader);
+
 }

@@ -28,7 +28,6 @@ import org.jsefa.Serializer;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.xml.annotation.XmlEntryPointFactory;
 import org.jsefa.xml.annotation.XmlTypeMappingFactory;
-import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.mapping.ElementDescriptor;
 import org.jsefa.xml.mapping.NodeModel;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;

@@ -14,25 +14,41 @@
  * limitations under the License.
  */
 
-package org.jsefa.csv.config;
+package org.jsefa.xml.lowlevel;
+
 
 /**
- * Enum for the different modes of escaping.
+ * Implementation of {@link TextContent}.
+ * <p>
+ * Instances of this class are immutable and thread safe.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
+public final class TextContentImpl implements TextContent {
 
-public enum EscapeMode {
-
-    /**
-     * Denotes that an escape character should be used for escaping.
-     */
-    ESCAPE_CHARACTER,
+    private final String content;
 
     /**
-     * Denotes that the character to escaped should be doubled for escaping.
+     * Constructs a new <code>TextContentImpl</code>.
+     * @param content the content
      */
-    DOUBLING
+    public TextContentImpl(String content) {
+        this.content = content;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getText() {
+        return this.content;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public XmlItemType getType() {
+        return XmlItemType.TEXT_CONTENT;
+    }
 
 }

@@ -25,7 +25,6 @@ import org.jsefa.Deserializer;
 import org.jsefa.Serializer;
 import org.jsefa.flr.annotation.FlrDataType;
 import org.jsefa.flr.annotation.FlrTypeMappingFactory;
-import org.jsefa.flr.config.FlrConfiguration;
 import org.jsefa.rbf.RbfEntryPoint;
 import org.jsefa.rbf.RbfIOFactory;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;

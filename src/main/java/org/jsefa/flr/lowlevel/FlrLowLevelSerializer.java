@@ -14,33 +14,25 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.lowlevel.stax;
+package org.jsefa.flr.lowlevel;
 
-import org.jsefa.xml.lowlevel.TextContent;
-import org.jsefa.xml.lowlevel.XmlItemType;
+import org.jsefa.flr.mapping.Align;
+import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
 
 /**
- * Implementation of {@link TextContent}.
- * <p>
- * Instances of this class are immutable and thread safe.
+ * Low level FLR Serializer.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-final class TextContentImpl implements TextContent {
-
-    private final String content;
-
-    public TextContentImpl(String content) {
-        this.content = content;
-    }
-
-    public String getText() {
-        return this.content;
-    }
-
-    public XmlItemType getType() {
-        return XmlItemType.TEXT_CONTENT;
-    }
-
+public interface FlrLowLevelSerializer extends RbfLowLevelSerializer {
+    /**
+     * Writes the next field.
+     * 
+     * @param value the field value
+     * @param length the length of the field
+     * @param align the alignment
+     * @param padCharacter the pad character
+     */
+    void writeField(String value, int length, Align align, char padCharacter);
 }

@@ -24,7 +24,6 @@ import java.util.List;
 import org.jsefa.DeserializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.Attribute;
 import org.jsefa.xml.lowlevel.ElementEnd;
 import org.jsefa.xml.lowlevel.ElementStart;

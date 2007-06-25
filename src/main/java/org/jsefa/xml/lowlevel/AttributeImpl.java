@@ -14,40 +14,46 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.lowlevel.stax;
+package org.jsefa.xml.lowlevel;
 
 import org.jsefa.xml.QName;
-import org.jsefa.xml.lowlevel.ElementEnd;
-import org.jsefa.xml.lowlevel.XmlItemType;
 
 /**
- * Implementation of {@link ElementEnd}.
+ * Implementation of {@link Attribute}.
  * <p>
  * Instances of this class are immutable and thread safe.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-final class ElementEndImpl implements ElementEnd {
-    private final int depth;
+public final class AttributeImpl implements Attribute {
 
     private final QName name;
 
-    public ElementEndImpl(QName name, int depth) {
+    private final String value;
+
+    /**
+     * Constructs a new <code>AttributeImpl</code>.
+     * @param name the name of the attribute
+     * @param value the value of the attribute
+     */
+    public AttributeImpl(QName name, String value) {
         this.name = name;
-        this.depth = depth;
+        this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public QName getName() {
         return this.name;
     }
 
-    public int getDepth() {
-        return this.depth;
-    }
-
-    public XmlItemType getType() {
-        return XmlItemType.ELEMENT_END;
+    /**
+     * {@inheritDoc}
+     */
+    public String getValue() {
+        return this.value;
     }
 
 }

@@ -16,6 +16,11 @@
 
 package org.jsefa.xml.lowlevel.stax;
 
+import static javax.xml.stream.XMLStreamConstants.CDATA;
+import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import java.io.Reader;
 
 import javax.xml.stream.XMLInputFactory;
@@ -26,12 +31,14 @@ import org.jsefa.DeserializationException;
 import org.jsefa.xml.QName;
 import org.jsefa.xml.XmlConstants;
 import org.jsefa.xml.lowlevel.Attribute;
+import org.jsefa.xml.lowlevel.AttributeImpl;
+import org.jsefa.xml.lowlevel.ElementEndImpl;
+import org.jsefa.xml.lowlevel.ElementStartImpl;
+import org.jsefa.xml.lowlevel.TextContentImpl;
 import org.jsefa.xml.lowlevel.XmlItem;
 import org.jsefa.xml.lowlevel.XmlItemType;
+import org.jsefa.xml.lowlevel.XmlLowLevelConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
-import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
-
-import static javax.xml.stream.XMLStreamConstants.*;
 
 /**
  * Stax based implementation of {@link XmlLowLevelDeserializer}.
