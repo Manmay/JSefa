@@ -27,7 +27,8 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
  * 
  */
 
-public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerImpl implements CsvLowLevelDeserializer {
+public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerImpl implements
+        CsvLowLevelDeserializer {
 
     private CsvLowLevelConfiguration config;
 
@@ -68,11 +69,13 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
             throw new DeserializationException("Expected quote char but got " + startChar);
         }
         char escapeCharacter = CsvLowLevelConstants.ESCAPE_CHARACTER;
-        char fieldDelimiter = this.config.getFieldDelimiter();
         if (this.config.getQuoteCharacterEscapeMode().equals(EscapeMode.DOUBLING)) {
             escapeCharacter = quoteChar;
         }
+        return readStringValueUsingQuotes(quoteChar, escapeCharacter, this.config.getFieldDelimiter());
+    }
 
+    private String readStringValueUsingQuotes(char quoteChar, char escapeCharacter, char fieldDelimiter) {
         StringBuilder result = new StringBuilder(remainingLineLength());
         boolean encoded = false;
         while (true) {

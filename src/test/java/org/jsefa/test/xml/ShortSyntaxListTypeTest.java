@@ -25,8 +25,8 @@ public class ShortSyntaxListTypeTest extends TestCase {
     /**
      * Tests a list with <code>String</code> and <code>Integer</code> elements.
      */
-    public void testWithStringElements() {
-        ListWithStringElements list = new ListWithStringElements();
+    public void testExplicitListWithStringElements() {
+        ExplicitListWithStringElements list = new ExplicitListWithStringElements();
         list.list = new ArrayList<String>();
         for (int i = 0; i < 10; i++) {
             list.list.add("stringValue" + i);
@@ -35,8 +35,27 @@ public class ShortSyntaxListTypeTest extends TestCase {
     }
 
     @XmlDataType()
-    static final class ListWithStringElements extends AbstractTestDTO {
+    static final class ExplicitListWithStringElements extends AbstractTestDTO {
         @XmlElementList(items = @ListItem(name = "item"))
+        List<String> list;
+    }
+
+
+    /**
+     * Tests a list with <code>String</code> and <code>Integer</code> elements.
+     */
+    public void testImplicitListWithStringElements() {
+        ImplicitListWithStringElements list = new ImplicitListWithStringElements();
+        list.list = new ArrayList<String>();
+        for (int i = 0; i < 10; i++) {
+            list.list.add("stringValue" + i);
+        }
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, list);
+    }
+
+    @XmlDataType()
+    static final class ImplicitListWithStringElements extends AbstractTestDTO {
+        @XmlElementList(implicit = true, items = @ListItem(name = "item"))
         List<String> list;
     }
 }
