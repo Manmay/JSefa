@@ -16,10 +16,9 @@
 
 package org.jsefa.xml.lowlevel;
 
-import java.io.Writer;
-
-import org.jsefa.SerializationException;
-import org.jsefa.xml.QName;
+import org.jsefa.common.lowlevel.LowLevelSerializationException;
+import org.jsefa.common.lowlevel.LowLevelSerializer;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Low level XML Serializer.
@@ -27,15 +26,7 @@ import org.jsefa.xml.QName;
  * @author Norman Lahme-Huetig
  * 
  */
-public interface XmlLowLevelSerializer {
-
-    /**
-     * Opens a new serialization stream based on the given writer.
-     * 
-     * @param writer the writer to base the stream on
-     * @throws SerializationException
-     */
-    void open(Writer writer);
+public interface XmlLowLevelSerializer extends LowLevelSerializer {
 
     /**
      * Writes the XML Declaration. Note that the encoding parameter does not set
@@ -43,7 +34,7 @@ public interface XmlLowLevelSerializer {
      * 
      * @param version version of the xml document
      * @param encoding encoding of the xml declaration
-     * @throws SerializationException
+     * @throws LowLevelSerializationException
      */
     void writeXmlDeclaration(String version, String encoding);
 
@@ -83,12 +74,4 @@ public interface XmlLowLevelSerializer {
      */
     void writeEndElement();
 
-    /**
-     * Closes the serialization stream. The underlying writer will be closed
-     * only if <code>closeWriter</code> is true, too.
-     * 
-     * @param closeWriter if true, the underlying writer will be closed, too.
-     * @throws SerializationException
-     */
-    void close(boolean closeWriter);
 }

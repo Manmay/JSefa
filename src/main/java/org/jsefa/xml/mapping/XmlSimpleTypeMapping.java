@@ -19,7 +19,7 @@ package org.jsefa.xml.mapping;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.xml.QName;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * A mapping between a java object type and a simple XML data type.

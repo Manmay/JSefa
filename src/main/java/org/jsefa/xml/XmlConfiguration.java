@@ -20,6 +20,9 @@ import org.jsefa.Configuration;
 import org.jsefa.xml.lowlevel.XmlLowLevelConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelIOFactory;
 import org.jsefa.xml.lowlevel.stax.StaxBasedXmlLowLevelIOFactory;
+import org.jsefa.xml.mapping.support.XmlDataTypeDefaultNameRegistry;
+import org.jsefa.xml.namespace.NamespaceManager;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * A configuration object used when creating a {@link XmlIOFactory}. It uses

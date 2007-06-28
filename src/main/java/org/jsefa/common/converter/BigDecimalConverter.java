@@ -22,9 +22,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Locale;
 
-import org.jsefa.ConfigurationException;
-import org.jsefa.DeserializationException;
-
 /**
  * Converter for <code>BigDecimal</code> objects.
  * <p>
@@ -57,7 +54,7 @@ public final class BigDecimalConverter implements SimpleTypeConverter {
      * {@link DecimalFormat}. The scale is extracted from the pattern.
      * 
      * @param format the format to use.
-     * @throws ConfigurationException if the given format is not valid.
+     * @throws ConversionException if the given format is not valid.
      */
     public BigDecimalConverter(String... format) {
         try {
@@ -66,7 +63,7 @@ public final class BigDecimalConverter implements SimpleTypeConverter {
             this.decimalFormat = new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
             this.scale = extractScale(pattern);
         } catch (Exception e) {
-            throw new ConfigurationException("Could not create a BigDecimalConverter with format " + format, e);
+            throw new ConversionException("Could not create a BigDecimalConverter with format " + format, e);
         }
     }
 
@@ -81,7 +78,7 @@ public final class BigDecimalConverter implements SimpleTypeConverter {
             return new BigDecimal(this.decimalFormat.parse(value).doubleValue()).setScale(this.scale,
                     BigDecimal.ROUND_HALF_UP);
         } catch (ParseException e) {
-            throw new DeserializationException("Wrong BigDecimal format " + value);
+            throw new ConversionException("Wrong BigDecimal format " + value);
         }
     }
 

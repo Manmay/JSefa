@@ -16,6 +16,9 @@
 
 package org.jsefa.csv;
 
+import org.jsefa.csv.lowlevel.CsvLowLevelConstants;
+import org.jsefa.csv.lowlevel.EscapeMode;
+import org.jsefa.csv.lowlevel.QuoteMode;
 
 /**
  * A collection of constants concerning the CSV format type.
@@ -26,29 +29,35 @@ package org.jsefa.csv;
 public interface CsvConstants {
     /**
      * Character for escaping.
+     * @see CsvLowLevelConstants#ESCAPE_CHARACTER
      */
-    char ESCAPE_CHARACTER = '\\';
+    char ESCAPE_CHARACTER = CsvLowLevelConstants.ESCAPE_CHARACTER;
 
     /**
      * The default field delimiter character used if none is explicitly given.
+     * 
+     * @see CsvLowLevelConstants#DEFAULT_FIELD_DELIMITER
      */
-    char DEFAULT_FIELD_DELIMITER = ';';
+    char DEFAULT_FIELD_DELIMITER = CsvLowLevelConstants.DEFAULT_FIELD_DELIMITER;
 
     /**
      * The default quote character used if none is explicitly given.
+     * @see CsvLowLevelConstants#DEFAULT_QUOTE_CHARACTER
      */
-    char DEFAULT_QUOTE_CHARACTER = '\"';
-    
+    char DEFAULT_QUOTE_CHARACTER = CsvLowLevelConstants.DEFAULT_QUOTE_CHARACTER;
+
     /**
      * The default line break used if none is explicitly given.
+     * @see CsvLowLevelConstants#DEFAULT_LINE_BREAK
      */
-    String DEFAULT_LINE_BREAK = "\n";
-    
+    String DEFAULT_LINE_BREAK = CsvLowLevelConstants.DEFAULT_LINE_BREAK;
+
     /**
      * The default quote character escape mode used if none is explicitly given.
+     * @see CsvLowLevelConstants#DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE
      */
-    EscapeMode DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE = EscapeMode.DOUBLING;
-    
+    EscapeMode DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE = CsvLowLevelConstants.DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE;
+
     /**
      * The default quote mode used if none is explicitly given.
      */

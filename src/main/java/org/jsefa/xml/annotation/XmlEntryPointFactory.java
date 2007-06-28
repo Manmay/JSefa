@@ -20,11 +20,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jsefa.xml.NamespaceManager;
-import org.jsefa.xml.QName;
-import org.jsefa.xml.QNameParser;
-import org.jsefa.xml.XmlEntryPoint;
+import org.jsefa.xml.mapping.XmlEntryPoint;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
+import org.jsefa.xml.namespace.NamespaceManager;
+import org.jsefa.xml.namespace.QName;
+import org.jsefa.xml.namespace.QNameParser;
 
 /**
  * Factory for creating {@link XmlEntryPoint}s from annotated classes.

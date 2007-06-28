@@ -23,7 +23,6 @@ import java.io.Writer;
  * 
  * @author Norman Lahme-Huetig
  */
-
 public interface Serializer {
 
     /**

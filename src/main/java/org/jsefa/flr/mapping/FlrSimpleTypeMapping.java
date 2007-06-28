@@ -19,6 +19,7 @@ package org.jsefa.flr.mapping;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.flr.lowlevel.Align;
 
 /**
  * A mapping between a java object type and a simple FLR data type.

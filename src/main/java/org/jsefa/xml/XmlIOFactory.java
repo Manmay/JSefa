@@ -21,16 +21,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jsefa.ConfigurationException;
 import org.jsefa.Deserializer;
 import org.jsefa.IOFactory;
+import org.jsefa.IOFactoryException;
 import org.jsefa.Serializer;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.xml.annotation.XmlEntryPointFactory;
 import org.jsefa.xml.annotation.XmlTypeMappingFactory;
 import org.jsefa.xml.mapping.ElementDescriptor;
 import org.jsefa.xml.mapping.NodeModel;
+import org.jsefa.xml.mapping.XmlEntryPoint;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Factory for creating {@link XmlSerializer} and {@link XmlDeserializer}.
@@ -56,6 +58,7 @@ public class XmlIOFactory implements IOFactory {
      * 
      * @param objectTypes the object types.
      * @return a <code>XmlIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static XmlIOFactory createFactory(Class... objectTypes) {
         return createFactory(new XmlConfiguration(), objectTypes);
@@ -71,14 +74,23 @@ public class XmlIOFactory implements IOFactory {
      * @param objectTypes object types for which entry points should be created
      *            from annotations
      * @return a a <code>XmlIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static XmlIOFactory createFactory(XmlConfiguration config, Class... objectTypes) {
-        XmlTypeMappingRegistry typeMappingRegistry = new XmlTypeMappingRegistry(config
-                .getSimpleTypeConverterProvider());
-        Collection<XmlEntryPoint> entryPoints = new ArrayList<XmlEntryPoint>();
-        entryPoints.addAll(XmlEntryPointFactory.createEntryPoints(new XmlTypeMappingFactory(config,
-                typeMappingRegistry), objectTypes));
-        return new XmlIOFactory(config, typeMappingRegistry, entryPoints);
+        try {
+            XmlTypeMappingRegistry typeMappingRegistry = new XmlTypeMappingRegistry(config
+                    .getSimpleTypeConverterProvider());
+            Collection<XmlEntryPoint> entryPoints = new ArrayList<XmlEntryPoint>();
+            XmlTypeMappingFactory typeMappingFactory = new XmlTypeMappingFactory(typeMappingRegistry, config
+                    .getSimpleTypeConverterProvider(), config.getObjectAccessorProvider(), config
+                    .getDataTypeDefaultNameRegistry());
+            entryPoints.addAll(XmlEntryPointFactory.createEntryPoints(typeMappingFactory, objectTypes));
+            return new XmlIOFactory(config, typeMappingRegistry, entryPoints);
+        } catch (IOFactoryException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create an XmlIOFactory", e);
+        }
     }
 
     /**
@@ -102,10 +114,17 @@ public class XmlIOFactory implements IOFactory {
      *            designators are used as alternative designators for the same
      *            data type.
      * @return a <code>XmlIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static XmlIOFactory createFactory(XmlConfiguration config, XmlTypeMappingRegistry typeMappingRegistry,
             Collection<XmlEntryPoint> entryPoints) {
-        return new XmlIOFactory(config, typeMappingRegistry, entryPoints);
+        try {
+            return new XmlIOFactory(config, typeMappingRegistry, entryPoints);
+        } catch (IOFactoryException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create an XmlIOFactory", e);
+        }
 
     }
 
@@ -118,7 +137,7 @@ public class XmlIOFactory implements IOFactory {
         for (XmlEntryPoint entryPoint : entryPoints) {
             TypeMapping typeMapping = typeMappingRegistry.get(entryPoint.getDataTypeName());
             if (typeMapping == null) {
-                throw new ConfigurationException("Unknown data type: " + entryPoint.getDataTypeName());
+                throw new IOFactoryException("Unknown data type: " + entryPoint.getDataTypeName());
             }
             ElementDescriptor elementDescriptor = new ElementDescriptor(entryPoint.getDesignator(), entryPoint
                     .getDataTypeName());

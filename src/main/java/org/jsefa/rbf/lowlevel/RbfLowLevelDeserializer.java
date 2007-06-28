@@ -16,9 +16,8 @@
 
 package org.jsefa.rbf.lowlevel;
 
-import java.io.Reader;
-
 import org.jsefa.DeserializationException;
+import org.jsefa.common.lowlevel.LowLevelDeserializer;
 
 /**
  * Low level RBF Deserializer.
@@ -26,15 +25,7 @@ import org.jsefa.DeserializationException;
  * @author Norman Lahme-Huetig
  * 
  */
-public interface RbfLowLevelDeserializer {
-
-    /**
-     * Opens a new deserialization stream based on the given reader.
-     * 
-     * @param reader the reader to base the stream on.
-     * @throws DeserializationException
-     */
-    void open(Reader reader);
+public interface RbfLowLevelDeserializer extends LowLevelDeserializer {
 
     /**
      * Reads the next record from the stream. Returns true, if it could be read
@@ -51,14 +42,5 @@ public interface RbfLowLevelDeserializer {
      * {@link #readNextRecord()}.
      */
     void unreadRecord();
-
-    /**
-     * Closes the deserialization stream. The underlying reader will be closed
-     * only if <code>closeReader</code> is true.
-     * 
-     * @param closeReader if true, the underlying reader will be closed, too.
-     * @throws DeserializationException
-     */
-    void close(boolean closeReader);
 
 }

@@ -16,9 +16,7 @@
 
 package org.jsefa.rbf.lowlevel;
 
-import java.io.Writer;
-
-import org.jsefa.SerializationException;
+import org.jsefa.common.lowlevel.LowLevelSerializer;
 
 /**
  * Low level RBF Serializer.
@@ -27,28 +25,11 @@ import org.jsefa.SerializationException;
  * 
  */
 
-public interface RbfLowLevelSerializer {
-    
-    /**
-     * Opens a new serialization stream based on the given writer.
-     * 
-     * @param writer the writer to base the stream on
-     * @throws SerializationException
-     */
-    void open(Writer writer);
+public interface RbfLowLevelSerializer extends LowLevelSerializer {
     
     /**
      * Finishes the current record.
      */
     void finishRecord();
     
-    /**
-     * Closes the serialization stream. The underlying writer will be closed
-     * only if <code>closeWriter</code> is true, too.
-     * 
-     * @param closeWriter if true, the underlying writer will be closed, too.
-     * @throws SerializationException
-     */
-    void close(boolean closeWriter);
-
 }

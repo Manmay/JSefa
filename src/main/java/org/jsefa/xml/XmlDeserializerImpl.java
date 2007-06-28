@@ -22,11 +22,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jsefa.DeserializationException;
+import org.jsefa.SerializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.xml.lowlevel.Attribute;
 import org.jsefa.xml.lowlevel.ElementEnd;
 import org.jsefa.xml.lowlevel.ElementStart;
+import org.jsefa.xml.lowlevel.TextContent;
 import org.jsefa.xml.lowlevel.XmlItem;
 import org.jsefa.xml.lowlevel.XmlItemType;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
@@ -35,9 +37,11 @@ import org.jsefa.xml.mapping.ElementDescriptor;
 import org.jsefa.xml.mapping.NodeModel;
 import org.jsefa.xml.mapping.TextContentDescriptor;
 import org.jsefa.xml.mapping.XmlComplexTypeMapping;
+import org.jsefa.xml.mapping.XmlEntryPoint;
 import org.jsefa.xml.mapping.XmlListTypeMapping;
 import org.jsefa.xml.mapping.XmlSimpleTypeMapping;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Default implementation of {@link XmlDeserializer}.
@@ -65,8 +69,12 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
      * {@inheritDoc}
      */
     public void open(Reader reader) {
-        this.lowLevelDeserializer.open(reader);
         this.currentEntryPoint = null;
+        try {
+            this.lowLevelDeserializer.open(reader);
+        } catch (Exception e) {
+            throw new DeserializationException("Error while opening the deserialization stream");
+        }
     }
 
     /**
@@ -82,6 +90,8 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
             } else {
                 return true;
             }
+        } catch (DeserializationException e) {
+            throw e;
         } catch (Exception e) {
             throw new DeserializationException(e);
         }
@@ -91,13 +101,15 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
      * {@inheritDoc}
      */
     public Object next() {
-        if (!hasNext()) {
-            return null;
-        }
         try {
+            if (!hasNext()) {
+                return null;
+            }
             return deserializeElement(this.currentEntryPoint.getDataTypeName());
+        } catch (DeserializationException e) {
+            throw e;
         } catch (Exception e) {
-            throw new DeserializationException("Error while deserialization", e);
+            throw new DeserializationException("Error while deserializing", e);
         } finally {
             this.currentEntryPoint = null;
         }
@@ -107,7 +119,11 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
      * {@inheritDoc}
      */
     public void close(boolean closeReader) {
-        this.lowLevelDeserializer.close(closeReader);
+        try {
+            this.lowLevelDeserializer.close(closeReader);
+        } catch (Exception e) {
+            throw new SerializationException("Error while closing the deserialization stream");
+        }
     }
 
     private Object deserializeElement(QName dataTypeName) {
@@ -181,8 +197,8 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     private List<Object> deserializeListElement(XmlListTypeMapping typeMapping) {
         List<Object> listValue = new ArrayList<Object>();
         if (typeMapping.isImplicit()) {
-            listValue.add(deserializeElement(typeMapping.getNodeModel(getCurrentElementDescriptor())
-                    .getDataTypeName()));
+            listValue
+                    .add(deserializeElement(typeMapping.getNodeModel(getCurrentElementDescriptor()).getDataTypeName()));
         } else {
             int childDepth = getCurrentDepth() + 1;
             while (moveToNextElement(childDepth)) {
@@ -203,7 +219,7 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     private String getText() {
         moveToNextXmlItem();
         if (getCurrentXmlItemType() == XmlItemType.TEXT_CONTENT) {
-            return ((org.jsefa.xml.lowlevel.TextContent) getCurrentXmlItem()).getText();
+            return ((TextContent) getCurrentXmlItem()).getText();
         } else {
             return "";
         }

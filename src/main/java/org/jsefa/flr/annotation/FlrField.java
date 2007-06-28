@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import org.jsefa.common.annotation.NoConverterClass;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.flr.FlrConstants;
-import org.jsefa.flr.mapping.Align;
+import org.jsefa.flr.lowlevel.Align;
 
 /**
  * FLR field annotation.

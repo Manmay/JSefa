@@ -16,7 +16,7 @@
 
 package org.jsefa.xml.annotation;
 
-import org.jsefa.xml.NamespaceManager;
+import org.jsefa.xml.namespace.NamespaceManager;
 
 /**
  * Factory for creating a {@link NamespaceManager} based on the

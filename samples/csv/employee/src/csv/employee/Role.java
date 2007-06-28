@@ -16,7 +16,7 @@
 
 package csv.employee;
 
-import org.jsefa.common.annotation.EnumConstant;
+import org.jsefa.common.converter.EnumConstant;
 
 /**
  * Enum for different roles an employee plays within a department.

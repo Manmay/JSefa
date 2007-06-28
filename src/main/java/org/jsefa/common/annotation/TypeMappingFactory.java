@@ -18,8 +18,6 @@ package org.jsefa.common.annotation;
 
 import java.util.List;
 
-import org.jsefa.Configuration;
-import org.jsefa.ConfigurationException;
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
@@ -48,14 +46,17 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
     /**
      * Constructs a new <code>TypeMappingFactory</code>.
      * 
-     * @param config the configuration object
      * @param typeMappingRegistry the type mapping registry. New types will be
      *            registered using that registry.
+     * @param simpleTypeConverterProvider the simple type converter provider to
+     *            use
+     * @param objectAccessorProvider the object accessor provider to use
      */
-    public TypeMappingFactory(Configuration config, R typeMappingRegistry) {
+    public TypeMappingFactory(R typeMappingRegistry, SimpleTypeConverterProvider simpleTypeConverterProvider,
+            ObjectAccessorProvider objectAccessorProvider) {
         this.typeMappingRegistry = typeMappingRegistry;
-        this.simpleTypeConverterProvider = config.getSimpleTypeConverterProvider();
-        this.objectAccessorProvider = config.getObjectAccessorProvider();
+        this.simpleTypeConverterProvider = simpleTypeConverterProvider;
+        this.objectAccessorProvider = objectAccessorProvider;
     }
 
     /**
@@ -120,11 +121,11 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * Asserts that a type mapping exists for the given data type name.
      * 
      * @param dataTypeName the data type name.
-     * @throws ConfigurationException if the assertion fails.
+     * @throws AnnotationException if the assertion fails.
      */
     protected final void assertTypeMappingExists(D dataTypeName) {
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
-            throw new ConfigurationException("No type mapping registered for data type name " + dataTypeName);
+            throw new AnnotationException("No type mapping registered for data type name " + dataTypeName);
         }
     }
 

@@ -18,10 +18,11 @@ package org.jsefa.csv.annotation;
 
 import java.lang.reflect.Field;
 
+import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.common.converter.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.csv.CsvConfiguration;
-import org.jsefa.csv.QuoteMode;
+import org.jsefa.csv.lowlevel.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
 import org.jsefa.rbf.annotation.RbfTypeMappingFactory;
@@ -40,19 +41,24 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
 
     private static final RbfAnnotations ANNOTATIONS = new RbfAnnotations(CsvDataType.class, CsvField.class,
             CsvSubRecord.class, CsvSubRecordList.class);
-    
-    private final CsvConfiguration config;
+
+    private QuoteMode defaultQuoteMode;
 
     /**
      * Constructs a new <code>CsvTypeMappingFactory</code>.
      * 
-     * @param config the configuration object
      * @param typeMappingRegistry the type mapping registry. New types will be
      *            registered using that registry.
+     * @param simpleTypeConverterProvider the simple type converter provider to
+     *            use
+     * @param objectAccessorProvider the object accessor provider to use
+     * @param defaultQuoteMode the default quote mode to use
      */
-    public CsvTypeMappingFactory(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry) {
-        super(config, typeMappingRegistry, ANNOTATIONS);
-        this.config = config;
+    public CsvTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
+            SimpleTypeConverterProvider simpleTypeConverterProvider, ObjectAccessorProvider objectAccessorProvider,
+            QuoteMode defaultQuoteMode) {
+        super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider, ANNOTATIONS);
+        this.defaultQuoteMode = defaultQuoteMode;
     }
 
     /**
@@ -63,7 +69,7 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
         CsvField fieldAnnotation = field.getAnnotation(CsvField.class);
         QuoteMode quoteMode = fieldAnnotation.quoteMode();
         if (quoteMode.equals(QuoteMode.DEFAULT)) {
-            quoteMode = this.config.getDefaultQuoteMode();
+            quoteMode = this.defaultQuoteMode;
         }
         return new CsvSimpleTypeMapping(objectType, dataTypeName, converter, quoteMode);
     }

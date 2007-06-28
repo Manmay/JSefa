@@ -20,8 +20,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jsefa.common.ReflectionUtil;
-import org.jsefa.common.annotation.EnumConstant;
+import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Converter for JDK 1.5 enums.

@@ -30,9 +30,6 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.jsefa.ConfigurationException;
-import org.jsefa.DeserializationException;
-
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 /**
@@ -71,7 +68,7 @@ public final class XmlDateTimeConverter implements SimpleTypeConverter {
         try {
             this.factory = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException e) {
-            throw new ConfigurationException("Could not create a XmlDateTimeConverter with format " + format, e);
+            throw new ConversionException("Could not create a XmlDateTimeConverter with format " + format, e);
         }
     }
 
@@ -85,7 +82,7 @@ public final class XmlDateTimeConverter implements SimpleTypeConverter {
         try {
             return toGregorianCalendar(this.factory.newXMLGregorianCalendar(value)).getTime();
         } catch (Exception e) {
-            throw new DeserializationException("Wrong date format: " + value);
+            throw new ConversionException("Wrong date format: " + value);
         }
     }
 

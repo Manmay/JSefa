@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jsefa.ConfigurationException;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.xml.QName;
+import org.jsefa.common.mapping.TypeMappingException;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * A mapping between a java object type and a XML list data type.
@@ -62,11 +62,11 @@ public final class XmlListTypeMapping extends TypeMapping<QName> {
     public void register(ElementDescriptor elementDescriptor, Class objectType) {
         assertNotFinished();
         if (this.nodeModelsByNodeDescriptor.containsKey(elementDescriptor)) {
-            throw new ConfigurationException("The element " + elementDescriptor.getName()
+            throw new TypeMappingException("The element " + elementDescriptor.getName()
                     + " is already registered for the list with data type name " + this.getDataTypeName());
         }
         if (this.nodeModelsByObjectType.containsKey(objectType)) {
-            throw new ConfigurationException("The object type " + objectType.getName()
+            throw new TypeMappingException("The object type " + objectType.getName()
                     + " is already registered for the list with data type name " + this.getDataTypeName());
         }
         NodeModel nodeModel = new NodeModel(elementDescriptor, null);

@@ -18,9 +18,9 @@ package performance;
 
 import org.jsefa.IOFactory;
 import org.jsefa.Serializer;
-import org.jsefa.xml.QName;
 import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.XmlSerializer;
+import org.jsefa.xml.namespace.QName;
 
 
 

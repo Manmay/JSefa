@@ -22,9 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.jsefa.EntryPoint;
-import org.jsefa.csv.CsvDeserializer;
-import org.jsefa.csv.CsvSerializer;
+import org.jsefa.common.mapping.EntryPoint;
 
 /**
  * An annotation declaring a CSV data type.
@@ -37,8 +35,7 @@ import org.jsefa.csv.CsvSerializer;
 public @interface CsvDataType {
     /**
      * The name of the data type. The name must be unique within the set of data
-     * types used by a given instance of {@link CsvSerializer} or
-     * {@link CsvDeserializer}. If it is not explicitly set it will be
+     * types used within one CSV document. If it is not explicitly set it will be
      * generated automatically from the class name.
      */
     String name() default "";

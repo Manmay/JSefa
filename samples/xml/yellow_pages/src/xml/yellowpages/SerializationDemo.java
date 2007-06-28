@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.jsefa.common.converter.DateConverter;
-import org.jsefa.xml.QName;
 import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.XmlSerializer;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Demo for demonstrating the serialization of a {@link Department}.

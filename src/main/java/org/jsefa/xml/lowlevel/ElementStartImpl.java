@@ -16,7 +16,8 @@
 
 package org.jsefa.xml.lowlevel;
 
-import org.jsefa.xml.QName;
+import org.jsefa.xml.namespace.QName;
+
 
 /**
  * Implementation of {@link ElementStart}.

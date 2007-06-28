@@ -20,9 +20,10 @@ import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;
+import org.jsefa.csv.lowlevel.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.RbfDeserializer;
-import org.jsefa.rbf.RbfEntryPoint;
+import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**

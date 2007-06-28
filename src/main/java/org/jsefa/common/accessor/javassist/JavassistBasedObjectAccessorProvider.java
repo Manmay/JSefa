@@ -28,11 +28,11 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
 
-import org.jsefa.ConfigurationException;
-import org.jsefa.common.ReflectionUtil;
+import org.jsefa.common.accessor.ObjectAccessException;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.accessor.ReflectionBasedObjectAccessorProvider;
+import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Javassist based implementation of {@link ObjectAccessorProvider} which uses
@@ -97,7 +97,7 @@ public final class JavassistBasedObjectAccessorProvider implements ObjectAccesso
 
             return (ObjectAccessor) aClass.toClass().newInstance();
         } catch (Exception e) {
-            throw new ConfigurationException("Could not create dynamic object accessor for type "
+            throw new ObjectAccessException("Could not create dynamic object accessor for type "
                     + objectType.getName());
         }
     }

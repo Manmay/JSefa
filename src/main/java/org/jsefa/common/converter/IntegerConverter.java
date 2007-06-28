@@ -16,7 +16,6 @@
 
 package org.jsefa.common.converter;
 
-import org.jsefa.DeserializationException;
 
 /**
  * Converter for <code>Integer</code> objects.
@@ -40,7 +39,7 @@ public final class IntegerConverter implements SimpleTypeConverter {
             if (value.charAt(0) == '+') {
                 return fromString(value.substring(1));
             }
-            throw new DeserializationException("Wrong Integer format: " + value);
+            throw new ConversionException("Wrong Integer format: " + value);
         }
     }
 

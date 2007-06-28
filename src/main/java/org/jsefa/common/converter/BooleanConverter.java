@@ -16,8 +16,6 @@
 
 package org.jsefa.common.converter;
 
-import org.jsefa.ConfigurationException;
-import org.jsefa.DeserializationException;
 
 /**
  * Converter for <code>Boolean</code> objects.
@@ -62,11 +60,11 @@ public final class BooleanConverter implements SimpleTypeConverter {
      * 
      * @param format the format consisting of two Strings. The first token is
      *            the literal for true and the second the literal for false.
-     * @throws ConfigurationException if the given format is not valid.
+     * @throws ConversionException if the given format is not valid.
      */
     public BooleanConverter(String... format) {
         if (format.length != 2 || format[0] == null || format[1] == null || format[0].equals(format[1])) {
-            throw new ConfigurationException("Invalid format: " + format);
+            throw new ConversionException("Invalid format: " + format);
         }
         this.trueString = format[0];
         this.falseString = format[1];
@@ -84,7 +82,7 @@ public final class BooleanConverter implements SimpleTypeConverter {
         } else if (this.falseString.equals(value)) {
             return Boolean.FALSE;
         } else {
-            throw new DeserializationException("Unknown boolean value: " + value);
+            throw new ConversionException("Unknown boolean value: " + value);
         }
     }
 

@@ -20,9 +20,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.jsefa.ConfigurationException;
-import org.jsefa.DeserializationException;
-
 /**
  * Converter for <code>Date</code> objects.
  * <p>
@@ -51,13 +48,13 @@ public final class DateConverter implements SimpleTypeConverter {
      * Constructs a <code>DateConverter</code> with the given format.
      * 
      * @param format the format to use.
-     * @throws ConfigurationException if the given format is not valid.
+     * @throws ConversionException if the given format is not valid.
      */
     public DateConverter(String... format) {
         try {
             this.dateFormat = new SimpleDateFormat(format[0]);
         } catch (Exception e) {
-            throw new ConfigurationException("Could not create a DateConverter with format " + format, e);
+            throw new ConversionException("Could not create a DateConverter with format " + format, e);
         }
     }
 
@@ -71,7 +68,7 @@ public final class DateConverter implements SimpleTypeConverter {
         try {
             return this.dateFormat.parse(value);
         } catch (ParseException e) {
-            throw new DeserializationException("Wrong date format: " + value);
+            throw new ConversionException("Wrong date format: " + value);
         }
     }
 

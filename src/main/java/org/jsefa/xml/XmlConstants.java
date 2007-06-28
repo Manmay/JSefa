@@ -16,6 +16,9 @@
 
 package org.jsefa.xml;
 
+import org.jsefa.xml.lowlevel.XmlLowLevelConstants;
+import org.jsefa.xml.namespace.QName;
+
 /**
  * A collection of constants concerning the XML format type.
  * 
@@ -25,13 +28,15 @@ package org.jsefa.xml;
 public interface XmlConstants {
     /**
      * Namespace URI to use to represent that there is no namespace.
+     * @see XmlLowLevelConstants#NO_NAMESPACE_URI
      */
-    String NO_NAMESPACE_URI = "";
+    String NO_NAMESPACE_URI = XmlLowLevelConstants.NO_NAMESPACE_URI;
 
     /**
      * The xml schema instance URI.
+     * @see XmlLowLevelConstants#XML_SCHEMA_INSTANCE_URI
      */
-    String XML_SCHEMA_INSTANCE_URI = "http://www.w3.org/2001/XMLSchema-instance";
+    String XML_SCHEMA_INSTANCE_URI = XmlLowLevelConstants.XML_SCHEMA_INSTANCE_URI;
 
     /**
      * The xml schema URI.
@@ -41,8 +46,9 @@ public interface XmlConstants {
     /**
      * The name of the attribute used to denote the data type as used in xml
      * schema instances.
+     * @see XmlLowLevelConstants#XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME
      */
-    QName XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME = QName.create(XML_SCHEMA_INSTANCE_URI, "type");
+    QName XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME = XmlLowLevelConstants.XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME;
 
     /**
      * The URI of automatically created data type names.
@@ -51,12 +57,14 @@ public interface XmlConstants {
     
     /**
      * The default line break used if none is explicitly given.
+     * @see XmlLowLevelConstants#DEFAULT_LINE_BREAK
      */
-    String DEFAULT_LINE_BREAK = "\n";
+    String DEFAULT_LINE_BREAK = XmlLowLevelConstants.DEFAULT_LINE_BREAK;
     
     /**
      * The default line indentation used if none is explicitly given.
+     * @see XmlLowLevelConstants#DEFAULT_LINE_INDENTATION
      */
-    String DEFAULT_LINE_INDENTATION = "  ";
+    String DEFAULT_LINE_INDENTATION = XmlLowLevelConstants.DEFAULT_LINE_INDENTATION;
 
 }

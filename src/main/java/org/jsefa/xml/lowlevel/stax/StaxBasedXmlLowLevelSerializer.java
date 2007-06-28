@@ -23,12 +23,12 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.jsefa.SerializationException;
-import org.jsefa.xml.NamespaceManager;
-import org.jsefa.xml.QName;
-import org.jsefa.xml.XmlConstants;
+import org.jsefa.common.lowlevel.LowLevelSerializationException;
 import org.jsefa.xml.lowlevel.XmlLowLevelConfiguration;
+import org.jsefa.xml.lowlevel.XmlLowLevelConstants;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
+import org.jsefa.xml.namespace.NamespaceManager;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Stax based implementation of {@link XmlLowLevelSerializer}.
@@ -67,7 +67,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
         try {
             this.streamWriter = factory.createXMLStreamWriter(writer);
         } catch (XMLStreamException e) {
-            throw new SerializationException("Unable to create stax writer", e);
+            throw new LowLevelSerializationException("Unable to create stax writer", e);
         }
         this.depth = -1;
         this.namespaceManager = this.config.getNamespaceManager();
@@ -81,7 +81,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             this.streamWriter.writeStartDocument(encoding, version);
             writeLineBreak();
         } catch (XMLStreamException e) {
-            throw new SerializationException(e);
+            throw new LowLevelSerializationException(e);
         }
     }
 
@@ -131,7 +131,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
                 writeAttribute(this.config.getDataTypeAttributeName(), value);
             }
         } catch (XMLStreamException e) {
-            throw new SerializationException("Unable to write element " + name, e);
+            throw new LowLevelSerializationException("Unable to write element " + name, e);
         }
     }
 
@@ -154,7 +154,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
                         .getUri(), name.getLocalName(), value);
             }
         } catch (XMLStreamException e) {
-            throw new SerializationException("Unable to write attribute " + name, e);
+            throw new LowLevelSerializationException("Unable to write attribute " + name, e);
         }
     }
 
@@ -166,7 +166,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             try {
                 this.streamWriter.writeCharacters(text);
             } catch (XMLStreamException e) {
-                throw new SerializationException("Unable to finish element", e);
+                throw new LowLevelSerializationException("Unable to finish element", e);
             }
         }
     }
@@ -183,7 +183,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             this.streamWriter.writeEndElement();
             writeLineBreak();
         } catch (XMLStreamException e) {
-            throw new SerializationException("Unable to finish element", e);
+            throw new LowLevelSerializationException("Unable to finish element", e);
         }
         this.namespaceManager = this.namespaceManager.getParent();
         this.depth--;
@@ -199,9 +199,9 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
                 this.writer.close();
             }
         } catch (XMLStreamException e) {
-            throw new SerializationException("Unable to close writer", e);
+            throw new LowLevelSerializationException("Unable to close writer", e);
         } catch (IOException e) {
-            throw new SerializationException("Unable to close writer", e);
+            throw new LowLevelSerializationException("Unable to close writer", e);
         }
     }
 
@@ -219,7 +219,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
     }
 
     private boolean hasNamespace(QName name) {
-        return !XmlConstants.NO_NAMESPACE_URI.equals(name.getUri());
+        return !XmlLowLevelConstants.NO_NAMESPACE_URI.equals(name.getUri());
     }
 
 }

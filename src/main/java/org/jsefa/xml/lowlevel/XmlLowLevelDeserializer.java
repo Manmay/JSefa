@@ -16,9 +16,8 @@
 
 package org.jsefa.xml.lowlevel;
 
-import java.io.Reader;
-
-import org.jsefa.DeserializationException;
+import org.jsefa.common.lowlevel.LowLevelDeserializationException;
+import org.jsefa.common.lowlevel.LowLevelDeserializer;
 
 /**
  * Low level XML Deserializer.
@@ -26,22 +25,14 @@ import org.jsefa.DeserializationException;
  * @author Norman Lahme-Huetig
  * 
  */
-public interface XmlLowLevelDeserializer {
-
-    /**
-     * Opens a new deserialization stream based on the given reader.
-     * 
-     * @param reader the reader to base the stream on.
-     * @throws DeserializationException
-     */
-    void open(Reader reader);
+public interface XmlLowLevelDeserializer extends LowLevelDeserializer {
 
     /**
      * Returns true if another xml item can be deserialized from the stream.
      * 
      * @return true, if another xml item can be deserialized from the stream,
      *         otherwise false.
-     * @throws DeserializationException
+     * @throws LowLevelDeserializationException
      */
     boolean hasNext();
 
@@ -74,12 +65,4 @@ public interface XmlLowLevelDeserializer {
      */
     int currentDepth();
 
-    /**
-     * Closes the deserialization stream. The underlying reader will be closed
-     * only if <code>closeReader</code> is true.
-     * 
-     * @param closeReader if true, the underlying reader will be closed, too.
-     * @throws DeserializationException
-     */
-    void close(boolean closeReader);
 }

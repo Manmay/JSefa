@@ -21,11 +21,12 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.jsefa.Deserializer;
+import org.jsefa.IOFactoryException;
 import org.jsefa.Serializer;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvTypeMappingFactory;
-import org.jsefa.rbf.RbfEntryPoint;
 import org.jsefa.rbf.RbfIOFactory;
+import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**
@@ -45,6 +46,7 @@ public final class CsvIOFactory extends RbfIOFactory<CsvConfiguration, CsvSerial
      * 
      * @param objectTypes the object types.
      * @return a <code>XmlIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static CsvIOFactory createFactory(Class... objectTypes) {
         return CsvIOFactory.createFactory(new CsvConfiguration(), objectTypes);
@@ -60,17 +62,26 @@ public final class CsvIOFactory extends RbfIOFactory<CsvConfiguration, CsvSerial
      * @param objectTypes object types for which entry points should be created
      *            from annotations
      * @return a <code>CsvIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static CsvIOFactory createFactory(CsvConfiguration config, Class... objectTypes) {
-        RbfTypeMappingRegistry typeMappingRegistry = new RbfTypeMappingRegistry();
-        Collection<RbfEntryPoint> entryPoints = new ArrayList<RbfEntryPoint>();
-        CsvTypeMappingFactory typeMappingFactory = new CsvTypeMappingFactory(config, typeMappingRegistry);
-        for (Class<Object> objectType : objectTypes) {
-            String dataTypeName = typeMappingFactory.createIfAbsent(objectType);
-            String prefix = objectType.getAnnotation(CsvDataType.class).defaultPrefix();
-            entryPoints.add(new RbfEntryPoint(dataTypeName, prefix));
+        try {
+            RbfTypeMappingRegistry typeMappingRegistry = new RbfTypeMappingRegistry();
+            Collection<RbfEntryPoint> entryPoints = new ArrayList<RbfEntryPoint>();
+            CsvTypeMappingFactory typeMappingFactory = new CsvTypeMappingFactory(typeMappingRegistry, config
+                    .getSimpleTypeConverterProvider(), config.getObjectAccessorProvider(), config
+                    .getDefaultQuoteMode());
+            for (Class<Object> objectType : objectTypes) {
+                String dataTypeName = typeMappingFactory.createIfAbsent(objectType);
+                String prefix = objectType.getAnnotation(CsvDataType.class).defaultPrefix();
+                entryPoints.add(new RbfEntryPoint(dataTypeName, prefix));
+            }
+            return new CsvIOFactory(config, typeMappingRegistry, entryPoints);
+        } catch (IOFactoryException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create a CsvIOFactory", e);
         }
-        return new CsvIOFactory(config, typeMappingRegistry, entryPoints);
     }
 
     /**
@@ -94,10 +105,17 @@ public final class CsvIOFactory extends RbfIOFactory<CsvConfiguration, CsvSerial
      *            designators are used as alternative designators for the same
      *            data type.
      * @return a <code>CsvIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static CsvIOFactory createFactory(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
             Collection<RbfEntryPoint> entryPoints) {
-        return new CsvIOFactory(config, typeMappingRegistry, entryPoints);
+        try {
+            return new CsvIOFactory(config, typeMappingRegistry, entryPoints);
+        } catch (IOFactoryException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create a CsvIOFactory", e);
+        }
 
     }
 

@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.jsefa.ConfigurationException;
-import org.jsefa.common.ReflectionUtil;
+import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Provider for anotated fields.
@@ -58,7 +57,7 @@ public final class AnnotatedFieldsProvider {
                 Integer pos = AnnotationDataProvider.get(field, AnnotationDataNames.POS, annotationClasses);
                 if (pos != null && pos >= 0) {
                     if (fieldMap.get(pos) != null) {
-                        throw new ConfigurationException("There are more than one field in "
+                        throw new AnnotationException("There are more than one field in "
                                 + objectType.getName() + " annotated with the same pos " + pos);
                     }
                     fieldMap.put(pos, field);

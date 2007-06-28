@@ -16,7 +16,8 @@
 
 package org.jsefa.xml.lowlevel;
 
-import org.jsefa.xml.QName;
+import org.jsefa.xml.namespace.QName;
+
 
 /**
  * An xml item describing the start of a xml element.

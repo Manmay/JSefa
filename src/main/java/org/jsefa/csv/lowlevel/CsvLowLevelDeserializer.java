@@ -16,7 +16,6 @@
 
 package org.jsefa.csv.lowlevel;
 
-import org.jsefa.csv.QuoteMode;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
 
 /**

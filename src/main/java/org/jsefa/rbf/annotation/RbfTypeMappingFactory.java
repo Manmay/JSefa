@@ -28,14 +28,16 @@ import static org.jsefa.rbf.annotation.RbfAnnotationDataNames.RECORDS;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-import org.jsefa.Configuration;
-import org.jsefa.ConfigurationException;
-import org.jsefa.common.ReflectionUtil;
+import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.annotation.AnnotatedFieldsProvider;
 import org.jsefa.common.annotation.AnnotationDataProvider;
+import org.jsefa.common.annotation.AnnotationException;
 import org.jsefa.common.annotation.TypeMappingFactory;
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.common.converter.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.mapping.TypeMappingException;
+import org.jsefa.common.util.ReflectionUtil;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
@@ -56,15 +58,18 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
     /**
      * Constructs a new <code>AbstractRbfTypeMappingFactory</code>.
      * 
-     * @param config the configuration object
      * @param typeMappingRegistry the type mapping registry. New types will be
      *            registered using that registry.
+     * @param simpleTypeConverterProvider the simple type converter provider to
+     *            use
+     * @param objectAccessorProvider the object accessor provider to use
      * @param annotations the parameter objects providing the annotation classes
      *            to use.
      */
-    public RbfTypeMappingFactory(Configuration config, RbfTypeMappingRegistry typeMappingRegistry,
+    public RbfTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
+            SimpleTypeConverterProvider simpleTypeConverterProvider, ObjectAccessorProvider objectAccessorProvider,
             RbfAnnotations annotations) {
-        super(config, typeMappingRegistry);
+        super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider);
         this.annotations = annotations;
     }
 
@@ -76,7 +81,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
      */
     public final String createIfAbsent(Class<?> objectType) {
         if (!hasComplexType(objectType)) {
-            throw new ConfigurationException("The class " + objectType + " has no data type annotation");
+            throw new AnnotationException("The class " + objectType + " has no data type annotation");
         }
         return createComplexTypeMappingIfAbsent(objectType);
     }
@@ -101,15 +106,14 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
             if (AnnotationDataProvider.get(fieldAnnotation, CONVERTER_CLASS) != null) {
                 Class<? extends SimpleTypeConverter> converterType = AnnotationDataProvider.get(fieldAnnotation,
                         CONVERTER_CLASS);
-                converter = getSimpleTypeConverterProvider()
-                        .getForConverterType(converterType, objectType, format);
+                converter = getSimpleTypeConverterProvider().getForConverterType(converterType, objectType, format);
             }
         }
         if (converter == null && getSimpleTypeConverterProvider().hasConverterFor(objectType)) {
             converter = getSimpleTypeConverterProvider().getForValueType(objectType, format);
         }
         if (converter == null) {
-            throw new ConfigurationException("Could not create a simple type converter for " + objectType);
+            throw new TypeMappingException("Could not create a simple type converter for " + objectType);
         }
         String dataTypeName = createSimpleDataTypeName(field);
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
@@ -153,7 +157,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                 }
                 complexTypeMapping.register(field.getName(), NodeType.FIELD, fieldDataTypeName);
             } else {
-                throw new ConfigurationException("Can not create a type mapping for field " + field.getName()
+                throw new TypeMappingException("Can not create a type mapping for field " + field.getName()
                         + " of class " + objectType.getName());
             }
         }
@@ -176,28 +180,25 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                 String prefix = AnnotationDataProvider.get(field, PREFIX, this.annotations
                         .getSubRecordAnnotationClass());
                 if (prefix.length() != requiredPrefixLength) {
-                    throw new ConfigurationException("The object type " + field.getType()
+                    throw new AnnotationException("The object type " + field.getType()
                             + " must have a prefix with length " + requiredPrefixLength);
                 }
-                complexTypeMapping.registerWithPrefix(field.getName(), NodeType.SUB_RECORD, fieldDataTypeName,
-                        prefix);
+                complexTypeMapping.registerWithPrefix(field.getName(), NodeType.SUB_RECORD, fieldDataTypeName, prefix);
             } else if (hasListType(field.getType())) {
                 String listDataTypeName = createListTypeMappingIfAbsent(field, requiredPrefixLength);
                 complexTypeMapping.register(field.getName(), NodeType.SUB_RECORD, listDataTypeName);
             } else {
-                throw new ConfigurationException("Object type not supported for sub record: "
-                        + objectType.getName());
+                throw new TypeMappingException("Object type not supported for sub record: " + objectType.getName());
             }
         }
     }
 
     private String createListTypeMappingIfAbsent(Field field, int requiredPrefixLength) {
-        Annotation subRecordListAnnotation = field.getAnnotation(this.annotations
-                .getSubRecordListAnnotationClass());
+        Annotation subRecordListAnnotation = field.getAnnotation(this.annotations.getSubRecordListAnnotationClass());
         String dataTypeName = createListDataTypeName(field);
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
             if (subRecordListAnnotation == null || getRecords(subRecordListAnnotation).length == 0) {
-                throw new ConfigurationException("No FlrSubRecordList annotation with proper content found");
+                throw new AnnotationException("No FlrSubRecordList annotation with proper content found");
             }
             RbfListTypeMapping listTypeMapping = new RbfListTypeMapping(dataTypeName);
             getTypeMappingRegistry().register(listTypeMapping);
@@ -210,16 +211,16 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                         listItemObjectType = ReflectionUtil.getListEntryObjectType(field);
                     }
                     if (listItemObjectType == null) {
-                        throw new ConfigurationException(
+                        throw new AnnotationException(
                                 "Neither dataTypeName nor objectType is given for list item of field: "
                                         + field.getName() + " of class " + field.getDeclaringClass().getName());
                     }
                     if (hasListType(listItemObjectType)) {
-                        throw new ConfigurationException("No lists inside lists allowed!");
+                        throw new TypeMappingException("No lists inside lists allowed!");
                     }
                     if (!hasComplexType(listItemObjectType)) {
-                        throw new ConfigurationException("The sub record object type "
-                                + listItemObjectType.getName() + " must have a data type annotation");
+                        throw new AnnotationException("The sub record object type " + listItemObjectType.getName()
+                                + " must have a data type annotation");
                     }
                     listItemDataTypeName = createComplexTypeMappingIfAbsent(listItemObjectType);
                 } else {
@@ -228,9 +229,9 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                 }
                 String prefix = record.prefix();
                 if (prefix.length() != requiredPrefixLength) {
-                    throw new ConfigurationException("All record annotations of the list field " + field.getName()
-                            + " of class " + field.getDeclaringClass().getName()
-                            + " must have a prefix with length " + requiredPrefixLength);
+                    throw new AnnotationException("All record annotations of the list field " + field.getName()
+                            + " of class " + field.getDeclaringClass().getName() + " must have a prefix with length "
+                            + requiredPrefixLength);
                 }
                 listTypeMapping.register(listItemDataTypeName, prefix, listItemObjectType);
             }
@@ -265,15 +266,13 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
     }
 
     private int getRequiredPrefixLength(Class<?> objectType) {
-        if (AnnotatedFieldsProvider
-                .getSortedAnnotatedFields(objectType, this.annotations.getSubRecordAnnotationClass(),
-                        this.annotations.getSubRecordListAnnotationClass()).size() > 0) {
-            Annotation dataTypeAnnotation = objectType
-                    .getAnnotation(this.annotations.getDataTypeAnnotationClass());
+        if (AnnotatedFieldsProvider.getSortedAnnotatedFields(objectType,
+                this.annotations.getSubRecordAnnotationClass(), this.annotations.getSubRecordListAnnotationClass())
+                .size() > 0) {
+            Annotation dataTypeAnnotation = objectType.getAnnotation(this.annotations.getDataTypeAnnotationClass());
             String defaultPrefix = AnnotationDataProvider.get(dataTypeAnnotation, DEFAULT_PREFIX);
             if (defaultPrefix.length() == 0) {
-                throw new ConfigurationException("A prefix must be defined for object type "
-                        + objectType.getName());
+                throw new AnnotationException("A prefix must be defined for object type " + objectType.getName());
             }
             return defaultPrefix.length();
         } else {

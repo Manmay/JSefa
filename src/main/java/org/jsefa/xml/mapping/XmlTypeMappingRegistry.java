@@ -18,8 +18,9 @@ package org.jsefa.xml.mapping;
 
 import org.jsefa.common.converter.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.HierarchicalTypeMappingRegistry;
-import org.jsefa.xml.QName;
-import static org.jsefa.xml.XmlSchemaBuiltInDataTypeNames.*;
+import org.jsefa.xml.namespace.QName;
+
+import static org.jsefa.xml.mapping.support.XmlSchemaBuiltInDataTypeNames.*;
 
 /**
  * A registry for xml type mappings with standard type mappings already registered.

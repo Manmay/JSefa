@@ -18,10 +18,11 @@ package org.jsefa.flr.annotation;
 
 import java.lang.reflect.Field;
 
-import org.jsefa.ConfigurationException;
+import org.jsefa.common.accessor.ObjectAccessorProvider;
+import org.jsefa.common.annotation.AnnotationException;
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.common.converter.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.flr.FlrConfiguration;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
 import org.jsefa.rbf.annotation.RbfTypeMappingFactory;
@@ -43,12 +44,15 @@ public final class FlrTypeMappingFactory extends RbfTypeMappingFactory {
     /**
      * Constructs a new <code>FlrTypeMappingFactory</code>.
      * 
-     * @param config the configuration object
      * @param typeMappingRegistry the type mapping registry. New types will be
      *            registered using that registry.
+     * @param objectAccessorProvider the object accessor provider to use
+     * @param simpleTypeConverterProvider the simple type converter provider to
+     *            use
      */
-    public FlrTypeMappingFactory(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry) {
-        super(config, typeMappingRegistry, ANNOTATIONS);
+    public FlrTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
+            SimpleTypeConverterProvider simpleTypeConverterProvider, ObjectAccessorProvider objectAccessorProvider) {
+        super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider, ANNOTATIONS);
     }
 
     /**
@@ -58,11 +62,11 @@ public final class FlrTypeMappingFactory extends RbfTypeMappingFactory {
             SimpleTypeConverter converter, Field field) {
         FlrField fieldAnnotation = field.getAnnotation(FlrField.class);
         if (fieldAnnotation.length() <= 0) {
-            throw new ConfigurationException("Field length of field " + field.getName() + " of class "
+            throw new AnnotationException("Field length of field " + field.getName() + " of class "
                     + field.getDeclaringClass().getName() + " must be > 0");
         }
-        return new FlrSimpleTypeMapping(objectType, dataTypeName, converter, fieldAnnotation.length(),
-                fieldAnnotation.padCharacter(), fieldAnnotation.align());
+        return new FlrSimpleTypeMapping(objectType, dataTypeName, converter, fieldAnnotation.length(), fieldAnnotation
+                .padCharacter(), fieldAnnotation.align());
     }
 
 }

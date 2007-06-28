@@ -29,6 +29,7 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
 import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
+import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
@@ -63,8 +64,12 @@ public abstract class RbfSerializer implements Serializer {
      * {@inheritDoc}
      */
     public final void open(Writer writer) {
-        getLowLevelSerializer().open(writer);
         this.complexObjectsOnPath.clear();
+        try {
+            getLowLevelSerializer().open(writer);
+        } catch (Exception e) {
+            throw new SerializationException("Error while opening the serialization stream");
+        }
     }
 
     /**
@@ -74,19 +79,30 @@ public abstract class RbfSerializer implements Serializer {
         if (object == null) {
             return;
         }
-        RbfEntryPoint entryPoint = getEntryPoint(object.getClass());
-        if (this.withPrefix) {
-            writePrefix(entryPoint.getDesignator());
+        try {
+            RbfEntryPoint entryPoint = getEntryPoint(object.getClass());
+            if (this.withPrefix) {
+                writePrefix(entryPoint.getDesignator());
+            }
+            writeValue(object, getTypeMapping(entryPoint.getDataTypeName()));
+            getLowLevelSerializer().finishRecord();
+        } catch (SerializationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SerializationException("Error while serializing", e);
         }
-        writeValue(object, getTypeMapping(entryPoint.getDataTypeName()));
-        getLowLevelSerializer().finishRecord();
     }
 
     /**
      * {@inheritDoc}
      */
     public final void close(boolean closeWriter) {
-        getLowLevelSerializer().close(closeWriter);
+        try {
+            getLowLevelSerializer().close(closeWriter);
+        } catch (Exception e) {
+            throw new SerializationException("Error while closing the serialization stream");
+        }
+
     }
 
     /**

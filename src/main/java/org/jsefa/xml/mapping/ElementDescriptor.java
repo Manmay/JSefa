@@ -16,7 +16,7 @@
 
 package org.jsefa.xml.mapping;
 
-import org.jsefa.xml.QName;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Descriptor for a xml element.

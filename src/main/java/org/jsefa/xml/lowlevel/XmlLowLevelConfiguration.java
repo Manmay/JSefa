@@ -16,9 +16,8 @@
 
 package org.jsefa.xml.lowlevel;
 
-import org.jsefa.xml.NamespaceManager;
-import org.jsefa.xml.QName;
-import org.jsefa.xml.XmlConstants;
+import org.jsefa.xml.namespace.NamespaceManager;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Configuration object for creating a {@link XmlLowLevelSerializer} or
@@ -41,9 +40,9 @@ public final class XmlLowLevelConfiguration {
      * Constructs a new <code>XmlLowLevelConfig</code>.
      */
     public XmlLowLevelConfiguration() {
-        setDataTypeAttributeName(XmlConstants.XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME);
-        setLineBreak(XmlConstants.DEFAULT_LINE_BREAK);
-        setLineIndentation(XmlConstants.DEFAULT_LINE_INDENTATION);
+        setDataTypeAttributeName(XmlLowLevelConstants.XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME);
+        setLineBreak(XmlLowLevelConstants.DEFAULT_LINE_BREAK);
+        setLineIndentation(XmlLowLevelConstants.DEFAULT_LINE_INDENTATION);
     }
 
     private XmlLowLevelConfiguration(XmlLowLevelConfiguration other) {

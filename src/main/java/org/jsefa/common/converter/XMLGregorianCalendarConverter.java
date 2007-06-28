@@ -19,8 +19,6 @@ package org.jsefa.common.converter;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.jsefa.ConfigurationException;
-
 /**
  * Converter for <code>XMLGregorianCalendar</code> objects.
  * <p>
@@ -38,7 +36,7 @@ public final class XMLGregorianCalendarConverter implements SimpleTypeConverter 
         try {
             this.factory = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException e) {
-            throw new ConfigurationException("Could not configure XMLGregorianCalendarConverter");
+            throw new ConversionException("Could not configure XMLGregorianCalendarConverter");
         }
     }
 

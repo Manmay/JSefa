@@ -16,7 +16,6 @@
 
 package org.jsefa.flr.lowlevel;
 
-import org.jsefa.flr.mapping.Align;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
 
 /**

@@ -24,8 +24,7 @@ import java.lang.annotation.Target;
 
 import org.jsefa.common.annotation.NoConverterClass;
 import org.jsefa.common.converter.SimpleTypeConverter;
-import org.jsefa.csv.CsvConfiguration;
-import org.jsefa.csv.QuoteMode;
+import org.jsefa.csv.lowlevel.QuoteMode;
 
 /**
  * CSV field annotation.
@@ -34,7 +33,7 @@ import org.jsefa.csv.QuoteMode;
  * 
  */
 @Retention(RUNTIME)
-@Target({ FIELD })
+@Target({FIELD})
 public @interface CsvField {
 
     /**
@@ -59,9 +58,7 @@ public @interface CsvField {
     String dataTypeName() default "";
 
     /**
-     * The quote mode to use for the CSV field this annotation describes. If not
-     * set, the default quote mode ({@link CsvConfiguration#setDefaultQuoteMode})
-     * will be used.
+     * The quote mode to use for the CSV field this annotation describes.
      */
     QuoteMode quoteMode() default QuoteMode.DEFAULT;
 

@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.xml.QName;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * A mapping between a java object type and a XML complex data type.

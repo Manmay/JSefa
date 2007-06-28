@@ -23,12 +23,14 @@ import java.util.Map;
 
 import org.jsefa.DeserializationException;
 import org.jsefa.Deserializer;
+import org.jsefa.SerializationException;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
 import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
+import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
@@ -80,40 +82,62 @@ public abstract class RbfDeserializer implements Deserializer {
      * {@inheritDoc}
      */
     public final void open(Reader reader) {
-        getLowLevelDeserializer().open(reader);
         this.currentEntryPoint = null;
+        try {
+            getLowLevelDeserializer().open(reader);
+        } catch (Exception e) {
+            throw new DeserializationException("Error while opening the deserialization stream");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public final boolean hasNext() {
-        if (this.currentEntryPoint == null) {
-            return moveToNextEntryPoint();
-        } else {
-            return true;
+        try {
+            if (this.currentEntryPoint == null) {
+                return moveToNextEntryPoint();
+            } else {
+                return true;
+            }
+        } catch (DeserializationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new DeserializationException(e);
         }
+
     }
 
     /**
      * {@inheritDoc}
      */
     public final Object next() {
-        if (!hasNext()) {
-            return null;
-        }
         try {
-            return readValue(getTypeMapping(this.currentEntryPoint.getDataTypeName()));
-        } finally {
-            this.currentEntryPoint = null;
+            if (!hasNext()) {
+                return null;
+            }
+            try {
+                return readValue(getTypeMapping(this.currentEntryPoint.getDataTypeName()));
+            } finally {
+                this.currentEntryPoint = null;
+            }
+        } catch (DeserializationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new DeserializationException(e);
         }
+
     }
 
     /**
      * {@inheritDoc}
      */
     public final void close(boolean closeReader) {
-        getLowLevelDeserializer().close(closeReader);
+        try {
+            getLowLevelDeserializer().close(closeReader);
+        } catch (Exception e) {
+            throw new SerializationException("Error while closing the serialization stream");
+        }
     }
 
     /**
@@ -158,7 +182,7 @@ public abstract class RbfDeserializer implements Deserializer {
             return null;
         }
     }
-    
+
     private boolean readFields(Object object, RbfComplexTypeMapping typeMapping) {
         boolean hasContent = false;
         for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
@@ -171,7 +195,7 @@ public abstract class RbfDeserializer implements Deserializer {
         }
         return hasContent;
     }
-    
+
     private boolean readSubRecords(Object object, RbfComplexTypeMapping typeMapping) {
         boolean hasContent = false;
         if (!typeMapping.getFieldNames(NodeType.SUB_RECORD).isEmpty()) {

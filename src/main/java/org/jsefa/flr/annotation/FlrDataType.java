@@ -22,9 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.jsefa.EntryPoint;
-import org.jsefa.flr.FlrDeserializer;
-import org.jsefa.flr.FlrSerializer;
+import org.jsefa.common.mapping.EntryPoint;
 
 /**
  * An annotation declaring a FLR data type.
@@ -37,9 +35,8 @@ import org.jsefa.flr.FlrSerializer;
 public @interface FlrDataType {
     /**
      * The name of the data type. The name must be unique within the set of data
-     * types used by a given instance of {@link FlrSerializer} or
-     * {@link FlrDeserializer}. If it is not explicitly set it will be
-     * generated automatically from the class name.
+     * types used within one FLR document. If it is not explicitly set it will
+     * be generated automatically from the class name.
      */
     String name() default "";
 

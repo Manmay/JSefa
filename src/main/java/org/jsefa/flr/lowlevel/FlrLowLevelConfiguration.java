@@ -16,7 +16,6 @@
 
 package org.jsefa.flr.lowlevel;
 
-import org.jsefa.flr.FlrConstants;
 
 /**
  * Configuration object for creating a {@link FlrLowLevelSerializer} or
@@ -33,7 +32,7 @@ public class FlrLowLevelConfiguration {
      * Constructs a new <code>FlrLowLevelConfiguration</code>.
      */
     public FlrLowLevelConfiguration() {
-        setLineBreak(FlrConstants.DEFAULT_LINE_BREAK);
+        setLineBreak(FlrLowLevelConstants.DEFAULT_LINE_BREAK);
     }
 
     private FlrLowLevelConfiguration(FlrLowLevelConfiguration other) {

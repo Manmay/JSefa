@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.jsefa.Configuration;
-import org.jsefa.ConfigurationException;
+import org.jsefa.IOFactoryException;
 import org.jsefa.Deserializer;
 import org.jsefa.IOFactory;
 import org.jsefa.Serializer;
@@ -32,6 +32,7 @@ import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
+import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
@@ -73,7 +74,7 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
     protected RbfIOFactory(C config, RbfTypeMappingRegistry typeMappingRegistry,
             Collection<RbfEntryPoint> entryPoints) {
         if (entryPoints == null || entryPoints.size() == 0) {
-            throw new ConfigurationException("No entry points given");
+            throw new IOFactoryException("No entry points given");
         }
         this.withPrefix = prefixRequired(entryPoints);
         this.config = (C) config.createCopy();
@@ -168,7 +169,7 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
     private Class getObjectType(String dataTypeName) {
         TypeMapping typeMapping = typeMappingRegistry.get(dataTypeName);
         if (typeMapping == null) {
-            throw new ConfigurationException("Unknown data type: " + dataTypeName);
+            throw new IOFactoryException("Unknown data type: " + dataTypeName);
         }
         return typeMapping.getObjectType();
 
@@ -177,7 +178,7 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
     private void assertPrefixDeclared(RbfEntryPoint entryPoint, Class objectType) {
         String prefix = entryPoint.getDesignator();
         if (prefix == null || prefix.length() == 0) {
-            throw new ConfigurationException("prefix not given but required for object type "
+            throw new IOFactoryException("prefix not given but required for object type "
                     + objectType.getName());
         }
     }
@@ -207,15 +208,15 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
     private void assertPrefixContentualUniqueness(Collection<RbfEntryPoint> entryPoints) {
         Set<String> usedPrefixes = new HashSet<String>();
         for (RbfEntryPoint entryPoint : entryPoints) {
-            assertPrefixContentualUniqueness(entryPoint.getDesignator(), entryPoint.getDataTypeName(),
+            assertPrefixContextualUniqueness(entryPoint.getDesignator(), entryPoint.getDataTypeName(),
                     usedPrefixes);
         }
     }
 
-    private void assertPrefixContentualUniqueness(String prefix, String dataTypeName,
+    private void assertPrefixContextualUniqueness(String prefix, String dataTypeName,
             Set<String> siblingUsedPrefixes) {
         if (siblingUsedPrefixes.contains(prefix)) {
-            throw new ConfigurationException("The prefix " + prefix
+            throw new IOFactoryException("The prefix " + prefix
                     + " is not contextual unique. The context is defined by the following list: "
                     + siblingUsedPrefixes);
         }
@@ -225,7 +226,7 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
             RbfComplexTypeMapping complexTypeMapping = (RbfComplexTypeMapping) typeMapping;
             for (String fieldName : complexTypeMapping.getFieldNames(NodeType.SUB_RECORD)) {
                 NodeModel nodeModel = complexTypeMapping.getNodeModel(fieldName);
-                assertPrefixContentualUniqueness(nodeModel.getPrefix(), nodeModel.getDataTypeName(), usedPrefixes);
+                assertPrefixContextualUniqueness(nodeModel.getPrefix(), nodeModel.getDataTypeName(), usedPrefixes);
             }
         }
         if (typeMapping instanceof RbfListTypeMapping) {
@@ -233,7 +234,7 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
             RbfListTypeMapping listTypeMapping = (RbfListTypeMapping) typeMapping;
             for (String itemPrefix : listTypeMapping.getPrefixes()) {
                 NodeModel nodeModel = listTypeMapping.getNodeModel(itemPrefix);
-                assertPrefixContentualUniqueness(nodeModel.getPrefix(), nodeModel.getDataTypeName(), usedPrefixes);
+                assertPrefixContextualUniqueness(nodeModel.getPrefix(), nodeModel.getDataTypeName(), usedPrefixes);
             }
         }
         usedPrefixes.add(prefix);

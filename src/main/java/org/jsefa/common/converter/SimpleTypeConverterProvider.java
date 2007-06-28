@@ -24,8 +24,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.jsefa.ConfigurationException;
-
 /**
  * Provider for {@link SimpleTypeConverter}.
  * <p>
@@ -110,7 +108,7 @@ public final class SimpleTypeConverterProvider {
                     args[0] = format;
                     return (SimpleTypeConverter) constructor.newInstance(args);
                 }
-                throw new ConfigurationException("No constructor with String argument found for class "
+                throw new ConversionException("No constructor with String argument found for class "
                         + converterType);
             } else {
                 Constructor constructor = getConstructor(converterType, Class.class);
@@ -120,7 +118,7 @@ public final class SimpleTypeConverterProvider {
                 return (SimpleTypeConverter) converterType.newInstance();
             }
         } catch (Exception e) {
-            throw new ConfigurationException("Could not create a SimpleTypeConverter for class " + converterType
+            throw new ConversionException("Could not create a SimpleTypeConverter for class " + converterType
                     + " and the format " + format, e);
         }
     }

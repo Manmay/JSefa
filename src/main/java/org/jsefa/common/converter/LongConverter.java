@@ -16,7 +16,6 @@
 
 package org.jsefa.common.converter;
 
-import org.jsefa.DeserializationException;
 
 /**
  * Converter for <code>Long</code> objects.
@@ -40,7 +39,7 @@ public final class LongConverter implements SimpleTypeConverter {
             if (value.charAt(0) == '+') {
                 return fromString(value.substring(1));
             }
-            throw new DeserializationException("Wrong Long format: " + value);
+            throw new ConversionException("Wrong Long format: " + value);
         }
     }
 

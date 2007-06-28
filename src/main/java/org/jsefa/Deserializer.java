@@ -23,7 +23,6 @@ import java.io.Reader;
  * 
  * @author Norman Lahme-Huetig
  */
-
 public interface Deserializer {
 
     /**

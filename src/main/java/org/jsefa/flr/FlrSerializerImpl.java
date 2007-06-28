@@ -19,11 +19,11 @@ package org.jsefa.flr;
 import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
+import org.jsefa.flr.lowlevel.Align;
 import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
-import org.jsefa.flr.mapping.Align;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
-import org.jsefa.rbf.RbfEntryPoint;
 import org.jsefa.rbf.RbfSerializer;
+import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**

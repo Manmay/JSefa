@@ -16,8 +16,8 @@
 
 package org.jsefa.xml.mapping;
 
-import org.jsefa.ConfigurationException;
-import org.jsefa.xml.QName;
+import org.jsefa.common.mapping.TypeMappingException;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * A model of a XML node used for serialization and deserialization.
@@ -142,12 +142,12 @@ public final class NodeModel {
     /**
      * Asserts that this <code>NodeModel</code> is not already finished.
      * 
-     * @throws ConfigurationException is this <code>NodeModel</code> is
-     *             already finished
+     * @throws TypeMappingException is this <code>NodeModel</code> is already
+     *             finished
      */
     private void assertNotFinished() {
         if (this.finished) {
-            throw new ConfigurationException("Node model is already finished");
+            throw new TypeMappingException("Node model is already finished");
         }
     }
 

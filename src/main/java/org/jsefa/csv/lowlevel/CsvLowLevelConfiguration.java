@@ -16,8 +16,6 @@
 
 package org.jsefa.csv.lowlevel;
 
-import org.jsefa.csv.CsvConstants;
-import org.jsefa.csv.EscapeMode;
 
 /**
  * Configuration object for creating a {@link CsvLowLevelSerializer} or
@@ -41,11 +39,11 @@ public final class CsvLowLevelConfiguration {
      * Constructs a new <code>CsvLowLevelConfiguration</code>.
      */
     public CsvLowLevelConfiguration() {
-        setFieldDelimiter(CsvConstants.DEFAULT_FIELD_DELIMITER);
-        setQuoteCharacter(CsvConstants.DEFAULT_QUOTE_CHARACTER);
-        setQuoteCharacterEscapeMode(CsvConstants.DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE);
+        setFieldDelimiter(CsvLowLevelConstants.DEFAULT_FIELD_DELIMITER);
+        setQuoteCharacter(CsvLowLevelConstants.DEFAULT_QUOTE_CHARACTER);
+        setQuoteCharacterEscapeMode(CsvLowLevelConstants.DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE);
         setUseDelimiterAfterLastField(false);
-        setLineBreak(CsvConstants.DEFAULT_LINE_BREAK);
+        setLineBreak(CsvLowLevelConstants.DEFAULT_LINE_BREAK);
     }
 
     private CsvLowLevelConfiguration(CsvLowLevelConfiguration other) {

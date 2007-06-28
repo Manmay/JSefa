@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.jsefa.ConfigurationException;
+import org.jsefa.IOFactoryException;
 import org.jsefa.Deserializer;
 import org.jsefa.Serializer;
 import org.jsefa.flr.annotation.FlrDataType;
 import org.jsefa.flr.annotation.FlrTypeMappingFactory;
-import org.jsefa.rbf.RbfEntryPoint;
 import org.jsefa.rbf.RbfIOFactory;
+import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**
@@ -46,6 +46,7 @@ public final class FlrIOFactory extends RbfIOFactory<FlrConfiguration, FlrSerial
      * 
      * @param objectTypes the object types.
      * @return a <code>XmlIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static FlrIOFactory createFactory(Class... objectTypes) {
         return FlrIOFactory.createFactory(new FlrConfiguration(), objectTypes);
@@ -61,17 +62,25 @@ public final class FlrIOFactory extends RbfIOFactory<FlrConfiguration, FlrSerial
      * @param objectTypes object types for which entry points should be created
      *            from annotations
      * @return a <code>FlrIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static FlrIOFactory createFactory(FlrConfiguration config, Class... objectTypes) {
-        RbfTypeMappingRegistry typeMappingRegistry = new RbfTypeMappingRegistry();
-        Collection<RbfEntryPoint> entryPoints = new ArrayList<RbfEntryPoint>();
-        FlrTypeMappingFactory typeMappingFactory = new FlrTypeMappingFactory(config, typeMappingRegistry);
-        for (Class<Object> objectType : objectTypes) {
-            String dataTypeName = typeMappingFactory.createIfAbsent(objectType);
-            String prefix = objectType.getAnnotation(FlrDataType.class).defaultPrefix();
-            entryPoints.add(new RbfEntryPoint(dataTypeName, prefix));
+        try {
+            RbfTypeMappingRegistry typeMappingRegistry = new RbfTypeMappingRegistry();
+            Collection<RbfEntryPoint> entryPoints = new ArrayList<RbfEntryPoint>();
+            FlrTypeMappingFactory typeMappingFactory = new FlrTypeMappingFactory(typeMappingRegistry, config
+                    .getSimpleTypeConverterProvider(), config.getObjectAccessorProvider());
+            for (Class<Object> objectType : objectTypes) {
+                String dataTypeName = typeMappingFactory.createIfAbsent(objectType);
+                String prefix = objectType.getAnnotation(FlrDataType.class).defaultPrefix();
+                entryPoints.add(new RbfEntryPoint(dataTypeName, prefix));
+            }
+            return new FlrIOFactory(config, typeMappingRegistry, entryPoints);
+        } catch (IOFactoryException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create an FlrIOFactory", e);
         }
-        return new FlrIOFactory(config, typeMappingRegistry, entryPoints);
     }
 
     /**
@@ -95,11 +104,17 @@ public final class FlrIOFactory extends RbfIOFactory<FlrConfiguration, FlrSerial
      *            designators are used as alternative designators for the same
      *            data type.
      * @return a <code>FlrIOFactory</code> factory
+     * @throws IOFactoryException
      */
     public static FlrIOFactory createFactory(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
             Collection<RbfEntryPoint> entryPoints) {
-        return new FlrIOFactory(config, typeMappingRegistry, entryPoints);
-
+        try {
+            return new FlrIOFactory(config, typeMappingRegistry, entryPoints);
+        } catch (IOFactoryException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create an FlrIOFactory", e);
+        }
     }
 
     FlrIOFactory(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
@@ -123,8 +138,8 @@ public final class FlrIOFactory extends RbfIOFactory<FlrConfiguration, FlrSerial
      * {@inheritDoc}
      */
     @Override
-    protected FlrDeserializer createDeserializer(FlrConfiguration config,
-            RbfTypeMappingRegistry typeMappingRegistry, RbfEntryPoint entryPoint) {
+    protected FlrDeserializer createDeserializer(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
+            RbfEntryPoint entryPoint) {
         return new FlrDeserializerImpl(config, typeMappingRegistry, entryPoint);
     }
 
@@ -132,8 +147,8 @@ public final class FlrIOFactory extends RbfIOFactory<FlrConfiguration, FlrSerial
      * {@inheritDoc}
      */
     @Override
-    protected FlrDeserializer createDeserializer(FlrConfiguration config,
-            RbfTypeMappingRegistry typeMappingRegistry, Map<String, RbfEntryPoint> entryPointsByPrefix) {
+    protected FlrDeserializer createDeserializer(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
+            Map<String, RbfEntryPoint> entryPointsByPrefix) {
         return new FlrDeserializerImpl(config, typeMappingRegistry, entryPointsByPrefix);
     }
 
@@ -141,8 +156,8 @@ public final class FlrIOFactory extends RbfIOFactory<FlrConfiguration, FlrSerial
         int length = entryPoints.iterator().next().getDesignator().length();
         for (RbfEntryPoint entryPoint : entryPoints) {
             if (entryPoint.getDesignator().length() != length) {
-                throw new ConfigurationException("The prefix " + entryPoint.getDesignator()
-                        + " has not the length " + length);
+                throw new IOFactoryException("The prefix " + entryPoint.getDesignator() + " has not the length "
+                        + length);
             }
         }
     }

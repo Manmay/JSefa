@@ -21,7 +21,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jsefa.common.ReflectionUtil;
+import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Provider for annotation data (data given via annotations). It provides a

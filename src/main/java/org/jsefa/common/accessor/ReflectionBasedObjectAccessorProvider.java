@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jsefa.common.ReflectionUtil;
+import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Reflection based implementation of {@link ObjectAccessorProvider}.

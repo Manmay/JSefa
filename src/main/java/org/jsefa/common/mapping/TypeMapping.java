@@ -16,8 +16,6 @@
 
 package org.jsefa.common.mapping;
 
-import org.jsefa.ConfigurationException;
-
 /**
  * A mapping between a java object type and a data type of the target format.
  * The latter type is denoted by its name which has a generic type.
@@ -100,12 +98,12 @@ public abstract class TypeMapping<T> {
     /**
      * Asserts that this <code>TypeMapping</code> is not already finished.
      * 
-     * @throws ConfigurationException is this <code>TypeMapping</code> is
+     * @throws TypeMappingException is this <code>TypeMapping</code> is
      *             already finished
      */
     protected final void assertNotFinished() {
         if (this.finished) {
-            throw new ConfigurationException("Type mapping is already finished");
+            throw new TypeMappingException("Type mapping is already finished");
         }
     }
 }

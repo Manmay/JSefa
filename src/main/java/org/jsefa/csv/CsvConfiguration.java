@@ -20,6 +20,8 @@ import org.jsefa.Configuration;
 import org.jsefa.csv.lowlevel.CsvLowLevelConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelIOFactory;
 import org.jsefa.csv.lowlevel.CsvLowLevelIOFactoryImpl;
+import org.jsefa.csv.lowlevel.EscapeMode;
+import org.jsefa.csv.lowlevel.QuoteMode;
 
 /**
  * A configuration object used when creating a {@link CsvIOFactory}. It uses

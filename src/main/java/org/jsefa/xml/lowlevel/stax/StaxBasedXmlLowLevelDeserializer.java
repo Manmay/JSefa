@@ -27,9 +27,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.jsefa.DeserializationException;
-import org.jsefa.xml.QName;
-import org.jsefa.xml.XmlConstants;
+import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.xml.lowlevel.Attribute;
 import org.jsefa.xml.lowlevel.AttributeImpl;
 import org.jsefa.xml.lowlevel.ElementEndImpl;
@@ -38,7 +36,9 @@ import org.jsefa.xml.lowlevel.TextContentImpl;
 import org.jsefa.xml.lowlevel.XmlItem;
 import org.jsefa.xml.lowlevel.XmlItemType;
 import org.jsefa.xml.lowlevel.XmlLowLevelConfiguration;
+import org.jsefa.xml.lowlevel.XmlLowLevelConstants;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Stax based implementation of {@link XmlLowLevelDeserializer}.
@@ -82,7 +82,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
         try {
             this.streamReader = factory.createXMLStreamReader(reader);
         } catch (XMLStreamException e) {
-            throw new DeserializationException("Error while opening the stream", e);
+            throw new LowLevelDeserializationException("Error while opening the stream", e);
         }
         this.depth = -1;
         this.currentItem = null;
@@ -98,7 +98,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
         try {
             return this.eventPrefetched || this.streamReader.hasNext();
         } catch (XMLStreamException e) {
-            throw new DeserializationException("Error while deserialization: ", e);
+            throw new LowLevelDeserializationException("Error while deserialization: ", e);
         }
     }
 
@@ -143,7 +143,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
             }
             this.currentItem = null;
         } catch (XMLStreamException e) {
-            throw new DeserializationException("Error while deserialization: ", e);
+            throw new LowLevelDeserializationException("Error while deserialization: ", e);
         }
     }
 
@@ -193,7 +193,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
                         }
                     }
                 } catch (XMLStreamException e) {
-                    throw new DeserializationException("Error while deserialization: ", e);
+                    throw new LowLevelDeserializationException("Error while deserialization: ", e);
                 }
 
             }
@@ -219,7 +219,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
                 this.reader.close();
             }
         } catch (Exception e) {
-            throw new DeserializationException("Error while closing", e);
+            throw new LowLevelDeserializationException("Error while closing", e);
         }
     }
 
@@ -264,7 +264,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
         if (uri != null) {
             return uri;
         } else {
-            return XmlConstants.NO_NAMESPACE_URI;
+            return XmlLowLevelConstants.NO_NAMESPACE_URI;
         }
     }
 
