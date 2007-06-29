@@ -16,6 +16,7 @@
 
 package org.jsefa.xml.lowlevel;
 
+import org.jsefa.xml.namespace.NamespaceConstants;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -27,8 +28,9 @@ import org.jsefa.xml.namespace.QName;
 public interface XmlLowLevelConstants {
     /**
      * Namespace URI to use to represent that there is no namespace.
+     * @see NamespaceConstants#NO_NAMESPACE_URI
      */
-    String NO_NAMESPACE_URI = "";
+    String NO_NAMESPACE_URI = NamespaceConstants.NO_NAMESPACE_URI;
     
 
     /**

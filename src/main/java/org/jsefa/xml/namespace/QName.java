@@ -16,12 +16,10 @@
 
 package org.jsefa.xml.namespace;
 
-import org.jsefa.xml.XmlConstants;
-
 /**
  * A qualified name consisting of a namespace uri and a local name.
  * <p>
- * Both must not be null. Use {@link XmlConstants#NO_NAMESPACE_URI} to describe
+ * Both must not be null. Use {@link NamespaceConstants#NO_NAMESPACE_URI} to describe
  * that no namespace is given.
  * <p>
  * Instances of this class are immutable and thread safe.
@@ -45,13 +43,13 @@ public final class QName {
      * @return the name
      */
     public static QName create(String localName) {
-        return new QName(XmlConstants.NO_NAMESPACE_URI, localName);
+        return new QName(NamespaceConstants.NO_NAMESPACE_URI, localName);
     }
 
     /**
      * Creates a new <code>QName</code>.
      * <p>
-     * Use {@link XmlConstants#NO_NAMESPACE_URI} for the argument
+     * Use {@link NamespaceConstants#NO_NAMESPACE_URI} for the argument
      * <code>uri</code> if no namespace is given.
      * 
      * @param uri the namespace uri (not null)
