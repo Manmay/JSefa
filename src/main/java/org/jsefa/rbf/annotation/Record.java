@@ -17,13 +17,11 @@
 package org.jsefa.rbf.annotation;
 
 import org.jsefa.common.annotation.NoClass;
-import org.jsefa.xml.annotation.XmlElementList;
 
 /**
  * Annotation describing the prefix and data type name or object type of a sub
  * record as part of a sub record list.
  * 
- * @see XmlElementList
  * @author Norman Lahme-Huetig
  * 
  */
