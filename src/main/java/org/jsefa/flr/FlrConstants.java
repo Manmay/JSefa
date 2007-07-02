@@ -19,19 +19,14 @@ package org.jsefa.flr;
 import org.jsefa.flr.lowlevel.FlrLowLevelConstants;
 
 
+
 /**
  * A collection of constants concerning the CSV format type.
  * 
  * @author Norman Lahme-Huetig
- * 
+ * @see FlrLowLevelConstants
  */
 public interface FlrConstants {
-    
-    /**
-     * The default line break used if none is explicitly given.
-     * @see FlrLowLevelConstants#DEFAULT_LINE_BREAK
-     */
-    String DEFAULT_LINE_BREAK = FlrLowLevelConstants.DEFAULT_LINE_BREAK;
     
     /**
      * The default pad character used if none is explicitly given.

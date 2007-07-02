@@ -25,8 +25,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.jsefa.common.lowlevel.LowLevelSerializationException;
 import org.jsefa.xml.lowlevel.XmlLowLevelConfiguration;
-import org.jsefa.xml.lowlevel.XmlLowLevelConstants;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
+import org.jsefa.xml.namespace.NamespaceConstants;
 import org.jsefa.xml.namespace.NamespaceManager;
 import org.jsefa.xml.namespace.QName;
 
@@ -219,7 +219,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
     }
 
     private boolean hasNamespace(QName name) {
-        return !XmlLowLevelConstants.NO_NAMESPACE_URI.equals(name.getUri());
+        return !NamespaceConstants.NO_NAMESPACE_URI.equals(name.getUri());
     }
 
 }

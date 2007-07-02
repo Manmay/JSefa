@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
-import org.jsefa.xml.XmlConstants;
 import org.jsefa.xml.annotation.ListItem;
 import org.jsefa.xml.annotation.Namespace;
 import org.jsefa.xml.annotation.XmlAttribute;
@@ -38,10 +37,11 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
 import org.jsefa.xml.annotation.XmlNamespaces;
-
+import org.jsefa.xml.namespace.NamespaceConstants;
 
 /**
- * Tests to correct serialization/deserialization with different namespace declaration scenarios.
+ * Tests to correct serialization/deserialization with different namespace
+ * declaration scenarios.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
@@ -58,10 +58,12 @@ public class NamespacesTest extends TestCase {
         obj.element = "b";
         obj.elementList.add("c");
         String serializationResult = JSefaTestUtil.serialize(XML, obj);
-        assertTrue(getAttributeNamespace(serializationResult, "attribute").equals(XmlConstants.NO_NAMESPACE_URI));
-        assertTrue(getElementNamespace(serializationResult, "element").equals(XmlConstants.NO_NAMESPACE_URI));
-        assertTrue(getElementNamespace(serializationResult, "elementList").equals(XmlConstants.NO_NAMESPACE_URI));
-        assertTrue(getElementNamespace(serializationResult, "item").equals(XmlConstants.NO_NAMESPACE_URI));
+        assertTrue(getAttributeNamespace(serializationResult, "attribute").equals(
+                NamespaceConstants.NO_NAMESPACE_URI));
+        assertTrue(getElementNamespace(serializationResult, "element").equals(NamespaceConstants.NO_NAMESPACE_URI));
+        assertTrue(getElementNamespace(serializationResult, "elementList").equals(
+                NamespaceConstants.NO_NAMESPACE_URI));
+        assertTrue(getElementNamespace(serializationResult, "item").equals(NamespaceConstants.NO_NAMESPACE_URI));
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, obj);
     }
 
@@ -74,7 +76,8 @@ public class NamespacesTest extends TestCase {
         obj.element = "b";
         obj.elementList.add("c");
         String serializationResult = JSefaTestUtil.serialize(XML, obj);
-        assertTrue(getAttributeNamespace(serializationResult, "attribute").equals(XmlConstants.NO_NAMESPACE_URI));
+        assertTrue(getAttributeNamespace(serializationResult, "attribute").equals(
+                NamespaceConstants.NO_NAMESPACE_URI));
         assertTrue(getElementNamespace(serializationResult, "element").equals("uriA"));
         assertTrue(getElementNamespace(serializationResult, "elementList").equals("uriA"));
         assertTrue(getElementNamespace(serializationResult, "item").equals("uriA"));
@@ -112,13 +115,15 @@ public class NamespacesTest extends TestCase {
         obj.element2.elementListB.add("f");
         String serializationResult = JSefaTestUtil.serialize(XML, obj);
 
-        assertTrue(getAttributeNamespace(serializationResult, "attribute").equals(XmlConstants.NO_NAMESPACE_URI));
+        assertTrue(getAttributeNamespace(serializationResult, "attribute").equals(
+                NamespaceConstants.NO_NAMESPACE_URI));
         assertTrue(getElementNamespace(serializationResult, "element").equals("uriA"));
         assertTrue(getElementNamespace(serializationResult, "elementList").equals("uriA"));
         assertTrue(getElementNamespace(serializationResult, "item").equals("uriA"));
         assertTrue(getElementNamespace(serializationResult, "element2").equals("uriA"));
 
-        assertTrue(getAttributeNamespace(serializationResult, "attributeB").equals(XmlConstants.NO_NAMESPACE_URI));
+        assertTrue(getAttributeNamespace(serializationResult, "attributeB").equals(
+                NamespaceConstants.NO_NAMESPACE_URI));
         assertTrue(getElementNamespace(serializationResult, "elementB").equals("uriB"));
         assertTrue(getElementNamespace(serializationResult, "elementListB").equals("uriB"));
         assertTrue(getElementNamespace(serializationResult, "itemB").equals("uriB"));
@@ -154,7 +159,7 @@ public class NamespacesTest extends TestCase {
 
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, obj);
     }
-    
+
     private String getElementNamespace(String inputString, String localName) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -231,7 +236,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement(name = "a:element")
         String element;
 
-        @XmlElementList(name = "a:elementList", implicit = false, 
+        @XmlElementList(name = "a:elementList", implicit = false,
                 items = {@ListItem(name = "a:item", objectType = String.class)})
         List<String> elementList = new ArrayList<String>();
     }
@@ -274,7 +279,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement(name = "a:element")
         String element;
 
-        @XmlElementList(name = "a:elementList", implicit = false, 
+        @XmlElementList(name = "a:elementList", implicit = false,
                 items = {@ListItem(name = "a:item", objectType = String.class)})
         List<String> elementList = new ArrayList<String>();
 
@@ -291,7 +296,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement(name = "a:elementB")
         String elementB;
 
-        @XmlElementList(name = "a:elementListB", implicit = false, 
+        @XmlElementList(name = "a:elementListB", implicit = false,
                 items = {@ListItem(name = "a:itemB", objectType = String.class)})
         List<String> elementListB = new ArrayList<String>();
     }

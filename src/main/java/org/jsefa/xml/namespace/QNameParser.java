@@ -16,8 +16,6 @@
 
 package org.jsefa.xml.namespace;
 
-import org.jsefa.xml.XmlConstants;
-
 /**
  * A <code>QNameParser</code> allows for creating a {@link QName} from its
  * <code>String</code> representation.
@@ -61,7 +59,7 @@ public final class QNameParser {
                     return QName.create(defaultNamespaceURI, name);
                 }
             }
-            return QName.create(XmlConstants.NO_NAMESPACE_URI, name);
+            return QName.create(NamespaceConstants.NO_NAMESPACE_URI, name);
         } else {
             String prefix = name.substring(0, delimiterPos);
             String uri = namespaceManager.getUri(prefix);

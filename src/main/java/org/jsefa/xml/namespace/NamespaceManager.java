@@ -22,8 +22,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jsefa.xml.XmlConstants;
-
 /**
  * A <code>NamespaceManager</code> manages namespace URIs and their prefixes.
  * It allows for <br>
@@ -252,7 +250,7 @@ public final class NamespaceManager {
     }
 
     private void registerStandardPreferredPrefixes() {
-        this.preferredPrefixes.put(XmlConstants.XML_SCHEMA_INSTANCE_URI, "xsi");
+        this.preferredPrefixes.put(NamespaceConstants.XML_SCHEMA_INSTANCE_URI, "xsi");
     }
 
     private void createOwnRegistries() {

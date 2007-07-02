@@ -28,5 +28,15 @@ public interface NamespaceConstants {
      * Namespace URI to use to represent that there is no namespace.
      */
     String NO_NAMESPACE_URI = "";
+    
+    /**
+     * The xml schema instance URI.
+     */
+    String XML_SCHEMA_INSTANCE_URI = "http://www.w3.org/2001/XMLSchema-instance";
+    
+    /**
+     * The xml schema URI.
+     */
+    String XML_SCHEMA_URI = "http://www.w3.org/2001/XMLSchema";
 
 }

@@ -36,8 +36,8 @@ import org.jsefa.xml.lowlevel.TextContentImpl;
 import org.jsefa.xml.lowlevel.XmlItem;
 import org.jsefa.xml.lowlevel.XmlItemType;
 import org.jsefa.xml.lowlevel.XmlLowLevelConfiguration;
-import org.jsefa.xml.lowlevel.XmlLowLevelConstants;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
+import org.jsefa.xml.namespace.NamespaceConstants;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -264,7 +264,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
         if (uri != null) {
             return uri;
         } else {
-            return XmlLowLevelConstants.NO_NAMESPACE_URI;
+            return NamespaceConstants.NO_NAMESPACE_URI;
         }
     }
 

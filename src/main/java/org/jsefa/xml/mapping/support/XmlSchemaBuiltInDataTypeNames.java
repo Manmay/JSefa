@@ -16,7 +16,7 @@
 
 package org.jsefa.xml.mapping.support;
 
-import org.jsefa.xml.XmlConstants;
+import org.jsefa.xml.namespace.NamespaceConstants;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -30,26 +30,26 @@ public interface XmlSchemaBuiltInDataTypeNames {
     /**
      * The name of the XML Schema built-in data type <code>string</code>.
      */
-    QName STRING_DATA_TYPE_NAME = QName.create(XmlConstants.XML_SCHEMA_URI, "string");
+    QName STRING_DATA_TYPE_NAME = QName.create(NamespaceConstants.XML_SCHEMA_URI, "string");
 
     /**
      * The name of the XML Schema built-in data type <code>int</code>.
      */
-    QName INT_DATA_TYPE_NAME = QName.create(XmlConstants.XML_SCHEMA_URI, "int");
+    QName INT_DATA_TYPE_NAME = QName.create(NamespaceConstants.XML_SCHEMA_URI, "int");
 
     /**
      * The name of the XML Schema built-in data type <code>integer</code>.
      */
-    QName INTEGER_DATA_TYPE_NAME = QName.create(XmlConstants.XML_SCHEMA_URI, "integer");
+    QName INTEGER_DATA_TYPE_NAME = QName.create(NamespaceConstants.XML_SCHEMA_URI, "integer");
 
     /**
      * The name of the XML Schema built-in data type <code>long</code>.
      */
-    QName LONG_DATA_TYPE_NAME = QName.create(XmlConstants.XML_SCHEMA_URI, "long");
+    QName LONG_DATA_TYPE_NAME = QName.create(NamespaceConstants.XML_SCHEMA_URI, "long");
 
     /**
      * The name of the XML Schema built-in data type <code>boolean</code>.
      */
-    QName BOOLEAN_DATA_TYPE_NAME = QName.create(XmlConstants.XML_SCHEMA_URI, "boolean");
+    QName BOOLEAN_DATA_TYPE_NAME = QName.create(NamespaceConstants.XML_SCHEMA_URI, "boolean");
 
 }

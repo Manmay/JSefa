@@ -21,11 +21,11 @@ import junit.framework.TestCase;
 
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
-import org.jsefa.xml.XmlConstants;
 import org.jsefa.xml.annotation.Namespace;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlNamespaces;
+import org.jsefa.xml.namespace.NamespaceConstants;
 
 /**
  * Tests to test the correct serialization/deserialization when a data type name
@@ -105,14 +105,14 @@ public class StandardDataTypeNamesTest extends TestCase {
     }
 
     @XmlDataType()
-    @XmlNamespaces(@Namespace(prefix = "xs", uri = XmlConstants.XML_SCHEMA_URI))
+    @XmlNamespaces(@Namespace(prefix = "xs", uri = NamespaceConstants.XML_SCHEMA_URI))
     static final class StringTestDTO extends AbstractTestDTO {
         @XmlElement(dataTypeName = "xs:string")
         String element;
     }
 
     @XmlDataType()
-    @XmlNamespaces(@Namespace(prefix = "xs", uri = XmlConstants.XML_SCHEMA_URI))
+    @XmlNamespaces(@Namespace(prefix = "xs", uri = NamespaceConstants.XML_SCHEMA_URI))
     static final class IntTestDTO extends AbstractTestDTO {
         @XmlElement(dataTypeName = "xs:int")
         int element1;
@@ -122,7 +122,7 @@ public class StandardDataTypeNamesTest extends TestCase {
     }
 
     @XmlDataType()
-    @XmlNamespaces(@Namespace(prefix = "xs", uri = XmlConstants.XML_SCHEMA_URI))
+    @XmlNamespaces(@Namespace(prefix = "xs", uri = NamespaceConstants.XML_SCHEMA_URI))
     static final class IntegerTestDTO extends AbstractTestDTO {
         @XmlElement(dataTypeName = "xs:integer")
         int element1;
@@ -132,7 +132,7 @@ public class StandardDataTypeNamesTest extends TestCase {
     }
 
     @XmlDataType()
-    @XmlNamespaces(@Namespace(prefix = "xs", uri = XmlConstants.XML_SCHEMA_URI))
+    @XmlNamespaces(@Namespace(prefix = "xs", uri = NamespaceConstants.XML_SCHEMA_URI))
     static final class LongTestDTO extends AbstractTestDTO {
         @XmlElement(dataTypeName = "xs:long")
         long element1;
@@ -143,7 +143,7 @@ public class StandardDataTypeNamesTest extends TestCase {
 
 
     @XmlDataType()
-    @XmlNamespaces(@Namespace(prefix = "xs", uri = XmlConstants.XML_SCHEMA_URI))
+    @XmlNamespaces(@Namespace(prefix = "xs", uri = NamespaceConstants.XML_SCHEMA_URI))
     static final class BooleanTestDTO extends AbstractTestDTO {
         @XmlElement(dataTypeName = "xs:boolean")
         boolean element1;

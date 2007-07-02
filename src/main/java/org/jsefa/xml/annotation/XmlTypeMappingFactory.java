@@ -37,7 +37,6 @@ import org.jsefa.common.converter.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingException;
 import org.jsefa.common.util.ReflectionUtil;
-import org.jsefa.xml.XmlConstants;
 import org.jsefa.xml.mapping.AttributeDescriptor;
 import org.jsefa.xml.mapping.ElementDescriptor;
 import org.jsefa.xml.mapping.TextContentDescriptor;
@@ -59,6 +58,8 @@ import org.jsefa.xml.namespace.QNameParser;
  * 
  */
 public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTypeMappingRegistry> {
+
+    private static final String DEFAULT_DATA_TYPE_NAMES_URI = "http://www.jsefa.org/xml/types/defaults/object-types";
 
     private XmlDataTypeDefaultNameRegistry dataTypeDefaultNameRegistry;
 
@@ -219,16 +220,15 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
     private void registerElementList(Field field, XmlComplexTypeMapping mapping, NamespaceManager namespaceManager) {
         XmlElementList xmlElementList = field.getAnnotation(XmlElementList.class);
         QName listDataTypeName = createListTypeMappingIfAbsent(xmlElementList, field, namespaceManager);
-        XmlListTypeMapping listMapping = (XmlListTypeMapping) getTypeMappingRegistry().get(
-                listDataTypeName);
+        XmlListTypeMapping listMapping = (XmlListTypeMapping) getTypeMappingRegistry().get(listDataTypeName);
         if (listMapping.isImplicit()) {
             for (ListItem listItem : xmlElementList.items()) {
                 boolean singleType = xmlElementList.items().length == 1;
                 QName listItemDataTypeName = createIfAbsent(field, listItem, singleType, namespaceManager);
                 for (QName subDataTypeName : getTypeMappingRegistry().getDataTypeNameTreeElements(
                         listItemDataTypeName)) {
-                    mapping.registerIndirect(field.getName(), List.class, createElementDescriptor(
-                            listItem, subDataTypeName, namespaceManager), listDataTypeName);
+                    mapping.registerIndirect(field.getName(), List.class, createElementDescriptor(listItem,
+                            subDataTypeName, namespaceManager), listDataTypeName);
                 }
             }
         } else {
@@ -337,13 +337,13 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                         annotation, CONVERTER_CLASS) == null)) {
             QName name = this.dataTypeDefaultNameRegistry.get(objectType);
             if (name == null) {
-                name = QName.create(XmlConstants.DEFAULT_DATA_TYPE_NAMES_URI, objectType.getName());
+                name = QName.create(DEFAULT_DATA_TYPE_NAMES_URI, objectType.getName());
             }
             return name;
         } else {
             String localName = objectType.getName() + "@" + field.getName() + "@"
                     + field.getDeclaringClass().getName();
-            return QName.create(XmlConstants.DEFAULT_DATA_TYPE_NAMES_URI, localName);
+            return QName.create(DEFAULT_DATA_TYPE_NAMES_URI, localName);
         }
     }
 
@@ -354,7 +354,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
         } else {
             QName name = this.dataTypeDefaultNameRegistry.get(objectType);
             if (name == null) {
-                name = QName.create(XmlConstants.DEFAULT_DATA_TYPE_NAMES_URI, objectType.getName());
+                name = QName.create(DEFAULT_DATA_TYPE_NAMES_URI, objectType.getName());
             }
             return name;
         }
@@ -362,7 +362,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
 
     private QName createListDataTypeName(Field field) {
         String localName = field.getName() + "@" + field.getDeclaringClass().getName();
-        return QName.create(XmlConstants.DEFAULT_DATA_TYPE_NAMES_URI, localName);
+        return QName.create(DEFAULT_DATA_TYPE_NAMES_URI, localName);
     }
 
     private String getAnnotatedName(AnnotatedElement annotatedElement, String defaultName) {

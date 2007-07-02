@@ -27,32 +27,19 @@ import org.jsefa.xml.namespace.QName;
  */
 public interface XmlLowLevelConstants {
     /**
-     * Namespace URI to use to represent that there is no namespace.
-     * @see NamespaceConstants#NO_NAMESPACE_URI
-     */
-    String NO_NAMESPACE_URI = NamespaceConstants.NO_NAMESPACE_URI;
-    
-
-    /**
-     * The xml schema instance URI.
-     */
-    String XML_SCHEMA_INSTANCE_URI = "http://www.w3.org/2001/XMLSchema-instance";
-    
-    /**
      * The name of the attribute used to denote the data type as used in xml
      * schema instances.
      */
-    QName XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME = QName.create(XML_SCHEMA_INSTANCE_URI, "type");
+    QName XML_SCHEMA_DATA_TYPE_ATTRIBUTE_NAME = QName.create(NamespaceConstants.XML_SCHEMA_INSTANCE_URI, "type");
 
     /**
      * The default line break used if none is explicitly given.
      */
     String DEFAULT_LINE_BREAK = "\n";
-    
+
     /**
      * The default line indentation used if none is explicitly given.
      */
     String DEFAULT_LINE_INDENTATION = "  ";
-    
 
 }
