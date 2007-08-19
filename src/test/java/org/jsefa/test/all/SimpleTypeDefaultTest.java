@@ -19,6 +19,7 @@ package org.jsefa.test.all;
 import static org.jsefa.test.common.JSefaTestUtil.FormatType.*;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -212,7 +213,7 @@ public class SimpleTypeDefaultTest extends TestCase {
      */
     public void testDateCSV() {
         DateDTO dto = new DateDTO();
-        dto.dateField = (Date) (new DateConverter()).fromString("28.03.2008");
+        dto.dateField = createDate("28.03.2008");
         assertTrue(JSefaTestUtil.serialize(CSV, dto).indexOf("28.03.2008") >= 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, dto);
     }
@@ -222,7 +223,7 @@ public class SimpleTypeDefaultTest extends TestCase {
      */
     public void testDateFLR() {
         DateDTO dto = new DateDTO();
-        dto.dateField = (Date) (new DateConverter()).fromString("28.03.2008");
+        dto.dateField = createDate("28.03.2008");
         assertTrue(JSefaTestUtil.serialize(FLR, dto).indexOf("28.03.2008") >= 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(FLR, dto);
     }
@@ -232,7 +233,7 @@ public class SimpleTypeDefaultTest extends TestCase {
      */
     public void testDateXML() {
         DateDTO dto = new DateDTO();
-        dto.dateField = (Date) (new DateConverter()).fromString("28.03.2008");
+        dto.dateField = createDate("28.03.2008");
         assertTrue(JSefaTestUtil.serialize(XML, dto).indexOf("28.03.2008") >= 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
     }
@@ -447,4 +448,12 @@ public class SimpleTypeDefaultTest extends TestCase {
         long primitiveLongField;
     }
 
+    private Date createDate(String date) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(DateConverter.DEFAULT_FORMAT);
+            return df.parse(date);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }    
 }

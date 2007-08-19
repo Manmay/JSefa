@@ -43,7 +43,7 @@ public class XmlPerformanceDemo extends AbstractPerformanceDemo {
      * {@inheritDoc}
      */
     @Override
-    protected IOFactory createIOFactory(Class objectType) {
+    protected IOFactory createIOFactory(Class<?> objectType) {
         return XmlIOFactory.createFactory(objectType);
     }
     

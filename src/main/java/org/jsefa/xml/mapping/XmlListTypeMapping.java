@@ -37,7 +37,7 @@ public final class XmlListTypeMapping extends TypeMapping<QName> {
 
     private final Map<NodeDescriptor, NodeModel> nodeModelsByNodeDescriptor;
 
-    private final Map<Class, NodeModel> nodeModelsByObjectType;
+    private final Map<Class<?>, NodeModel> nodeModelsByObjectType;
 
     /**
      * Constructs a new <code>XmlListTypeMapping</code>.
@@ -50,7 +50,7 @@ public final class XmlListTypeMapping extends TypeMapping<QName> {
         super(List.class, dataTypeName);
         this.implicit = implicit;
         this.nodeModelsByNodeDescriptor = new HashMap<NodeDescriptor, NodeModel>();
-        this.nodeModelsByObjectType = new HashMap<Class, NodeModel>();
+        this.nodeModelsByObjectType = new HashMap<Class<?>, NodeModel>();
     }
 
     /**
@@ -59,7 +59,7 @@ public final class XmlListTypeMapping extends TypeMapping<QName> {
      * @param elementDescriptor the element descriptor
      * @param objectType the object type
      */
-    public void register(ElementDescriptor elementDescriptor, Class objectType) {
+    public void register(ElementDescriptor elementDescriptor, Class<?> objectType) {
         assertNotFinished();
         if (this.nodeModelsByNodeDescriptor.containsKey(elementDescriptor)) {
             throw new TypeMappingException("The element " + elementDescriptor.getName()
@@ -102,8 +102,8 @@ public final class XmlListTypeMapping extends TypeMapping<QName> {
      * @param objectType the object type.
      * @return the node model.
      */
-    public NodeModel getNodeModel(Class objectType) {
-        Class currentObjectType = objectType;
+    public NodeModel getNodeModel(Class<?> objectType) {
+        Class<?> currentObjectType = objectType;
         while (currentObjectType != null) {
             NodeModel result = this.nodeModelsByObjectType.get(currentObjectType);
             if (result != null) {

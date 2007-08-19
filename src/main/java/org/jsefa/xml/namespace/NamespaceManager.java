@@ -16,6 +16,8 @@
 
 package org.jsefa.xml.namespace;
 
+import static org.jsefa.xml.namespace.NamespaceConstants.*;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -102,8 +104,8 @@ public final class NamespaceManager {
      * @param prefix the prefix
      * @param uri the uri
      * @throws NullPointerException if one of the arguments is null
-     * @throws NamespaceRegistrationException if either the prefix or the uri is already
-     *             registered.
+     * @throws NamespaceRegistrationException if either the prefix or the uri is
+     *                 already registered.
      */
     public void register(String prefix, String uri) {
         if (prefix == null || uri == null) {
@@ -111,11 +113,12 @@ public final class NamespaceManager {
         }
         if (hasOwnRegistries) {
             if (this.registeredPrefixes.containsKey(uri)) {
-                throw new NamespaceRegistrationException("There is an already registered prefix for the uri " + uri);
+                throw new NamespaceRegistrationException("There is an already registered prefix for the uri "
+                        + uri);
             }
             if (this.registeredURIs.containsKey(prefix)) {
-                throw new NamespaceRegistrationException("The prefix " + prefix + " is already bound. It is bound to "
-                        + this.registeredURIs.get(prefix));
+                throw new NamespaceRegistrationException("The prefix " + prefix
+                        + " is already bound. It is bound to " + this.registeredURIs.get(prefix));
             }
         } else {
             createOwnRegistries();
@@ -149,7 +152,8 @@ public final class NamespaceManager {
      * parent namespace manager is asked for it (in the case a parent exists).
      * 
      * @param prefix the prefix
-     * @return the uri or null if none is registered for the given prefix.
+     * @return the uri or null if none is registered for the given prefix and it
+     *         is not the default one.
      */
     public String getUri(String prefix) {
         if (!this.hasOwnRegistries) {
@@ -168,7 +172,8 @@ public final class NamespaceManager {
      * parent namespace manager is asked for it (in the case a parent exists).
      * 
      * @param uri the namespace uri
-     * @return the prefix or null if none is registered for the given uri
+     * @return the prefix or null if none is registered for the given uri and it
+     *         is not the {@link NamespaceConstants#NO_NAMESPACE_URI}.
      */
     public String getPrefix(String uri) {
         if (uri == null) {
@@ -215,7 +220,7 @@ public final class NamespaceManager {
      * @param defaultAllowed true, if the prefix may be the default one.
      * @return the prefix
      */
-    public String createPrefix(String uri, boolean defaultAllowed) {
+    public String getOrCreatePrefix(String uri, boolean defaultAllowed) {
         if (uri == null) {
             return null;
         }
@@ -226,7 +231,7 @@ public final class NamespaceManager {
                 prefix = null;
             }
             if (prefix == null) {
-                prefix = "";
+                prefix = DEFAULT_NAMESPACE_PREFIX;
                 if (!defaultAllowed || getUri(prefix) != null) {
                     int no = 1;
                     do {
@@ -250,7 +255,7 @@ public final class NamespaceManager {
     }
 
     private void registerStandardPreferredPrefixes() {
-        this.preferredPrefixes.put(NamespaceConstants.XML_SCHEMA_INSTANCE_URI, "xsi");
+        this.preferredPrefixes.put(XML_SCHEMA_INSTANCE_URI, "xsi");
     }
 
     private void createOwnRegistries() {

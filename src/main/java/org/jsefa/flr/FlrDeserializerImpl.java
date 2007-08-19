@@ -19,12 +19,12 @@ package org.jsefa.flr;
 import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
+import org.jsefa.flr.config.FlrConfiguration;
 import org.jsefa.flr.lowlevel.Align;
 import org.jsefa.flr.lowlevel.FlrLowLevelDeserializer;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
 import org.jsefa.rbf.RbfDeserializer;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
-import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**
  * Default implementation of {@link FlrDeserializer} based on
@@ -39,26 +39,27 @@ public final class FlrDeserializerImpl extends RbfDeserializer implements FlrDes
 
     private final int prefixLength;
 
-    FlrDeserializerImpl(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<String, RbfEntryPoint> entryPointsByPrefixes) {
-        super(typeMappingRegistry, entryPointsByPrefixes);
+    FlrDeserializerImpl(FlrConfiguration config, Map<String, RbfEntryPoint> entryPointsByPrefixes,
+            FlrLowLevelDeserializer lowLevelDeserializer) {
+        super(config.getTypeMappingRegistry(), entryPointsByPrefixes);
         this.prefixLength = entryPointsByPrefixes.keySet().iterator().next().length();
-        this.lowLevelDeserializer = config.getLowLevelIOFactory().createDeserializer(config.getLowLevelConfiguration());
+        this.lowLevelDeserializer = lowLevelDeserializer;
     }
 
-    FlrDeserializerImpl(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry, RbfEntryPoint entryPoint) {
-        super(typeMappingRegistry, entryPoint);
+    FlrDeserializerImpl(FlrConfiguration config, RbfEntryPoint entryPoint,
+            FlrLowLevelDeserializer lowLevelDeserializer) {
+        super(config.getTypeMappingRegistry(), entryPoint);
         this.prefixLength = 0;
-        this.lowLevelDeserializer = config.getLowLevelIOFactory().createDeserializer(config.getLowLevelConfiguration());
+        this.lowLevelDeserializer = lowLevelDeserializer;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected Object readSimpleValue(SimpleTypeMapping typeMapping) {
+    protected Object readSimpleValue(SimpleTypeMapping<?> typeMapping) {
         FlrSimpleTypeMapping flrTypeMapping = (FlrSimpleTypeMapping) typeMapping;
-        String stringValue = this.lowLevelDeserializer.nextField(flrTypeMapping.getLength(), flrTypeMapping.getAlign(),
-                flrTypeMapping.getPadCharacter());
+        String stringValue = this.lowLevelDeserializer.nextField(flrTypeMapping.getLength(), flrTypeMapping
+                .getAlign(), flrTypeMapping.getPadCharacter());
         if (stringValue.length() != 0) {
             return typeMapping.getSimpleTypeConverter().fromString(stringValue);
         } else {

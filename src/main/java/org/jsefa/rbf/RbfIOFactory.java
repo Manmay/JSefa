@@ -23,11 +23,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jsefa.Configuration;
-import org.jsefa.IOFactoryException;
 import org.jsefa.Deserializer;
 import org.jsefa.IOFactory;
+import org.jsefa.IOFactoryException;
 import org.jsefa.Serializer;
+import org.jsefa.common.config.Configuration;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
@@ -48,18 +48,16 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
  * @param <S> the serializer type
  * @param <D> the deserializer type
  */
-public abstract class RbfIOFactory<C extends Configuration, S extends Serializer, D extends Deserializer>
+public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint>, S extends Serializer, D extends Deserializer>
         implements IOFactory {
 
     private final C config;
-
-    private final RbfTypeMappingRegistry typeMappingRegistry;
 
     private final RbfEntryPoint entryPoint;
 
     private final ConcurrentMap<String, RbfEntryPoint> entryPointsByPrefix;
 
-    private final ConcurrentMap<Class, RbfEntryPoint> entryPointsByObjectType;
+    private final ConcurrentMap<Class<?>, RbfEntryPoint> entryPointsByObjectType;
 
     private final boolean withPrefix;
 
@@ -67,32 +65,28 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
      * Constructs a new <code>RbfIOFactory</code>.
      * 
      * @param config the configuration
-     * @param typeMappingRegistry the type mapping registry
-     * @param entryPoints the entry points.
      */
     @SuppressWarnings("unchecked")
-    protected RbfIOFactory(C config, RbfTypeMappingRegistry typeMappingRegistry,
-            Collection<RbfEntryPoint> entryPoints) {
-        if (entryPoints == null || entryPoints.size() == 0) {
+    protected RbfIOFactory(C config) {
+        if (config.getEntryPoints().size() == 0) {
             throw new IOFactoryException("No entry points given");
         }
-        this.withPrefix = prefixRequired(entryPoints);
+        this.withPrefix = prefixRequired(config.getEntryPoints());
         this.config = (C) config.createCopy();
-        this.typeMappingRegistry = new RbfTypeMappingRegistry(typeMappingRegistry);
-        this.entryPointsByObjectType = new ConcurrentHashMap<Class, RbfEntryPoint>();
+        this.entryPointsByObjectType = new ConcurrentHashMap<Class<?>, RbfEntryPoint>();
 
         if (this.withPrefix) {
             this.entryPointsByPrefix = new ConcurrentHashMap<String, RbfEntryPoint>();
-            for (RbfEntryPoint entryPoint : entryPoints) {
+            for (RbfEntryPoint entryPoint : config.getEntryPoints()) {
                 Class objectType = getObjectType(entryPoint.getDataTypeName());
                 assertPrefixDeclared(entryPoint, objectType);
                 this.entryPointsByObjectType.put(objectType, entryPoint);
                 this.entryPointsByPrefix.put(entryPoint.getDesignator(), entryPoint);
             }
-            assertPrefixContentualUniqueness(entryPoints);
+            assertPrefixContentualUniqueness(config.getEntryPoints());
             this.entryPoint = null;
         } else {
-            this.entryPoint = entryPoints.iterator().next();
+            this.entryPoint = config.getEntryPoints().iterator().next();
             Class objectType = getObjectType(entryPoint.getDataTypeName());
             this.entryPointsByObjectType.put(objectType, entryPoint);
             this.entryPointsByPrefix = null;
@@ -103,7 +97,7 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
      * {@inheritDoc}
      */
     public final S createSerializer() {
-        return createSerializer(this.config, this.typeMappingRegistry, this.entryPointsByObjectType);
+        return createSerializer(this.config, this.entryPointsByObjectType);
     }
 
     /**
@@ -111,44 +105,47 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
      */
     public final D createDeserializer() {
         if (this.withPrefix) {
-            return createDeserializer(this.config, this.typeMappingRegistry, this.entryPointsByPrefix);
+            return createDeserializer(this.config, this.entryPointsByPrefix);
         } else {
-            return createDeserializer(this.config, this.typeMappingRegistry, this.entryPoint);
+            return createDeserializer(this.config, this.entryPoint);
         }
+    }
+
+    /**
+     * Returns true if prefixes are used and false otherwise.
+     * 
+     * @return true if prefixes are used; otherwise false
+     */
+    public boolean withPrefixes() {
+        return prefixRequired(this.config.getEntryPoints());
     }
 
     /**
      * Creates a new <code>Serializer</code>.
      * 
      * @param config the configuration
-     * @param typeMappingRegistry the type mapping registry
      * @param entryPointsByObjectType a map from object types to entry points.
      * @return a <code>Serializer</code>
      */
-    protected abstract S createSerializer(C config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<Class, RbfEntryPoint> entryPointsByObjectType);
+    protected abstract S createSerializer(C config, Map<Class<?>, RbfEntryPoint> entryPointsByObjectType);
 
     /**
      * Creates a new <code>Deserializer</code>.
      * 
      * @param config the configuration
-     * @param typeMappingRegistry the type mapping registry
      * @param entryPoint the entry point
      * @return a <code>Deserializer</code>
      */
-    protected abstract D createDeserializer(C config, RbfTypeMappingRegistry typeMappingRegistry,
-            RbfEntryPoint entryPoint);
+    protected abstract D createDeserializer(C config, RbfEntryPoint entryPoint);
 
     /**
      * Creates a new A<code>Deserializer</code>.
      * 
      * @param config the configuration
-     * @param typeMappingRegistry the type mapping registry
      * @param entryPointsByPrefix a map from prefixes to entry points
      * @return a <code>Deserializer</code>
      */
-    protected abstract D createDeserializer(C config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<String, RbfEntryPoint> entryPointsByPrefix);
+    protected abstract D createDeserializer(C config, Map<String, RbfEntryPoint> entryPointsByPrefix);
 
     /**
      * Returns true if and only if a prefix is required for the given entry
@@ -166,8 +163,8 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
         }
     }
 
-    private Class getObjectType(String dataTypeName) {
-        TypeMapping typeMapping = typeMappingRegistry.get(dataTypeName);
+    private Class<?> getObjectType(String dataTypeName) {
+        TypeMapping<?> typeMapping = this.config.getTypeMappingRegistry().get(dataTypeName);
         if (typeMapping == null) {
             throw new IOFactoryException("Unknown data type: " + dataTypeName);
         }
@@ -175,11 +172,10 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
 
     }
 
-    private void assertPrefixDeclared(RbfEntryPoint entryPoint, Class objectType) {
+    private void assertPrefixDeclared(RbfEntryPoint entryPoint, Class<?> objectType) {
         String prefix = entryPoint.getDesignator();
         if (prefix == null || prefix.length() == 0) {
-            throw new IOFactoryException("prefix not given but required for object type "
-                    + objectType.getName());
+            throw new IOFactoryException("prefix not given but required for object type " + objectType.getName());
         }
     }
 
@@ -221,7 +217,7 @@ public abstract class RbfIOFactory<C extends Configuration, S extends Serializer
                     + siblingUsedPrefixes);
         }
         Set<String> usedPrefixes = new HashSet<String>();
-        TypeMapping typeMapping = this.typeMappingRegistry.get(dataTypeName);
+        TypeMapping<?> typeMapping = this.config.getTypeMappingRegistry().get(dataTypeName);
         if (typeMapping instanceof RbfComplexTypeMapping) {
             RbfComplexTypeMapping complexTypeMapping = (RbfComplexTypeMapping) typeMapping;
             for (String fieldName : complexTypeMapping.getFieldNames(NodeType.SUB_RECORD)) {

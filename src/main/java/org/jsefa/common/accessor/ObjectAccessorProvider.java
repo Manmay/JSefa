@@ -29,5 +29,5 @@ public interface ObjectAccessorProvider {
      * @param objectType the class
      * @return an object accessor
      */
-    ObjectAccessor get(Class objectType);
+    ObjectAccessor get(Class<?> objectType);
 }

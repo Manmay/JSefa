@@ -45,10 +45,11 @@ public interface Deserializer {
     /**
      * Deserializes an object from the stream.
      * 
+     * @param <T> the expected type of the object
      * @return the deserialized object.
      * @throws DeserializationException
      */
-    Object next();
+    <T> T next();
 
     /**
      * Closes the deserialization stream. The underlying reader will be closed

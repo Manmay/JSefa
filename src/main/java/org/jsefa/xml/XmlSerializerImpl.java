@@ -24,6 +24,7 @@ import java.util.Map;
 import org.jsefa.SerializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
 import org.jsefa.xml.mapping.NodeModel;
 import org.jsefa.xml.mapping.NodeType;
@@ -41,17 +42,17 @@ import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
 public final class XmlSerializerImpl implements XmlSerializer {
     private final XmlTypeMappingRegistry typeMappingRegistry;
 
-    private final Map<Class, NodeModel> entryNodeModels;
+    private final Map<Class<?>, NodeModel> entryNodeModels;
 
     private final XmlLowLevelSerializer lowLevelSerializer;
 
     private IdentityHashMap<Object, Object> complexObjectsOnPath;
 
-    XmlSerializerImpl(XmlConfiguration config, XmlTypeMappingRegistry typeMappingRegistry,
-            Map<Class, NodeModel> entryNodeModels) {
-        this.typeMappingRegistry = typeMappingRegistry;
+    XmlSerializerImpl(XmlConfiguration config, Map<Class<?>, NodeModel> entryNodeModels,
+            XmlLowLevelSerializer lowLevelSerializer) {
+        this.typeMappingRegistry = config.getTypeMappingRegistry();
         this.entryNodeModels = entryNodeModels;
-        this.lowLevelSerializer = config.getLowLevelIOFactory().createSerializer(config.getLowLevelConfiguration());
+        this.lowLevelSerializer = lowLevelSerializer;
         this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
     }
 
@@ -78,7 +79,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
         try {
             NodeModel nodeModel = this.entryNodeModels.get(object.getClass());
             if (nodeModel == null) {
-                Class objectType = object.getClass().getSuperclass();
+                Class<?> objectType = object.getClass().getSuperclass();
                 while (objectType != null) {
                     nodeModel = this.entryNodeModels.get(objectType);
                     if (nodeModel != null) {
@@ -126,16 +127,17 @@ public final class XmlSerializerImpl implements XmlSerializer {
     }
 
     private void serializeElement(Object object, NodeModel nodeModel) {
-        TypeMapping typeMapping = this.typeMappingRegistry.get(nodeModel.getDataTypeName());
+        TypeMapping<?> typeMapping = this.typeMappingRegistry.get(nodeModel.getDataTypeName());
         if (typeMapping == null) {
-            throw new SerializationException("No type mapping given for data type name " + nodeModel.getDataTypeName());
+            throw new SerializationException("No type mapping given for data type name "
+                    + nodeModel.getDataTypeName());
         }
         if (typeMapping instanceof XmlSimpleTypeMapping) {
             serializeSimpleElement(object, nodeModel, (XmlSimpleTypeMapping) typeMapping);
         } else if (typeMapping instanceof XmlComplexTypeMapping) {
             serializeComplexElement(object, nodeModel, (XmlComplexTypeMapping) typeMapping);
         } else if (typeMapping instanceof XmlListTypeMapping) {
-            serializeListElement((List) object, nodeModel, (XmlListTypeMapping) typeMapping);
+            serializeListElement((List<?>) object, nodeModel, (XmlListTypeMapping) typeMapping);
         }
     }
 
@@ -180,7 +182,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
         for (String fieldName : typeMapping.getFieldNames(NodeType.ELEMENT)) {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
-                Class fieldClass = fieldValue.getClass();
+                Class<?> fieldClass = fieldValue.getClass();
                 if (List.class.isAssignableFrom(fieldClass)) {
                     fieldClass = List.class;
                 }
@@ -196,7 +198,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
         this.complexObjectsOnPath.remove(object);
     }
 
-    private void serializeListElement(List listObject, NodeModel nodeModel, XmlListTypeMapping typeMapping) {
+    private void serializeListElement(List<?> listObject, NodeModel nodeModel, XmlListTypeMapping typeMapping) {
         if (listObject == null) {
             return;
         }

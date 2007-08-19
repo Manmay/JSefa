@@ -37,7 +37,7 @@ public final class XmlSimpleTypeMapping extends SimpleTypeMapping<QName> {
      * @param objectType the object type
      * @param simpleTypeConverter the simple type converter
      */
-    public XmlSimpleTypeMapping(QName dataTypeName, Class objectType, SimpleTypeConverter simpleTypeConverter) {
+    public XmlSimpleTypeMapping(QName dataTypeName, Class<?> objectType, SimpleTypeConverter simpleTypeConverter) {
         super(objectType, dataTypeName, simpleTypeConverter);
         finish();
     }

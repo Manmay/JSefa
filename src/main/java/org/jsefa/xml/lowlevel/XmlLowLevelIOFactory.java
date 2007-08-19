@@ -16,32 +16,64 @@
 
 package org.jsefa.xml.lowlevel;
 
+import java.lang.reflect.Method;
+
+import org.jsefa.IOFactoryException;
+import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.lowlevel.LowLevelIOFactory;
+import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
+import org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters;
 
 /**
  * Factory for creating {@link XmlLowLevelDeserializer}s and
  * {@link XmlLowLevelSerializer}s.
  * 
+ * This is the abstract base class for concrete factories. Each subclass must
+ * provide a static method <code>create(XmlLowLevelConfiguration config)</code>
+ * as well as implement the abstract methods.
+ * <p>
+ * This class provides a static factory method
+ * {@link #createFactory(XmlLowLevelConfiguration)} to create an instance of a
+ * concrete <code>XmlLowLevelIOFactory</code>.
+ * 
  * @author Norman Lahme-Huetig
  * 
  */
-public interface XmlLowLevelIOFactory {
+public abstract class XmlLowLevelIOFactory implements LowLevelIOFactory {
 
     /**
-     * Creates a <code>XmlLowLevelDeserializer</code> configured with the
-     * given configuration object.
+     * Creates a new <code>XmlLowLevelIOFactory</code> for
+     * <code>XmlLowLevelSerializer</code>s and
+     * <code>XmlLowLevelDeserializer</code>s using the given configuration.
      * 
-     * @param config the configuration object
-     * @return a <code>XmlLowLevelDeserializer</code>
+     * @param config the configuration object.
+     * @return an <code>XmlLowLevelIOFactory</code> factory
+     * @throws IOFactoryException
      */
-    XmlLowLevelDeserializer createDeserializer(XmlLowLevelConfiguration config);
+    public static XmlLowLevelIOFactory createFactory(XmlLowLevelConfiguration config) {
+        Class<XmlLowLevelIOFactory> factoryClass = InitialConfiguration.get(
+                XmlLowLevelInitialConfigurationParameters.IO_FACTORY_CLASS, StaxBasedXmlLowLevelIOFactory.class);
+        Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
+                XmlLowLevelConfiguration.class);
+        if (createMethod == null) {
+            throw new IOFactoryException("Failed to create an XmlLowLevelIOFactory. The factory " + factoryClass
+                    + " does not contain the required static createFactory method.");
+        }
+        try {
+            return ReflectionUtil.callMethod(null, createMethod, config);
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create an XmlLowLevelIOFactory", e);
+        }
+    }
 
     /**
-     * Creates a <code>XmlLowLevelSerializer</code> configured with the given
-     * configuration object.
-     * 
-     * @param config the configuration object
-     * @return a <code>XmlLowLevelSerializer</code>
+     * {@inheritDoc}
      */
-    XmlLowLevelSerializer createSerializer(XmlLowLevelConfiguration config);
+    public abstract XmlLowLevelSerializer createSerializer();
 
+    /**
+     * {@inheritDoc}
+     */
+    public abstract XmlLowLevelDeserializer createDeserializer();
 }

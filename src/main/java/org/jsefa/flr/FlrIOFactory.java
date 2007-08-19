@@ -16,100 +16,105 @@
 
 package org.jsefa.flr;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.lang.reflect.Method;
 
+import org.jsefa.IOFactory;
 import org.jsefa.IOFactoryException;
-import org.jsefa.Deserializer;
-import org.jsefa.Serializer;
-import org.jsefa.flr.annotation.FlrDataType;
+import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.flr.annotation.FlrEntryPointFactory;
 import org.jsefa.flr.annotation.FlrTypeMappingFactory;
-import org.jsefa.rbf.RbfIOFactory;
-import org.jsefa.rbf.mapping.RbfEntryPoint;
-import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
+import org.jsefa.flr.config.FlrConfiguration;
+import org.jsefa.flr.config.FlrInitialConfigurationParameters;
 
 /**
  * Factory for creating {@link FlrSerializer}s and {@link FlrDeserializer}s.
  * <p>
- * Instances of this class are immutable and thread-safe.
+ * This is the abstract base class for concrete factories. Each subclass must
+ * provide a static method <code>create(FlrConfiguration config)</code> as
+ * well as implement the abstract methods.
+ * <p>
+ * This class provides a static factory method
+ * {@link #createFactory(FlrConfiguration)} to create an instance of a concrete
+ * <code>FlrIOFactory</code>.
+ * <p>
+ * This class also provides static facade methods hiding the details of
+ * creating entry points based on annotated object types.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
-public final class FlrIOFactory extends RbfIOFactory<FlrConfiguration, FlrSerializer, FlrDeserializer> {
+public abstract class FlrIOFactory implements IOFactory {
 
     /**
      * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s
-     * and <code>FlrDeserializer</code>s which can handle objects of the
-     * given object types.
+     * and <code>FlrDeserializer</code>s using the given configuration.
+     * <p>
+     * Note that the configuration should provide a non empty collection of
+     * entry points.<br>
+     * You can use the methods {@link #createFactory(Class...)} or
+     * {@link #createFactory(FlrConfiguration, Class...)} if you want to get the
+     * entry points automatically created from annotated classes.
      * 
-     * @param objectTypes the object types.
-     * @return a <code>XmlIOFactory</code> factory
+     * @param config the configuration object. It will be copied so that the
+     *                given one can be modified or reused.
+     * @return an <code>FlrIOFactory</code> factory
      * @throws IOFactoryException
      */
-    public static FlrIOFactory createFactory(Class... objectTypes) {
-        return FlrIOFactory.createFactory(new FlrConfiguration(), objectTypes);
+    public static FlrIOFactory createFactory(FlrConfiguration config) {
+        Class<FlrIOFactory> factoryClass = InitialConfiguration.get(
+                FlrInitialConfigurationParameters.IO_FACTORY_CLASS, FlrIOFactoryImpl.class);
+        Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory", FlrConfiguration.class);
+        if (createMethod == null) {
+            throw new IOFactoryException("Failed to create a FlrIOFactory. The factory " + factoryClass
+                    + " does not contain the required static createFactory method.");
+        }
+        try {
+            return ReflectionUtil.callMethod(null, createMethod, config);
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create a FlrIOFactory", e);
+        }
     }
 
     /**
      * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s
      * and <code>FlrDeserializer</code>s which can handle objects of the
      * given object types.
+     * <p>
      * 
-     * @param config the configuration object. It will be copied so that the
-     *            given one can be modified or reused.
+     * It creates a new {@link FlrConfiguration} with entry points generated
+     * from the annotations found in the given object types.
+     * 
      * @param objectTypes object types for which entry points should be created
-     *            from annotations
+     *                from annotations
      * @return a <code>FlrIOFactory</code> factory
      * @throws IOFactoryException
      */
-    public static FlrIOFactory createFactory(FlrConfiguration config, Class... objectTypes) {
-        try {
-            RbfTypeMappingRegistry typeMappingRegistry = new RbfTypeMappingRegistry();
-            Collection<RbfEntryPoint> entryPoints = new ArrayList<RbfEntryPoint>();
-            FlrTypeMappingFactory typeMappingFactory = new FlrTypeMappingFactory(typeMappingRegistry, config
-                    .getSimpleTypeConverterProvider(), config.getObjectAccessorProvider());
-            for (Class<Object> objectType : objectTypes) {
-                String dataTypeName = typeMappingFactory.createIfAbsent(objectType);
-                String prefix = objectType.getAnnotation(FlrDataType.class).defaultPrefix();
-                entryPoints.add(new RbfEntryPoint(dataTypeName, prefix));
-            }
-            return new FlrIOFactory(config, typeMappingRegistry, entryPoints);
-        } catch (IOFactoryException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IOFactoryException("Failed to create an FlrIOFactory", e);
-        }
+    public static FlrIOFactory createFactory(Class<?>... objectTypes) {
+        return createFactory(new FlrConfiguration(), objectTypes);
     }
 
     /**
      * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s
      * and <code>FlrDeserializer</code>s which can handle objects of the
-     * object types defined in the given entry points.
+     * given object types as well as those object types for which entry points
+     * are defined in the <code>config</code>.
      * 
      * @param config the configuration object. It will be copied so that the
-     *            given one can be modified or reused.
-     * @param typeMappingRegistry the type mapping registry with type mappings
-     *            for all data types which are referred to from the given entry
-     *            points.
-     * @param entryPoints the entry points. An entry point is required for every
-     *            type of object which will be passed to
-     *            {@link Serializer#write} or which should be returned from
-     *            {@link Deserializer#next} and only for these objects (not for
-     *            the objects related to these ones). If more than one entry
-     *            point is defined for the same data type name, then <br>
-     *            a) the last one is used for serialization<br>
-     *            b) all are used for deserialization whereas their respective
-     *            designators are used as alternative designators for the same
-     *            data type.
-     * @return a <code>FlrIOFactory</code> factory
+     *                given one can be modified or reused.
+     * @param objectTypes object types for which entry points should be created
+     *                from annotations
+     * @return a a <code>FlrIOFactory</code> factory
      * @throws IOFactoryException
      */
-    public static FlrIOFactory createFactory(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Collection<RbfEntryPoint> entryPoints) {
+    public static FlrIOFactory createFactory(FlrConfiguration config, Class<?>... objectTypes) {
+        FlrConfiguration newConfig = config.createCopy();
         try {
-            return new FlrIOFactory(config, typeMappingRegistry, entryPoints);
+            FlrTypeMappingFactory typeMappingFactory = new FlrTypeMappingFactory(newConfig
+                    .getTypeMappingRegistry(), newConfig.getSimpleTypeConverterProvider(), newConfig
+                    .getObjectAccessorProvider(), newConfig.getDefaultPadCharacter());
+            newConfig.getEntryPoints().addAll(
+                    FlrEntryPointFactory.createEntryPoints(typeMappingFactory, objectTypes));
+            return createFactory(newConfig);
         } catch (IOFactoryException e) {
             throw e;
         } catch (Exception e) {
@@ -117,49 +122,14 @@ public final class FlrIOFactory extends RbfIOFactory<FlrConfiguration, FlrSerial
         }
     }
 
-    FlrIOFactory(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Collection<RbfEntryPoint> entryPoints) {
-        super(config, typeMappingRegistry, entryPoints);
-        if (prefixRequired(entryPoints)) {
-            assertEqualPrefixLength(entryPoints);
-        }
-    }
+    /**
+     * {@inheritDoc}
+     */
+    public abstract FlrSerializer createSerializer();
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    protected FlrSerializer createSerializer(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<Class, RbfEntryPoint> entryPointsByObjectType) {
-        return new FlrSerializerImpl(config, typeMappingRegistry, entryPointsByObjectType);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected FlrDeserializer createDeserializer(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            RbfEntryPoint entryPoint) {
-        return new FlrDeserializerImpl(config, typeMappingRegistry, entryPoint);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected FlrDeserializer createDeserializer(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<String, RbfEntryPoint> entryPointsByPrefix) {
-        return new FlrDeserializerImpl(config, typeMappingRegistry, entryPointsByPrefix);
-    }
-
-    private void assertEqualPrefixLength(Collection<RbfEntryPoint> entryPoints) {
-        int length = entryPoints.iterator().next().getDesignator().length();
-        for (RbfEntryPoint entryPoint : entryPoints) {
-            if (entryPoint.getDesignator().length() != length) {
-                throw new IOFactoryException("The prefix " + entryPoint.getDesignator() + " has not the length "
-                        + length);
-            }
-        }
-    }
+    public abstract FlrDeserializer createDeserializer();
 
 }

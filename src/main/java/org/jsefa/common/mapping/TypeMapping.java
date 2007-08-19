@@ -38,7 +38,7 @@ package org.jsefa.common.mapping;
  * @param <T> the type of the data type name
  */
 public abstract class TypeMapping<T> {
-    private final Class objectType;
+    private final Class<?> objectType;
 
     private final T dataTypeName;
 
@@ -50,7 +50,7 @@ public abstract class TypeMapping<T> {
      * @param objectType the object type.
      * @param dataTypeName the data type name.
      */
-    public TypeMapping(Class objectType, T dataTypeName) {
+    public TypeMapping(Class<?> objectType, T dataTypeName) {
         this.objectType = objectType;
         this.dataTypeName = dataTypeName;
     }
@@ -60,7 +60,7 @@ public abstract class TypeMapping<T> {
      * 
      * @return the object type
      */
-    public final Class getObjectType() {
+    public final Class<?> getObjectType() {
         return this.objectType;
     }
 

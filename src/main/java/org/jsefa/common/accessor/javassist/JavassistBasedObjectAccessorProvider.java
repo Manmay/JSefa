@@ -45,7 +45,7 @@ import org.jsefa.common.util.ReflectionUtil;
  * 
  */
 public final class JavassistBasedObjectAccessorProvider implements ObjectAccessorProvider {
-    private final ConcurrentMap<Class, ObjectAccessor> objectAccessors;
+    private final ConcurrentMap<Class<?>, ObjectAccessor> objectAccessors;
 
     private static JavassistBasedObjectAccessorProvider instance;
 
@@ -62,13 +62,13 @@ public final class JavassistBasedObjectAccessorProvider implements ObjectAccesso
     }
 
     private JavassistBasedObjectAccessorProvider() {
-        this.objectAccessors = new ConcurrentHashMap<Class, ObjectAccessor>();
+        this.objectAccessors = new ConcurrentHashMap<Class<?>, ObjectAccessor>();
     }
 
     /**
      * {@inheritDoc}
      */
-    public ObjectAccessor get(Class objectType) {
+    public ObjectAccessor get(Class<?> objectType) {
         if (objectType.isInterface()) {
             return null;
         }
@@ -82,7 +82,7 @@ public final class JavassistBasedObjectAccessorProvider implements ObjectAccesso
         return objectAccessor;
     }
 
-    private ObjectAccessor create(Class objectType) {
+    private ObjectAccessor create(Class<?> objectType) {
         try {
             ClassPool pool = ClassPool.getDefault();
 
@@ -111,13 +111,13 @@ public final class JavassistBasedObjectAccessorProvider implements ObjectAccesso
         aClass.addField(fallbackObjectAccessor);
     }
 
-    private void addConstructor(CtClass aClass, Class objectType) throws Exception {
+    private void addConstructor(CtClass aClass, Class<?> objectType) throws Exception {
         CtConstructor constructor = CtNewConstructor.defaultConstructor(aClass);
         StringBuilder constructorBody = new StringBuilder();
         constructorBody.append("{ fieldAccessors = new java.util.HashMap();\n");
         for (Field field : ReflectionUtil.getAllFields(objectType)) {
             if (!Modifier.isPrivate(field.getModifiers()) && !field.getType().isPrimitive()) {
-                Class fieldAccessorClass = FieldAccessorFactory.createClass(field, objectType);
+                Class<FieldAccessor> fieldAccessorClass = FieldAccessorFactory.createClass(field, objectType);
                 constructorBody.append("fieldAccessors.put(\"" + field.getName() + "\", new "
                         + fieldAccessorClass.getName() + "());\n");
             }
@@ -130,14 +130,14 @@ public final class JavassistBasedObjectAccessorProvider implements ObjectAccesso
         aClass.addConstructor(constructor);
     }
 
-    private void addCreateMethod(CtClass aClass, Class objectType) throws Exception {
+    private void addCreateMethod(CtClass aClass, Class<?> objectType) throws Exception {
         ClassPool pool = ClassPool.getDefault();
         CtMethod createMethod = new CtMethod(pool.get("java.lang.Object"), "createObject", new CtClass[]{}, aClass);
         createMethod.setBody("{ return new " + objectType.getName() + "();}");
         aClass.addMethod(createMethod);
     }
 
-    private void addGetMethod(CtClass aClass, Class objectType) throws Exception {
+    private void addGetMethod(CtClass aClass, Class<?> objectType) throws Exception {
         ClassPool pool = ClassPool.getDefault();
         CtMethod getMethod = new CtMethod(pool.get("java.lang.Object"), "getValue", new CtClass[]{
                 pool.get("java.lang.Object"), pool.get("java.lang.String")}, aClass);
@@ -150,7 +150,7 @@ public final class JavassistBasedObjectAccessorProvider implements ObjectAccesso
         aClass.addMethod(getMethod);
     }
 
-    private void addSetMethod(CtClass aClass, Class objectType) throws Exception {
+    private void addSetMethod(CtClass aClass, Class<?> objectType) throws Exception {
         ClassPool pool = ClassPool.getDefault();
         CtMethod setMethod = new CtMethod(CtClass.voidType, "setValue", new CtClass[]{
                 pool.get("java.lang.Object"), pool.get("java.lang.String"), pool.get("java.lang.Object")}, aClass);

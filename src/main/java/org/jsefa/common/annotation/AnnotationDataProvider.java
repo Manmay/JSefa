@@ -36,7 +36,7 @@ import org.jsefa.common.util.ReflectionUtil;
  */
 public final class AnnotationDataProvider {
 
-    private static final List NULL_OBJECTS = Arrays
+    private static final List<?> NULL_OBJECTS = Arrays
             .asList(new Object[]{"", NoConverterClass.class, NoClass.class});
 
     /**
@@ -78,7 +78,7 @@ public final class AnnotationDataProvider {
      * @return the annotation data
      */
     public static <T> T get(AnnotatedElement annotatedElement, String annotationDataName,
-            Class... annotationClasses) {
+            Class<? extends Annotation>... annotationClasses) {
         for (Class<? extends Annotation> annotationClass : annotationClasses) {
             if (annotatedElement.isAnnotationPresent(annotationClass)) {
                 return AnnotationDataProvider.<T> get(annotatedElement.getAnnotation(annotationClass),

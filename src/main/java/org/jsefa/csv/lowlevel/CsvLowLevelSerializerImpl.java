@@ -16,6 +16,9 @@
 
 package org.jsefa.csv.lowlevel;
 
+import org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration;
+import org.jsefa.csv.lowlevel.config.EscapeMode;
+import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.rbf.lowlevel.RbfLowLevelSerializerImpl;
 
 /**
@@ -92,7 +95,7 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
 
     private void encodeAndWriteUsingQuotes(String value) {
         char quoteChar = this.config.getQuoteCharacter();
-        char escapeCharacter = CsvLowLevelConstants.ESCAPE_CHARACTER;
+        char escapeCharacter = this.config.getEscapeCharacter();
         if (this.config.getQuoteCharacterEscapeMode().equals(EscapeMode.DOUBLING)) {
             escapeCharacter = quoteChar;
         }
@@ -120,9 +123,9 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
         int index = 0;
         while (index < value.length()) {
             char currentChar = value.charAt(index++);
-            if (currentChar == CsvLowLevelConstants.ESCAPE_CHARACTER
+            if (currentChar == this.config.getEscapeCharacter()
                     || currentChar == this.config.getFieldDelimiter()) {
-                writeChar(CsvLowLevelConstants.ESCAPE_CHARACTER);
+                writeChar(this.config.getEscapeCharacter());
             }
             writeChar(currentChar);
         }
@@ -131,7 +134,7 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
     private boolean needsQuotes(String value) {
         for (int i = 0; i < value.length(); i++) {
             char currentChar = value.charAt(i);
-            if (currentChar == CsvLowLevelConstants.ESCAPE_CHARACTER
+            if (currentChar == this.config.getEscapeCharacter()
                     || currentChar == this.config.getFieldDelimiter()) {
                 return true;
             }

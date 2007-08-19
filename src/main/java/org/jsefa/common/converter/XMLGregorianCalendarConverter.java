@@ -18,6 +18,7 @@ package org.jsefa.common.converter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * Converter for <code>XMLGregorianCalendar</code> objects.
@@ -28,11 +29,16 @@ import javax.xml.datatype.DatatypeFactory;
  */
 public final class XMLGregorianCalendarConverter implements SimpleTypeConverter {
     private final DatatypeFactory factory;
-
+    
     /**
      * Constructs a <code>XMLGregorianCalendarConverter</code>.
+     * @return a xml gregorian calendar converter
      */
-    public XMLGregorianCalendarConverter() {
+    public static XMLGregorianCalendarConverter create() {
+        return new XMLGregorianCalendarConverter();
+    }
+
+    private XMLGregorianCalendarConverter() {
         try {
             this.factory = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException e) {
@@ -43,7 +49,7 @@ public final class XMLGregorianCalendarConverter implements SimpleTypeConverter 
     /**
      * {@inheritDoc}
      */
-    public Object fromString(String value) {
+    public XMLGregorianCalendar fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }

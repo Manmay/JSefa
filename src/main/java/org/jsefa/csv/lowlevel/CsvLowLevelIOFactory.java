@@ -16,30 +16,64 @@
 
 package org.jsefa.csv.lowlevel;
 
+import java.lang.reflect.Method;
+
+import org.jsefa.IOFactoryException;
+import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.lowlevel.LowLevelIOFactory;
+import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration;
+import org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters;
 
 /**
  * Factory for creating {@link CsvLowLevelDeserializer}s and
  * {@link CsvLowLevelSerializer}s.
  * 
+ * This is the abstract base class for concrete factories. Each subclass must
+ * provide a static method <code>create(CsvLowLevelConfiguration config)</code>
+ * as well as implement the abstract methods.
+ * <p>
+ * This class provides a static factory method
+ * {@link #createFactory(CsvLowLevelConfiguration)} to create an instance of a
+ * concrete <code>CsvLowLevelIOFactory</code>.
+ * 
  * @author Norman Lahme-Huetig
  * 
  */
-public interface CsvLowLevelIOFactory {
-    /**
-     * Creates a <code>CsvLowLevelDeserializer</code> configured with the
-     * given configuration object.
-     * 
-     * @param config the configuration object
-     * @return a <code>CsvLowLevelDeserializer</code>
-     */
-    CsvLowLevelDeserializer createDeserializer(CsvLowLevelConfiguration config);
+public abstract class CsvLowLevelIOFactory implements LowLevelIOFactory {
 
     /**
-     * Creates a <code>CsvLowLevelSerializer</code> configured with the given
-     * configuration object.
+     * Creates a new <code>CsvLowLevelIOFactory</code> for
+     * <code>CsvLowLevelSerializer</code>s and
+     * <code>CsvLowLevelDeserializer</code>s using the given configuration.
      * 
-     * @param config the configuration object
-     * @return a <code>CsvLowLevelSerializer</code>
+     * @param config the configuration object.
+     * @return an <code>CsvLowLevelIOFactory</code> factory
+     * @throws IOFactoryException
      */
-    CsvLowLevelSerializer createSerializer(CsvLowLevelConfiguration config);
+    public static CsvLowLevelIOFactory createFactory(CsvLowLevelConfiguration config) {
+        Class<CsvLowLevelIOFactory> factoryClass = InitialConfiguration.get(
+                CsvLowLevelInitialConfigurationParameters.IO_FACTORY_CLASS, CsvLowLevelIOFactoryImpl.class);
+        Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
+                CsvLowLevelConfiguration.class);
+        if (createMethod == null) {
+            throw new IOFactoryException("Failed to create an CsvLowLevelIOFactory. The factory " + factoryClass
+                    + " does not contain the required static createFactory method.");
+        }
+        try {
+            return ReflectionUtil.callMethod(null, createMethod, config);
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create an CsvLowLevelIOFactory", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract CsvLowLevelSerializer createSerializer();
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract CsvLowLevelDeserializer createDeserializer();
 }

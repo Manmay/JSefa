@@ -21,7 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Converter for <code>Date</code> objects.
+ * Converter for <code>Date</code> objects.<br>
+ * The format consists of one String describing the date format as required by
+ * {@link SimpleDateFormat},e. g. ""dd.MM.yyyy".<br>
  * <p>
  * It is thread-safe (the access to the non-thread-safe {@link SimpleDateFormat}
  * is synchronized).
@@ -37,31 +39,40 @@ public final class DateConverter implements SimpleTypeConverter {
     private final SimpleDateFormat dateFormat;
 
     /**
-     * Constructs a <code>DateConverter</code> with the default format:
-     * "dd.MM.yyyy".
-     */
-    public DateConverter() {
-        this(DEFAULT_FORMAT);
-    }
-
-    /**
-     * Constructs a <code>DateConverter</code> with the given format.
+     * Constructs a <code>DateConverter</code>.<br>
+     * If no format is given, the {@link #DEFAULT_FORMAT} is used.
      * 
-     * @param format the format to use.
+     * @param configuration the configuration
+     * @return a date converter
      * @throws ConversionException if the given format is not valid.
      */
-    public DateConverter(String... format) {
+    public static DateConverter create(SimpleTypeConverterConfiguration configuration) {
+        String format = getFormat(configuration);
         try {
-            this.dateFormat = new SimpleDateFormat(format[0]);
+            return new DateConverter(new SimpleDateFormat(format));
         } catch (Exception e) {
             throw new ConversionException("Could not create a DateConverter with format " + format, e);
         }
     }
 
+    private static String getFormat(SimpleTypeConverterConfiguration configuration) {
+        if (configuration.getFormat() == null) {
+            return DEFAULT_FORMAT;
+        }
+        if (configuration.getFormat().length != 1) {
+            throw new ConversionException("The format for a DateConverter must be a single String");
+        }
+        return configuration.getFormat()[0];
+    }
+
+    private DateConverter(SimpleDateFormat dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
     /**
      * {@inheritDoc}
      */
-    public synchronized Object fromString(String value) {
+    public synchronized Date fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }

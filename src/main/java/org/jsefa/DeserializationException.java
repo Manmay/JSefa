@@ -28,7 +28,7 @@ public final class DeserializationException extends RuntimeException {
 
     /**
      * Constructs a new <code>DeserializationException</code> with the
-     * specified detail messagage.
+     * specified detail message.
      * 
      * @param message the detail message.
      */
@@ -38,7 +38,7 @@ public final class DeserializationException extends RuntimeException {
 
     /**
      * Constructs a new <code>DeserializationException</code> with the
-     * specified detail messagage and cause.
+     * specified detail message and cause.
      * 
      * @param message the detail message
      * @param cause the cause

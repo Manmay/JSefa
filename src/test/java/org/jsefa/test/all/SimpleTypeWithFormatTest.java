@@ -21,6 +21,7 @@ import static org.jsefa.test.common.JSefaTestUtil.FormatType.FLR;
 import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -54,8 +55,7 @@ public class SimpleTypeWithFormatTest extends TestCase {
      */
     public void testDateCSV() {
         DateDTO dto = new DateDTO();
-        DateConverter dateConverter = new DateConverter();
-        dto.dateField = (Date) dateConverter.fromString("28.02.2007");
+        dto.dateField = createDate("28.02.2007");
         assertTrue(JSefaTestUtil.serialize(CSV, dto).indexOf("28.02.2007") >= 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, dto);
     }
@@ -65,8 +65,7 @@ public class SimpleTypeWithFormatTest extends TestCase {
      */
     public void testDateFLR() {
         DateDTO dto = new DateDTO();
-        DateConverter dateConverter = new DateConverter();
-        dto.dateField = (Date) dateConverter.fromString("28.02.2007");
+        dto.dateField = createDate("28.02.2007");
         assertTrue(JSefaTestUtil.serialize(FLR, dto).indexOf("28.02.2007") >= 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(FLR, dto);
     }
@@ -76,8 +75,7 @@ public class SimpleTypeWithFormatTest extends TestCase {
      */
     public void testDateXML() {
         DateDTO dto = new DateDTO();
-        DateConverter dateConverter = new DateConverter();
-        dto.dateField = (Date) dateConverter.fromString("28.02.2007");
+        dto.dateField = createDate("28.02.2007");
         assertTrue(JSefaTestUtil.serialize(XML, dto).indexOf("28.02.2007") >= 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
     }
@@ -214,4 +212,12 @@ public class SimpleTypeWithFormatTest extends TestCase {
         Boolean booleanField;
     }
 
+    private Date createDate(String date) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(DateConverter.DEFAULT_FORMAT);
+            return df.parse(date);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }    
 }

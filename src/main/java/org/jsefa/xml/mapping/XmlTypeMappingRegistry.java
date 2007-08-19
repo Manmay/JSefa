@@ -16,14 +16,24 @@
 
 package org.jsefa.xml.mapping;
 
-import org.jsefa.common.converter.SimpleTypeConverterProvider;
+import static org.jsefa.xml.mapping.support.XmlSchemaBuiltInDataTypeNames.BOOLEAN_DATA_TYPE_NAME;
+import static org.jsefa.xml.mapping.support.XmlSchemaBuiltInDataTypeNames.INTEGER_DATA_TYPE_NAME;
+import static org.jsefa.xml.mapping.support.XmlSchemaBuiltInDataTypeNames.INT_DATA_TYPE_NAME;
+import static org.jsefa.xml.mapping.support.XmlSchemaBuiltInDataTypeNames.LONG_DATA_TYPE_NAME;
+import static org.jsefa.xml.mapping.support.XmlSchemaBuiltInDataTypeNames.STRING_DATA_TYPE_NAME;
+
+import org.jsefa.common.converter.BooleanConverter;
+import org.jsefa.common.converter.IntegerConverter;
+import org.jsefa.common.converter.LongConverter;
+import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.common.converter.SimpleTypeConverterConfiguration;
+import org.jsefa.common.converter.StringConverter;
 import org.jsefa.common.mapping.HierarchicalTypeMappingRegistry;
 import org.jsefa.xml.namespace.QName;
 
-import static org.jsefa.xml.mapping.support.XmlSchemaBuiltInDataTypeNames.*;
-
 /**
- * A registry for xml type mappings with standard type mappings already registered.
+ * A registry for xml type mappings with standard type mappings already
+ * registered.
  * <p>
  * Instances of this class are thread-safe.
  * 
@@ -34,14 +44,10 @@ public final class XmlTypeMappingRegistry extends HierarchicalTypeMappingRegistr
 
     /**
      * Constructs a new <code>XmlTypeMappingRegistry</code> with standard type
-     * mappings already registered using the given
-     * <code>SimpleTypeConverterProvider</code>.
-     * 
-     * @param simpleTypeConverterProvider the simple type converter provider to
-     *            use for creating the standard type mappings
+     * mappings already registered.
      */
-    public XmlTypeMappingRegistry(SimpleTypeConverterProvider simpleTypeConverterProvider) {
-        registerStandards(simpleTypeConverterProvider);
+    public XmlTypeMappingRegistry() {
+        registerStandards();
     }
 
     /**
@@ -51,23 +57,32 @@ public final class XmlTypeMappingRegistry extends HierarchicalTypeMappingRegistr
      * 
      * @param other the registry that serves as a model for creating a new one
      */
-    public XmlTypeMappingRegistry(XmlTypeMappingRegistry other) {
+    private XmlTypeMappingRegistry(XmlTypeMappingRegistry other) {
         super(other);
     }
 
-    private void registerStandards(SimpleTypeConverterProvider converterProvider) {
-        registerStandard(STRING_DATA_TYPE_NAME, String.class, converterProvider);
-        registerStandard(INT_DATA_TYPE_NAME, int.class, converterProvider);
-        registerStandard(INTEGER_DATA_TYPE_NAME, Integer.class, converterProvider);
-        registerStandard(LONG_DATA_TYPE_NAME, long.class, converterProvider);
-        registerStandard(BOOLEAN_DATA_TYPE_NAME, boolean.class, converterProvider);
-        registerStandard(BOOLEAN_DATA_TYPE_NAME, Boolean.class, converterProvider);
+    private void registerStandards() {
+        registerStandard(STRING_DATA_TYPE_NAME, String.class, StringConverter.create());
+        registerStandard(INT_DATA_TYPE_NAME, int.class, IntegerConverter.create());
+        registerStandard(INTEGER_DATA_TYPE_NAME, Integer.class, IntegerConverter.create());
+        registerStandard(LONG_DATA_TYPE_NAME, long.class, LongConverter.create());
+        registerStandard(LONG_DATA_TYPE_NAME, Long.class, LongConverter.create());
+        registerStandard(BOOLEAN_DATA_TYPE_NAME, boolean.class, BooleanConverter
+                .create(SimpleTypeConverterConfiguration.EMPTY));
+        registerStandard(BOOLEAN_DATA_TYPE_NAME, Boolean.class, BooleanConverter
+                .create(SimpleTypeConverterConfiguration.EMPTY));
     }
 
-    private void registerStandard(QName dataTypeName, Class objectType,
-            SimpleTypeConverterProvider converterProvider) {
-        register(new XmlSimpleTypeMapping(dataTypeName, objectType, converterProvider.getForValueType(objectType,
-                (String[]) null)));
+    private void registerStandard(QName dataTypeName, Class<?> objectType, SimpleTypeConverter converter) {
+        register(new XmlSimpleTypeMapping(dataTypeName, objectType, converter));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public XmlTypeMappingRegistry createCopy() {
+        return new XmlTypeMappingRegistry(this);
     }
 
 }

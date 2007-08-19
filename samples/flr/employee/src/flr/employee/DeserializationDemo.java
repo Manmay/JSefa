@@ -37,7 +37,7 @@ public class DeserializationDemo {
         Deserializer deserializer = FlrIOFactory.createFactory(Employee.class).createDeserializer();
         deserializer.open(createFileReader());
         while (deserializer.hasNext()) {
-            Employee employee = (Employee) deserializer.next();
+            Employee employee = deserializer.next();
             print(employee);
         }
         deserializer.close(true);

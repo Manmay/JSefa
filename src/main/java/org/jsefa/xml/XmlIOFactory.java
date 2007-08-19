@@ -16,76 +16,105 @@
 
 package org.jsefa.xml;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
 
-import org.jsefa.Deserializer;
 import org.jsefa.IOFactory;
 import org.jsefa.IOFactoryException;
-import org.jsefa.Serializer;
-import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.util.ReflectionUtil;
 import org.jsefa.xml.annotation.XmlEntryPointFactory;
 import org.jsefa.xml.annotation.XmlTypeMappingFactory;
-import org.jsefa.xml.mapping.ElementDescriptor;
-import org.jsefa.xml.mapping.NodeModel;
-import org.jsefa.xml.mapping.XmlEntryPoint;
-import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
-import org.jsefa.xml.namespace.QName;
+import org.jsefa.xml.config.XmlConfiguration;
+import org.jsefa.xml.config.XmlInitialConfigurationParameters;
 
 /**
- * Factory for creating {@link XmlSerializer} and {@link XmlDeserializer}.
+ * Factory for creating {@link XmlSerializer}s and {@link XmlDeserializer}s.
  * <p>
- * Instances of this class are immutable and thread-safe.
+ * This is the abstract base class for concrete factories. Each subclass must
+ * provide a static method <code>create(XmlConfiguration config)</code> as
+ * well as implement the abstract methods.
+ * <p>
+ * This class provides a static factory method
+ * {@link #createFactory(XmlConfiguration)} to create an instance of a concrete
+ * <code>XmlIOFactory</code>.
+ * <p>
+ * This class also provides static facade methods hiding the details of creating
+ * entry points based on annotated object types.
  * 
  * @author Norman Lahme-Huetig
  */
-public class XmlIOFactory implements IOFactory {
+public abstract class XmlIOFactory implements IOFactory {
 
-    private final XmlConfiguration config;
-
-    private final XmlTypeMappingRegistry typeMappingRegistry;
-
-    private final Collection<XmlEntryPoint> entryPoints;
-
-    private final Map<Class, NodeModel> entryNodeModels;
+    /**
+     * Creates a new <code>XmlIOFactory</code> for <code>XmlSerializer</code>s
+     * and <code>XmlDeserializer</code>s using the given configuration.
+     * <p>
+     * Note that the configuration should provide a non empty collection of
+     * entry points.<br>
+     * You can use the methods {@link #createFactory(Class...)} or
+     * {@link #createFactory(XmlConfiguration, Class...)} if you want to get the
+     * entry points automatically created from annotated classes.
+     * 
+     * @param config the configuration object. It will be copied so that the
+     *                given one can be modified or reused.
+     * @return an <code>XmlIOFactory</code> factory
+     * @throws IOFactoryException
+     */
+    public static XmlIOFactory createFactory(XmlConfiguration config) {
+        Class<XmlIOFactory> factoryClass = InitialConfiguration.get(
+                XmlInitialConfigurationParameters.IO_FACTORY_CLASS, XmlIOFactoryImpl.class);
+        Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory", XmlConfiguration.class);
+        if (createMethod == null) {
+            throw new IOFactoryException("Failed to create an XmlIOFactory. The factory " + factoryClass
+                    + " does not contain the required static createFactory method.");
+        }
+        try {
+            return ReflectionUtil.callMethod(null, createMethod, config);
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create an XmlIOFactory", e);
+        }
+    }
 
     /**
      * Creates a new <code>XmlIOFactory</code> for <code>XmlSerializer</code>s
      * and <code>XmlDeserializer</code>s which can handle objects of the
      * given object types.
+     * <p>
      * 
-     * @param objectTypes the object types.
+     * It creates a new {@link XmlConfiguration} with entry points generated
+     * from the annotations found in the given object types.
+     * 
+     * @param objectTypes object types for which entry points should be created
+     *                from annotations
      * @return a <code>XmlIOFactory</code> factory
      * @throws IOFactoryException
      */
-    public static XmlIOFactory createFactory(Class... objectTypes) {
+    public static XmlIOFactory createFactory(Class<?>... objectTypes) {
         return createFactory(new XmlConfiguration(), objectTypes);
     }
 
     /**
      * Creates a new <code>XmlIOFactory</code> for <code>XmlSerializer</code>s
      * and <code>XmlDeserializer</code>s which can handle objects of the
-     * given object types.
+     * given object types as well as those object types for which entry points
+     * are defined in the <code>config</code>.
      * 
      * @param config the configuration object. It will be copied so that the
-     *            given one can be modified or reused.
+     *                given one can be modified or reused.
      * @param objectTypes object types for which entry points should be created
-     *            from annotations
+     *                from annotations
      * @return a a <code>XmlIOFactory</code> factory
      * @throws IOFactoryException
      */
-    public static XmlIOFactory createFactory(XmlConfiguration config, Class... objectTypes) {
+    public static XmlIOFactory createFactory(XmlConfiguration config, Class<?>... objectTypes) {
+        XmlConfiguration newConfig = config.createCopy();
         try {
-            XmlTypeMappingRegistry typeMappingRegistry = new XmlTypeMappingRegistry(config
-                    .getSimpleTypeConverterProvider());
-            Collection<XmlEntryPoint> entryPoints = new ArrayList<XmlEntryPoint>();
-            XmlTypeMappingFactory typeMappingFactory = new XmlTypeMappingFactory(typeMappingRegistry, config
-                    .getSimpleTypeConverterProvider(), config.getObjectAccessorProvider(), config
-                    .getDataTypeDefaultNameRegistry());
-            entryPoints.addAll(XmlEntryPointFactory.createEntryPoints(typeMappingFactory, objectTypes));
-            return new XmlIOFactory(config, typeMappingRegistry, entryPoints);
+            XmlTypeMappingFactory typeMappingFactory = new XmlTypeMappingFactory(newConfig
+                    .getTypeMappingRegistry(), newConfig.getSimpleTypeConverterProvider(), newConfig
+                    .getObjectAccessorProvider(), newConfig.getDataTypeDefaultNameRegistry());
+            newConfig.getEntryPoints().addAll(
+                    XmlEntryPointFactory.createEntryPoints(typeMappingFactory, objectTypes));
+            return createFactory(newConfig);
         } catch (IOFactoryException e) {
             throw e;
         } catch (Exception e) {
@@ -94,99 +123,13 @@ public class XmlIOFactory implements IOFactory {
     }
 
     /**
-     * Creates a new <code>XmlIOFactory</code> for <code>XmlSerializer</code>s
-     * and <code>XmlDeserializer</code>s which can handle objects of the
-     * object types defined in the given entry points.
-     * 
-     * @param config the configuration object. It will be copied so that the
-     *            given one can be modified or reused.
-     * @param typeMappingRegistry the type mapping registry with type mappings
-     *            for all data types which are referred to from the given entry
-     *            points.
-     * @param entryPoints the entry points. An entry point is required for every
-     *            type of object which will be passed to
-     *            {@link Serializer#write} or which should be returned from
-     *            {@link Deserializer#next} and only for these objects (not for
-     *            the objects related to these ones). If more than one entry
-     *            point is defined for the same data type name, then <br>
-     *            a) the last one is used for serialization<br>
-     *            b) all are used for deserialization whereas their respective
-     *            designators are used as alternative designators for the same
-     *            data type.
-     * @return a <code>XmlIOFactory</code> factory
-     * @throws IOFactoryException
+     * {@inheritDoc}
      */
-    public static XmlIOFactory createFactory(XmlConfiguration config, XmlTypeMappingRegistry typeMappingRegistry,
-            Collection<XmlEntryPoint> entryPoints) {
-        try {
-            return new XmlIOFactory(config, typeMappingRegistry, entryPoints);
-        } catch (IOFactoryException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IOFactoryException("Failed to create an XmlIOFactory", e);
-        }
-
-    }
-
-    XmlIOFactory(XmlConfiguration config, XmlTypeMappingRegistry typeMappingRegistry,
-            Collection<XmlEntryPoint> entryPoints) {
-        this.config = config.createCopy();
-        this.typeMappingRegistry = new XmlTypeMappingRegistry(typeMappingRegistry);
-        this.entryPoints = new ArrayList<XmlEntryPoint>(entryPoints);
-        this.entryNodeModels = new HashMap<Class, NodeModel>();
-        for (XmlEntryPoint entryPoint : entryPoints) {
-            TypeMapping typeMapping = typeMappingRegistry.get(entryPoint.getDataTypeName());
-            if (typeMapping == null) {
-                throw new IOFactoryException("Unknown data type: " + entryPoint.getDataTypeName());
-            }
-            ElementDescriptor elementDescriptor = new ElementDescriptor(entryPoint.getDesignator(), entryPoint
-                    .getDataTypeName());
-            NodeModel nodeModel = new NodeModel(elementDescriptor, null);
-            this.entryNodeModels.put(typeMapping.getObjectType(), nodeModel);
-        }
-        markAmbiguousNodeModels(this.entryNodeModels.values());
-        finishNodeModels(this.entryNodeModels.values());
-    }
+    public abstract XmlSerializer createSerializer();
 
     /**
      * {@inheritDoc}
      */
-    public XmlSerializer createSerializer() {
-        return new XmlSerializerImpl(this.config, this.typeMappingRegistry, this.entryNodeModels);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public XmlDeserializer createDeserializer() {
-        return new XmlDeserializerImpl(this.config, this.typeMappingRegistry, this.entryPoints);
-    }
-
-    private void markAmbiguousNodeModels(Collection<NodeModel> nodeModels) {
-        Map<QName, Collection<NodeModel>> nameToModels = new HashMap<QName, Collection<NodeModel>>();
-        for (NodeModel nodeModel : nodeModels) {
-            QName name = nodeModel.getNodeDescriptor().getName();
-            Collection<NodeModel> models = nameToModels.get(name);
-            if (models == null) {
-                models = new ArrayList<NodeModel>();
-                nameToModels.put(name, models);
-            }
-            models.add(nodeModel);
-        }
-        for (QName name : nameToModels.keySet()) {
-            Collection<NodeModel> models = nameToModels.get(name);
-            if (models.size() > 1) {
-                for (NodeModel nodeModel : models) {
-                    nodeModel.setRequiresDataTypeAttribute();
-                }
-            }
-        }
-    }
-
-    private void finishNodeModels(Collection<NodeModel> nodeModels) {
-        for (NodeModel nodeModel : nodeModels) {
-            nodeModel.finish();
-        }
-    }
+    public abstract XmlDeserializer createDeserializer();
 
 }

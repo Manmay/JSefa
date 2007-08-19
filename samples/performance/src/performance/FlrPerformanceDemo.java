@@ -37,7 +37,7 @@ public class FlrPerformanceDemo extends AbstractPerformanceDemo {
      * {@inheritDoc}
      */
     @Override
-    protected IOFactory createIOFactory(Class objectType) {
+    protected IOFactory createIOFactory(Class<?> objectType) {
         return FlrIOFactory.createFactory(objectType);
     }
 

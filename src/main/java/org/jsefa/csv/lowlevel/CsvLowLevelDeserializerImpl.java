@@ -17,6 +17,9 @@
 package org.jsefa.csv.lowlevel;
 
 import org.jsefa.DeserializationException;
+import org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration;
+import org.jsefa.csv.lowlevel.config.EscapeMode;
+import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
 
 /**
@@ -68,7 +71,7 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
         } else if (startChar != quoteChar) {
             throw new DeserializationException("Expected quote char but got " + startChar);
         }
-        char escapeCharacter = CsvLowLevelConstants.ESCAPE_CHARACTER;
+        char escapeCharacter = this.config.getEscapeCharacter();
         if (this.config.getQuoteCharacterEscapeMode().equals(EscapeMode.DOUBLING)) {
             escapeCharacter = quoteChar;
         }
@@ -137,7 +140,7 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
                 encoded = false;
                 result.append(currentChar);
             } else {
-                if (currentChar == CsvLowLevelConstants.ESCAPE_CHARACTER) {
+                if (currentChar == this.config.getEscapeCharacter()) {
                     encoded = true;
                 } else if (currentChar == fieldDelimiter) {
                     return result.toString();

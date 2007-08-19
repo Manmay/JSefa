@@ -38,8 +38,16 @@ public final class RbfTypeMappingRegistry extends TypeMappingRegistry<String> {
      * 
      * @param other the registry that serves as a model for creating a new one
      */
-    public RbfTypeMappingRegistry(RbfTypeMappingRegistry other) {
+    private RbfTypeMappingRegistry(RbfTypeMappingRegistry other) {
         super(other);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RbfTypeMappingRegistry createCopy() {
+        return new RbfTypeMappingRegistry(this);
     }
 
 }

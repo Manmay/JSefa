@@ -31,13 +31,13 @@ import org.jsefa.xml.namespace.QName;
  */
 public final class XmlDataTypeDefaultNameRegistry {
 
-    private final Map<Class, QName> defaultDataTypeNames;
+    private final Map<Class<?>, QName> defaultDataTypeNames;
 
     /**
      * Constructs a new <code>XmlDataTypeDefaultNameRegistry</code>.
      */
     public XmlDataTypeDefaultNameRegistry() {
-        this.defaultDataTypeNames = new ConcurrentHashMap<Class, QName>();
+        this.defaultDataTypeNames = new ConcurrentHashMap<Class<?>, QName>();
         registerStandards();
     }
 
@@ -47,7 +47,7 @@ public final class XmlDataTypeDefaultNameRegistry {
      * @param objectType the object type
      * @param dataTypeName the data type name
      */
-    public void register(Class objectType, QName dataTypeName) {
+    public void register(Class<?> objectType, QName dataTypeName) {
         this.defaultDataTypeNames.put(objectType, dataTypeName);
     }
 
@@ -70,7 +70,7 @@ public final class XmlDataTypeDefaultNameRegistry {
      * @param objectType the object type
      * @return the default data type name
      */
-    public QName get(Class objectType) {
+    public QName get(Class<?> objectType) {
         return this.defaultDataTypeNames.get(objectType);
     }
 

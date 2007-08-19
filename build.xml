@@ -21,6 +21,7 @@
         <echo message=""/>
         <echo message="Available targets (among others):"/>
         <echo message=""/>
+        <echo message="clean       --> clean"/>
         <echo message="build-all   --> compiles source and test, creates jar file and javadoc"/>
         <echo message="compile     --> compile source"/>
         <echo message="create-jar  --> create the jar file"/>

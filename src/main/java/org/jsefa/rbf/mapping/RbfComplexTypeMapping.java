@@ -47,7 +47,7 @@ public final class RbfComplexTypeMapping extends TypeMapping<String> {
      * @param dataTypeName the data type name
      * @param objectAccessor the object accessor
      */
-    public RbfComplexTypeMapping(Class objectType, String dataTypeName, ObjectAccessor objectAccessor) {
+    public RbfComplexTypeMapping(Class<?> objectType, String dataTypeName, ObjectAccessor objectAccessor) {
         super(objectType, dataTypeName);
         this.objectAccessor = objectAccessor;
         this.nodeModels = new HashMap<String, NodeModel>();

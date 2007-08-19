@@ -19,12 +19,12 @@ package org.jsefa.csv;
 import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
+import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
-import org.jsefa.csv.lowlevel.QuoteMode;
+import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.RbfSerializer;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
-import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**
  * Default implementation of {@link CsvSerializer} based on
@@ -38,16 +38,16 @@ public final class CsvSerializerImpl extends RbfSerializer implements CsvSeriali
 
     private final CsvLowLevelSerializer lowLevelSerializer;
 
-    CsvSerializerImpl(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<Class, RbfEntryPoint> entryPoints) {
-        super(typeMappingRegistry, entryPoints);
-        this.lowLevelSerializer = config.getLowLevelIOFactory().createSerializer(config.getLowLevelConfiguration());
+    CsvSerializerImpl(CsvConfiguration config, Map<Class<?>, RbfEntryPoint> entryPoints,
+            CsvLowLevelSerializer lowLevelSerializer) {
+        super(config.getTypeMappingRegistry(), entryPoints);
+        this.lowLevelSerializer = lowLevelSerializer;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void writeSimpleValue(Object object, SimpleTypeMapping mapping) {
+    protected void writeSimpleValue(Object object, SimpleTypeMapping<?> mapping) {
         String value = mapping.getSimpleTypeConverter().toString(object);
         this.lowLevelSerializer.writeField(value, ((CsvSimpleTypeMapping) mapping).getQuoteMode());
     }

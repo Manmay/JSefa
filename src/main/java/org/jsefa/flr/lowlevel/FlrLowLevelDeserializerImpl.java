@@ -16,6 +16,7 @@
 
 package org.jsefa.flr.lowlevel;
 
+import org.jsefa.flr.lowlevel.config.FlrLowLevelConfiguration;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
 
 /**

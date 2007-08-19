@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentMap;
  * @param <T> the type of the data type name
  * 
  */
-public class HierarchicalTypeMappingRegistry<T> extends TypeMappingRegistry<T> {
+public abstract class HierarchicalTypeMappingRegistry<T> extends TypeMappingRegistry<T> {
 
     private final ConcurrentMap<T, Collection<T>> subtypeRelation;
 
@@ -49,7 +49,7 @@ public class HierarchicalTypeMappingRegistry<T> extends TypeMappingRegistry<T> {
      * 
      * @param other the registry that serves as a model for creating a new one
      */
-    public HierarchicalTypeMappingRegistry(HierarchicalTypeMappingRegistry<T> other) {
+    protected HierarchicalTypeMappingRegistry(HierarchicalTypeMappingRegistry<T> other) {
         super(other);
         this.subtypeRelation = new ConcurrentHashMap<T, Collection<T>>();
         for (T superDataTypeName : other.subtypeRelation.keySet()) {

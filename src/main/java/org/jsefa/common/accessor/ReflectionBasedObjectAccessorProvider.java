@@ -34,19 +34,19 @@ import org.jsefa.common.util.ReflectionUtil;
  * 
  */
 public final class ReflectionBasedObjectAccessorProvider implements ObjectAccessorProvider {
-    private final ConcurrentMap<Class, ObjectAccessor> objectAccessors;
+    private final ConcurrentMap<Class<?>, ObjectAccessor> objectAccessors;
 
     /**
      * Constructs a new <code>ReflectionBasedObjectAccessorProvider</code>.
      */
     public ReflectionBasedObjectAccessorProvider() {
-        this.objectAccessors = new ConcurrentHashMap<Class, ObjectAccessor>();
+        this.objectAccessors = new ConcurrentHashMap<Class<?>, ObjectAccessor>();
     }
 
     /**
      * {@inheritDoc}
      */
-    public ObjectAccessor get(Class objectType) {
+    public ObjectAccessor get(Class<?> objectType) {
         if (objectType.isInterface()) {
             return null;
         }
@@ -61,9 +61,9 @@ public final class ReflectionBasedObjectAccessorProvider implements ObjectAccess
     private static final class ReflectionBasedObjectAccessor implements ObjectAccessor {
         private final Map<String, Field> fields;
 
-        private final Constructor constructor;
+        private final Constructor<?> constructor;
 
-        private ReflectionBasedObjectAccessor(Class objectType) {
+        private ReflectionBasedObjectAccessor(Class<?> objectType) {
             this.constructor = ReflectionUtil.getDefaultConstructor(objectType);
             this.constructor.setAccessible(true);
             this.fields = new HashMap<String, Field>();

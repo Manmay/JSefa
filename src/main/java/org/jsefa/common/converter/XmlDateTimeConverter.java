@@ -33,7 +33,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 /**
- * Converter for <code>XmlDateTime</code> objects.
+ * Converter for <code>XmlDateTime</code> objects.<br>
+ * The format is a single String describing the time zone, e. g. "GMT".
  * <p>
  * It is thread safe.
  * 
@@ -52,30 +53,38 @@ public final class XmlDateTimeConverter implements SimpleTypeConverter {
     private final TimeZone timeZone;
 
     /**
-     * Constructs a <code>XmlDateTimeConverter</code> with the default format.
+     * Constructs a <code>XmlDateTimeConverter</code>.
+     * 
+     * @param configuration the configuration
+     * @return a xml date time converter
      */
-    public XmlDateTimeConverter() {
-        this(DEFAULT_FORMAT);
+    public static XmlDateTimeConverter create(SimpleTypeConverterConfiguration configuration) {
+        return new XmlDateTimeConverter(TimeZone.getTimeZone(getFormat(configuration)));
     }
 
-    /**
-     * Constructs a <code>XmlDateTimeConverter</code> with the given format.
-     * 
-     * @param format the format to use.
-     */
-    public XmlDateTimeConverter(String... format) {
-        this.timeZone = TimeZone.getTimeZone(format[0]);
+    private static String getFormat(SimpleTypeConverterConfiguration configuration) {
+        if (configuration.getFormat() == null) {
+            return DEFAULT_FORMAT;
+        }
+        if (configuration.getFormat().length != 1) {
+            throw new ConversionException("The format for an XmlDateTimeConverter must be a single String");
+        }
+        return configuration.getFormat()[0];
+    }
+
+    private XmlDateTimeConverter(TimeZone timeZone) {
+        this.timeZone = timeZone;
         try {
             this.factory = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException e) {
-            throw new ConversionException("Could not create a XmlDateTimeConverter with format " + format, e);
+            throw new ConversionException("Could not create an XmlDateTimeConverter", e);
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object fromString(String value) {
+    public Date fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }

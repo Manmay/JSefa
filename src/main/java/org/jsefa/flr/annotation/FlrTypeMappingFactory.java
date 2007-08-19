@@ -23,6 +23,7 @@ import org.jsefa.common.annotation.AnnotationException;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.converter.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.util.GeneralConstants;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
 import org.jsefa.rbf.annotation.RbfTypeMappingFactory;
@@ -41,32 +42,41 @@ public final class FlrTypeMappingFactory extends RbfTypeMappingFactory {
     private static final RbfAnnotations ANNOTATIONS = new RbfAnnotations(FlrDataType.class, FlrField.class,
             FlrSubRecord.class, FlrSubRecordList.class);
 
+    private char defaultPadCharacter;
+
     /**
      * Constructs a new <code>FlrTypeMappingFactory</code>.
      * 
      * @param typeMappingRegistry the type mapping registry. New types will be
-     *            registered using that registry.
+     *                registered using that registry.
      * @param objectAccessorProvider the object accessor provider to use
      * @param simpleTypeConverterProvider the simple type converter provider to
-     *            use
+     *                use
+     * @param defaultPadCharacter the default pad character to be used
      */
     public FlrTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
-            SimpleTypeConverterProvider simpleTypeConverterProvider, ObjectAccessorProvider objectAccessorProvider) {
+            SimpleTypeConverterProvider simpleTypeConverterProvider,
+            ObjectAccessorProvider objectAccessorProvider, char defaultPadCharacter) {
         super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider, ANNOTATIONS);
+        this.defaultPadCharacter = defaultPadCharacter;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected TypeMapping<String> createSimpleTypeMapping(Class objectType, String dataTypeName,
+    protected TypeMapping<String> createSimpleTypeMapping(Class<?> objectType, String dataTypeName,
             SimpleTypeConverter converter, Field field) {
         FlrField fieldAnnotation = field.getAnnotation(FlrField.class);
         if (fieldAnnotation.length() <= 0) {
             throw new AnnotationException("Field length of field " + field.getName() + " of class "
                     + field.getDeclaringClass().getName() + " must be > 0");
         }
-        return new FlrSimpleTypeMapping(objectType, dataTypeName, converter, fieldAnnotation.length(), fieldAnnotation
-                .padCharacter(), fieldAnnotation.align());
+        char padCharacter = fieldAnnotation.padCharacter();
+        if (padCharacter == GeneralConstants.NO_CHARACTER) {
+            padCharacter = this.defaultPadCharacter;
+        }
+        return new FlrSimpleTypeMapping(objectType, dataTypeName, converter, fieldAnnotation.length(),
+                padCharacter, fieldAnnotation.align());
     }
 
 }

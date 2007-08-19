@@ -18,6 +18,8 @@ package org.jsefa.xml.lowlevel;
 
 import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.common.lowlevel.LowLevelDeserializer;
+import org.jsefa.xml.lowlevel.model.XmlItem;
+import org.jsefa.xml.lowlevel.model.XmlItemType;
 
 /**
  * Low level XML Deserializer.

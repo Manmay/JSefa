@@ -95,10 +95,10 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
      * @param field the field
      * @return the simple type mapping.
      */
-    protected abstract TypeMapping<String> createSimpleTypeMapping(Class objectType, String dataTypeName,
+    protected abstract TypeMapping<String> createSimpleTypeMapping(Class<?> objectType, String dataTypeName,
             SimpleTypeConverter converter, Field field);
 
-    private String createSimpleTypeMappingIfAbsent(Class objectType, Field field, Annotation fieldAnnotation) {
+    private String createSimpleTypeMappingIfAbsent(Class<?> objectType, Field field, Annotation fieldAnnotation) {
         String[] format = null;
         SimpleTypeConverter converter = null;
         if (fieldAnnotation != null) {
@@ -110,7 +110,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
             }
         }
         if (converter == null && getSimpleTypeConverterProvider().hasConverterFor(objectType)) {
-            converter = getSimpleTypeConverterProvider().getForValueType(objectType, format);
+            converter = getSimpleTypeConverterProvider().getForObjectType(objectType, format);
         }
         if (converter == null) {
             throw new TypeMappingException("Could not create a simple type converter for " + objectType);
@@ -135,8 +135,9 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         return dataTypeName;
     }
 
+    @SuppressWarnings("unchecked")
     private void addFields(RbfComplexTypeMapping complexTypeMapping) {
-        Class objectType = complexTypeMapping.getObjectType();
+        Class<?> objectType = complexTypeMapping.getObjectType();
         for (Field field : AnnotatedFieldsProvider.getSortedAnnotatedFields(objectType, this.annotations
                 .getFieldAnnotationClass())) {
             String fieldDataTypeName = AnnotationDataProvider.get(field, DATA_TYPE_NAME, this.annotations
@@ -164,8 +165,9 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
 
     }
 
+    @SuppressWarnings("unchecked")
     private void addSubRecords(RbfComplexTypeMapping complexTypeMapping) {
-        Class objectType = complexTypeMapping.getObjectType();
+        Class<?> objectType = complexTypeMapping.getObjectType();
         int requiredPrefixLength = getRequiredPrefixLength(objectType);
         for (Field field : AnnotatedFieldsProvider.getSortedAnnotatedFields(objectType, this.annotations
                 .getSubRecordAnnotationClass(), this.annotations.getSubRecordListAnnotationClass())) {
@@ -205,7 +207,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
             Record[] records = getRecords(subRecordListAnnotation);
             for (Record record : records) {
                 String listItemDataTypeName = AnnotationDataProvider.get(record, DATA_TYPE_NAME);
-                Class listItemObjectType = AnnotationDataProvider.get(record, OBJECT_TYPE);
+                Class<?> listItemObjectType = AnnotationDataProvider.get(record, OBJECT_TYPE);
                 if (listItemDataTypeName == null) {
                     if (listItemObjectType == null && records.length == 1) {
                         listItemObjectType = ReflectionUtil.getListEntryObjectType(field);
@@ -229,7 +231,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         return dataTypeName;
     }
 
-    private void assertHasSimpleType(Class listItemObjectType, Field field) {
+    private void assertHasSimpleType(Class<?> listItemObjectType, Field field) {
         if (listItemObjectType == null) {
             throw new AnnotationException(
                     "Neither dataTypeName nor objectType is given for list item of field: "
@@ -269,6 +271,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         return field.getDeclaringClass().getName() + "." + field.getName();
     }
 
+    @SuppressWarnings("unchecked")
     private int getRequiredPrefixLength(Class<?> objectType) {
         if (AnnotatedFieldsProvider.getSortedAnnotatedFields(objectType,
                 this.annotations.getSubRecordAnnotationClass(), this.annotations.getSubRecordListAnnotationClass())

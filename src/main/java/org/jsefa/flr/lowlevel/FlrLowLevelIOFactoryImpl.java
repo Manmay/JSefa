@@ -16,40 +16,49 @@
 
 package org.jsefa.flr.lowlevel;
 
+import org.jsefa.flr.lowlevel.config.FlrLowLevelConfiguration;
+
+
 
 /**
  * Implementation of {@link FlrLowLevelIOFactory}.
  * <p>
- * It is thread-safe.
+ * Instances of this class are immutable and thread-safe.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public class FlrLowLevelIOFactoryImpl implements FlrLowLevelIOFactory {
+public class FlrLowLevelIOFactoryImpl extends FlrLowLevelIOFactory {
 
-    private static final FlrLowLevelIOFactoryImpl INSTANCE = new FlrLowLevelIOFactoryImpl();
+    private final FlrLowLevelConfiguration config;
 
     /**
-     * Returns the single <code>FlrLowLevelIOFactoryImpl</code>.
+     * Creates a new <code>FlrLowLevelIOFactoryImpl</code> for <code>FlrLowLevelSerializer</code>s
+     * and <code>FlrLowLevelDeserializer</code>s using the given configuration.
      * 
-     * @return the single <code>FlrLowLevelIOFactoryImpl</code>.
+     * @param config the configuration object.
+     * @return a <code>FlrLowLevelIOFactoryImpl</code> factory
      */
-    public static FlrLowLevelIOFactoryImpl getInstance() {
-        return FlrLowLevelIOFactoryImpl.INSTANCE;
+    public static FlrLowLevelIOFactoryImpl createFactory(FlrLowLevelConfiguration config) {
+        return new FlrLowLevelIOFactoryImpl(config);
+    }
+    
+    FlrLowLevelIOFactoryImpl(FlrLowLevelConfiguration config) {
+        this.config = config;
     }
 
     /**
      * {@inheritDoc}
      */
-    public FlrLowLevelDeserializer createDeserializer(FlrLowLevelConfiguration config) {
-        return new FlrLowLevelDeserializerImpl(config);
+    public FlrLowLevelDeserializer createDeserializer() {
+        return new FlrLowLevelDeserializerImpl(this.config);
     }
 
     /**
      * {@inheritDoc}
      */
-    public FlrLowLevelSerializer createSerializer(FlrLowLevelConfiguration config) {
-        return new FlrLowLevelSerializerImpl(config);
+    public FlrLowLevelSerializer createSerializer() {
+        return new FlrLowLevelSerializerImpl(this.config);
     }
 
 }

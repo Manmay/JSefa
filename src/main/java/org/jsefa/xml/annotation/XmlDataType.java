@@ -46,7 +46,7 @@ public @interface XmlDataType {
      * annotation. Only subclasses of the annotated class which are mentioned in
      * this array are considered in the serialization/deserialization process.
      */
-    Class[] subObjectTypes() default {};
+    Class<?>[] subObjectTypes() default {};
 
     /**
      * The default name for elements with this data type.

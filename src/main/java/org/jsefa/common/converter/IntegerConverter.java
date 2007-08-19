@@ -25,11 +25,24 @@ package org.jsefa.common.converter;
  * @author Norman Lahme-Huetig
  */
 public final class IntegerConverter implements SimpleTypeConverter {
+    private static final IntegerConverter INSTANCE = new IntegerConverter();
+    
+    /**
+     * Returns the single <code>IntegerConverter</code>.
+     * @return the single integer converter.
+     */
+    public static IntegerConverter create() {
+        return INSTANCE;
+    }
+    
+    private IntegerConverter() {
+        
+    }
 
     /**
      * {@inheritDoc}
      */
-    public Object fromString(String value) {
+    public Integer fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }

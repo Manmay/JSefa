@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * Utility class for reflection.
  * 
@@ -37,12 +36,27 @@ public final class ReflectionUtil {
 
     /**
      * Returns the default constructor of the given object type.
+     * 
      * @param objectType the object type
      * @return the default constructor
      */
-    public static Constructor getDefaultConstructor(Class objectType) {
+    public static Constructor<?> getDefaultConstructor(Class<?> objectType) {
         try {
-            return objectType.getDeclaredConstructor(new Class[] {});
+            return objectType.getDeclaredConstructor(new Class[]{});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Creates a new instance of the given object type using the default constructor.
+     * @param <T> the type of the object to create
+     * @param objectType the object type
+     * @return an object
+     */
+    public static <T> T createInstance(Class<T> objectType) {
+        try {
+            return objectType.newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -55,9 +69,9 @@ public final class ReflectionUtil {
      * @param objectType the class
      * @return the list of fields.
      */
-    public static Collection<Field> getAllFields(Class objectType) {
+    public static Collection<Field> getAllFields(Class<?> objectType) {
         List<Field> fields = new ArrayList<Field>();
-        Class currentObjectType = objectType;
+        Class<?> currentObjectType = objectType;
         while (currentObjectType != null) {
             for (Field field : currentObjectType.getDeclaredFields()) {
                 fields.add(field);
@@ -75,9 +89,9 @@ public final class ReflectionUtil {
      * @param objectType the object type
      * @return a list of classes
      */
-    public static List<Class> getTypesInReverseOrder(Class objectType) {
-        List<Class> result = new ArrayList<Class>();
-        Class type = objectType;
+    public static List<Class<?>> getTypesInReverseOrder(Class<?> objectType) {
+        List<Class<?>> result = new ArrayList<Class<?>>();
+        Class<?> type = objectType;
         while (!type.equals(Object.class) && !type.isInterface() && !type.isPrimitive()) {
             result.add(type);
             type = type.getSuperclass();
@@ -85,9 +99,26 @@ public final class ReflectionUtil {
         Collections.reverse(result);
         return result;
     }
+    
+    /**
+     * Returns the method on the objectType with the given name and given parameter types.
+     * @param objectType the object type
+     * @param methodName the method name
+     * @param parameterTypes the parameter types
+     * @return a method or null if it does not exist.
+     */
+    @SuppressWarnings("unchecked")
+    public static Method getMethod(Class<?> objectType, String methodName, Class<?>... parameterTypes) {
+        try {
+            Method method = objectType.getMethod(methodName, parameterTypes);
+            return method;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     /**
-     * Calls the method with the given name on the given object.
+     * Calls the parameterless method with the given name on the given object.
      * 
      * @param <T> the expected type of the return value
      * @param object the object to invoke the method on
@@ -105,17 +136,37 @@ public final class ReflectionUtil {
     }
     
     /**
-     * Returns the first argument of the type of the given field or null if it does not exist.
+     * Calls the given method with the given parameters on the given object.
+     * 
+     * @param <T> the expected type of the return value
+     * @param object the object to invoke the method on
+     * @param method the method
+     * @param parameters the parameters
+     * @return the return value of the method call
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T callMethod(Object object, Method method, Object... parameters) {
+        try {
+            return (T) method.invoke(object, parameters);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns the first argument of the type of the given field or null if it
+     * does not exist.
+     * 
      * @param field the field
      * @return a class or null
      */
-    public static Class getListEntryObjectType(Field field) {
+    public static Class<?> getListEntryObjectType(Field field) {
         Type type = field.getGenericType();
         if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             Type typeArg = parameterizedType.getActualTypeArguments()[0];
             if (typeArg instanceof Class) {
-                return (Class) typeArg;
+                return (Class<?>) typeArg;
             }
         }
         return null;

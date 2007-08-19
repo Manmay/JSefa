@@ -58,7 +58,7 @@ public @interface ListItem {
      * The object type will be ignored if the data type name is given
      * explicitly.
      */
-    Class objectType() default NoClass.class;
+    Class<?> objectType() default NoClass.class;
 
     /**
      * The format to be used to construct a <code>SimpleTypeConverter</code>

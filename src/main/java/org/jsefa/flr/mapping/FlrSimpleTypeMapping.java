@@ -47,7 +47,7 @@ public final class FlrSimpleTypeMapping extends SimpleTypeMapping<String> {
      * @param padCharacter the pad character to fill empty space
      * @param align the alignment of the field
      */
-    public FlrSimpleTypeMapping(Class objectType, String dataTypeName, SimpleTypeConverter simpleTypeConverter,
+    public FlrSimpleTypeMapping(Class<?> objectType, String dataTypeName, SimpleTypeConverter simpleTypeConverter,
             int length, char padCharacter, Align align) {
         super(objectType, dataTypeName, simpleTypeConverter);
         this.length = length;

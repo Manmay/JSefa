@@ -19,11 +19,11 @@ package org.jsefa.test.csv;
 import static org.jsefa.test.common.JSefaTestUtil.FormatType.CSV;
 import junit.framework.TestCase;
 
-import org.jsefa.csv.CsvConfiguration;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
-import org.jsefa.csv.lowlevel.EscapeMode;
-import org.jsefa.csv.lowlevel.QuoteMode;
+import org.jsefa.csv.config.CsvConfiguration;
+import org.jsefa.csv.lowlevel.config.EscapeMode;
+import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
 

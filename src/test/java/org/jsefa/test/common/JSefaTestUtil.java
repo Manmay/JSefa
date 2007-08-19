@@ -26,17 +26,17 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.jsefa.Configuration;
 import org.jsefa.Deserializer;
 import org.jsefa.IOFactory;
 import org.jsefa.Serializer;
-import org.jsefa.csv.CsvConfiguration;
+import org.jsefa.common.config.Configuration;
 import org.jsefa.csv.CsvIOFactory;
-import org.jsefa.flr.FlrConfiguration;
+import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.flr.FlrIOFactory;
-import org.jsefa.xml.XmlConfiguration;
+import org.jsefa.flr.config.FlrConfiguration;
 import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.XmlSerializer;
+import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -204,7 +204,7 @@ public final class JSefaTestUtil {
      * @param objectTypes the object types
      * @return an <code>IOFactory</code>
      */
-    public static IOFactory createIOFactory(FormatType formatType, Class... objectTypes) {
+    public static IOFactory createIOFactory(FormatType formatType, Class<?>... objectTypes) {
         Configuration config = createConfiguration(formatType);
         switch (formatType) {
         case XML:
@@ -225,7 +225,7 @@ public final class JSefaTestUtil {
      * @param objectTypes the object types
      * @return an <code>IOFactory</code>
      */
-    public static IOFactory createIOFactory(FormatType formatType, Configuration config, Class... objectTypes) {
+    public static IOFactory createIOFactory(FormatType formatType, Configuration config, Class<?>... objectTypes) {
         switch (formatType) {
         case XML:
             return XmlIOFactory.createFactory((XmlConfiguration) config, objectTypes);
@@ -238,14 +238,14 @@ public final class JSefaTestUtil {
         }
     }
 
-    private static void assertRoundTripSucceeds(FormatType formatType, Configuration config, List inputDTOs) {
+    private static void assertRoundTripSucceeds(FormatType formatType, Configuration config, List<?> inputDTOs) {
         IOFactory ioFactory = createIOFactory(formatType, config, getObjectTypes(inputDTOs));
         String serializationResult = serialize(ioFactory, inputDTOs);
-        List outputDTOs = deserialize(serializationResult, ioFactory);
+        List<?> outputDTOs = deserialize(serializationResult, ioFactory);
         Assert.assertEquals(outputDTOs, inputDTOs);
     }
 
-    private static String serialize(IOFactory ioFactory, List inputDTOs) {
+    private static String serialize(IOFactory ioFactory, List<?> inputDTOs) {
         Serializer serializer = ioFactory.createSerializer();
         StringWriter writer = new StringWriter();
         serializer.open(writer);
@@ -280,8 +280,8 @@ public final class JSefaTestUtil {
      * @param objects list with classes
      * @return array with classes
      */
-    private static Class[] getObjectTypes(List objects) {
-        Set<Class> objectTypes = new HashSet<Class>();
+    private static Class<?>[] getObjectTypes(List<?> objects) {
+        Set<Class<?>> objectTypes = new HashSet<Class<?>>();
         for (Object obj : objects) {
             objectTypes.add(obj.getClass());
         }

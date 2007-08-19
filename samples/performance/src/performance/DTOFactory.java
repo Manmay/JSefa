@@ -17,15 +17,14 @@
 package performance;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.jsefa.common.converter.DateConverter;
-
-import performance.DeepDTO.Level5DTO;
 import performance.DeepDTO.Level1DTO;
 import performance.DeepDTO.Level2DTO;
 import performance.DeepDTO.Level3DTO;
 import performance.DeepDTO.Level4DTO;
+import performance.DeepDTO.Level5DTO;
 
 
 /**
@@ -53,15 +52,14 @@ final class DTOFactory {
 
     static MixedDTO createMixedDTO() {
         MixedDTO obj = new MixedDTO();
-        DateConverter dateConverter = new DateConverter();
         obj.stringElement1 = "elementValue1";
         obj.stringElement2 = "elementValue2";
         obj.integerElement1 = new Integer(454);
         obj.integerElement2 = new Integer(12368);
         obj.booleanElement1 = new Boolean(true);
         obj.booleanElement2 = new Boolean(false);
-        obj.dateElement1 = (Date) dateConverter.fromString("28.03.2008");
-        obj.dateElement2 = (Date) dateConverter.fromString("11.11.2008");
+        obj.dateElement1 = createDate("28.03.2008");
+        obj.dateElement2 = createDate("11.11.2008");
         obj.bigDecimalElement1 = new BigDecimal(1258754448);
         obj.bigDecimalElement2 = new BigDecimal(1258754448);
         return obj;
@@ -100,6 +98,19 @@ final class DTOFactory {
 
     private DTOFactory() {
 
+    }
+    
+    private static Date createDate(String date) {
+        return createDate(date, "dd.MM.yyyy");
+    }
+    
+    private static Date createDate(String date, String format) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(format);
+            return df.parse(date);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

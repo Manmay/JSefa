@@ -29,7 +29,8 @@ import javassist.CtMethod;
  * 
  */
 final class FieldAccessorFactory {
-    static Class createClass(Field field, Class containingClass) throws Exception {
+    @SuppressWarnings("unchecked")
+    static Class<FieldAccessor> createClass(Field field, Class<?> containingClass) throws Exception {
         ClassPool pool = ClassPool.getDefault();
         CtClass aClass = pool.makeClass(containingClass.getName() + "FACTORY_" + field.getName());
         aClass.addInterface(pool.get(FieldAccessor.class.getName()));

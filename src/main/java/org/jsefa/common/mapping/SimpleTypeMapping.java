@@ -38,7 +38,7 @@ public abstract class SimpleTypeMapping<T> extends TypeMapping<T> {
      * @param dataTypeName the data type name
      * @param simpleTypeConverter the simple type converter
      */
-    public SimpleTypeMapping(Class objectType, T dataTypeName, SimpleTypeConverter simpleTypeConverter) {
+    public SimpleTypeMapping(Class<?> objectType, T dataTypeName, SimpleTypeConverter simpleTypeConverter) {
         super(objectType, dataTypeName);
         this.simpleTypeConverter = simpleTypeConverter;
     }

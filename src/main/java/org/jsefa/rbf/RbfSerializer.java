@@ -41,7 +41,7 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 public abstract class RbfSerializer implements Serializer {
     private final RbfTypeMappingRegistry typeMappingRegistry;
 
-    private final Map<Class, RbfEntryPoint> entryPoints;
+    private final Map<Class<?>, RbfEntryPoint> entryPoints;
 
     private final boolean withPrefix;
 
@@ -53,7 +53,7 @@ public abstract class RbfSerializer implements Serializer {
      * @param typeMappingRegistry the type mapping registry
      * @param entryPoints a map which maps object types to entry points.
      */
-    protected RbfSerializer(RbfTypeMappingRegistry typeMappingRegistry, Map<Class, RbfEntryPoint> entryPoints) {
+    protected RbfSerializer(RbfTypeMappingRegistry typeMappingRegistry, Map<Class<?>, RbfEntryPoint> entryPoints) {
         this.typeMappingRegistry = typeMappingRegistry;
         this.entryPoints = entryPoints;
         this.withPrefix = (entryPoints.values().iterator().next().getDesignator().length() > 0);
@@ -111,7 +111,7 @@ public abstract class RbfSerializer implements Serializer {
      * @param value the value to write
      * @param mapping the simple type mapping
      */
-    protected abstract void writeSimpleValue(Object value, SimpleTypeMapping mapping);
+    protected abstract void writeSimpleValue(Object value, SimpleTypeMapping<?> mapping);
 
     /**
      * Writes the prefix.
@@ -127,9 +127,9 @@ public abstract class RbfSerializer implements Serializer {
      */
     protected abstract RbfLowLevelSerializer getLowLevelSerializer();
 
-    private void writeValue(Object object, TypeMapping typeMapping) {
+    private void writeValue(Object object, TypeMapping<?> typeMapping) {
         if (typeMapping instanceof SimpleTypeMapping) {
-            writeSimpleValue(object, (SimpleTypeMapping) typeMapping);
+            writeSimpleValue(object, (SimpleTypeMapping<?>) typeMapping);
         } else if (typeMapping instanceof RbfComplexTypeMapping) {
             writeComplexValue(object, (RbfComplexTypeMapping) typeMapping);
         } else {
@@ -168,14 +168,14 @@ public abstract class RbfSerializer implements Serializer {
                 continue;
             }
             NodeModel nodeModel = typeMapping.getNodeModel(fieldName);
-            TypeMapping subRecordTypeMapping = getTypeMapping(nodeModel.getDataTypeName());
+            TypeMapping<?> subRecordTypeMapping = getTypeMapping(nodeModel.getDataTypeName());
             if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
                 getLowLevelSerializer().finishRecord();
                 writePrefix(nodeModel.getPrefix());
                 writeValue(fieldValue, subRecordTypeMapping);
             } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
                 RbfListTypeMapping listTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
-                for (Object listItem : (List) fieldValue) {
+                for (Object listItem : (List<?>) fieldValue) {
                     getLowLevelSerializer().finishRecord();
                     NodeModel itemNodeModel = listTypeMapping.getNodeModel(listItem.getClass());
                     writePrefix(itemNodeModel.getPrefix());
@@ -185,18 +185,18 @@ public abstract class RbfSerializer implements Serializer {
         }
     }
 
-    private TypeMapping getTypeMapping(String dataTypeName) {
-        TypeMapping typeMapping = this.typeMappingRegistry.get(dataTypeName);
+    private TypeMapping<?> getTypeMapping(String dataTypeName) {
+        TypeMapping<?> typeMapping = this.typeMappingRegistry.get(dataTypeName);
         if (typeMapping == null) {
             throw new SerializationException("Unknown data type name: " + dataTypeName);
         }
         return typeMapping;
     }
 
-    private RbfEntryPoint getEntryPoint(Class originalObjectType) {
+    private RbfEntryPoint getEntryPoint(Class<?> originalObjectType) {
         RbfEntryPoint entryPoint = this.entryPoints.get(originalObjectType);
         if (entryPoint == null) {
-            Class objectType = originalObjectType.getSuperclass();
+            Class<?> objectType = originalObjectType.getSuperclass();
             while (objectType != null) {
                 entryPoint = this.entryPoints.get(objectType);
                 if (entryPoint != null) {

@@ -18,6 +18,7 @@ package multiple.employee;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.jsefa.Serializer;
@@ -61,12 +62,11 @@ public final class SerializationDemo {
     }
 
     private Employee createEmployee(String name, Role role, Boolean internal, String birthdDate, BigDecimal score) {
-        DateConverter dateConverter = new DateConverter("dd.MM.yyyy");
         Employee employee = new Employee();
         employee.name = name;
         employee.role = role;
         employee.internal = internal;
-        employee.birthDate = (Date) dateConverter.fromString(birthdDate);
+        employee.birthDate = createDate(birthdDate);
         employee.score = new Score();
         employee.score.type = "performance";
         employee.score.value = score;
@@ -83,6 +83,15 @@ public final class SerializationDemo {
             throw new RuntimeException();
         }
     }
+
+    private Date createDate(String date) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(DateConverter.DEFAULT_FORMAT);
+            return df.parse(date);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }    
 
     /**
      * Main method.

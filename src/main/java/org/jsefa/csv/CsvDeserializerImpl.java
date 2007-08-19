@@ -19,12 +19,12 @@ package org.jsefa.csv;
 import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
+import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;
-import org.jsefa.csv.lowlevel.QuoteMode;
+import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.RbfDeserializer;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
-import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**
  * Default implementation of {@link CsvDeserializer} based on
@@ -37,22 +37,24 @@ public final class CsvDeserializerImpl extends RbfDeserializer implements CsvDes
 
     private final CsvLowLevelDeserializer lowLevelDeserializer;
 
-    CsvDeserializerImpl(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<String, RbfEntryPoint> entryPointsByPrefixes) {
-        super(typeMappingRegistry, entryPointsByPrefixes);
-        this.lowLevelDeserializer = config.getLowLevelIOFactory().createDeserializer(config.getLowLevelConfiguration());
+    CsvDeserializerImpl(CsvConfiguration config, Map<String, RbfEntryPoint> entryPointsByPrefixes,
+            CsvLowLevelDeserializer lowLevelDeserializer) {
+        super(config.getTypeMappingRegistry(), entryPointsByPrefixes);
+        this.lowLevelDeserializer = lowLevelDeserializer;
     }
 
-    CsvDeserializerImpl(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry, RbfEntryPoint entryPoint) {
-        super(typeMappingRegistry, entryPoint);
-        this.lowLevelDeserializer = config.getLowLevelIOFactory().createDeserializer(config.getLowLevelConfiguration());
+    CsvDeserializerImpl(CsvConfiguration config, RbfEntryPoint entryPoint,
+            CsvLowLevelDeserializer lowLevelDeserializer) {
+        super(config.getTypeMappingRegistry(), entryPoint);
+        this.lowLevelDeserializer = lowLevelDeserializer;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected Object readSimpleValue(SimpleTypeMapping typeMapping) {
-        String stringValue = this.lowLevelDeserializer.nextField(((CsvSimpleTypeMapping) typeMapping).getQuoteMode());
+    protected Object readSimpleValue(SimpleTypeMapping<?> typeMapping) {
+        String stringValue = this.lowLevelDeserializer.nextField(((CsvSimpleTypeMapping) typeMapping)
+                .getQuoteMode());
         if (stringValue.length() > 0) {
             return typeMapping.getSimpleTypeConverter().fromString(stringValue);
         } else {

@@ -54,5 +54,5 @@ public @interface Record {
      * The object type will be ignored if the data type name is given
      * explicitly.
      */
-    Class objectType() default NoClass.class;
+    Class<?> objectType() default NoClass.class;
 }

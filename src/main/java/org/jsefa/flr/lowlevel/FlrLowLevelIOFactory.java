@@ -16,30 +16,64 @@
 
 package org.jsefa.flr.lowlevel;
 
+import java.lang.reflect.Method;
+
+import org.jsefa.IOFactoryException;
+import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.lowlevel.LowLevelIOFactory;
+import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.flr.lowlevel.config.FlrLowLevelConfiguration;
+import org.jsefa.flr.lowlevel.config.FlrLowLevelInitialConfigurationParameters;
 
 /**
  * Factory for creating {@link FlrLowLevelDeserializer}s and
  * {@link FlrLowLevelSerializer}s.
  * 
+ * This is the abstract base class for concrete factories. Each subclass must
+ * provide a static method <code>create(FlrLowLevelConfiguration config)</code>
+ * as well as implement the abstract methods.
+ * <p>
+ * This class provides a static factory method
+ * {@link #createFactory(FlrLowLevelConfiguration)} to create an instance of a
+ * concrete <code>FlrLowLevelIOFactory</code>.
+ * 
  * @author Norman Lahme-Huetig
  * 
  */
-public interface FlrLowLevelIOFactory {
-    /**
-     * Creates a <code>FlrLowLevelDeserializer</code> configured with the
-     * given configuration object.
-     * 
-     * @param config the configuration object
-     * @return a <code>FlrLowLevelDeserializer</code>
-     */
-    FlrLowLevelDeserializer createDeserializer(FlrLowLevelConfiguration config);
+public abstract class FlrLowLevelIOFactory implements LowLevelIOFactory {
 
     /**
-     * Creates a <code>FlrLowLevelSerializer</code> configured with the given
-     * configuration object.
+     * Creates a new <code>FlrLowLevelIOFactory</code> for
+     * <code>FlrLowLevelSerializer</code>s and
+     * <code>FlrLowLevelDeserializer</code>s using the given configuration.
      * 
-     * @param config the configuration object
-     * @return a <code>FlrLowLevelSerializer</code>
+     * @param config the configuration object.
+     * @return an <code>FlrLowLevelIOFactory</code> factory
+     * @throws IOFactoryException
      */
-    FlrLowLevelSerializer createSerializer(FlrLowLevelConfiguration config);
+    public static FlrLowLevelIOFactory createFactory(FlrLowLevelConfiguration config) {
+        Class<FlrLowLevelIOFactory> factoryClass = InitialConfiguration.get(
+                FlrLowLevelInitialConfigurationParameters.IO_FACTORY_CLASS, FlrLowLevelIOFactoryImpl.class);
+        Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
+                FlrLowLevelConfiguration.class);
+        if (createMethod == null) {
+            throw new IOFactoryException("Failed to create an FlrLowLevelIOFactory. The factory " + factoryClass
+                    + " does not contain the required static createFactory method.");
+        }
+        try {
+            return ReflectionUtil.callMethod(null, createMethod, config);
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create an FlrLowLevelIOFactory", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract FlrLowLevelSerializer createSerializer();
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract FlrLowLevelDeserializer createDeserializer();
 }

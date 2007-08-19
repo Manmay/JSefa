@@ -28,7 +28,7 @@ public final class IOFactoryException extends RuntimeException {
 
     /**
      * Constructs a new <code>IOFactoryException</code> with the specified
-     * detail messagage.
+     * detail message.
      * 
      * @param message the detail message.
      */
@@ -38,7 +38,7 @@ public final class IOFactoryException extends RuntimeException {
 
     /**
      * Constructs a new <code>IOFactoryException</code> with the specified
-     * detail messagage and cause.
+     * detail message and cause.
      * 
      * @param message the detail message
      * @param cause the cause

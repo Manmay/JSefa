@@ -37,7 +37,7 @@ public class CsvPerformanceDemo extends AbstractPerformanceDemo {
      * {@inheritDoc}
      */
     @Override
-    protected IOFactory createIOFactory(Class objectType) {
+    protected IOFactory createIOFactory(Class<?> objectType) {
         return CsvIOFactory.createFactory(objectType);
     }
 

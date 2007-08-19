@@ -48,7 +48,7 @@ public final class DeserializationDemo {
         Deserializer deserializer = getDeserializer();
         deserializer.open(getFileReader());
         while (deserializer.hasNext()) {
-            Employee employee = (Employee) deserializer.next();
+            Employee employee = deserializer.next();
             print(employee);
         }
         deserializer.close(true);

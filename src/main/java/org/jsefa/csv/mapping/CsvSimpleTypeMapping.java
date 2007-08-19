@@ -19,7 +19,7 @@ package org.jsefa.csv.mapping;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.csv.lowlevel.QuoteMode;
+import org.jsefa.csv.lowlevel.config.QuoteMode;
 
 /**
  * A mapping between a java object type and a simple CSV data type.
@@ -41,7 +41,7 @@ public final class CsvSimpleTypeMapping extends SimpleTypeMapping<String> {
      * @param simpleTypeConverter the simple type converter
      * @param quoteMode the quote mode
      */
-    public CsvSimpleTypeMapping(Class objectType, String dataTypeName, SimpleTypeConverter simpleTypeConverter,
+    public CsvSimpleTypeMapping(Class<?> objectType, String dataTypeName, SimpleTypeConverter simpleTypeConverter,
             QuoteMode quoteMode) {
         super(objectType, dataTypeName, simpleTypeConverter);
         this.quoteMode = quoteMode;

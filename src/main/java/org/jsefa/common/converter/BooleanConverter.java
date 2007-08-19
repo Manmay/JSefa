@@ -16,9 +16,10 @@
 
 package org.jsefa.common.converter;
 
-
 /**
- * Converter for <code>Boolean</code> objects.
+ * Converter for <code>Boolean</code> objects.<br>
+ * The format consists of two Strings. The first token is the literal for true
+ * and the second the literal for false.<br>
  * <p>
  * It is thread-safe.
  * 
@@ -43,43 +44,52 @@ public final class BooleanConverter implements SimpleTypeConverter {
      */
     public static final String[] FORMAT_BINARY = {"1", "0"};
 
-    private final String trueString;
+    private final String trueLiteral;
 
-    private final String falseString;
-
-    /**
-     * Constructs a new <code>BooleanConverter</code> with the default format
-     * {@link #FORMAT_TRUE_FALSE}.
-     */
-    public BooleanConverter() {
-        this(FORMAT_TRUE_FALSE);
-    }
+    private final String falseLiteral;
 
     /**
-     * Constructs a new <code>BooleanConverter</code>.
+     * Constructs a new <code>BooleanConverter</code>.<br>
+     * If no format is given, the {@link #FORMAT_TRUE_FALSE} is used.
      * 
-     * @param format the format consisting of two Strings. The first token is
-     *            the literal for true and the second the literal for false.
+     * @param configuration the configuration.
+     * @return a boolean converter
      * @throws ConversionException if the given format is not valid.
      */
-    public BooleanConverter(String... format) {
-        if (format.length != 2 || format[0] == null || format[1] == null || format[0].equals(format[1])) {
-            throw new ConversionException("Invalid format: " + format);
+    public static BooleanConverter create(SimpleTypeConverterConfiguration configuration) {
+        String[] format = getFormat(configuration);
+        return new BooleanConverter(format[0], format[1]);
+    }
+
+    private static String[] getFormat(SimpleTypeConverterConfiguration configuration) {
+        if (configuration.getFormat() == null) {
+            return FORMAT_TRUE_FALSE;
         }
-        this.trueString = format[0];
-        this.falseString = format[1];
+        if (configuration.getFormat().length != 2) {
+            throw new ConversionException("The format for a BooleanConverter must be an array with 2 entries");
+        }
+        if (configuration.getFormat()[0].equals(configuration.getFormat()[1])) {
+            throw new ConversionException("Invalid format for a BooleanConverter: " + configuration.getFormat()[0]
+                    + ", " + configuration.getFormat()[1]);
+        }
+        return configuration.getFormat();
+    }
+
+    private BooleanConverter(String trueLiteral, String falseLiteral) {
+        this.trueLiteral = trueLiteral;
+        this.falseLiteral = falseLiteral;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object fromString(String value) {
+    public Boolean fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }
-        if (this.trueString.equals(value)) {
+        if (this.trueLiteral.equals(value)) {
             return Boolean.TRUE;
-        } else if (this.falseString.equals(value)) {
+        } else if (this.falseLiteral.equals(value)) {
             return Boolean.FALSE;
         } else {
             throw new ConversionException("Unknown boolean value: " + value);
@@ -94,9 +104,9 @@ public final class BooleanConverter implements SimpleTypeConverter {
             return null;
         }
         if (((Boolean) value).booleanValue()) {
-            return this.trueString;
+            return this.trueLiteral;
         } else {
-            return this.falseString;
+            return this.falseLiteral;
         }
     }
 }

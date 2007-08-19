@@ -19,11 +19,21 @@ package org.jsefa.common.converter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jsefa.common.util.ReflectionUtil;
 
 /**
- * Converter for JDK 1.5 enums.
+ * Converter for JDK 1.5 enums. <br>
+ * The format is an array of mappings from the original <code>String</code>
+ * representation of an enum value to the one which shall be used for
+ * serialization. Each mapping has the form <br>
+ * originalRepresentation=newRepresentation<br>
+ * Example:
+ * <code>{"SENIOR_DEVELOPER=senior developer", "JUNIOR_DEVELOPER=junior developer"}</code>
+ * <p>
+ * These mappings override the display name declarations provided by the
+ * {@link EnumConstant} annotations.
  * <p>
  * It is thread safe.
  * 
@@ -40,49 +50,34 @@ public final class EnumConverter implements SimpleTypeConverter {
 
     /**
      * Constructs a new <code>EnumConverter</code>.
-     * <p>
-     * Note: the display name can be set with the {@link EnumConstant}
-     * annotation.
      * 
-     * @param enumType the enum type
+     * @param configuration the configuration
+     * @return a enum converter
      */
-    public EnumConverter(Class<? extends Enum> enumType) {
-        this(enumType, (String[]) null);
-    }
-
-    /**
-     * Constructs a new <code>EnumConverter</code>.
-     * 
-     * @param enumType the enum type
-     * @param format an array of mappings from the original <code>String</code>
-     *            representation of an enum value to the one which shall be used
-     *            for serialization. Each mapping has the form <br>
-     *            originalRepresentation=newRepresentation<br>
-     *            Example:
-     *            <code>{"SENIOR_DEVELOPER=senior developer", "JUNIOR_DEVELOPER=junior developer"}</code>
-     *            <p>
-     *            These mappings override the display name declarations provided
-     *            by the {@link EnumConstant} annotations.
-     */
-    public EnumConverter(Class<? extends Enum> enumType, String... format) {
-        this.enumType = enumType;
-        this.nameToAliasMap = new HashMap<String, String>();
-        this.aliasToNameMap = new HashMap<String, String>();
+    public static EnumConverter create(SimpleTypeConverterConfiguration configuration) {
+        Class<? extends Enum<?>> enumType = configuration.getObjectType();
+        Map<String, String> nameToAliasMap = new HashMap<String, String>();
         for (Field field : ReflectionUtil.getAllFields(enumType)) {
             if (field.isAnnotationPresent(EnumConstant.class)) {
-                this.nameToAliasMap.put(field.getName(), field.getAnnotation(EnumConstant.class).value());
-                this.aliasToNameMap.put(field.getAnnotation(EnumConstant.class).value(), field.getName());
+                nameToAliasMap.put(field.getName(), field.getAnnotation(EnumConstant.class).value());
             }
         }
-        if (format != null) {
-            for (String mapping : format) {
+        if (configuration.getFormat() != null) {
+            for (String mapping : configuration.getFormat()) {
                 String[] tokens = mapping.split("=");
-                if (this.nameToAliasMap.get(tokens[0]) != null) {
-                    this.aliasToNameMap.remove(this.nameToAliasMap.get(tokens[0]));
-                }
-                this.nameToAliasMap.put(tokens[0], tokens[1]);
-                this.aliasToNameMap.put(tokens[1], tokens[0]);
+                nameToAliasMap.put(tokens[0], tokens[1]);
             }
+        }
+        return new EnumConverter(enumType, nameToAliasMap);
+    }
+
+    private EnumConverter(Class<? extends Enum<?>> enumType, Map<String, String> nameToAliasMap) {
+        this.enumType = enumType;
+        this.nameToAliasMap = nameToAliasMap;
+        this.aliasToNameMap = new HashMap<String, String>();
+
+        for (Entry<String, String> entry : this.nameToAliasMap.entrySet()) {
+            this.aliasToNameMap.put(entry.getValue(), entry.getKey());
         }
     }
 
@@ -90,7 +85,7 @@ public final class EnumConverter implements SimpleTypeConverter {
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public Object fromString(String value) {
+    public Enum fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }

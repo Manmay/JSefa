@@ -103,7 +103,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * @param objectType the object type
      * @return true, if the object type is a simple type; false otherwise.
      */
-    protected final boolean hasSimpleType(Class objectType) {
+    protected final boolean hasSimpleType(Class<?> objectType) {
         return getSimpleTypeConverterProvider().hasConverterFor(objectType);
     }
 
@@ -113,7 +113,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * @param objectType the object type
      * @return true, if the given object type is a list type; false otherwise.
      */
-    protected final boolean hasListType(Class objectType) {
+    protected final boolean hasListType(Class<?> objectType) {
         return List.class.isAssignableFrom(objectType);
     }
 

@@ -18,6 +18,7 @@ package xml.yellowpages;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -64,17 +65,25 @@ public final class SerializationDemo {
     }
 
     private Employee createEmployee(String name, Role role, String birthDate, BigDecimal score) {
-        DateConverter dateConverter = new DateConverter("dd.MM.yyyy");
         Employee employee = new Employee();
         employee.name = name;
         employee.role = role;
-        employee.birthDate = (Date) dateConverter.fromString(birthDate);
+        employee.birthDate = createDate(birthDate);
         Score scoreObj = new Score();
         scoreObj.type = "performance";
         scoreObj.value = score;
         employee.score = scoreObj;
         return employee;
     }
+
+    private Date createDate(String date) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(DateConverter.DEFAULT_FORMAT);
+            return df.parse(date);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }    
 
     /**
      * Main method.

@@ -19,12 +19,12 @@ package org.jsefa.flr;
 import java.util.Map;
 
 import org.jsefa.common.mapping.SimpleTypeMapping;
+import org.jsefa.flr.config.FlrConfiguration;
 import org.jsefa.flr.lowlevel.Align;
 import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
 import org.jsefa.rbf.RbfSerializer;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
-import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**
  * Default implementation of {@link FlrSerializer} based on
@@ -38,16 +38,16 @@ public final class FlrSerializerImpl extends RbfSerializer implements FlrSeriali
 
     private final FlrLowLevelSerializer lowLevelSerializer;
 
-    FlrSerializerImpl(FlrConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<Class, RbfEntryPoint> entryPoints) {
-        super(typeMappingRegistry, entryPoints);
-        this.lowLevelSerializer = config.getLowLevelIOFactory().createSerializer(config.getLowLevelConfiguration());
+    FlrSerializerImpl(FlrConfiguration config, Map<Class<?>, RbfEntryPoint> entryPoints,
+            FlrLowLevelSerializer lowLevelSerializer) {
+        super(config.getTypeMappingRegistry(), entryPoints);
+        this.lowLevelSerializer = lowLevelSerializer;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void writeSimpleValue(Object object, SimpleTypeMapping mapping) {
+    protected void writeSimpleValue(Object object, SimpleTypeMapping<?> mapping) {
         FlrSimpleTypeMapping flrMapping = (FlrSimpleTypeMapping) mapping;
         String value = flrMapping.getSimpleTypeConverter().toString(object);
         if (value == null) {
@@ -56,7 +56,7 @@ public final class FlrSerializerImpl extends RbfSerializer implements FlrSeriali
         this.lowLevelSerializer.writeField(value, flrMapping.getLength(), flrMapping.getAlign(), flrMapping
                 .getPadCharacter());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -64,7 +64,7 @@ public final class FlrSerializerImpl extends RbfSerializer implements FlrSeriali
     protected void writePrefix(String prefix) {
         this.lowLevelSerializer.writeField(prefix, prefix.length(), Align.LEFT, ' ');
     }
-    
+
     /**
      * {@inheritDoc}
      */

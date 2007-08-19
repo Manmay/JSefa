@@ -48,17 +48,18 @@ public final class AnnotatedFieldsProvider {
      * @param annotationClasses the annotation classes
      * @return a sorted list of fields
      */
-    public static List<Field> getSortedAnnotatedFields(Class objectType, Class... annotationClasses) {
+    public static List<Field> getSortedAnnotatedFields(Class<?> objectType,
+            Class<? extends Annotation>... annotationClasses) {
         List<Field> sortedFields = new ArrayList<Field>();
-        for (Class theClass : ReflectionUtil.getTypesInReverseOrder(objectType)) {
+        for (Class<?> theClass : ReflectionUtil.getTypesInReverseOrder(objectType)) {
             List<Field> flrFields = getDeclaredFields(theClass, annotationClasses);
             SortedMap<Integer, Field> fieldMap = new TreeMap<Integer, Field>();
             for (Field field : flrFields) {
                 Integer pos = AnnotationDataProvider.get(field, AnnotationDataNames.POS, annotationClasses);
                 if (pos != null && pos >= 0) {
                     if (fieldMap.get(pos) != null) {
-                        throw new AnnotationException("There are more than one field in "
-                                + objectType.getName() + " annotated with the same pos " + pos);
+                        throw new AnnotationException("There are more than one field in " + objectType.getName()
+                                + " annotated with the same pos " + pos);
                     }
                     fieldMap.put(pos, field);
                 }
@@ -87,15 +88,17 @@ public final class AnnotatedFieldsProvider {
      * @param annotationClasses the annotation classes
      * @return the list of fields.
      */
-    public static List<Field> getAnnotatedFields(Class objectType, Class... annotationClasses) {
+    public static List<Field> getAnnotatedFields(Class<?> objectType,
+            Class<? extends Annotation>... annotationClasses) {
         List<Field> fields = new ArrayList<Field>();
-        for (Class theClass : ReflectionUtil.getTypesInReverseOrder(objectType)) {
+        for (Class<?> theClass : ReflectionUtil.getTypesInReverseOrder(objectType)) {
             fields.addAll(getDeclaredFields(theClass, annotationClasses));
         }
         return fields;
     }
 
-    private static List<Field> getDeclaredFields(Class objectType, Class... annotationClasses) {
+    private static List<Field> getDeclaredFields(Class<?> objectType,
+            Class<? extends Annotation>... annotationClasses) {
         List<Field> result = new ArrayList<Field>();
         for (Field field : objectType.getDeclaredFields()) {
             for (Class<? extends Annotation> annotationClass : annotationClasses) {

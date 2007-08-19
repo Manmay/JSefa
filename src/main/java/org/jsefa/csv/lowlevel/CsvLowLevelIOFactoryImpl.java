@@ -16,40 +16,49 @@
 
 package org.jsefa.csv.lowlevel;
 
+import org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration;
+
+
 
 /**
  * Implementation of {@link CsvLowLevelIOFactory}.
  * <p>
- * It is thread-safe.
+ * Instances of this class are immutable and thread-safe.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public class CsvLowLevelIOFactoryImpl implements CsvLowLevelIOFactory {
+public class CsvLowLevelIOFactoryImpl extends CsvLowLevelIOFactory {
 
-    private static final CsvLowLevelIOFactoryImpl INSTANCE = new CsvLowLevelIOFactoryImpl();
+    private final CsvLowLevelConfiguration config;
 
     /**
-     * Returns the single <code>CsvLowLevelIOFactoryImpl</code>.
+     * Creates a new <code>CsvLowLevelIOFactoryImpl</code> for <code>CsvLowLevelSerializer</code>s
+     * and <code>CsvLowLevelDeserializer</code>s using the given configuration.
      * 
-     * @return the single <code>CsvLowLevelIOFactoryImpl</code>.
+     * @param config the configuration object.
+     * @return a <code>CsvLowLevelIOFactoryImpl</code> factory
      */
-    public static CsvLowLevelIOFactoryImpl getInstance() {
-        return CsvLowLevelIOFactoryImpl.INSTANCE;
+    public static CsvLowLevelIOFactoryImpl createFactory(CsvLowLevelConfiguration config) {
+        return new CsvLowLevelIOFactoryImpl(config);
+    }
+    
+    CsvLowLevelIOFactoryImpl(CsvLowLevelConfiguration config) {
+        this.config = config;
     }
 
     /**
      * {@inheritDoc}
      */
-    public CsvLowLevelDeserializer createDeserializer(CsvLowLevelConfiguration config) {
-        return new CsvLowLevelDeserializerImpl(config);
+    public CsvLowLevelDeserializer createDeserializer() {
+        return new CsvLowLevelDeserializerImpl(this.config);
     }
 
     /**
      * {@inheritDoc}
      */
-    public CsvLowLevelSerializer createSerializer(CsvLowLevelConfiguration config) {
-        return new CsvLowLevelSerializerImpl(config);
+    public CsvLowLevelSerializer createSerializer() {
+        return new CsvLowLevelSerializerImpl(this.config);
     }
 
 }

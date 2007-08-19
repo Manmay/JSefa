@@ -160,6 +160,39 @@ public class NamespacesTest extends TestCase {
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, obj);
     }
 
+    /**
+     * Tests the case when a default namespace is erased (the parent has a
+     * default namespace but the child not).
+     */
+    public void testEraseDefaultNamespace() {
+        DefaultNamespaceErasureTestParentDTO obj = new DefaultNamespaceErasureTestParentDTO();
+        obj.attribute = "a";
+        obj.element = "b";
+        obj.elementList.add("c");
+        obj.element2 = new DefaultNamespaceErasureTestChildDTO();
+        obj.element2.attributeB = "d";
+        obj.element2.elementB = "e";
+        obj.element2.elementListB.add("f");
+        String serializationResult = JSefaTestUtil.serialize(XML, obj);
+
+        assertTrue(getAttributeNamespace(serializationResult, "attribute").equals(
+                NamespaceConstants.NO_NAMESPACE_URI));
+        assertTrue(getElementNamespace(serializationResult, "element").equals("uriA"));
+        assertTrue(getElementNamespace(serializationResult, "elementList").equals("uriA"));
+        assertTrue(getElementNamespace(serializationResult, "item").equals("uriA"));
+        assertTrue(getElementNamespace(serializationResult, "element2").equals("uriA"));
+
+        assertTrue(getAttributeNamespace(serializationResult, "attributeB").equals(
+                NamespaceConstants.NO_NAMESPACE_URI));
+        assertTrue(getElementNamespace(serializationResult, "elementB")
+                .equals(NamespaceConstants.NO_NAMESPACE_URI));
+        assertTrue(getElementNamespace(serializationResult, "elementListB").equals(
+                NamespaceConstants.NO_NAMESPACE_URI));
+        assertTrue(getElementNamespace(serializationResult, "itemB").equals(NamespaceConstants.NO_NAMESPACE_URI));
+
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, obj);
+    }
+
     private String getElementNamespace(String inputString, String localName) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -298,6 +331,34 @@ public class NamespacesTest extends TestCase {
 
         @XmlElementList(name = "a:elementListB", implicit = false,
                 items = {@ListItem(name = "a:itemB", objectType = String.class)})
+        List<String> elementListB = new ArrayList<String>();
+    }
+
+    @XmlNamespaces(@Namespace(uri = "uriA"))
+    @XmlDataType()
+    static final class DefaultNamespaceErasureTestParentDTO extends AbstractTestDTO {
+        @XmlAttribute()
+        String attribute;
+
+        @XmlElement()
+        String element;
+
+        @XmlElementList(implicit = false, items = {@ListItem(name = "item", objectType = String.class)})
+        List<String> elementList = new ArrayList<String>();
+
+        @XmlElement()
+        DefaultNamespaceErasureTestChildDTO element2;
+    }
+
+    @XmlDataType()
+    static final class DefaultNamespaceErasureTestChildDTO extends AbstractTestDTO {
+        @XmlAttribute()
+        String attributeB;
+
+        @XmlElement()
+        String elementB;
+
+        @XmlElementList(implicit = false, items = {@ListItem(name = "itemB", objectType = String.class)})
         List<String> elementListB = new ArrayList<String>();
     }
 

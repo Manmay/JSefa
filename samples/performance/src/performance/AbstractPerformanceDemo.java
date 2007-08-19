@@ -70,7 +70,7 @@ abstract class AbstractPerformanceDemo {
      * @param objectType the object type to create the factory for
      * @return a <code>IOFactory</code>
      */
-    protected abstract IOFactory createIOFactory(Class objectType);
+    protected abstract IOFactory createIOFactory(Class<?> objectType);
 
     /**
      * Override to perform special action after start (before writing the first
@@ -151,7 +151,7 @@ abstract class AbstractPerformanceDemo {
         }
     }
 
-    private long readPerformance(Class obj) {
+    private long readPerformance(Class<?> obj) {
         try {
             Deserializer deserialiser = this.ioFactories.get(obj).createDeserializer();
             deserialiser.open(new BufferedReader(new FileReader(this.resultFile)));

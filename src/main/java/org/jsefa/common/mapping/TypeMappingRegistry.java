@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentMap;
  * 
  * @param <D> the type of the data type name.
  */
-public class TypeMappingRegistry<D> {
+public abstract class TypeMappingRegistry<D> {
 
     private final ConcurrentMap<D, TypeMapping<D>> typeMappings;
 
@@ -47,7 +47,7 @@ public class TypeMappingRegistry<D> {
      * 
      * @param other the registry to copy
      */
-    public TypeMappingRegistry(TypeMappingRegistry<D> other) {
+    protected TypeMappingRegistry(TypeMappingRegistry<D> other) {
         this();
         this.typeMappings.putAll(other.typeMappings);
     }
@@ -70,5 +70,12 @@ public class TypeMappingRegistry<D> {
     public final TypeMapping<D> get(D dataTypeName) {
         return this.typeMappings.get(dataTypeName);
     }
+    
+    /**
+     * Creates a copy of this <code>TypeMappingRegistry</code>.
+     * 
+     * @return a copy of this <code>TypeMappingRegistry</code>
+     */
+    public abstract TypeMappingRegistry<D> createCopy();
 
 }

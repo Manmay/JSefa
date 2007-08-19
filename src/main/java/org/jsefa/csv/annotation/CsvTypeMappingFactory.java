@@ -22,7 +22,7 @@ import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.converter.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.csv.lowlevel.QuoteMode;
+import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
 import org.jsefa.rbf.annotation.RbfTypeMappingFactory;
@@ -64,7 +64,7 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
     /**
      * {@inheritDoc}
      */
-    protected TypeMapping<String> createSimpleTypeMapping(Class objectType, String dataTypeName,
+    protected TypeMapping<String> createSimpleTypeMapping(Class<?> objectType, String dataTypeName,
             SimpleTypeConverter converter, Field field) {
         CsvField fieldAnnotation = field.getAnnotation(CsvField.class);
         QuoteMode quoteMode = fieldAnnotation.quoteMode();

@@ -28,9 +28,6 @@ import org.jsefa.xml.namespace.QNameParser;
 
 /**
  * Factory for creating {@link XmlEntryPoint}s from annotated classes.
- * <p>
- * An instance of this class is not intented to be used by more than one thread
- * at the same time.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -47,23 +44,23 @@ public final class XmlEntryPointFactory {
      * <code>objectTypes</code>), the resulting list contains an entry point
      * with an element name taken from B and not from A.
      * <p>
-     * 2. For each descendant A of an object type B in <code>objectTypes</code>
+     * 2. For each descendant B of an object type A in <code>objectTypes</code>
      * the resulting list contains an entry point with an element name taken
-     * from B and not from A as long as rule 1 does not apply.
+     * from A and not from B as long as rule 1 does not apply.
      * 
      * @param objectTypes the object types
      * @param typeMappingFactory the type mapping factory
      * @return a <code>Collection</code> of entry points.
      */
     public static Collection<XmlEntryPoint> createEntryPoints(XmlTypeMappingFactory typeMappingFactory,
-            Class... objectTypes) {
-        Map<Class, XmlEntryPoint> entryPoints = new HashMap<Class, XmlEntryPoint>();
+            Class<?>... objectTypes) {
+        Map<Class<?>, XmlEntryPoint> entryPoints = new HashMap<Class<?>, XmlEntryPoint>();
         XmlTypeMappingRegistry registry = typeMappingFactory.getTypeMappingRegistry();
-        for (Class rootObjectType : objectTypes) {
+        for (Class<?> rootObjectType : objectTypes) {
             QName rootDataTypeName = typeMappingFactory.createIfAbsent(rootObjectType);
             QName elementName = getAnnotatedElementName(rootObjectType, rootObjectType.getSimpleName());
             for (QName dataTypeName : registry.getDataTypeNameTreeElements(rootDataTypeName)) {
-                Class objectType = registry.get(dataTypeName).getObjectType();
+                Class<?> objectType = registry.get(dataTypeName).getObjectType();
                 entryPoints.put(objectType, new XmlEntryPoint(dataTypeName, elementName));
             }
         }

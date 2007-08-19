@@ -56,7 +56,7 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
      * @param dataTypeName the data type name
      * @param objectAccessor the object accessor
      */
-    public XmlComplexTypeMapping(Class objectType, QName dataTypeName, ObjectAccessor objectAccessor) {
+    public XmlComplexTypeMapping(Class<?> objectType, QName dataTypeName, ObjectAccessor objectAccessor) {
         super(objectType, dataTypeName);
         this.objectAccessor = objectAccessor;
         this.fieldNamesByNodeType = new EnumMap<NodeType, List<String>>(NodeType.class);
@@ -75,7 +75,7 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
      * @param fieldType the field type
      * @param nodeDescriptor the node descriptor
      */
-    public void register(String fieldName, Class fieldType, NodeDescriptor nodeDescriptor) {
+    public void register(String fieldName, Class<?> fieldType, NodeDescriptor nodeDescriptor) {
         register(fieldName, fieldType, nodeDescriptor, nodeDescriptor.getDataTypeName(), false);
     }
 
@@ -92,7 +92,7 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
      * @param nodeDescriptor the node descriptor
      * @param dataTypeName the data type name
      */
-    public void registerIndirect(String fieldName, Class fieldType, NodeDescriptor nodeDescriptor,
+    public void registerIndirect(String fieldName, Class<?> fieldType, NodeDescriptor nodeDescriptor,
             QName dataTypeName) {
         register(fieldName, fieldType, nodeDescriptor, dataTypeName, true);
     }
@@ -145,10 +145,10 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
      * @param fieldType the field typee
      * @return the node model.
      */
-    public NodeModel getNodeModel(String fieldName, Class fieldType) {
+    public NodeModel getNodeModel(String fieldName, Class<?> fieldType) {
         NodeModel result = this.nodeModelsByFieldName.get(fieldName);
         if (result == null) {
-            Class type = fieldType;
+            Class<?> type = fieldType;
             while (type != null) {
                 result = this.nodeModelsByTypedField.get(new TypedField(fieldName, type));
                 if (result != null) {
@@ -179,7 +179,7 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
         return this.objectAccessor;
     }
 
-    private void register(String fieldName, Class fieldType, NodeDescriptor nodeDescriptor, QName dataTypeName,
+    private void register(String fieldName, Class<?> fieldType, NodeDescriptor nodeDescriptor, QName dataTypeName,
             boolean indirect) {
         assertNotFinished();
         List<String> fieldNames = getOrCreateFieldNameList(nodeDescriptor.getType());
@@ -234,11 +234,11 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
     private static final class TypedField {
         private final String name;
 
-        private final Class objectType;
+        private final Class<?> objectType;
 
         private final int hashCode;
 
-        public TypedField(String name, Class objectType) {
+        public TypedField(String name, Class<?> objectType) {
             this.name = name;
             this.objectType = objectType;
             this.hashCode = 37 * (17 + getName().hashCode()) + getObjectType().hashCode();
@@ -248,7 +248,7 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
             return this.name;
         }
 
-        public Class getObjectType() {
+        public Class<?> getObjectType() {
             return this.objectType;
         }
 

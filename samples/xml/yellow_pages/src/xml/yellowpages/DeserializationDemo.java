@@ -36,7 +36,7 @@ public final class DeserializationDemo {
         Deserializer deserializer = XmlIOFactory.createFactory(Department.class).createDeserializer();
         deserializer.open(createFileReader());
         while (deserializer.hasNext()) {
-            Department department = (Department) deserializer.next();
+            Department department = deserializer.next();
             print(department);
         }
         deserializer.close(true);

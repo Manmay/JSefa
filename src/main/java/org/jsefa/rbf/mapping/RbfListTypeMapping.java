@@ -35,7 +35,7 @@ public final class RbfListTypeMapping extends TypeMapping<String> {
 
     private final Map<String, NodeModel> nodeModelsByPrefix;
 
-    private final Map<Class, NodeModel> nodeModelsByObjectType;
+    private final Map<Class<?>, NodeModel> nodeModelsByObjectType;
 
     /**
      * Constructs a new <code>RbfListTypeMapping</code>.
@@ -45,7 +45,7 @@ public final class RbfListTypeMapping extends TypeMapping<String> {
     public RbfListTypeMapping(String dataTypeName) {
         super(List.class, dataTypeName);
         this.nodeModelsByPrefix = new HashMap<String, NodeModel>();
-        this.nodeModelsByObjectType = new HashMap<Class, NodeModel>();
+        this.nodeModelsByObjectType = new HashMap<Class<?>, NodeModel>();
     }
 
     /**
@@ -56,7 +56,7 @@ public final class RbfListTypeMapping extends TypeMapping<String> {
      * @param prefix the prefix
      * @param objectType the object type
      */
-    public void register(String dataTypeName, String prefix, Class objectType) {
+    public void register(String dataTypeName, String prefix, Class<?> objectType) {
         assertNotFinished();
         NodeModel nodeModel = new NodeModel(dataTypeName, null, prefix);
         this.nodeModelsByPrefix.put(prefix, nodeModel);
@@ -69,7 +69,7 @@ public final class RbfListTypeMapping extends TypeMapping<String> {
      * @param objectType the object type
      * @return a node model
      */
-    public NodeModel getNodeModel(Class objectType) {
+    public NodeModel getNodeModel(Class<?> objectType) {
         return this.nodeModelsByObjectType.get(objectType);
     }
 

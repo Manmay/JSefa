@@ -24,7 +24,19 @@ package org.jsefa.common.converter;
  * @author Norman Lahme-Huetig
  */
 public final class StringConverter implements SimpleTypeConverter {
-
+    private static final StringConverter INSTANCE = new StringConverter();
+    
+    /**
+     * Returns the single <code>StringConverter</code>.
+     * @return the single string converter.
+     */
+    public static StringConverter create() {
+        return INSTANCE;
+    }
+    
+    private StringConverter() {
+        
+    }
     /**
      * {@inheritDoc}
      */

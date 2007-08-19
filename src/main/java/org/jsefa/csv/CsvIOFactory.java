@@ -16,139 +16,120 @@
 
 package org.jsefa.csv;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.lang.reflect.Method;
 
-import org.jsefa.Deserializer;
+import org.jsefa.IOFactory;
 import org.jsefa.IOFactoryException;
-import org.jsefa.Serializer;
-import org.jsefa.csv.annotation.CsvDataType;
+import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.csv.annotation.CsvEntryPointFactory;
 import org.jsefa.csv.annotation.CsvTypeMappingFactory;
-import org.jsefa.rbf.RbfIOFactory;
-import org.jsefa.rbf.mapping.RbfEntryPoint;
-import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
+import org.jsefa.csv.config.CsvConfiguration;
+import org.jsefa.csv.config.CsvInitialConfigurationParameters;
 
 /**
  * Factory for creating {@link CsvSerializer}s and {@link CsvDeserializer}s.
  * <p>
- * It is thread-safe.
+ * This is the abstract base class for concrete factories. Each subclass must
+ * provide a static method <code>create(CsvConfiguration config)</code> as
+ * well as implement the abstract methods.
+ * <p>
+ * This class provides a static factory method
+ * {@link #createFactory(CsvConfiguration)} to create an instance of a concrete
+ * <code>CsvIOFactory</code>.
+ * <p>
+ * This class also provides static facade methods hiding the details of creating
+ * entry points based on annotated object types.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
-public final class CsvIOFactory extends RbfIOFactory<CsvConfiguration, CsvSerializer, CsvDeserializer> {
+public abstract class CsvIOFactory implements IOFactory {
 
     /**
      * Creates a new <code>CsvIOFactory</code> for <code>CsvSerializer</code>s
-     * and <code>CsvDeserializer</code>s which can handle objects of the
-     * given object types.
+     * and <code>CsvDeserializer</code>s using the given configuration.
+     * <p>
+     * Note that the configuration should provide a non empty collection
+     * of entry points.<br>
+     * You can use the methods {@link #createFactory(Class...)} or
+     * {@link #createFactory(CsvConfiguration, Class...)} if you want to get the
+     * entry points automatically created from annotated classes.
      * 
-     * @param objectTypes the object types.
-     * @return a <code>XmlIOFactory</code> factory
+     * @param config the configuration object. It will be copied so that the
+     *                given one can be modified or reused.
+     * @return an <code>CsvIOFactory</code> factory
      * @throws IOFactoryException
      */
-    public static CsvIOFactory createFactory(Class... objectTypes) {
-        return CsvIOFactory.createFactory(new CsvConfiguration(), objectTypes);
+    public static CsvIOFactory createFactory(CsvConfiguration config) {
+        Class<CsvIOFactory> factoryClass = InitialConfiguration.get(
+                CsvInitialConfigurationParameters.IO_FACTORY_CLASS, CsvIOFactoryImpl.class);
+        Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory", CsvConfiguration.class);
+        if (createMethod == null) {
+            throw new IOFactoryException("Failed to create a CsvIOFactory. The factory " + factoryClass
+                    + " does not contain the required static createFactory method.");
+        }
+        try {
+            return ReflectionUtil.callMethod(null, createMethod, config);
+        } catch (Exception e) {
+            throw new IOFactoryException("Failed to create a CsvIOFactory", e);
+        }
     }
 
     /**
      * Creates a new <code>CsvIOFactory</code> for <code>CsvSerializer</code>s
      * and <code>CsvDeserializer</code>s which can handle objects of the
      * given object types.
+     * <p>
      * 
-     * @param config the configuration object. It will be copied so that the
-     *            given one can be modified or reused.
+     * It creates a new {@link CsvConfiguration} with entry points generated
+     * from the annotations found in the given object types.
+     * 
      * @param objectTypes object types for which entry points should be created
-     *            from annotations
+     *                from annotations
      * @return a <code>CsvIOFactory</code> factory
      * @throws IOFactoryException
      */
-    public static CsvIOFactory createFactory(CsvConfiguration config, Class... objectTypes) {
-        try {
-            RbfTypeMappingRegistry typeMappingRegistry = new RbfTypeMappingRegistry();
-            Collection<RbfEntryPoint> entryPoints = new ArrayList<RbfEntryPoint>();
-            CsvTypeMappingFactory typeMappingFactory = new CsvTypeMappingFactory(typeMappingRegistry, config
-                    .getSimpleTypeConverterProvider(), config.getObjectAccessorProvider(), config
-                    .getDefaultQuoteMode());
-            for (Class<Object> objectType : objectTypes) {
-                String dataTypeName = typeMappingFactory.createIfAbsent(objectType);
-                String prefix = objectType.getAnnotation(CsvDataType.class).defaultPrefix();
-                entryPoints.add(new RbfEntryPoint(dataTypeName, prefix));
-            }
-            return new CsvIOFactory(config, typeMappingRegistry, entryPoints);
-        } catch (IOFactoryException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IOFactoryException("Failed to create a CsvIOFactory", e);
-        }
+    public static CsvIOFactory createFactory(Class<?>... objectTypes) {
+        return createFactory(new CsvConfiguration(), objectTypes);
     }
 
     /**
      * Creates a new <code>CsvIOFactory</code> for <code>CsvSerializer</code>s
      * and <code>CsvDeserializer</code>s which can handle objects of the
-     * object types defined in the given entry points.
+     * given object types as well as those object types for which entry points
+     * are defined in the <code>config</code>.
      * 
      * @param config the configuration object. It will be copied so that the
-     *            given one can be modified or reused.
-     * @param typeMappingRegistry the type mapping registry with type mappings
-     *            for all data types which are referred to from the given entry
-     *            points.
-     * @param entryPoints the entry points. An entry point is required for every
-     *            type of object which will be passed to
-     *            {@link Serializer#write} or which should be returned from
-     *            {@link Deserializer#next} and only for these objects (not for
-     *            the objects related to these ones). If more than one entry
-     *            point is defined for the same data type name, then <br>
-     *            a) the last one is used for serialization<br>
-     *            b) all are used for deserialization whereas their respective
-     *            designators are used as alternative designators for the same
-     *            data type.
-     * @return a <code>CsvIOFactory</code> factory
+     *                given one can be modified or reused.
+     * @param objectTypes object types for which entry points should be created
+     *                from annotations
+     * @return a a <code>CsvIOFactory</code> factory
      * @throws IOFactoryException
      */
-    public static CsvIOFactory createFactory(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Collection<RbfEntryPoint> entryPoints) {
+    public static CsvIOFactory createFactory(CsvConfiguration config, Class<?>... objectTypes) {
+        CsvConfiguration newConfig = config.createCopy();
         try {
-            return new CsvIOFactory(config, typeMappingRegistry, entryPoints);
+            CsvTypeMappingFactory typeMappingFactory = new CsvTypeMappingFactory(newConfig.getTypeMappingRegistry(),
+                    newConfig.getSimpleTypeConverterProvider(), newConfig.getObjectAccessorProvider(), newConfig
+                            .getDefaultQuoteMode());
+            newConfig.getEntryPoints().addAll(
+                    CsvEntryPointFactory.createEntryPoints(typeMappingFactory, objectTypes));
+            return createFactory(newConfig);
         } catch (IOFactoryException e) {
             throw e;
         } catch (Exception e) {
-            throw new IOFactoryException("Failed to create a CsvIOFactory", e);
+            throw new IOFactoryException("Failed to create an CsvIOFactory", e);
         }
-
-    }
-
-    CsvIOFactory(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Collection<RbfEntryPoint> entryPoints) {
-        super(config, typeMappingRegistry, entryPoints);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    protected CsvSerializer createSerializer(CsvConfiguration config, RbfTypeMappingRegistry typeMappingRegistry,
-            Map<Class, RbfEntryPoint> entryPointsByObjectType) {
-        return new CsvSerializerImpl(config, typeMappingRegistry, entryPointsByObjectType);
-    }
+    public abstract CsvSerializer createSerializer();
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    protected CsvDeserializer createDeserializer(CsvConfiguration config,
-            RbfTypeMappingRegistry typeMappingRegistry, RbfEntryPoint entryPoint) {
-        return new CsvDeserializerImpl(config, typeMappingRegistry, entryPoint);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected CsvDeserializer createDeserializer(CsvConfiguration config,
-            RbfTypeMappingRegistry typeMappingRegistry, Map<String, RbfEntryPoint> entryPointsByPrefix) {
-        return new CsvDeserializerImpl(config, typeMappingRegistry, entryPointsByPrefix);
-    }
+    public abstract CsvDeserializer createDeserializer();
 
 }

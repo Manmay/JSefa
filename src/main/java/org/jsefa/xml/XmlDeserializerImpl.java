@@ -25,13 +25,14 @@ import org.jsefa.DeserializationException;
 import org.jsefa.SerializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.xml.lowlevel.Attribute;
-import org.jsefa.xml.lowlevel.ElementEnd;
-import org.jsefa.xml.lowlevel.ElementStart;
-import org.jsefa.xml.lowlevel.TextContent;
-import org.jsefa.xml.lowlevel.XmlItem;
-import org.jsefa.xml.lowlevel.XmlItemType;
+import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
+import org.jsefa.xml.lowlevel.model.Attribute;
+import org.jsefa.xml.lowlevel.model.ElementEnd;
+import org.jsefa.xml.lowlevel.model.ElementStart;
+import org.jsefa.xml.lowlevel.model.TextContent;
+import org.jsefa.xml.lowlevel.model.XmlItem;
+import org.jsefa.xml.lowlevel.model.XmlItemType;
 import org.jsefa.xml.mapping.AttributeDescriptor;
 import org.jsefa.xml.mapping.ElementDescriptor;
 import org.jsefa.xml.mapping.NodeModel;
@@ -58,11 +59,10 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
 
     private XmlEntryPoint currentEntryPoint;
 
-    XmlDeserializerImpl(XmlConfiguration config, XmlTypeMappingRegistry typeMappingRegistry,
-            Collection<XmlEntryPoint> entryPoints) {
-        this.typeMappingRegistry = typeMappingRegistry;
-        this.entryPoints = entryPoints;
-        this.lowLevelDeserializer = config.getLowLevelIOFactory().createDeserializer(config.getLowLevelConfiguration());
+    XmlDeserializerImpl(XmlConfiguration config, XmlLowLevelDeserializer lowLevelDeserializer) {
+        this.typeMappingRegistry = config.getTypeMappingRegistry();
+        this.entryPoints = config.getEntryPoints();
+        this.lowLevelDeserializer = lowLevelDeserializer;
     }
 
     /**
@@ -100,12 +100,13 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     /**
      * {@inheritDoc}
      */
-    public Object next() {
+    @SuppressWarnings("unchecked")
+    public <T> T next() {
         try {
             if (!hasNext()) {
                 return null;
             }
-            return deserializeElement(this.currentEntryPoint.getDataTypeName());
+            return (T) deserializeElement(this.currentEntryPoint.getDataTypeName());
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
@@ -197,8 +198,8 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     private List<Object> deserializeListElement(XmlListTypeMapping typeMapping) {
         List<Object> listValue = new ArrayList<Object>();
         if (typeMapping.isImplicit()) {
-            listValue
-                    .add(deserializeElement(typeMapping.getNodeModel(getCurrentElementDescriptor()).getDataTypeName()));
+            listValue.add(deserializeElement(typeMapping.getNodeModel(getCurrentElementDescriptor())
+                    .getDataTypeName()));
         } else {
             int childDepth = getCurrentDepth() + 1;
             while (moveToNextElement(childDepth)) {
