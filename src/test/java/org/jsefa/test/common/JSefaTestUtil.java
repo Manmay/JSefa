@@ -93,6 +93,7 @@ public final class JSefaTestUtil {
      * @param config the configuration
      * @param dtos the DTOs
      */
+    @SuppressWarnings("unchecked")
     public static void assertRepeatedRoundTripSucceeds(FormatType formatType, Configuration config, Object... dtos) {
         List<Object> dtoList = new ArrayList<Object>();
         for (int i = 0; i < REPETITION_COUNT; i++) {
@@ -122,6 +123,7 @@ public final class JSefaTestUtil {
      * @param objects the objects to serialize
      * @return the serialization result
      */
+    @SuppressWarnings("unchecked")
     public static String serialize(FormatType formatType, Configuration config, Object... objects) {
         IOFactory ioFactory = createIOFactory(formatType, config, getObjectTypes(Arrays.asList(objects)));
         return serialize(ioFactory, Arrays.asList(objects));
@@ -185,6 +187,7 @@ public final class JSefaTestUtil {
      * @param formatType the format type
      * @return a configuration
      */
+    @SuppressWarnings("unchecked")
     public static Configuration createConfiguration(FormatType formatType) {
         switch (formatType) {
         case XML:
@@ -204,6 +207,7 @@ public final class JSefaTestUtil {
      * @param objectTypes the object types
      * @return an <code>IOFactory</code>
      */
+    @SuppressWarnings("unchecked")
     public static IOFactory createIOFactory(FormatType formatType, Class<?>... objectTypes) {
         Configuration config = createConfiguration(formatType);
         switch (formatType) {
@@ -225,6 +229,7 @@ public final class JSefaTestUtil {
      * @param objectTypes the object types
      * @return an <code>IOFactory</code>
      */
+    @SuppressWarnings("unchecked")
     public static IOFactory createIOFactory(FormatType formatType, Configuration config, Class<?>... objectTypes) {
         switch (formatType) {
         case XML:
@@ -238,6 +243,7 @@ public final class JSefaTestUtil {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void assertRoundTripSucceeds(FormatType formatType, Configuration config, List<?> inputDTOs) {
         IOFactory ioFactory = createIOFactory(formatType, config, getObjectTypes(inputDTOs));
         String serializationResult = serialize(ioFactory, inputDTOs);

@@ -16,6 +16,12 @@
 
 package org.jsefa.common.config;
 
+/**
+ * Exception thrown when an error occurs during setting an initial configuration
+ * parameter value.
+ * 
+ * @author Norman Lahme-Huetig
+ */
 public class InitialConfigurationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;

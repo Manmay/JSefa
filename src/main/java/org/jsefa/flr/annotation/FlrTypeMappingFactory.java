@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.annotation.AnnotationException;
 import org.jsefa.common.converter.SimpleTypeConverter;
-import org.jsefa.common.converter.SimpleTypeConverterProvider;
+import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.util.GeneralConstants;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;

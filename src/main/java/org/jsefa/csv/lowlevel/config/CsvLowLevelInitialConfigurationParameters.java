@@ -28,18 +28,39 @@ import org.jsefa.common.config.InitialConfigurationParameters;
  */
 public interface CsvLowLevelInitialConfigurationParameters extends InitialConfigurationParameters {
     
+    /**
+     * Configuration parameter for the CsvLowLevelIOFactory class to use.
+     */
     String IO_FACTORY_CLASS = "jsefa:csv:lowlevel:ioFactoryClass";    
     
+    /**
+     * Configuration parameter for the field delimiter to use.
+     */
     String FIELD_DELIMITER = "jsefa:csv:lowlevel:fieldDelimiter";
 
+    /**
+     * Configuration parameter for the quote character to use.
+     */
     String QUOTE_CHARACTER = "jsefa:csv:lowlevel:quoteCharacter";
 
+    /**
+     * Configuration parameter for the quote character escape mode to use.
+     */
     String QUOTE_CHARACTER_ESCAPE_MODE = "jsefa:csv:lowlevel:quoteCharacterEscapeMode";
 
+    /**
+     * Configuration parameter for the flag 'useDelimiterAfterLastField'.
+     */
     String USE_DELIMITER_AFTER_LAST_FIELD = "jsefa:csv:lowlevel:useDelimiterAfterLastField";
 
+    /**
+     * Configuration parameter for the line break to use.
+     */
     String LINE_BREAK = "jsefa:csv:lowlevel:lineBreak";
     
+    /**
+     * Configuration parameter for the escape character to use.
+     */
     String ESCAPE_CHARACTER = "jsefa:csv:lowlevel:escapeCharacter";
 
 }

@@ -34,7 +34,7 @@ import org.jsefa.common.annotation.AnnotationDataProvider;
 import org.jsefa.common.annotation.AnnotationException;
 import org.jsefa.common.annotation.TypeMappingFactory;
 import org.jsefa.common.converter.SimpleTypeConverter;
-import org.jsefa.common.converter.SimpleTypeConverterProvider;
+import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingException;
 import org.jsefa.common.util.ReflectionUtil;
@@ -99,24 +99,24 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
             SimpleTypeConverter converter, Field field);
 
     private String createSimpleTypeMappingIfAbsent(Class<?> objectType, Field field, Annotation fieldAnnotation) {
-        String[] format = null;
-        SimpleTypeConverter converter = null;
-        if (fieldAnnotation != null) {
-            format = AnnotationDataProvider.get(fieldAnnotation, FORMAT);
-            if (AnnotationDataProvider.get(fieldAnnotation, CONVERTER_CLASS) != null) {
-                Class<? extends SimpleTypeConverter> converterType = AnnotationDataProvider.get(fieldAnnotation,
-                        CONVERTER_CLASS);
-                converter = getSimpleTypeConverterProvider().getForConverterType(converterType, objectType, format);
-            }
-        }
-        if (converter == null && getSimpleTypeConverterProvider().hasConverterFor(objectType)) {
-            converter = getSimpleTypeConverterProvider().getForObjectType(objectType, format);
-        }
-        if (converter == null) {
-            throw new TypeMappingException("Could not create a simple type converter for " + objectType);
-        }
         String dataTypeName = createSimpleDataTypeName(field);
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
+            String[] format = null;
+            SimpleTypeConverter converter = null;
+            if (fieldAnnotation != null) {
+                format = AnnotationDataProvider.get(fieldAnnotation, FORMAT);
+                if (AnnotationDataProvider.get(fieldAnnotation, CONVERTER_CLASS) != null) {
+                    Class<? extends SimpleTypeConverter> converterType = AnnotationDataProvider.get(fieldAnnotation,
+                            CONVERTER_CLASS);
+                    converter = getSimpleTypeConverterProvider().getForConverterType(converterType, objectType, format);
+                }
+            }
+            if (converter == null && getSimpleTypeConverterProvider().hasConverterFor(objectType)) {
+                converter = getSimpleTypeConverterProvider().getForObjectType(objectType, format);
+            }
+            if (converter == null) {
+                throw new TypeMappingException("Could not create a simple type converter for " + objectType);
+            }
             getTypeMappingRegistry().register(createSimpleTypeMapping(objectType, dataTypeName, converter, field));
         }
         return dataTypeName;

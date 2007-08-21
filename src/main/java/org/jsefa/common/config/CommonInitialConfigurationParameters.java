@@ -26,6 +26,13 @@ package org.jsefa.common.config;
  * 
  */
 public interface CommonInitialConfigurationParameters extends InitialConfigurationParameters {
+    /**
+     * Configuration parameter for the simple type converter provider class to use.
+     */
     String SIMPLE_TYPE_CONVERTER_PROVIDER_CLASS = "jsefa:common:simpleTypeConverterProviderClass";
+
+    /**
+     * Configuration parameter for the object accessor provider class to use.
+     */
     String OBJECT_ACCESSOR_PROVIDER_CLASS = "jsefa:common:objectAccessorProviderClass";
 }

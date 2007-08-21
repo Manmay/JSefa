@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.SimpleTypeConverter;
-import org.jsefa.common.converter.SimpleTypeConverterProvider;
+import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;

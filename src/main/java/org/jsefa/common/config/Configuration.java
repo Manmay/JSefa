@@ -27,7 +27,8 @@ import org.jsefa.IOFactory;
 import org.jsefa.Serializer;
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.accessor.ReflectionBasedObjectAccessorProvider;
-import org.jsefa.common.converter.SimpleTypeConverterProvider;
+import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
+import org.jsefa.common.converter.provider.SimpleTypeConverterProviderImpl;
 import org.jsefa.common.mapping.EntryPoint;
 import org.jsefa.common.mapping.TypeMappingRegistry;
 import org.jsefa.common.util.ReflectionUtil;
@@ -47,7 +48,7 @@ import org.jsefa.common.util.ReflectionUtil;
  * 
  * @author Norman Lahme-Huetig
  */
-public abstract class Configuration<T extends TypeMappingRegistry, E extends EntryPoint> {
+public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends EntryPoint<?, ?>> {
 
     private ObjectAccessorProvider objectAccessorProvider;
 
@@ -147,7 +148,7 @@ public abstract class Configuration<T extends TypeMappingRegistry, E extends Ent
     public final SimpleTypeConverterProvider getSimpleTypeConverterProvider() {
         if (this.simpleTypeConverterProvider == null) {
             Class<SimpleTypeConverterProvider> theClass = InitialConfiguration.get(SIMPLE_TYPE_CONVERTER_PROVIDER_CLASS,
-                    SimpleTypeConverterProvider.class);
+                    SimpleTypeConverterProviderImpl.class);
             this.simpleTypeConverterProvider = ReflectionUtil.createInstance(theClass);
         }
         return this.simpleTypeConverterProvider;

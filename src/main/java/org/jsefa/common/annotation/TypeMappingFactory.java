@@ -19,7 +19,7 @@ package org.jsefa.common.annotation;
 import java.util.List;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
-import org.jsefa.common.converter.SimpleTypeConverterProvider;
+import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingRegistry;
 

@@ -27,5 +27,8 @@ import org.jsefa.common.config.InitialConfigurationParameters;
  * 
  */
 public interface XmlInitialConfigurationParameters extends InitialConfigurationParameters {
+    /**
+     * Configuration parameter for the XmlIOFactory class to use.
+     */
     String IO_FACTORY_CLASS = "jsefa:xml:ioFactoryClass";
 }

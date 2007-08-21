@@ -42,6 +42,7 @@ import org.jsefa.common.util.ReflectionUtil;
  */
 public final class EnumConverter implements SimpleTypeConverter {
 
+    @SuppressWarnings("unchecked")
     private final Class<? extends Enum> enumType;
 
     private final Map<String, String> nameToAliasMap;
@@ -100,6 +101,7 @@ public final class EnumConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public String toString(Object value) {
         if (value == null) {
             return null;

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.jsefa.common.converter;
+package org.jsefa.common.converter.provider;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-
+import org.jsefa.common.converter.ConversionException;
+import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.common.converter.SimpleTypeConverterConfiguration;
 import org.jsefa.common.util.ReflectionUtil;
 
 /**
@@ -38,13 +37,13 @@ import org.jsefa.common.util.ReflectionUtil;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class SimpleTypeConverterProvider {
+public abstract class SimpleTypeConverterProvider {
     private final ConcurrentMap<Class<?>, Class<? extends SimpleTypeConverter>> converterTypeMap;
 
     /**
      * Constructs a <code>SimpleTypeConverterProvider</code>.
      */
-    public SimpleTypeConverterProvider() {
+    protected SimpleTypeConverterProvider() {
         this.converterTypeMap = new ConcurrentHashMap<Class<?>, Class<? extends SimpleTypeConverter>>();
         registerStandardConverterClasses();
     }
@@ -128,6 +127,11 @@ public final class SimpleTypeConverterProvider {
         this.converterTypeMap.putAll(other.converterTypeMap);
     }
 
+    /**
+     * Registers the standard converter classes.
+     */
+    protected abstract void registerStandardConverterClasses();
+
     private Class<? extends SimpleTypeConverter> getConverterClass(Class<?> objectType) {
         Class<?> type = objectType;
         while (type != null) {
@@ -138,20 +142,6 @@ public final class SimpleTypeConverterProvider {
             type = type.getSuperclass();
         }
         return null;
-    }
-
-    private void registerStandardConverterClasses() {
-        registerConverterClass(String.class, StringConverter.class);
-        registerConverterClass(boolean.class, BooleanConverter.class);
-        registerConverterClass(Boolean.class, BooleanConverter.class);
-        registerConverterClass(long.class, LongConverter.class);
-        registerConverterClass(Long.class, LongConverter.class);
-        registerConverterClass(int.class, IntegerConverter.class);
-        registerConverterClass(Integer.class, IntegerConverter.class);
-        registerConverterClass(BigDecimal.class, BigDecimalConverter.class);
-        registerConverterClass(Date.class, DateConverter.class);
-        registerConverterClass(XMLGregorianCalendar.class, XMLGregorianCalendarConverter.class);
-        registerConverterClass(Enum.class, EnumConverter.class);
     }
 
 }

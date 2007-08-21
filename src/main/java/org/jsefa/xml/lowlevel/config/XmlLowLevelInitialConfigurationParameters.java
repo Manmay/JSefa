@@ -28,11 +28,23 @@ import org.jsefa.common.config.InitialConfigurationParameters;
  */
 public interface XmlLowLevelInitialConfigurationParameters extends InitialConfigurationParameters {
 
+    /**
+     * Configuration parameter for the XmlLowLevelIOFactory class to use.
+     */
     String IO_FACTORY_CLASS = "jsefa:xml:lowlevel:ioFactoryClass";
     
+    /**
+     * Configuration parameter for the line break to use.
+     */
     String LINE_BREAK = "jsefa:xml:lowlevel:lineBreak";
 
+    /**
+     * Configuration parameter for the line indentation to use.
+     */
     String LINE_INDENTATION = "jsefa:xml:lowlevel:lineIndentation";
 
+    /**
+     * Configuration parameter for the name of the data type attribute to use.
+     */
     String DATA_TYPE_ATTRIBUTE_NAME = "jsefa:xml:lowlevel:dataTypeAttributeName";
 }

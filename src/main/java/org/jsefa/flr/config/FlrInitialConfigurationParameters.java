@@ -27,8 +27,14 @@ import org.jsefa.common.config.InitialConfigurationParameters;
  * 
  */
 public interface FlrInitialConfigurationParameters extends InitialConfigurationParameters {
+    /**
+     * Configuration parameter for the FlrIOFactory class to use.
+     */
     String IO_FACTORY_CLASS = "jsefa:flr:ioFactoryClass";
     
+    /**
+     * Configuration parameter for the default pad character to use.
+     */
     String DEFAUT_PAD_CHARACTER = "jsefa:flr:defaultPadCharacter";
     
 }

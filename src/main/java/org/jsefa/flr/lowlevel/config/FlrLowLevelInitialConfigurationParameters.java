@@ -28,8 +28,14 @@ import org.jsefa.common.config.InitialConfigurationParameters;
  */
 public interface FlrLowLevelInitialConfigurationParameters extends InitialConfigurationParameters {
 
+    /**
+     * Configuration parameter for the FlrLowLevelIOFactory class to use.
+     */
     String IO_FACTORY_CLASS = "jsefa:flr:lowlevel:ioFactoryClass";    
 
+    /**
+     * Configuration parameter for the line break to use.
+     */
     String LINE_BREAK = "jsefa:flr:lowlevel:lineBreak";
 
 }

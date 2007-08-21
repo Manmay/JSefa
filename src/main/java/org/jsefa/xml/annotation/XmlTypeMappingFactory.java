@@ -33,7 +33,7 @@ import org.jsefa.common.annotation.AnnotationDataProvider;
 import org.jsefa.common.annotation.AnnotationException;
 import org.jsefa.common.annotation.TypeMappingFactory;
 import org.jsefa.common.converter.SimpleTypeConverter;
-import org.jsefa.common.converter.SimpleTypeConverterProvider;
+import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingException;
 import org.jsefa.common.util.ReflectionUtil;
@@ -110,25 +110,25 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
     }
 
     private QName createSimpleTypeMappingIfAbsent(Class<?> objectType, Field field, Annotation annotation) {
-        String[] format = null;
-        SimpleTypeConverter converter = null;
-        if (annotation != null) {
-            format = AnnotationDataProvider.get(annotation, FORMAT);
-            if (AnnotationDataProvider.get(annotation, CONVERTER_CLASS) != null) {
-                Class<? extends SimpleTypeConverter> converterType = AnnotationDataProvider.get(annotation,
-                        CONVERTER_CLASS);
-                converter = getSimpleTypeConverterProvider()
-                        .getForConverterType(converterType, objectType, format);
-            }
-        }
-        if (converter == null && getSimpleTypeConverterProvider().hasConverterFor(objectType)) {
-            converter = getSimpleTypeConverterProvider().getForObjectType(objectType, format);
-        }
-        if (converter == null) {
-            throw new TypeMappingException("Could not create a simple type converter for " + objectType);
-        }
         QName dataTypeName = createSimpleDataTypeName(objectType, field, annotation);
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
+            String[] format = null;
+            SimpleTypeConverter converter = null;
+            if (annotation != null) {
+                format = AnnotationDataProvider.get(annotation, FORMAT);
+                if (AnnotationDataProvider.get(annotation, CONVERTER_CLASS) != null) {
+                    Class<? extends SimpleTypeConverter> converterType = AnnotationDataProvider.get(annotation,
+                            CONVERTER_CLASS);
+                    converter = getSimpleTypeConverterProvider()
+                            .getForConverterType(converterType, objectType, format);
+                }
+            }
+            if (converter == null && getSimpleTypeConverterProvider().hasConverterFor(objectType)) {
+                converter = getSimpleTypeConverterProvider().getForObjectType(objectType, format);
+            }
+            if (converter == null) {
+                throw new TypeMappingException("Could not create a simple type converter for " + objectType);
+            }
             XmlSimpleTypeMapping simpleTypeMapping = new XmlSimpleTypeMapping(dataTypeName, objectType, converter);
             getTypeMappingRegistry().register(simpleTypeMapping);
         }
@@ -146,10 +146,10 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             registerAttributes(objectType, mapping, namespaceManager);
             registerTextContent(objectType, mapping);
             registerElementsAndElementLists(objectType, mapping, namespaceManager);
-        }
-        for (Class<?> subObjectType : objectType.getAnnotation(XmlDataType.class).subObjectTypes()) {
-            QName subDataTypeName = createComplexTypeMappingIfAbsent(subObjectType);
-            getTypeMappingRegistry().registerSubtypeRelation(dataTypeName, subDataTypeName);
+            for (Class<?> subObjectType : objectType.getAnnotation(XmlDataType.class).subObjectTypes()) {
+                QName subDataTypeName = createComplexTypeMappingIfAbsent(subObjectType);
+                getTypeMappingRegistry().registerSubtypeRelation(dataTypeName, subDataTypeName);
+            }
         }
         return dataTypeName;
     }

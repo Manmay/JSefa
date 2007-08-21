@@ -27,7 +27,13 @@ import org.jsefa.common.config.InitialConfigurationParameters;
  * 
  */
 public interface CsvInitialConfigurationParameters extends InitialConfigurationParameters {
+    /**
+     * Configuration parameter for the CsvIOFactory class to use.
+     */
     String IO_FACTORY_CLASS = "jsefa:csv:ioFactoryClass";
 
+    /**
+     * Configuration parameter for the default quote mode to use.
+     */
     String DEFAUT_QUOTE_MODE = "jsefa:csv:defaultQuoteMode";
 }

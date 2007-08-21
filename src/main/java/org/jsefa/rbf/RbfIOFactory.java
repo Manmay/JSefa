@@ -48,8 +48,8 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
  * @param <S> the serializer type
  * @param <D> the deserializer type
  */
-public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint>, S extends Serializer, D extends Deserializer>
-        implements IOFactory {
+public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint>, 
+    S extends Serializer, D extends Deserializer> implements IOFactory {
 
     private final C config;
 
