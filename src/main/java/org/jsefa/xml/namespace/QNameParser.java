@@ -54,7 +54,7 @@ public final class QNameParser {
         int delimiterPos = name.indexOf(":");
         if (delimiterPos == -1) {
             if (forElement) {
-                String defaultNamespaceURI = namespaceManager.getUri("");
+                String defaultNamespaceURI = namespaceManager.getUri(NamespaceConstants.DEFAULT_NAMESPACE_PREFIX);
                 if (defaultNamespaceURI != null) {
                     return QName.create(defaultNamespaceURI, name);
                 }

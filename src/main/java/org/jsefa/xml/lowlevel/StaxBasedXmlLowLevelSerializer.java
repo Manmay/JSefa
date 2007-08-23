@@ -112,22 +112,23 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
                     this.streamWriter.writeNamespace(DEFAULT_NAMESPACE_PREFIX, NO_NAMESPACE_URI);
                 }
             } else {
-                boolean createNamespace = (this.namespaceManager.getPrefix(name.getUri()) == null);
-                this.streamWriter.writeStartElement(this.namespaceManager.getOrCreatePrefix(name.getUri(), true), name
-                        .getLocalName(), name.getUri());
+                boolean createNamespace = (this.namespaceManager.getPrefix(name.getUri(), true) == null);
+                this.streamWriter.writeStartElement(this.namespaceManager.getOrCreatePrefix(name.getUri(), true),
+                        name.getLocalName(), name.getUri());
                 if (createNamespace) {
-                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(name.getUri(), true), name
-                            .getUri());
+                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(name.getUri(), true),
+                            name.getUri());
                 }
             }
             if (dataTypeName != null) {
-                if (hasNamespace(dataTypeName) && this.namespaceManager.getPrefix(dataTypeName.getUri()) == null) {
-                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(dataTypeName.getUri(),
-                            false), dataTypeName.getUri());
+                if (hasNamespace(dataTypeName)
+                        && this.namespaceManager.getPrefix(dataTypeName.getUri(), true) == null) {
+                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(
+                            dataTypeName.getUri(), true), dataTypeName.getUri());
                 }
                 String value = dataTypeName.getLocalName();
                 if (hasNamespace(dataTypeName)) {
-                    String prefix = this.namespaceManager.getOrCreatePrefix(dataTypeName.getUri(), false);
+                    String prefix = this.namespaceManager.getOrCreatePrefix(dataTypeName.getUri(), true);
                     if (prefix.length() > 0) {
                         value = prefix + ":" + value;
                     }
@@ -150,12 +151,12 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             if (!hasNamespace(name)) {
                 this.streamWriter.writeAttribute(name.getLocalName(), value);
             } else {
-                if (this.namespaceManager.getPrefix(name.getUri()) == null) {
-                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(name.getUri(), false),
-                            name.getUri());
+                if (this.namespaceManager.getPrefix(name.getUri(), false) == null) {
+                    this.streamWriter.writeNamespace(
+                            this.namespaceManager.getOrCreatePrefix(name.getUri(), false), name.getUri());
                 }
-                this.streamWriter.writeAttribute(this.namespaceManager.getOrCreatePrefix(name.getUri(), false), name
-                        .getUri(), name.getLocalName(), value);
+                this.streamWriter.writeAttribute(this.namespaceManager.getOrCreatePrefix(name.getUri(), false),
+                        name.getUri(), name.getLocalName(), value);
             }
         } catch (XMLStreamException e) {
             throw new LowLevelSerializationException("Unable to write attribute " + name, e);
@@ -225,7 +226,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
     private boolean hasNamespace(QName name) {
         return !NO_NAMESPACE_URI.equals(name.getUri());
     }
-    
+
     private boolean defaultNamespaceExists() {
         String registeredUri = this.namespaceManager.getUri(DEFAULT_NAMESPACE_PREFIX);
         return registeredUri != null && !registeredUri.equals(NO_NAMESPACE_URI);

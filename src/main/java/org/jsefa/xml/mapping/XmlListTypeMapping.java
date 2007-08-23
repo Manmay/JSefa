@@ -73,6 +73,15 @@ public final class XmlListTypeMapping extends TypeMapping<QName> {
         this.nodeModelsByNodeDescriptor.put(elementDescriptor, nodeModel);
         this.nodeModelsByObjectType.put(objectType, nodeModel);
     }
+    
+    /**
+     * Returns true, if an element descriptor is already bound to the given object type.
+     * @param objectType the object type
+     * @return true, if an element descriptor is already bound to the given object type; false otherwise
+     */
+    public boolean hasRegistrationFor(Class<?> objectType) {
+        return this.nodeModelsByObjectType.containsKey(objectType);
+    }
 
     /**
      * Finishes the construction of the type mapping. This method must be called

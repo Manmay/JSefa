@@ -19,18 +19,15 @@ package org.jsefa.xml.namespace;
 import static org.jsefa.xml.namespace.NamespaceConstants.DEFAULT_NAMESPACE_PREFIX;
 import static org.jsefa.xml.namespace.NamespaceConstants.XML_SCHEMA_INSTANCE_URI;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A <code>NamespaceManager</code> manages namespace URIs and their prefixes.
  * It allows for <br>
  * 1. the registration of new prefix-URI-combinations, <br>
  * 2. the retrieval of the URI to a given prefix<br>
- * 3. the retrieval of the prefix to a given URI<br>
+ * 3. the retrieval of a prefix to a given URI<br>
  * 4. the creation of a new prefix for a new URI
  * <p>
  * A <code>NamespaceManager</code> may have a parent
@@ -50,6 +47,8 @@ public final class NamespaceManager {
     private Map<String, String> registeredURIs;
 
     private Map<String, String> registeredPrefixes;
+
+    private String defaultURI;
 
     private boolean hasOwnRegistries;
 
@@ -105,6 +104,7 @@ public final class NamespaceManager {
             if (this.hasOwnRegistries) {
                 this.registeredPrefixes = new HashMap<String, String>(other.registeredPrefixes);
                 this.registeredURIs = new HashMap<String, String>(other.registeredURIs);
+                this.defaultURI = other.defaultURI;
             }
         }
     }
@@ -121,32 +121,47 @@ public final class NamespaceManager {
     }
 
     /**
-     * Registers a new prefix for a new namespace uri.
+     * Registers a new prefix for a namespace uri.
      * 
      * @param prefix the prefix
      * @param uri the uri
      * @throws NullPointerException if one of the arguments is null
-     * @throws NamespaceRegistrationException if either the prefix or the uri is
-     *                 already registered.
+     * @throws NamespaceRegistrationException if <br>
+     *                 1. the prefix is already bound to another uri<br>
+     *                 2. the prefix is an explicit prefix and the uri is
+     *                 already bound to another explicit prefix
      */
     public void register(String prefix, String uri) {
         if (prefix == null || uri == null) {
-            throw new NullPointerException("Prefix and uri must nut be null");
+            throw new NullPointerException("Prefix and uri must not be null");
         }
         if (hasOwnRegistries) {
-            if (this.registeredPrefixes.containsKey(uri)) {
-                throw new NamespaceRegistrationException("There is an already registered prefix for the uri "
-                        + uri);
-            }
-            if (this.registeredURIs.containsKey(prefix)) {
-                throw new NamespaceRegistrationException("The prefix " + prefix
-                        + " is already bound. It is bound to " + this.registeredURIs.get(prefix));
+            if (isDefault(prefix)) {
+                if (this.defaultURI != null && !uri.equals(this.defaultURI)) {
+                    throw new NamespaceRegistrationException("The default prefix is already bound to the uri "
+                            + this.defaultURI + " and can not be bound to " + uri);
+                }
+            } else {
+                if (this.registeredPrefixes.containsKey(uri) && !prefix.equals(this.registeredPrefixes.get(uri))) {
+                    throw new NamespaceRegistrationException("The uri " + uri + " is already bound to the prefix "
+                            + this.registeredPrefixes.get(uri) + " and can not be bound to " + prefix);
+
+                }
+                if (this.registeredURIs.containsKey(prefix) && !uri.equals(this.registeredURIs.get(prefix))) {
+                    throw new NamespaceRegistrationException("The prefix " + prefix
+                            + " is already bound to the uri " + this.registeredURIs.get(prefix)
+                            + " and can not be bound to " + uri);
+                }
             }
         } else {
             createOwnRegistries();
         }
-        this.registeredPrefixes.put(uri, prefix);
-        this.registeredURIs.put(prefix, uri);
+        if (isDefault(prefix)) {
+            this.defaultURI = uri;
+        } else {
+            this.registeredPrefixes.put(uri, prefix);
+            this.registeredURIs.put(prefix, uri);
+        }
     }
 
     /**
@@ -155,14 +170,18 @@ public final class NamespaceManager {
      * parent namespace manager is asked for it (in the case a parent exists).
      * 
      * @param prefix the prefix
-     * @return the uri or null if none is registered for the given prefix and it
-     *         is not the default one.
+     * @return the uri or null if none is registered for the given prefix
      */
     public String getUri(String prefix) {
         if (!this.hasOwnRegistries) {
             return this.parent.getUri(prefix);
         }
-        String uri = this.registeredURIs.get(prefix);
+        String uri = null;
+        if (isDefault(prefix)) {
+            uri = this.defaultURI;
+        } else {
+            uri = this.registeredURIs.get(prefix);
+        }
         if (uri == null && this.parent != null) {
             uri = this.parent.getUri(prefix);
         }
@@ -173,44 +192,36 @@ public final class NamespaceManager {
      * Returns the prefix which is registered for the given namespace uri. If
      * this namespace manager has no registration for the given uri, than its
      * parent namespace manager is asked for it (in the case a parent exists).
+     * <p>
+     * If the parent namespace manager returns a prefix which is known for this
+     * namespace manager (the prefix is overwritten), then null is returned.
      * 
      * @param uri the namespace uri
-     * @return the prefix or null if none is registered for the given uri and it
-     *         is not the {@link NamespaceConstants#NO_NAMESPACE_URI}.
+     * @param defaultAllowed true, if the prefix may be the default one.
+     * @return the prefix or null if none is registered for the given uri.
      */
-    public String getPrefix(String uri) {
+    public String getPrefix(String uri, boolean defaultAllowed) {
         if (uri == null) {
             return null;
         }
         if (!this.hasOwnRegistries) {
-            return this.parent.getPrefix(uri);
+            return this.parent.getPrefix(uri, defaultAllowed);
+        }
+        if (defaultAllowed && uri.equals(this.defaultURI)) {
+            return NamespaceConstants.DEFAULT_NAMESPACE_PREFIX;
         }
         String prefix = this.registeredPrefixes.get(uri);
         if (prefix == null && this.parent != null) {
-            prefix = this.parent.getPrefix(uri);
-            if (this.registeredURIs.containsKey(prefix)) {
-                prefix = null;
+            prefix = this.parent.getPrefix(uri, defaultAllowed);
+            if (prefix != null) {
+                if (this.registeredURIs.containsKey(prefix)) {
+                    prefix = null;
+                } else if (isDefault(prefix) && this.defaultURI != null) {
+                    prefix = null;
+                }
             }
         }
         return prefix;
-    }
-
-    /**
-     * Returns a collection of prefixes for which a uri was registered using
-     * this namespace manager or one of its ancestors.
-     * 
-     * @return a collection of prefixes.
-     */
-    public Collection<String> getAllPrefixes() {
-        Set<String> prefixes = new HashSet<String>();
-        NamespaceManager manager = this;
-        while (manager != null) {
-            if (manager.hasOwnRegistries) {
-                prefixes.addAll(manager.registeredURIs.keySet());
-            }
-            manager = manager.parent;
-        }
-        return prefixes;
     }
 
     /**
@@ -227,7 +238,7 @@ public final class NamespaceManager {
         if (uri == null) {
             return null;
         }
-        String prefix = getPrefix(uri);
+        String prefix = getPrefix(uri, defaultAllowed);
         if (prefix == null) {
             prefix = this.preferredPrefixes.get(uri);
             if (prefix != null && getUri(prefix) != null) {
@@ -265,6 +276,10 @@ public final class NamespaceManager {
         this.registeredPrefixes = new HashMap<String, String>();
         this.registeredURIs = new HashMap<String, String>();
         this.hasOwnRegistries = true;
+    }
+
+    private boolean isDefault(String prefix) {
+        return NamespaceConstants.DEFAULT_NAMESPACE_PREFIX.equals(prefix);
     }
 
 }

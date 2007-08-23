@@ -25,6 +25,8 @@ import static org.jsefa.common.annotation.AnnotationDataNames.OBJECT_TYPE;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
@@ -250,14 +252,16 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             XmlListTypeMapping listMapping = new XmlListTypeMapping(dataTypeName, xmlElementList.implicit());
             getTypeMappingRegistry().register(listMapping);
             boolean singleType = xmlElementList.items().length == 1;
-            for (ListItem listItem : xmlElementList.items()) {
+            for (ListItem listItem : order(xmlElementList.items())) {
                 QName listItemDataTypeName = createIfAbsent(field, listItem, singleType, namespaceManager);
                 for (QName subDataTypeName : getTypeMappingRegistry().getDataTypeNameTreeElements(
                         listItemDataTypeName)) {
                     Class<?> subObjectType = getTypeMappingRegistry().get(subDataTypeName).getObjectType();
-                    ElementDescriptor listItemElementDescriptor = createElementDescriptor(listItem,
-                            subDataTypeName, namespaceManager);
-                    listMapping.register(listItemElementDescriptor, subObjectType);
+                    if (!listMapping.hasRegistrationFor(subObjectType)) {
+                        ElementDescriptor listItemElementDescriptor = createElementDescriptor(listItem,
+                                subDataTypeName, namespaceManager);
+                        listMapping.register(listItemElementDescriptor, subObjectType);
+                    }
                 }
             }
             listMapping.finish();
@@ -390,5 +394,31 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             return null;
         }
     }
+    
+    private List<ListItem> order(ListItem[] items) {
+        List<ListItem> result = new ArrayList<ListItem>();
+        List<ListItem> remainingItems = new ArrayList<ListItem>(Arrays.asList(items));
+        while (!remainingItems.isEmpty()) {
+            for (ListItem item : remainingItems) {
+                if (!hasSuperTypeOfAny(item, remainingItems)) {
+                    result.add(item);
+                    remainingItems.remove(item);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    
+    private boolean hasSuperTypeOfAny(ListItem item, List<ListItem> listItems) {
+        for (ListItem innerItem : listItems) {
+            if (item != innerItem) {
+                if (item.objectType().isAssignableFrom(innerItem.objectType())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }    
 
 }
