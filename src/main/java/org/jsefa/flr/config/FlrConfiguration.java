@@ -35,7 +35,7 @@ import static org.jsefa.flr.config.FlrInitialConfigurationParameters.DEFAUT_PAD_
  */
 public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint> {
 
-    private FlrLowLevelConfiguration lowLevelConfig;
+    private FlrLowLevelConfiguration lowLevelConfiguration;
 
     private char defaultPadCharacter = GeneralConstants.NO_CHARACTER;
 
@@ -47,6 +47,7 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
 
     private FlrConfiguration(FlrConfiguration other) {
         super(other);
+        setDefaultPadCharacter(other.getDefaultPadCharacter());
         setLowLevelConfiguration(other.getLowLevelConfiguration().createCopy());
     }
 
@@ -59,34 +60,13 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
     }
 
     /**
-     * Returns the low level configuration object.
-     * 
-     * @return the low level configuration object
-     */
-    public FlrLowLevelConfiguration getLowLevelConfiguration() {
-        if (this.lowLevelConfig == null) {
-            this.lowLevelConfig = new FlrLowLevelConfiguration();
-        }
-        return this.lowLevelConfig;
-    }
-
-    /**
-     * Sets the FLR low level configuration object.
-     * 
-     * @param lowLevelConfig the FLR low level configuration object.
-     */
-    public void setLowLevelConfiguration(FlrLowLevelConfiguration lowLevelConfig) {
-        this.lowLevelConfig = lowLevelConfig;
-    }
-
-    /**
      * Returns the default pad character.
      * 
      * @return a character
      */
     public char getDefaultPadCharacter() {
         if (this.defaultPadCharacter == GeneralConstants.NO_CHARACTER) {
-            this.defaultPadCharacter = InitialConfiguration.get(DEFAUT_PAD_CHARACTER,
+            this.defaultPadCharacter = (Character) InitialConfiguration.get(DEFAUT_PAD_CHARACTER,
                     Defaults.DEFAULT_PAD_CHARACTER);
         }        
         return this.defaultPadCharacter;
@@ -99,11 +79,32 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
      */
     public void setDefaultPadCharacter(char defaultPadCharacter) {
         if (defaultPadCharacter == GeneralConstants.NO_CHARACTER) {
-            this.defaultPadCharacter = InitialConfiguration.get(DEFAUT_PAD_CHARACTER,
+            this.defaultPadCharacter = (Character) InitialConfiguration.get(DEFAUT_PAD_CHARACTER,
                     Defaults.DEFAULT_PAD_CHARACTER);
         } else {
             this.defaultPadCharacter = defaultPadCharacter;
         }
+    }
+
+    /**
+     * Returns the low level configuration object.
+     * 
+     * @return the low level configuration object
+     */
+    public FlrLowLevelConfiguration getLowLevelConfiguration() {
+        if (this.lowLevelConfiguration == null) {
+            this.lowLevelConfiguration = new FlrLowLevelConfiguration();
+        }
+        return this.lowLevelConfiguration;
+    }
+
+    /**
+     * Sets the FLR low level configuration object.
+     * 
+     * @param lowLevelConfig the FLR low level configuration object.
+     */
+    public void setLowLevelConfiguration(FlrLowLevelConfiguration lowLevelConfig) {
+        this.lowLevelConfiguration = lowLevelConfig;
     }
 
     /**

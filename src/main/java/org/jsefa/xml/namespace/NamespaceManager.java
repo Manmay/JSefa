@@ -16,7 +16,8 @@
 
 package org.jsefa.xml.namespace;
 
-import static org.jsefa.xml.namespace.NamespaceConstants.*;
+import static org.jsefa.xml.namespace.NamespaceConstants.DEFAULT_NAMESPACE_PREFIX;
+import static org.jsefa.xml.namespace.NamespaceConstants.XML_SCHEMA_INSTANCE_URI;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -83,7 +84,7 @@ public final class NamespaceManager {
      * @return a <code>NamespaceManager</code>
      */
     public static NamespaceManager createWithParent(NamespaceManager parent) {
-        return new NamespaceManager(parent);
+        return new NamespaceManager(parent, true);
     }
 
     private NamespaceManager() {
@@ -93,9 +94,30 @@ public final class NamespaceManager {
         this.parent = null;
     }
 
-    private NamespaceManager(NamespaceManager parent) {
-        this.parent = parent;
-        this.preferredPrefixes = parent.preferredPrefixes;
+    private NamespaceManager(NamespaceManager other, boolean otherIsParent) {
+        if (otherIsParent) {
+            this.parent = other;
+            this.preferredPrefixes = other.preferredPrefixes;
+        } else {
+            this.parent = other.parent;
+            this.preferredPrefixes = other.preferredPrefixes;
+            this.hasOwnRegistries = other.hasOwnRegistries;
+            if (this.hasOwnRegistries) {
+                this.registeredPrefixes = new HashMap<String, String>(other.registeredPrefixes);
+                this.registeredURIs = new HashMap<String, String>(other.registeredURIs);
+            }
+        }
+    }
+
+    /**
+     * Creates a copy of this <code>NamespaceManager</code>. The copy has its
+     * own registries but has the same (identical) parent as the this
+     * <code>NamespaceManager</code>.
+     * 
+     * @return a copy of this <code>NamespaceManager</code>
+     */
+    public NamespaceManager createCopy() {
+        return new NamespaceManager(this, false);
     }
 
     /**
@@ -125,25 +147,6 @@ public final class NamespaceManager {
         }
         this.registeredPrefixes.put(uri, prefix);
         this.registeredURIs.put(prefix, uri);
-    }
-
-    /**
-     * Merges the content of the other namespace manager into this one.
-     * <p>
-     * This overrides existing registrations of URIs for prefixes which are
-     * known to this namespace manager or to the <code>other</code> namespace
-     * manager or one of its ancestors. The same is true for preferred prefixes
-     * if this namespace manager has no parent.
-     * 
-     * @param other the other namespace manager
-     */
-    public void registerAll(NamespaceManager other) {
-        for (String prefix : other.getAllPrefixes()) {
-            register(prefix, other.getUri(prefix));
-        }
-        if (this.parent == null) {
-            this.preferredPrefixes.putAll(other.preferredPrefixes);
-        }
     }
 
     /**

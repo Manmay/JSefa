@@ -40,6 +40,19 @@ public final class XmlDataTypeDefaultNameRegistry {
         this.defaultDataTypeNames = new ConcurrentHashMap<Class<?>, QName>();
         registerStandards();
     }
+    
+    private XmlDataTypeDefaultNameRegistry(XmlDataTypeDefaultNameRegistry other) {
+        this.defaultDataTypeNames = new ConcurrentHashMap<Class<?>, QName>(other.defaultDataTypeNames);
+    }
+    
+    /**
+     * Creates a copy of this <code>XmlDataTypeDefaultNameRegistry</code>.
+     * 
+     * @return a copy of this <code>XmlDataTypeDefaultNameRegistry</code>
+     */
+    public XmlDataTypeDefaultNameRegistry createCopy() {
+        return new XmlDataTypeDefaultNameRegistry(this);
+    }
 
     /**
      * Registers the given data type name for the given object type.
@@ -49,19 +62,6 @@ public final class XmlDataTypeDefaultNameRegistry {
      */
     public void register(Class<?> objectType, QName dataTypeName) {
         this.defaultDataTypeNames.put(objectType, dataTypeName);
-    }
-
-    /**
-     * Merges the content of the other
-     * <code>XmlDataTypeDefaultNameRegistry</code> into this one.
-     * <p>
-     * This overrides existing registrations of data type names for object types
-     * which are known to both registries.
-     * 
-     * @param other the other data type default name registry
-     */
-    public void registerAll(XmlDataTypeDefaultNameRegistry other) {
-        this.defaultDataTypeNames.putAll(other.defaultDataTypeNames);
     }
 
     /**

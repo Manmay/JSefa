@@ -53,7 +53,7 @@ public final class XmlLowLevelConfiguration {
     }
 
     private XmlLowLevelConfiguration(XmlLowLevelConfiguration other) {
-        getNamespaceManager().registerAll(other.getNamespaceManager());
+        setNamespaceManager(other.getNamespaceManager().createCopy());
         setDataTypeAttributeName(other.getDataTypeAttributeName());
         setLineBreak(other.getLineBreak());
         setLineIndentation(other.getLineIndentation());

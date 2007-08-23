@@ -55,6 +55,7 @@ public final class CsvLowLevelConfiguration {
         setQuoteCharacter(other.getQuoteCharacter());
         setQuoteCharacterEscapeMode(other.getQuoteCharacterEscapeMode());
         setLineBreak(other.getLineBreak());
+        setEscapeCharacter(other.getEscapeCharacter());
     }
 
     /**

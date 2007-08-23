@@ -38,7 +38,7 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
 
     private QuoteMode defaultQuoteMode;
 
-    private CsvLowLevelConfiguration lowLevelConfig;
+    private CsvLowLevelConfiguration lowLevelConfiguration;
 
     /**
      * Constructs a new <code>CsvConfiguration</code>.
@@ -78,10 +78,10 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
      * @return the low level configuration object
      */
     public CsvLowLevelConfiguration getLowLevelConfiguration() {
-        if (this.lowLevelConfig == null) {
-            this.lowLevelConfig = new CsvLowLevelConfiguration();
+        if (this.lowLevelConfiguration == null) {
+            this.lowLevelConfiguration = new CsvLowLevelConfiguration();
         }
-        return this.lowLevelConfig;
+        return this.lowLevelConfiguration;
     }
 
     /**
@@ -103,7 +103,7 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
      * @param lowLevelConfig the CSV low level configuration object.
      */
     public void setLowLevelConfiguration(CsvLowLevelConfiguration lowLevelConfig) {
-        this.lowLevelConfig = lowLevelConfig;
+        this.lowLevelConfiguration = lowLevelConfig;
     }
 
     /**

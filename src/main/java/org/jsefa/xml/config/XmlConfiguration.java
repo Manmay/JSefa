@@ -36,7 +36,7 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
 
     private XmlDataTypeDefaultNameRegistry dataTypeDefaultNameRegistry;
 
-    private XmlLowLevelConfiguration lowLevelConfig;
+    private XmlLowLevelConfiguration lowLevelConfiguration;
 
     /**
      * Constructs a new <code>XmlConfiguration</code>.
@@ -46,8 +46,7 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
 
     private XmlConfiguration(XmlConfiguration other) {
         super(other);
-        this.dataTypeDefaultNameRegistry = new XmlDataTypeDefaultNameRegistry();
-        getDataTypeDefaultNameRegistry().registerAll(other.getDataTypeDefaultNameRegistry());
+        setDataTypeDefaultNameRegistry(other.getDataTypeDefaultNameRegistry().createCopy());
         setLowLevelConfiguration(other.getLowLevelConfiguration().createCopy());
     }
 
@@ -77,10 +76,10 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
      * @return the low level configuration object
      */
     public XmlLowLevelConfiguration getLowLevelConfiguration() {
-        if (this.lowLevelConfig == null) {
-            this.lowLevelConfig = new XmlLowLevelConfiguration();
+        if (this.lowLevelConfiguration == null) {
+            this.lowLevelConfiguration = new XmlLowLevelConfiguration();
         }
-        return this.lowLevelConfig;
+        return this.lowLevelConfiguration;
     }
 
     /**
@@ -89,7 +88,7 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
      * @param lowLevelConfig the xml low level configuration object.
      */
     public void setLowLevelConfiguration(XmlLowLevelConfiguration lowLevelConfig) {
-        this.lowLevelConfig = lowLevelConfig;
+        this.lowLevelConfiguration = lowLevelConfig;
     }
 
     /**
@@ -131,6 +130,14 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
      */
     public String getLineIndentation() {
         return getLowLevelConfiguration().getLineIndentation();
+    }
+
+    /**
+     * Sets the data type default name registry.
+     * @param dataTypeDefaultNameRegistry the data type default name registry
+     */
+    public void setDataTypeDefaultNameRegistry(XmlDataTypeDefaultNameRegistry dataTypeDefaultNameRegistry) {
+        this.dataTypeDefaultNameRegistry = dataTypeDefaultNameRegistry;
     }
 
     /**
