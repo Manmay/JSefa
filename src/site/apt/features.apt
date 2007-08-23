@@ -86,7 +86,7 @@ Feature Highlights
     
   * Exchangeable low level serializer/deserializer
   
-    The JSefan XML serializer/deserializer is based on a low level serializer/deserializer, which operates directly on elements, attributes and text content.
+    The JSefa XML serializer/deserializer is based on a low level serializer/deserializer, which operates directly on elements, attributes and text content.
     JSefa provides an abstraction of the low level task of serialization/deserialization and thus allows for different implementations.
     The current default implementation is based on JSR 173 (Stax) for which in turn different implementations exist.
 
