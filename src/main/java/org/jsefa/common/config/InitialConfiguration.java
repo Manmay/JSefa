@@ -32,19 +32,6 @@ public final class InitialConfiguration {
     private static final ConcurrentMap<String, Object> MAP = new ConcurrentHashMap<String, Object>();
 
     /**
-     * Returns the value of the given parameter.
-     * 
-     * @param parameter the parameter
-     * @param <T> the expected type of the parameter value
-     * @return the parameter value or null if no value is configured for the
-     *         parameter in question.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T get(String parameter) {
-        return (T) MAP.get(parameter);
-    }
-
-    /**
      * Returns the value of the given parameter. If none is configured for the
      * parameter, the <code>defaultValue</code> is registered and returned.
      * 
