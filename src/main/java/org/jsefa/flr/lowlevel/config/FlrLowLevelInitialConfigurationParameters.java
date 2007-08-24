@@ -31,7 +31,7 @@ public interface FlrLowLevelInitialConfigurationParameters extends InitialConfig
     /**
      * Configuration parameter for the FlrLowLevelIOFactory class to use.
      */
-    String IO_FACTORY_CLASS = "jsefa:flr:lowlevel:ioFactoryClass";    
+    String LOW_LEVEL_IO_FACTORY_CLASS = "jsefa:flr:lowlevel:ioFactoryClass";    
 
     /**
      * Configuration parameter for the line break to use.

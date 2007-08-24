@@ -53,7 +53,7 @@ public abstract class CsvLowLevelIOFactory implements LowLevelIOFactory {
      */
     public static CsvLowLevelIOFactory createFactory(CsvLowLevelConfiguration config) {
         Class<CsvLowLevelIOFactory> factoryClass = InitialConfiguration.get(
-                CsvLowLevelInitialConfigurationParameters.IO_FACTORY_CLASS, CsvLowLevelIOFactoryImpl.class);
+                CsvLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS, CsvLowLevelIOFactoryImpl.class);
         Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
                 CsvLowLevelConfiguration.class);
         if (createMethod == null) {

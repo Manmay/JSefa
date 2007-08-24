@@ -53,7 +53,7 @@ public abstract class FlrLowLevelIOFactory implements LowLevelIOFactory {
      */
     public static FlrLowLevelIOFactory createFactory(FlrLowLevelConfiguration config) {
         Class<FlrLowLevelIOFactory> factoryClass = InitialConfiguration.get(
-                FlrLowLevelInitialConfigurationParameters.IO_FACTORY_CLASS, FlrLowLevelIOFactoryImpl.class);
+                FlrLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS, FlrLowLevelIOFactoryImpl.class);
         Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
                 FlrLowLevelConfiguration.class);
         if (createMethod == null) {

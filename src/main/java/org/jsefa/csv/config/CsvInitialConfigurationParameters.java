@@ -18,6 +18,7 @@ package org.jsefa.csv.config;
 
 import org.jsefa.common.config.Configuration;
 import org.jsefa.common.config.InitialConfigurationParameters;
+import org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters;
 
 /**
  * A collection of initial configuration parameters for CSV.
@@ -36,4 +37,39 @@ public interface CsvInitialConfigurationParameters extends InitialConfigurationP
      * Configuration parameter for the default quote mode to use.
      */
     String DEFAUT_QUOTE_MODE = "jsefa:csv:defaultQuoteMode";
+    
+    /**
+     * Configuration parameter for the CsvLowLevelIOFactory class to use.
+     */
+    String LOW_LEVEL_IO_FACTORY_CLASS = CsvLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS;    
+    
+    /**
+     * Configuration parameter for the field delimiter to use.
+     */
+    String FIELD_DELIMITER = CsvLowLevelInitialConfigurationParameters.FIELD_DELIMITER;
+
+    /**
+     * Configuration parameter for the quote character to use.
+     */
+    String QUOTE_CHARACTER = CsvLowLevelInitialConfigurationParameters.QUOTE_CHARACTER;
+
+    /**
+     * Configuration parameter for the quote character escape mode to use.
+     */
+    String QUOTE_CHARACTER_ESCAPE_MODE = CsvLowLevelInitialConfigurationParameters.QUOTE_CHARACTER_ESCAPE_MODE;
+
+    /**
+     * Configuration parameter for the flag 'useDelimiterAfterLastField'.
+     */
+    String USE_DELIMITER_AFTER_LAST_FIELD = CsvLowLevelInitialConfigurationParameters.USE_DELIMITER_AFTER_LAST_FIELD;
+
+    /**
+     * Configuration parameter for the line break to use.
+     */
+    String LINE_BREAK = CsvLowLevelInitialConfigurationParameters.LINE_BREAK;
+    
+    /**
+     * Configuration parameter for the escape character to use.
+     */
+    String ESCAPE_CHARACTER = CsvLowLevelInitialConfigurationParameters.ESCAPE_CHARACTER;    
 }

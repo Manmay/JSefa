@@ -18,6 +18,7 @@ package org.jsefa.flr.config;
 
 import org.jsefa.common.config.Configuration;
 import org.jsefa.common.config.InitialConfigurationParameters;
+import org.jsefa.flr.lowlevel.config.FlrLowLevelInitialConfigurationParameters;
 
 /**
  * A collection of initial configuration parameters for FLR.
@@ -36,5 +37,15 @@ public interface FlrInitialConfigurationParameters extends InitialConfigurationP
      * Configuration parameter for the default pad character to use.
      */
     String DEFAUT_PAD_CHARACTER = "jsefa:flr:defaultPadCharacter";
+    
+    /**
+     * Configuration parameter for the FlrLowLevelIOFactory class to use.
+     */
+    String LOW_LEVEL_IO_FACTORY_CLASS = FlrLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS;    
+
+    /**
+     * Configuration parameter for the line break to use.
+     */
+    String LINE_BREAK = FlrLowLevelInitialConfigurationParameters.LINE_BREAK;    
     
 }
