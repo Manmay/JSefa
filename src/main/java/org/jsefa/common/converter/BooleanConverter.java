@@ -25,59 +25,54 @@ package org.jsefa.common.converter;
  * 
  * @author Norman Lahme-Huetig
  */
-public final class BooleanConverter implements SimpleTypeConverter {
+public class BooleanConverter implements SimpleTypeConverter {
     /**
      * Format <code>String</code> with "true" for <code>true</code> and
      * "false" for <code>false</code>.
      */
-    public static final String[] FORMAT_TRUE_FALSE = {"true", "false"};
+    protected static final String[] FORMAT_TRUE_FALSE = {"true", "false"};
 
     /**
      * Format <code>String</code> with "yes" for <code>true</code> and "no"
      * for <code>false</code>.
      */
-    public static final String[] FORMAT_YES_NO = {"yes", "no"};
+    protected static final String[] FORMAT_YES_NO = {"yes", "no"};
 
     /**
      * Format <code>String</code> with "1" for <code>true</code> and "0" for
      * <code>false</code>.
      */
-    public static final String[] FORMAT_BINARY = {"1", "0"};
+    protected static final String[] FORMAT_BINARY = {"1", "0"};
 
     private final String trueLiteral;
 
     private final String falseLiteral;
 
     /**
-     * Constructs a new <code>BooleanConverter</code>.<br>
-     * If no format is given, the {@link #FORMAT_TRUE_FALSE} is used.
+     * Creates a new <code>BooleanConverter</code>.<br>
+     * If no format is given, the default format (see
+     * {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration.
      * @return a boolean converter
      * @throws ConversionException if the given format is not valid.
      */
     public static BooleanConverter create(SimpleTypeConverterConfiguration configuration) {
+        return new BooleanConverter(configuration);
+    }
+
+    /**
+     * Constructs a new <code>BooleanConverter</code>.<br>
+     * If no format is given, the default format (see
+     * {@link #getDefaultFormat()}) is used.
+     * 
+     * @param configuration the configuration.
+     * @throws ConversionException if the given format is not valid.
+     */
+    protected BooleanConverter(SimpleTypeConverterConfiguration configuration) {
         String[] format = getFormat(configuration);
-        return new BooleanConverter(format[0], format[1]);
-    }
-
-    private static String[] getFormat(SimpleTypeConverterConfiguration configuration) {
-        if (configuration.getFormat() == null) {
-            return FORMAT_TRUE_FALSE;
-        }
-        if (configuration.getFormat().length != 2) {
-            throw new ConversionException("The format for a BooleanConverter must be an array with 2 entries");
-        }
-        if (configuration.getFormat()[0].equals(configuration.getFormat()[1])) {
-            throw new ConversionException("Invalid format for a BooleanConverter: " + configuration.getFormat()[0]
-                    + ", " + configuration.getFormat()[1]);
-        }
-        return configuration.getFormat();
-    }
-
-    private BooleanConverter(String trueLiteral, String falseLiteral) {
-        this.trueLiteral = trueLiteral;
-        this.falseLiteral = falseLiteral;
+        this.trueLiteral = format[0];
+        this.falseLiteral = format[1];
     }
 
     /**
@@ -109,4 +104,28 @@ public final class BooleanConverter implements SimpleTypeConverter {
             return this.falseLiteral;
         }
     }
+
+    /**
+     * Returns the default format which is used when no format is given.
+     * 
+     * @return the default format.
+     */
+    protected String[] getDefaultFormat() {
+        return BooleanConverter.FORMAT_TRUE_FALSE;
+    }
+
+    private String[] getFormat(SimpleTypeConverterConfiguration configuration) {
+        if (configuration.getFormat() == null) {
+            return getDefaultFormat();
+        }
+        if (configuration.getFormat().length != 2) {
+            throw new ConversionException("The format for a BooleanConverter must be an array with 2 entries");
+        }
+        if (configuration.getFormat()[0].equals(configuration.getFormat()[1])) {
+            throw new ConversionException("Invalid format for a BooleanConverter: " + configuration.getFormat()[0]
+                    + ", " + configuration.getFormat()[1]);
+        }
+        return configuration.getFormat();
+    }
+
 }

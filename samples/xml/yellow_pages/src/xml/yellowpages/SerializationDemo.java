@@ -18,11 +18,11 @@ package xml.yellowpages;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.jsefa.common.converter.DateConverter;
+import org.jsefa.common.converter.SimpleTypeConverterConfiguration;
 import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.XmlSerializer;
 import org.jsefa.xml.namespace.QName;
@@ -77,12 +77,7 @@ public final class SerializationDemo {
     }
 
     private Date createDate(String date) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat(DateConverter.DEFAULT_FORMAT);
-            return df.parse(date);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return DateConverter.create(SimpleTypeConverterConfiguration.EMPTY).fromString(date);
     }    
 
     /**

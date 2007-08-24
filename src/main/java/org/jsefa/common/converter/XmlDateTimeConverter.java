@@ -40,7 +40,7 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
  * 
  * @author Norman Lahme-Huetig
  */
-public final class XmlDateTimeConverter implements SimpleTypeConverter {
+public class XmlDateTimeConverter implements SimpleTypeConverter {
     /**
      * The default format which is used when no format is explicitly given.
      */
@@ -53,31 +53,30 @@ public final class XmlDateTimeConverter implements SimpleTypeConverter {
     private final TimeZone timeZone;
 
     /**
-     * Constructs a <code>XmlDateTimeConverter</code>.
+     * Constructs a <code>XmlDateTimeConverter</code>.<br>
+     * If no format is given, the default format (see
+     * {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration
      * @return a xml date time converter
      */
     public static XmlDateTimeConverter create(SimpleTypeConverterConfiguration configuration) {
-        return new XmlDateTimeConverter(TimeZone.getTimeZone(getFormat(configuration)));
+        return new XmlDateTimeConverter(configuration);
     }
 
-    private static String getFormat(SimpleTypeConverterConfiguration configuration) {
-        if (configuration.getFormat() == null) {
-            return DEFAULT_FORMAT;
-        }
-        if (configuration.getFormat().length != 1) {
-            throw new ConversionException("The format for an XmlDateTimeConverter must be a single String");
-        }
-        return configuration.getFormat()[0];
-    }
-
-    private XmlDateTimeConverter(TimeZone timeZone) {
-        this.timeZone = timeZone;
+    /**
+     * Constructs a <code>XmlDateTimeConverter</code>.<br>
+     * If no format is given, the default format (see
+     * {@link #getDefaultFormat()}) is used.
+     * 
+     * @param configuration the configuration
+     */
+    protected XmlDateTimeConverter(SimpleTypeConverterConfiguration configuration) {
+        this.timeZone = TimeZone.getTimeZone(getFormat(configuration));
         try {
             this.factory = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException e) {
-            throw new ConversionException("Could not create an XmlDateTimeConverter", e);
+            throw new ConversionException("Could not create an " + this.getClass().getName(), e);
         }
     }
 
@@ -105,6 +104,25 @@ public final class XmlDateTimeConverter implements SimpleTypeConverter {
         GregorianCalendar cal = new GregorianCalendar(this.timeZone);
         cal.setTime((Date) value);
         return this.factory.newXMLGregorianCalendar(cal).toString();
+    }
+
+    /**
+     * Returns the default format which is used when no format is given.
+     * 
+     * @return the default format.
+     */
+    protected String getDefaultFormat() {
+        return XmlDateTimeConverter.DEFAULT_FORMAT;
+    }
+
+    private String getFormat(SimpleTypeConverterConfiguration configuration) {
+        if (configuration.getFormat() == null) {
+            return getDefaultFormat();
+        }
+        if (configuration.getFormat().length != 1) {
+            throw new ConversionException("The format for an XmlDateTimeConverter must be a single String");
+        }
+        return configuration.getFormat()[0];
     }
 
     /**

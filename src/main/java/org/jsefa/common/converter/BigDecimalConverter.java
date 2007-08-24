@@ -31,46 +31,45 @@ import java.util.Locale;
  * 
  * @author Norman Lahme-Huetig
  */
-public final class BigDecimalConverter implements SimpleTypeConverter {
+public class BigDecimalConverter implements SimpleTypeConverter {
     /**
      * The default format which is used when no format is explicitly given.
      */
-    public static final String[] DEFAULT_FORMAT = {"en", "#0.00"};
+    private static final String[] DEFAULT_FORMAT = {"en", "#0.00"};
 
     private final DecimalFormat decimalFormat;
 
     /**
-     * Constructs a <code>BigDecimalConverter</code>.<br>
-     * If no format is given, the {@link #DEFAULT_FORMAT} is used.
+     * Creates a <code>BigDecimalConverter</code>.<br>
+     * If no format is given, the default format (see
+     * {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration
      * @return a big decimal converter
      * @throws ConversionException if the given format is not valid.
      */
     public static BigDecimalConverter create(SimpleTypeConverterConfiguration configuration) {
+        return new BigDecimalConverter(configuration);
+    }
+
+    /**
+     * Constructs a new <code>BigDecimalConverter</code>.<br>
+     * If no format is given, the default format (see
+     * {@link #getDefaultFormat()}) is used.
+     * 
+     * @param configuration the configuration
+     * @throws ConversionException if the given format is not valid.
+     */
+    protected BigDecimalConverter(SimpleTypeConverterConfiguration configuration) {
         String[] format = getFormat(configuration);
         try {
             Locale locale = new Locale(format[0]);
             String pattern = format[1];
-            return new BigDecimalConverter(new DecimalFormat(pattern, new DecimalFormatSymbols(locale)));
+            this.decimalFormat = new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
         } catch (Exception e) {
-            throw new ConversionException("Could not create a BigDecimalConverter with format " + format[0] + ", "
-                    + format[1], e);
+            throw new ConversionException("Could not create a " + this.getClass().getName() + " with format "
+                    + format[0] + ", " + format[1], e);
         }
-    }
-
-    private static String[] getFormat(SimpleTypeConverterConfiguration configuration) {
-        if (configuration.getFormat() == null) {
-            return DEFAULT_FORMAT;
-        }
-        if (configuration.getFormat().length != 2) {
-            throw new ConversionException("The format for a BigDecimalConverter must be an array with 2 entries");
-        }
-        return configuration.getFormat();
-    }
-
-    private BigDecimalConverter(DecimalFormat decimalFormat) {
-        this.decimalFormat = decimalFormat;
     }
 
     /**
@@ -96,6 +95,25 @@ public final class BigDecimalConverter implements SimpleTypeConverter {
             return null;
         }
         return this.decimalFormat.format(((BigDecimal) value).doubleValue());
+    }
+
+    /**
+     * Returns the default format which is used when no format is given.
+     * 
+     * @return the default format.
+     */
+    protected String[] getDefaultFormat() {
+        return BigDecimalConverter.DEFAULT_FORMAT;
+    }
+
+    private String[] getFormat(SimpleTypeConverterConfiguration configuration) {
+        if (configuration.getFormat() == null) {
+            return getDefaultFormat();
+        }
+        if (configuration.getFormat().length != 2) {
+            throw new ConversionException("The format for a BigDecimalConverter must be an array with 2 entries");
+        }
+        return configuration.getFormat();
     }
 
 }

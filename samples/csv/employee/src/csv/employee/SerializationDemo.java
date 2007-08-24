@@ -18,10 +18,10 @@ package csv.employee;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.jsefa.common.converter.DateConverter;
+import org.jsefa.common.converter.SimpleTypeConverterConfiguration;
 import org.jsefa.csv.CsvIOFactory;
 import org.jsefa.csv.CsvSerializer;
 
@@ -43,8 +43,8 @@ public class SerializationDemo {
         serializer.open(writer);
         serializer.write(createEmployee("Erwin Schmidt", Role.SENIOR_DEVELOPER, false, "23.5.1964",
                 new BigDecimal(7.83)));
-        serializer.write(createEmployee("Betty Meier", Role.JUNIOR_DEVELOPER, null, "1.1.1984",
-                new BigDecimal(4.28)));
+        serializer.write(createEmployee("Betty Meier", Role.JUNIOR_DEVELOPER, null, "1.1.1984", new BigDecimal(
+                4.28)));
         serializer.close(true);
         System.out.println("Result:");
         System.out.println(writer.toString());
@@ -63,13 +63,8 @@ public class SerializationDemo {
     }
 
     private Date createDate(String date) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat(DateConverter.DEFAULT_FORMAT);
-            return df.parse(date);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }    
+        return DateConverter.create(SimpleTypeConverterConfiguration.EMPTY).fromString(date);
+    }
 
     /**
      * Main method.

@@ -16,15 +16,17 @@
 
 package org.jsefa.test.all;
 
-import static org.jsefa.test.common.JSefaTestUtil.FormatType.*;
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.CSV;
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.FLR;
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import junit.framework.TestCase;
 
 import org.jsefa.common.converter.DateConverter;
+import org.jsefa.common.converter.SimpleTypeConverterConfiguration;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
 import org.jsefa.flr.annotation.FlrDataType;
@@ -449,11 +451,6 @@ public class SimpleTypeDefaultTest extends TestCase {
     }
 
     private Date createDate(String date) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat(DateConverter.DEFAULT_FORMAT);
-            return df.parse(date);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return DateConverter.create(SimpleTypeConverterConfiguration.EMPTY).fromString(date);
     }    
 }
