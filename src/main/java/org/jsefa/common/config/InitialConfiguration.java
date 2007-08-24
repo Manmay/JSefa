@@ -76,7 +76,7 @@ public final class InitialConfiguration {
      */
     public static void set(String parameter, Object value) {
         Object other = MAP.putIfAbsent(parameter, value);
-        if (!other.equals(value)) {
+        if (other != null && !other.equals(value)) {
             throw new InitialConfigurationException("The configuration parameter " + parameter
                     + " is already bound to " + value);
         }
