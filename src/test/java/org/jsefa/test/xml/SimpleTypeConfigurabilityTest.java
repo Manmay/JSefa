@@ -38,7 +38,7 @@ import org.jsefa.xml.annotation.XmlTextContent;
 
 /**
  * Tests for testing the configurability of simple types (concerning format
- * and/or converterClass) for different xml node types.
+ * and/or converterType) for different xml node types.
  * 
  * @author Marko Kovacevic
  * 
@@ -55,19 +55,19 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     /**
-     * Tests the converter class configuration for an attribute.
+     * Tests the converter type configuration for an attribute.
      */
-    public void testAttributeWithConverterClass() {
-        AttributeWithConverterClassTestDTO obj = new AttributeWithConverterClassTestDTO();
+    public void testAttributeWithConverterType() {
+        AttributeWithConverterTypeTestDTO obj = new AttributeWithConverterTypeTestDTO();
         obj.attribute = getDateForConverter("28.02.2007:15:21:27");
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T15:21:27.000Z") >= 0);
     }
 
     /**
-     * Tests the format and converter class configuration for an attribute.
+     * Tests the format and converter type configuration for an attribute.
      */
-    public void testAttributeWithFormatAndConverterClass() {
-        AttributeWithFormatAndConverterClassTestDTO obj = new AttributeWithFormatAndConverterClassTestDTO();
+    public void testAttributeWithFormatAndConverterType() {
+        AttributeWithFormatAndConverterTypeTestDTO obj = new AttributeWithFormatAndConverterTypeTestDTO();
         obj.attribute = getDateForFormatAndConverter("28.02.2007:15:21:27");
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T14:21:27.000-01:00") >= 0);
     }
@@ -82,19 +82,19 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     /**
-     * Tests the converter class configuration for an element.
+     * Tests the converter type configuration for an element.
      */
-    public void testElementWithConverterClass() {
-        ElementWithConverterClassTestDTO obj = new ElementWithConverterClassTestDTO();
+    public void testElementWithConverterType() {
+        ElementWithConverterTypeTestDTO obj = new ElementWithConverterTypeTestDTO();
         obj.element = getDateForConverter("28.02.2007:15:21:27");
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T15:21:27.000Z") >= 0);
     }
 
     /**
-     * Tests the format and converter class configuration for an element.
+     * Tests the format and converter type configuration for an element.
      */
-    public void testElementWithFormatAndConverterClass() {
-        ElementWithFormatAndConverterClassTestDTO obj = new ElementWithFormatAndConverterClassTestDTO();
+    public void testElementWithFormatAndConverterType() {
+        ElementWithFormatAndConverterTypeTestDTO obj = new ElementWithFormatAndConverterTypeTestDTO();
         obj.element = getDateForFormatAndConverter("28.02.2007:15:21:27");
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T14:21:27.000-01:00") >= 0);
     }
@@ -109,19 +109,19 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     /**
-     * Tests the converter class configuration for a text content.
+     * Tests the converter type configuration for a text content.
      */
-    public void testTextContentWithConverterClassDTO() {
-        TextContentWithConverterClassTestDTO obj = new TextContentWithConverterClassTestDTO();
+    public void testTextContentWithConverterTypeDTO() {
+        TextContentWithConverterTypeTestDTO obj = new TextContentWithConverterTypeTestDTO();
         obj.textContent = getDateForConverter("28.02.2007:15:21:27");
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T15:21:27.000Z") >= 0);
     }
 
     /**
-     * Tests the format and converter class configuration for a text content.
+     * Tests the format and converter type configuration for a text content.
      */
-    public void testTextContentWithFormatAndConverterClassDTO() {
-        TextContentWithFormatAndConverterClassTestDTO obj = new TextContentWithFormatAndConverterClassTestDTO();
+    public void testTextContentWithFormatAndConverterTypeDTO() {
+        TextContentWithFormatAndConverterTypeTestDTO obj = new TextContentWithFormatAndConverterTypeTestDTO();
         obj.textContent = getDateForFormatAndConverter("28.02.2007:15:21:27");
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T14:21:27.000-01:00") >= 0);
     }
@@ -139,10 +139,10 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     /**
-     * Tests the converter class configuration for an element list.
+     * Tests the converter type configuration for an element list.
      */
-    public void testElementListWithConverterClass() {
-        ElementListWithConverterClassTestDTO obj = new ElementListWithConverterClassTestDTO();
+    public void testElementListWithConverterType() {
+        ElementListWithConverterTypeTestDTO obj = new ElementListWithConverterTypeTestDTO();
         obj.elementList = new ArrayList<Date>();
         obj.elementList.add(getDateForConverter("28.02.2007:15:21:27"));
         obj.elementList.add(getDateForConverter("01.03.2007:15:21:27"));
@@ -151,10 +151,10 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     /**
-     * Tests the format and converter class configuration for an element list.
+     * Tests the format and converter type configuration for an element list.
      */
-    public void testElementListWithFormatAndConverterClass() {
-        ElementListWithFormatAndConverterClassTestDTO obj = new ElementListWithFormatAndConverterClassTestDTO();
+    public void testElementListWithFormatAndConverterType() {
+        ElementListWithFormatAndConverterTypeTestDTO obj = new ElementListWithFormatAndConverterTypeTestDTO();
         obj.elementList = new ArrayList<Date>();
         obj.elementList.add(getDateForFormatAndConverter("28.02.2007:15:21:27"));
         obj.elementList.add(getDateForFormatAndConverter("01.03.2007:15:21:27"));
@@ -197,14 +197,14 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     @XmlDataType()
-    static final class AttributeWithConverterClassTestDTO {
-        @XmlAttribute(converterClass = XmlDateTimeConverter.class)
+    static final class AttributeWithConverterTypeTestDTO {
+        @XmlAttribute(converterType = XmlDateTimeConverter.class)
         Date attribute;
     }
 
     @XmlDataType()
-    static final class AttributeWithFormatAndConverterClassTestDTO {
-        @XmlAttribute(format = "GMT-1:00", converterClass = XmlDateTimeConverter.class)
+    static final class AttributeWithFormatAndConverterTypeTestDTO {
+        @XmlAttribute(format = "GMT-1:00", converterType = XmlDateTimeConverter.class)
         Date attribute;
     }
 
@@ -215,14 +215,14 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     @XmlDataType()
-    static final class ElementWithConverterClassTestDTO {
-        @XmlElement(converterClass = XmlDateTimeConverter.class)
+    static final class ElementWithConverterTypeTestDTO {
+        @XmlElement(converterType = XmlDateTimeConverter.class)
         Date element;
     }
 
     @XmlDataType()
-    static final class ElementWithFormatAndConverterClassTestDTO {
-        @XmlElement(format = "GMT-1:00", converterClass = XmlDateTimeConverter.class)
+    static final class ElementWithFormatAndConverterTypeTestDTO {
+        @XmlElement(format = "GMT-1:00", converterType = XmlDateTimeConverter.class)
         Date element;
     }
 
@@ -233,14 +233,14 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     @XmlDataType()
-    static final class TextContentWithConverterClassTestDTO {
-        @XmlTextContent(converterClass = XmlDateTimeConverter.class)
+    static final class TextContentWithConverterTypeTestDTO {
+        @XmlTextContent(converterType = XmlDateTimeConverter.class)
         Date textContent;
     }
 
     @XmlDataType()
-    static final class TextContentWithFormatAndConverterClassTestDTO {
-        @XmlTextContent(format = "GMT-1:00", converterClass = XmlDateTimeConverter.class)
+    static final class TextContentWithFormatAndConverterTypeTestDTO {
+        @XmlTextContent(format = "GMT-1:00", converterType = XmlDateTimeConverter.class)
         Date textContent;
     }
 
@@ -251,15 +251,15 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
     }
 
     @XmlDataType()
-    static final class ElementListWithConverterClassTestDTO {
-        @XmlElementList(items = @ListItem(name = "item", converterClass = XmlDateTimeConverter.class))
+    static final class ElementListWithConverterTypeTestDTO {
+        @XmlElementList(items = @ListItem(name = "item", converterType = XmlDateTimeConverter.class))
         List<Date> elementList;
     }
 
     @XmlDataType()
-    static final class ElementListWithFormatAndConverterClassTestDTO {
+    static final class ElementListWithFormatAndConverterTypeTestDTO {
         @XmlElementList(items = @ListItem(name = "item", format = "GMT-1:00",
-                converterClass = XmlDateTimeConverter.class))
+                converterType = XmlDateTimeConverter.class))
         List<Date> elementList;
     }
 }

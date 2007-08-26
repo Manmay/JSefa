@@ -45,7 +45,7 @@ public abstract class SimpleTypeConverterProvider {
      */
     protected SimpleTypeConverterProvider() {
         this.converterTypeMap = new ConcurrentHashMap<Class<?>, Class<? extends SimpleTypeConverter>>();
-        registerStandardConverterClasses();
+        registerStandardConverterTypes();
     }
 
     /**
@@ -57,7 +57,7 @@ public abstract class SimpleTypeConverterProvider {
      *         for the given type; false otherwise.
      */
     public boolean hasConverterFor(Class<?> objectType) {
-        return getConverterClass(objectType) != null;
+        return getConverterType(objectType) != null;
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class SimpleTypeConverterProvider {
         if (!hasConverterFor(objectType)) {
             return null;
         }
-        Class<? extends SimpleTypeConverter> converterType = getConverterClass(objectType);
+        Class<? extends SimpleTypeConverter> converterType = getConverterType(objectType);
         return getForConverterType(converterType, objectType, format);
     }
 
@@ -111,14 +111,14 @@ public abstract class SimpleTypeConverterProvider {
      * @param objectType the object type
      * @param converterType the <code>SimpleTypeConverter</code> type
      */
-    public void registerConverterClass(Class<?> objectType, Class<? extends SimpleTypeConverter> converterType) {
+    public void registerConverterType(Class<?> objectType, Class<? extends SimpleTypeConverter> converterType) {
         this.converterTypeMap.put(objectType, converterType);
     }
 
     /**
      * Merges the content of the other SimpleTypeConverter into this one.
      * <p>
-     * This overrides existing registrations of converter classes for data type
+     * This overrides existing registrations of converter types for data type
      * names which are known to both simple type converters.
      * 
      * @param other a simple type converter
@@ -128,11 +128,11 @@ public abstract class SimpleTypeConverterProvider {
     }
 
     /**
-     * Registers the standard converter classes.
+     * Registers the standard converter types.
      */
-    protected abstract void registerStandardConverterClasses();
+    protected abstract void registerStandardConverterTypes();
 
-    private Class<? extends SimpleTypeConverter> getConverterClass(Class<?> objectType) {
+    private Class<? extends SimpleTypeConverter> getConverterType(Class<?> objectType) {
         Class<?> type = objectType;
         while (type != null) {
             Class<? extends SimpleTypeConverter> converterType = this.converterTypeMap.get(type);

@@ -98,9 +98,9 @@ public class SimpleTypeWithFormatAndConverterTest extends TestCase {
     @FlrDataType()
     @XmlDataType()
     static final class DateDTO extends AbstractTestDTO {
-        @CsvField(pos = 1, format = "GMT", converterClass = XmlDateTimeConverter.class)
-        @FlrField(pos = 1, length = 25, format = "GMT", converterClass = XmlDateTimeConverter.class)
-        @XmlElement(format = "GMT", converterClass = XmlDateTimeConverter.class)
+        @CsvField(pos = 1, format = "GMT", converterType = XmlDateTimeConverter.class)
+        @FlrField(pos = 1, length = 25, format = "GMT", converterType = XmlDateTimeConverter.class)
+        @XmlElement(format = "GMT", converterType = XmlDateTimeConverter.class)
         Date dateField;
     }
 
@@ -138,9 +138,9 @@ public class SimpleTypeWithFormatAndConverterTest extends TestCase {
     @FlrDataType()
     @XmlDataType()
     static final class BigDecimalDTO extends AbstractTestDTO {
-        @CsvField(pos = 1, format = {"en", "#0.00"}, converterClass = BigDecimalConverter.class)
-        @FlrField(pos = 1, length = 15, format = {"en", "#0.00"}, converterClass = BigDecimalConverter.class)
-        @XmlElement(format = {"en", "#0.00"}, converterClass = BigDecimalConverter.class)
+        @CsvField(pos = 1, format = {"en", "#0.00"}, converterType = BigDecimalConverter.class)
+        @FlrField(pos = 1, length = 15, format = {"en", "#0.00"}, converterType = BigDecimalConverter.class)
+        @XmlElement(format = {"en", "#0.00"}, converterType = BigDecimalConverter.class)
         BigDecimal bigDecimalField;
     }
 
@@ -179,11 +179,11 @@ public class SimpleTypeWithFormatAndConverterTest extends TestCase {
     @XmlDataType()
     static final class EnumDTO extends AbstractTestDTO {
         @CsvField(pos = 1, format = {"ENUM_VALUE1=enum value 1", "ENUM_VALUE2=enum value 2",
-                "ENUM_VALUE3=enum value 3"}, converterClass = EnumConverter.class)
+                "ENUM_VALUE3=enum value 3"}, converterType = EnumConverter.class)
         @FlrField(pos = 1, length = 15, format = {"ENUM_VALUE1=enum value 1", "ENUM_VALUE2=enum value 2",
-                "ENUM_VALUE3=enum value 3"}, converterClass = EnumConverter.class)
+                "ENUM_VALUE3=enum value 3"}, converterType = EnumConverter.class)
         @XmlElement(format = {"ENUM_VALUE1=enum value 1", "ENUM_VALUE2=enum value 2", "ENUM_VALUE3=enum value 3"}, 
-                converterClass = EnumConverter.class)
+                converterType = EnumConverter.class)
         EnumType enumField;
     }
 
@@ -221,9 +221,9 @@ public class SimpleTypeWithFormatAndConverterTest extends TestCase {
     @FlrDataType()
     @XmlDataType()
     static final class BooleanDTO extends AbstractTestDTO {
-        @CsvField(pos = 1, format = {"1", "0"}, converterClass = BooleanConverter.class)
-        @FlrField(pos = 1, length = 15, format = {"1", "0"}, converterClass = BooleanConverter.class)
-        @XmlElement(format = {"1", "0"}, converterClass = BooleanConverter.class)
+        @CsvField(pos = 1, format = {"1", "0"}, converterType = BooleanConverter.class)
+        @FlrField(pos = 1, length = 15, format = {"1", "0"}, converterType = BooleanConverter.class)
+        @XmlElement(format = {"1", "0"}, converterType = BooleanConverter.class)
         Boolean booleanField;
     }
 }

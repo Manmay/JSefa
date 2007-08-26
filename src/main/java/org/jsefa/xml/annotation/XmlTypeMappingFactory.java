@@ -16,7 +16,7 @@
 
 package org.jsefa.xml.annotation;
 
-import static org.jsefa.common.annotation.AnnotationDataNames.CONVERTER_CLASS;
+import static org.jsefa.common.annotation.AnnotationDataNames.CONVERTER_TYPE;
 import static org.jsefa.common.annotation.AnnotationDataNames.DATA_TYPE_NAME;
 import static org.jsefa.common.annotation.AnnotationDataNames.FORMAT;
 import static org.jsefa.common.annotation.AnnotationDataNames.NAME;
@@ -118,9 +118,9 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             SimpleTypeConverter converter = null;
             if (annotation != null) {
                 format = AnnotationDataProvider.get(annotation, FORMAT);
-                if (AnnotationDataProvider.get(annotation, CONVERTER_CLASS) != null) {
+                if (AnnotationDataProvider.get(annotation, CONVERTER_TYPE) != null) {
                     Class<? extends SimpleTypeConverter> converterType = AnnotationDataProvider.get(annotation,
-                            CONVERTER_CLASS);
+                            CONVERTER_TYPE);
                     converter = getSimpleTypeConverterProvider()
                             .getForConverterType(converterType, objectType, format);
                 }
@@ -342,7 +342,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
     private QName createSimpleDataTypeName(Class<?> objectType, Field field, Annotation annotation) {
         if (annotation == null
                 || (AnnotationDataProvider.get(annotation, FORMAT) == null && AnnotationDataProvider.get(
-                        annotation, CONVERTER_CLASS) == null)) {
+                        annotation, CONVERTER_TYPE) == null)) {
             QName name = this.dataTypeDefaultNameRegistry.get(objectType);
             if (name == null) {
                 name = QName.create(DEFAULT_DATA_TYPE_NAMES_URI, objectType.getName());

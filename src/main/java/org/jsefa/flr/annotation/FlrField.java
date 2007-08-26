@@ -22,7 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.jsefa.common.annotation.NoConverterClass;
+import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.util.GeneralConstants;
 import org.jsefa.flr.lowlevel.Align;
@@ -82,8 +82,8 @@ public @interface FlrField {
     Align align() default Align.LEFT;
 
     /**
-     * Specifies the converter class to be used. In the default case the
-     * converter class is determined using the type of the annotated java field.
+     * Specifies the converter type to be used. In the default case the
+     * converter type is determined using the type of the annotated java field.
      */
-    Class<? extends SimpleTypeConverter> converterClass() default NoConverterClass.class;
+    Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;
 }

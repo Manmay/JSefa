@@ -108,9 +108,9 @@ public class SimpleTypeWithConverterTest extends TestCase {
     @FlrDataType()
     @XmlDataType()
     static final class DateDTO extends AbstractTestDTO {
-        @CsvField(pos = 1, converterClass = XmlDateTimeConverter.class)
-        @FlrField(pos = 1, length = 25, converterClass = XmlDateTimeConverter.class)
-        @XmlElement(converterClass = XmlDateTimeConverter.class)
+        @CsvField(pos = 1, converterType = XmlDateTimeConverter.class)
+        @FlrField(pos = 1, length = 25, converterType = XmlDateTimeConverter.class)
+        @XmlElement(converterType = XmlDateTimeConverter.class)
         Date dateField;
     }
 
@@ -148,9 +148,9 @@ public class SimpleTypeWithConverterTest extends TestCase {
     @FlrDataType()
     @XmlDataType()
     static final class BigDecimalDTO extends AbstractTestDTO {
-        @CsvField(pos = 1, converterClass = BigDecimalConverter.class)
-        @FlrField(pos = 1, length = 15, converterClass = BigDecimalConverter.class)
-        @XmlElement(converterClass = BigDecimalConverter.class)
+        @CsvField(pos = 1, converterType = BigDecimalConverter.class)
+        @FlrField(pos = 1, length = 15, converterType = BigDecimalConverter.class)
+        @XmlElement(converterType = BigDecimalConverter.class)
         BigDecimal bigDecimalField;
     }
 
@@ -188,9 +188,9 @@ public class SimpleTypeWithConverterTest extends TestCase {
     @FlrDataType()
     @XmlDataType()
     static final class EnumDTO extends AbstractTestDTO {
-        @CsvField(pos = 1, converterClass = EnumConverter.class)
-        @FlrField(pos = 1, length = 15, converterClass = EnumConverter.class)
-        @XmlElement(converterClass = EnumConverter.class)
+        @CsvField(pos = 1, converterType = EnumConverter.class)
+        @FlrField(pos = 1, length = 15, converterType = EnumConverter.class)
+        @XmlElement(converterType = EnumConverter.class)
         EnumType enumField;
     }
 
@@ -228,9 +228,9 @@ public class SimpleTypeWithConverterTest extends TestCase {
     @FlrDataType()
     @XmlDataType()
     static final class BooleanDTO extends AbstractTestDTO {
-        @CsvField(pos = 1, converterClass = BooleanConverter.class)
-        @FlrField(pos = 1, length = 15, converterClass = BooleanConverter.class)
-        @XmlElement(converterClass = BooleanConverter.class)
+        @CsvField(pos = 1, converterType = BooleanConverter.class)
+        @FlrField(pos = 1, length = 15, converterType = BooleanConverter.class)
+        @XmlElement(converterType = BooleanConverter.class)
         Boolean booleanField;
     }
 

@@ -19,12 +19,11 @@ package org.jsefa.common.annotation;
 import org.jsefa.common.converter.SimpleTypeConverter;
 
 /**
- * Class used to denote within annotations that no class implementing
- * {@link SimpleTypeConverter} is given.
+ * Class used to denote within annotations that no converter type is given.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public abstract class NoConverterClass implements SimpleTypeConverter {
+public abstract class NoConverterType implements SimpleTypeConverter {
 
 }

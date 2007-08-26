@@ -42,18 +42,18 @@ public final class SimpleTypeConverterProviderImpl extends SimpleTypeConverterPr
      * {@inheritDoc}
      */
     @Override
-    protected void registerStandardConverterClasses() {
-        registerConverterClass(String.class, StringConverter.class);
-        registerConverterClass(boolean.class, BooleanConverter.class);
-        registerConverterClass(Boolean.class, BooleanConverter.class);
-        registerConverterClass(long.class, LongConverter.class);
-        registerConverterClass(Long.class, LongConverter.class);
-        registerConverterClass(int.class, IntegerConverter.class);
-        registerConverterClass(Integer.class, IntegerConverter.class);
-        registerConverterClass(BigDecimal.class, BigDecimalConverter.class);
-        registerConverterClass(Date.class, DateConverter.class);
-        registerConverterClass(XMLGregorianCalendar.class, XMLGregorianCalendarConverter.class);
-        registerConverterClass(Enum.class, EnumConverter.class);
+    protected void registerStandardConverterTypes() {
+        registerConverterType(String.class, StringConverter.class);
+        registerConverterType(boolean.class, BooleanConverter.class);
+        registerConverterType(Boolean.class, BooleanConverter.class);
+        registerConverterType(long.class, LongConverter.class);
+        registerConverterType(Long.class, LongConverter.class);
+        registerConverterType(int.class, IntegerConverter.class);
+        registerConverterType(Integer.class, IntegerConverter.class);
+        registerConverterType(BigDecimal.class, BigDecimalConverter.class);
+        registerConverterType(Date.class, DateConverter.class);
+        registerConverterType(XMLGregorianCalendar.class, XMLGregorianCalendarConverter.class);
+        registerConverterType(Enum.class, EnumConverter.class);
     }
 
 }

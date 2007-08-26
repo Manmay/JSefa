@@ -37,7 +37,7 @@ import org.jsefa.common.util.ReflectionUtil;
 public final class AnnotationDataProvider {
 
     private static final List<?> NULL_OBJECTS = Arrays
-            .asList(new Object[]{"", NoConverterClass.class, NoClass.class});
+            .asList(new Object[]{"", NoConverterType.class, NoClass.class});
 
     /**
      * Returns the data with the given <code>annotationDataName</code> of the

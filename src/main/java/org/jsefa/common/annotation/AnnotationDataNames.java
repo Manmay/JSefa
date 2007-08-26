@@ -50,7 +50,7 @@ public interface AnnotationDataNames {
     String FORMAT = "format";
 
     /**
-     * Name of the annotation data used to denote a converter class.
+     * Name of the annotation data used to denote a converter type.
      */
-    String CONVERTER_CLASS = "converterClass";
+    String CONVERTER_TYPE = "converterType";
 }

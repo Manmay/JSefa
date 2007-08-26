@@ -22,7 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.jsefa.common.annotation.NoConverterClass;
+import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
 
 /**
@@ -73,11 +73,11 @@ public @interface XmlElement {
     String[] format() default {};
 
     /**
-     * Specifies the converter class to be used for the xml element which must
+     * Specifies the converter type to be used for the xml element which must
      * have a simple data type (no children, no data holding attributes). In the
-     * default case the converter class is determined using the type of the java
+     * default case the converter type is determined using the type of the java
      * field with this annotation.
      */
-    Class<? extends SimpleTypeConverter> converterClass() default NoConverterClass.class;
+    Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;
 
 }

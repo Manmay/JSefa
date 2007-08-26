@@ -16,7 +16,7 @@
 
 package org.jsefa.rbf.annotation;
 
-import static org.jsefa.common.annotation.AnnotationDataNames.CONVERTER_CLASS;
+import static org.jsefa.common.annotation.AnnotationDataNames.CONVERTER_TYPE;
 import static org.jsefa.common.annotation.AnnotationDataNames.DATA_TYPE_NAME;
 import static org.jsefa.common.annotation.AnnotationDataNames.FORMAT;
 import static org.jsefa.common.annotation.AnnotationDataNames.NAME;
@@ -105,9 +105,9 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
             SimpleTypeConverter converter = null;
             if (fieldAnnotation != null) {
                 format = AnnotationDataProvider.get(fieldAnnotation, FORMAT);
-                if (AnnotationDataProvider.get(fieldAnnotation, CONVERTER_CLASS) != null) {
+                if (AnnotationDataProvider.get(fieldAnnotation, CONVERTER_TYPE) != null) {
                     Class<? extends SimpleTypeConverter> converterType = AnnotationDataProvider.get(fieldAnnotation,
-                            CONVERTER_CLASS);
+                            CONVERTER_TYPE);
                     converter = getSimpleTypeConverterProvider().getForConverterType(converterType, objectType, format);
                 }
             }
