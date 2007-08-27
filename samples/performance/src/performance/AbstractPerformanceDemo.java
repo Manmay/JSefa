@@ -153,14 +153,14 @@ abstract class AbstractPerformanceDemo {
 
     private long readPerformance(Class<?> obj) {
         try {
-            Deserializer deserialiser = this.ioFactories.get(obj).createDeserializer();
-            deserialiser.open(new BufferedReader(new FileReader(this.resultFile)));
+            Deserializer deserializer = this.ioFactories.get(obj).createDeserializer();
+            deserializer.open(new BufferedReader(new FileReader(this.resultFile)));
             long before = System.currentTimeMillis();
-            while (deserialiser.hasNext()) {
-                deserialiser.next();
+            while (deserializer.hasNext()) {
+                deserializer.next();
             }
             long after = System.currentTimeMillis();
-            deserialiser.close(true);
+            deserializer.close(true);
             return (after - before);
         } catch (Exception e) {
             throw new RuntimeException(e);
