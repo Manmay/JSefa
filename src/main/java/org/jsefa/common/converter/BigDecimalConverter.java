@@ -19,6 +19,7 @@ package org.jsefa.common.converter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.FieldPosition;
 import java.text.ParseException;
 import java.util.Locale;
 
@@ -36,6 +37,8 @@ public class BigDecimalConverter implements SimpleTypeConverter {
      * The default format which is used when no format is explicitly given.
      */
     private static final String[] DEFAULT_FORMAT = {"en", "#0.00"};
+
+    private static final FieldPosition FIELD_POSITION = new FieldPosition(0);
 
     private final DecimalFormat decimalFormat;
 
@@ -66,6 +69,7 @@ public class BigDecimalConverter implements SimpleTypeConverter {
             Locale locale = new Locale(format[0]);
             String pattern = format[1];
             this.decimalFormat = new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
+            this.decimalFormat.setParseBigDecimal(true);
         } catch (Exception e) {
             throw new ConversionException("Could not create a " + this.getClass().getName() + " with format "
                     + format[0] + ", " + format[1], e);
@@ -80,8 +84,13 @@ public class BigDecimalConverter implements SimpleTypeConverter {
             return null;
         }
         try {
-            return new BigDecimal(this.decimalFormat.parse(value).doubleValue()).setScale(this.decimalFormat
-                    .getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
+            Object result = this.decimalFormat.parseObject(value);
+            if (result instanceof BigDecimal) {
+                return (BigDecimal) result;
+            } else {
+                return new BigDecimal(((Double) result).doubleValue()).setScale(this.decimalFormat
+                        .getMaximumFractionDigits(), BigDecimal.ROUND_HALF_UP);
+            }
         } catch (ParseException e) {
             throw new ConversionException("Wrong BigDecimal format " + value);
         }
@@ -94,7 +103,7 @@ public class BigDecimalConverter implements SimpleTypeConverter {
         if (value == null) {
             return null;
         }
-        return this.decimalFormat.format(((BigDecimal) value).doubleValue());
+        return this.decimalFormat.format(value, new StringBuffer(), FIELD_POSITION).toString();
     }
 
     /**
