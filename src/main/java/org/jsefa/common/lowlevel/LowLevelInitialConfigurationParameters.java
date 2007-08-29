@@ -20,7 +20,7 @@ package org.jsefa.common.lowlevel;
  * Declares initial low level configuration parameters common to all format
  * types.
  * 
- * @see Configuration
+ * @see LowLevelConfiguration
  * @author Norman Lahme-Huetig
  * 
  */
