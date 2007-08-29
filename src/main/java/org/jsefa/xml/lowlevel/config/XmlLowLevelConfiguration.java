@@ -24,7 +24,7 @@ import static org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParam
 import static org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters.NAMESPACE_MANAGER;
 
 import org.jsefa.common.config.InitialConfiguration;
-import org.jsefa.common.lowlevel.LowLevelConfiguration;
+import org.jsefa.common.lowlevel.config.LowLevelConfiguration;
 import org.jsefa.common.util.OnDemandObjectProvider;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;

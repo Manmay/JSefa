@@ -16,7 +16,7 @@
 
 package org.jsefa.common.config;
 
-import org.jsefa.common.lowlevel.LowLevelInitialConfigurationParameters;
+import org.jsefa.common.lowlevel.config.LowLevelInitialConfigurationParameters;
 
 /**
  * Declares initial configuration parameters common to all format types.

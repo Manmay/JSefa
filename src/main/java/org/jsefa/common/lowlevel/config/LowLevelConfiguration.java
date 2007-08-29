@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.jsefa.common.lowlevel;
+package org.jsefa.common.lowlevel.config;
 
-import static org.jsefa.common.lowlevel.LowLevelInitialConfigurationParameters.LINE_BREAK;
-import static org.jsefa.common.lowlevel.LowLevelConfiguration.Defaults.DEFAULT_LINE_BREAK;
+import static org.jsefa.common.lowlevel.config.LowLevelConfiguration.Defaults.DEFAULT_LINE_BREAK;
+import static org.jsefa.common.lowlevel.config.LowLevelInitialConfigurationParameters.LINE_BREAK;
 
 import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.lowlevel.LowLevelIOFactory;
 
 /**
  * The abstract superclass for low level configuration object classes. It uses

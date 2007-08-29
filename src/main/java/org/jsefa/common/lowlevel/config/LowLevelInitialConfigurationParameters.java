@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jsefa.common.lowlevel;
+package org.jsefa.common.lowlevel.config;
 
 /**
  * Declares initial low level configuration parameters common to all format

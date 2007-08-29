@@ -28,7 +28,7 @@ import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DE
 import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_USE_DELIMITER_AFTER_LAST_FIELD;
 
 import org.jsefa.common.config.InitialConfiguration;
-import org.jsefa.common.lowlevel.LowLevelConfiguration;
+import org.jsefa.common.lowlevel.config.LowLevelConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;
 import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
 

@@ -38,7 +38,7 @@ public final class NamespaceManagerFactory {
         XmlNamespaces namespaces = objectType.getAnnotation(XmlNamespaces.class);
         if (namespaces != null) {
             for (Namespace namespace : namespaces.value()) {
-                result.register(namespace.prefix(), namespace.uri());
+                result.registerPrefix(namespace.prefix(), namespace.uri());
             }
         }
         return result;

@@ -17,7 +17,7 @@
 package org.jsefa.csv.lowlevel.config;
 
 import org.jsefa.common.config.Configuration;
-import org.jsefa.common.lowlevel.LowLevelInitialConfigurationParameters;
+import org.jsefa.common.lowlevel.config.LowLevelInitialConfigurationParameters;
 
 /**
  * A collection of initial configuration parameters for low level CSV.

@@ -53,7 +53,8 @@ public abstract class XmlLowLevelIOFactory implements LowLevelIOFactory {
      */
     public static XmlLowLevelIOFactory createFactory(XmlLowLevelConfiguration config) {
         Class<XmlLowLevelIOFactory> factoryClass = InitialConfiguration.get(
-                XmlLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS, StaxBasedXmlLowLevelIOFactory.class);
+                XmlLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS,
+                StaxBasedXmlLowLevelIOFactory.class);
         Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
                 XmlLowLevelConfiguration.class);
         if (createMethod == null) {

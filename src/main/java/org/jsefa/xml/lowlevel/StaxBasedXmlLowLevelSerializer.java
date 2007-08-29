@@ -108,7 +108,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             if (!hasNamespace(name)) {
                 this.streamWriter.writeStartElement(name.getLocalName());
                 if (defaultNamespaceExists()) {
-                    this.namespaceManager.register(DEFAULT_NAMESPACE_PREFIX, NO_NAMESPACE_URI);
+                    this.namespaceManager.registerPrefix(DEFAULT_NAMESPACE_PREFIX, NO_NAMESPACE_URI);
                     this.streamWriter.writeNamespace(DEFAULT_NAMESPACE_PREFIX, NO_NAMESPACE_URI);
                 }
             } else {

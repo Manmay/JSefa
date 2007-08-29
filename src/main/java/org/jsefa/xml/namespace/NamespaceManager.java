@@ -126,13 +126,13 @@ public final class NamespaceManager {
     }
 
     /**
-     * Registers a new prefix for a namespace uri.
+     * Registers the given prefix for the given namespace uri.
      * <p>
      * During serialization a registered prefix is interpretated is being known
      * at the current point in the xml document.
      * <p>
-     * Note: Normally it is {@link #registerPreferredPrefix}
-     * what you want to call.
+     * Note: Normally it is {@link #registerPreferredPrefix} what you want to
+     * call.
      * 
      * @param prefix the prefix
      * @param uri the uri
@@ -142,7 +142,7 @@ public final class NamespaceManager {
      *                 2. the prefix is an explicit prefix and the uri is
      *                 already bound to another explicit prefix
      */
-    public void register(String prefix, String uri) {
+    public void registerPrefix(String prefix, String uri) {
         if (prefix == null || uri == null) {
             throw new NullPointerException("Prefix and uri must not be null");
         }
@@ -264,7 +264,7 @@ public final class NamespaceManager {
                     } while (getUri(prefix) != null);
                 }
             }
-            register(prefix, uri);
+            registerPrefix(prefix, uri);
         }
         return prefix;
     }
