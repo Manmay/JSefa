@@ -26,9 +26,10 @@ import java.util.Map;
  * It allows for <br>
  * 1. the registration of preferred prefixes for URIs (for root
  * <code>NamespaceManager</code>s only),<br>
- * 2. the registration of new prefix-URI-combinations, <br>
- * 3. the retrieval of the URI to a given prefix<br>
- * 4. the retrieval of a prefix to a given URI<br>
+ * 2. the registration of prefixes for URIs which are interpreted during
+ * serialization as being known at the current point in document,<br>
+ * 3. the retrieval of a prefix to a given URI<br>
+ * 4. the retrieval of the URI to a given prefix<br>
  * 5. the creation of a new prefix for a new URI
  * <p>
  * A <code>NamespaceManager</code> may have a parent
@@ -47,9 +48,9 @@ public final class NamespaceManager {
 
     private final Map<String, String> preferredPrefixes;
 
-    private Map<String, String> registeredURIs;
+    private Map<String, String> prefixes;
 
-    private Map<String, String> registeredPrefixes;
+    private Map<String, String> uris;
 
     private String defaultURI;
 
@@ -90,8 +91,8 @@ public final class NamespaceManager {
             this.preferredPrefixes = other.preferredPrefixes;
             this.hasOwnRegistries = other.hasOwnRegistries;
             if (this.hasOwnRegistries) {
-                this.registeredPrefixes = new HashMap<String, String>(other.registeredPrefixes);
-                this.registeredURIs = new HashMap<String, String>(other.registeredURIs);
+                this.prefixes = new HashMap<String, String>(other.prefixes);
+                this.uris = new HashMap<String, String>(other.uris);
                 this.defaultURI = other.defaultURI;
             }
         }
@@ -106,6 +107,16 @@ public final class NamespaceManager {
      */
     public NamespaceManager createCopy() {
         return new NamespaceManager(this, false);
+    }
+
+    /**
+     * Returns the parent namespace manager of this namespace manager - if
+     * exists.
+     * 
+     * @return the parent namespace manager or null if none exists.
+     */
+    public NamespaceManager getParent() {
+        return this.parent;
     }
 
     /**
@@ -153,14 +164,14 @@ public final class NamespaceManager {
                             + this.defaultURI + " and can not be bound to " + uri);
                 }
             } else {
-                if (this.registeredPrefixes.containsKey(uri) && !prefix.equals(this.registeredPrefixes.get(uri))) {
+                if (this.prefixes.containsKey(uri) && !prefix.equals(this.prefixes.get(uri))) {
                     throw new NamespaceRegistrationException("The uri " + uri + " is already bound to the prefix "
-                            + this.registeredPrefixes.get(uri) + " and can not be bound to " + prefix);
+                            + this.prefixes.get(uri) + " and can not be bound to " + prefix);
 
                 }
-                if (this.registeredURIs.containsKey(prefix) && !uri.equals(this.registeredURIs.get(prefix))) {
+                if (this.uris.containsKey(prefix) && !uri.equals(this.uris.get(prefix))) {
                     throw new NamespaceRegistrationException("The prefix " + prefix
-                            + " is already bound to the uri " + this.registeredURIs.get(prefix)
+                            + " is already bound to the uri " + this.uris.get(prefix)
                             + " and can not be bound to " + uri);
                 }
             }
@@ -170,38 +181,14 @@ public final class NamespaceManager {
         if (isDefault(prefix)) {
             this.defaultURI = uri;
         } else {
-            this.registeredPrefixes.put(uri, prefix);
-            this.registeredURIs.put(prefix, uri);
+            this.prefixes.put(uri, prefix);
+            this.uris.put(prefix, uri);
         }
-    }
-
-    /**
-     * Returns the namespace uri the given prefix is registered for. If this
-     * namespace manager has no registration for the given prefix, than its
-     * parent namespace manager is asked for it (in the case a parent exists).
-     * 
-     * @param prefix the prefix
-     * @return the uri or null if none is registered for the given prefix
-     */
-    public String getUri(String prefix) {
-        if (!this.hasOwnRegistries) {
-            return this.parent.getUri(prefix);
-        }
-        String uri = null;
-        if (isDefault(prefix)) {
-            uri = this.defaultURI;
-        } else {
-            uri = this.registeredURIs.get(prefix);
-        }
-        if (uri == null && this.parent != null) {
-            uri = this.parent.getUri(prefix);
-        }
-        return uri;
     }
 
     /**
      * Returns the prefix which is registered for the given namespace uri. If
-     * this namespace manager has no registration for the given uri, than its
+     * this namespace manager has no registration for the given uri, then its
      * parent namespace manager is asked for it (in the case a parent exists).
      * <p>
      * If the parent namespace manager returns a prefix which is known for this
@@ -221,11 +208,11 @@ public final class NamespaceManager {
         if (defaultAllowed && uri.equals(this.defaultURI)) {
             return NamespaceConstants.DEFAULT_NAMESPACE_PREFIX;
         }
-        String prefix = this.registeredPrefixes.get(uri);
+        String prefix = this.prefixes.get(uri);
         if (prefix == null && this.parent != null) {
             prefix = this.parent.getPrefix(uri, defaultAllowed);
             if (prefix != null) {
-                if (this.registeredURIs.containsKey(prefix)) {
+                if (this.uris.containsKey(prefix)) {
                     prefix = null;
                 } else if (isDefault(prefix) && this.defaultURI != null) {
                     prefix = null;
@@ -270,18 +257,32 @@ public final class NamespaceManager {
     }
 
     /**
-     * Returns the parent namespace manager of this namespace manager - if
-     * exists.
+     * Returns the namespace uri the given prefix is registered for. If this
+     * namespace manager has no registration for the given prefix, than its
+     * parent namespace manager is asked for it (in the case a parent exists).
      * 
-     * @return the parent namespace manager or null if none exists.
+     * @param prefix the prefix
+     * @return the uri or null if none is registered for the given prefix
      */
-    public NamespaceManager getParent() {
-        return this.parent;
+    public String getUri(String prefix) {
+        if (!this.hasOwnRegistries) {
+            return this.parent.getUri(prefix);
+        }
+        String uri = null;
+        if (isDefault(prefix)) {
+            uri = this.defaultURI;
+        } else {
+            uri = this.uris.get(prefix);
+        }
+        if (uri == null && this.parent != null) {
+            uri = this.parent.getUri(prefix);
+        }
+        return uri;
     }
 
     private void createOwnRegistries() {
-        this.registeredPrefixes = new HashMap<String, String>();
-        this.registeredURIs = new HashMap<String, String>();
+        this.prefixes = new HashMap<String, String>();
+        this.uris = new HashMap<String, String>();
         this.hasOwnRegistries = true;
     }
 
