@@ -16,17 +16,23 @@
 
 package org.jsefa.xml.config;
 
+import static org.jsefa.xml.config.XmlInitialConfigurationParameters.DATA_TYPE_DEFAULT_NAME_REGISTRY;
+import static org.jsefa.xml.config.XmlConfiguration.Defaults.*;
+
 import org.jsefa.common.config.Configuration;
+import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.util.OnDemandObjectProvider;
 import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 import org.jsefa.xml.mapping.XmlEntryPoint;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
 import org.jsefa.xml.mapping.support.XmlDataTypeDefaultNameRegistry;
+import org.jsefa.xml.mapping.support.XmlSchemaBuiltInDataTypeNames;
 import org.jsefa.xml.namespace.NamespaceManager;
 import org.jsefa.xml.namespace.QName;
 
 /**
- * A configuration object used when creating an XML IO factory. It uses
- * lazy initialization.
+ * A configuration object used when creating an XML IO factory. It uses lazy
+ * initialization.
  * 
  * @see Configuration
  * @author Norman Lahme-Huetig
@@ -65,7 +71,9 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
      */
     public XmlDataTypeDefaultNameRegistry getDataTypeDefaultNameRegistry() {
         if (this.dataTypeDefaultNameRegistry == null) {
-            this.dataTypeDefaultNameRegistry = new XmlDataTypeDefaultNameRegistry();
+            XmlDataTypeDefaultNameRegistry initialRegistry = InitialConfiguration.get(DATA_TYPE_DEFAULT_NAME_REGISTRY,
+                    DEFAULT_DATA_TYPE_DEFAULT_NAME_REGISTRY_PROVIDER);
+            this.dataTypeDefaultNameRegistry = initialRegistry.createCopy();
         }
         return this.dataTypeDefaultNameRegistry;
     }
@@ -134,6 +142,7 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
 
     /**
      * Sets the data type default name registry.
+     * 
      * @param dataTypeDefaultNameRegistry the data type default name registry
      */
     public void setDataTypeDefaultNameRegistry(XmlDataTypeDefaultNameRegistry dataTypeDefaultNameRegistry) {
@@ -187,6 +196,30 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
     @Override
     protected XmlTypeMappingRegistry createDefaultTypeMappingRegistry() {
         return new XmlTypeMappingRegistry();
+    }
+    
+    /**
+     * Set of default configuration values.
+     * @author Norman Lahme-Huetig
+     */
+    public interface Defaults {
+        /**
+         * The default data type default name registry provider.
+         */
+        OnDemandObjectProvider DEFAULT_DATA_TYPE_DEFAULT_NAME_REGISTRY_PROVIDER = new OnDemandObjectProvider() {
+            @SuppressWarnings("unchecked")
+            public XmlDataTypeDefaultNameRegistry get() {
+                XmlDataTypeDefaultNameRegistry registry = new XmlDataTypeDefaultNameRegistry();
+                registry.register(String.class, XmlSchemaBuiltInDataTypeNames.STRING_DATA_TYPE_NAME);
+                registry.register(int.class, XmlSchemaBuiltInDataTypeNames.INT_DATA_TYPE_NAME);
+                registry.register(Integer.class, XmlSchemaBuiltInDataTypeNames.INTEGER_DATA_TYPE_NAME);
+                registry.register(long.class, XmlSchemaBuiltInDataTypeNames.LONG_DATA_TYPE_NAME);
+                registry.register(Long.class, XmlSchemaBuiltInDataTypeNames.LONG_DATA_TYPE_NAME);
+                registry.register(boolean.class, XmlSchemaBuiltInDataTypeNames.BOOLEAN_DATA_TYPE_NAME);
+                registry.register(Boolean.class, XmlSchemaBuiltInDataTypeNames.BOOLEAN_DATA_TYPE_NAME);
+                return registry;
+            }
+        };
     }
 
 }

@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package org.jsefa.common.config;
-
+package org.jsefa.common.lowlevel;
 
 /**
- * A collection of initial configuration parameters common to all format
+ * Declares initial low level configuration parameters common to all format
  * types.
  * 
  * @see Configuration
  * @author Norman Lahme-Huetig
  * 
  */
-public interface CommonInitialConfigurationParameters extends InitialConfigurationParameters {
+public interface LowLevelInitialConfigurationParameters {
     /**
-     * Configuration parameter for the simple type converter provider class to use.
+     * Configuration parameter for the line break to use.
      */
-    String SIMPLE_TYPE_CONVERTER_PROVIDER_CLASS = "jsefa:common:simpleTypeConverterProviderClass";
+    String LINE_BREAK = "jsefa:common:lowlevel:lineBreak";
 
-    /**
-     * Configuration parameter for the object accessor provider class to use.
-     */
-    String OBJECT_ACCESSOR_PROVIDER_CLASS = "jsefa:common:objectAccessorProviderClass";
 }

@@ -216,7 +216,12 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
         return new RbfTypeMappingRegistry();
     }
     
-    interface Defaults {
+    /**
+     * Set of default configuration values.
+     * 
+     * @author Norman Lahme-Huetig
+     */
+    public interface Defaults {
         /**
          * The default quote mode used if none is explicitly given.
          */

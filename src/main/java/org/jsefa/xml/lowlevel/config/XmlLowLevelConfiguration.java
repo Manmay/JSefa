@@ -16,14 +16,16 @@
 
 package org.jsefa.xml.lowlevel.config;
 
-import static org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration.Defaults.DEFAULT_LINE_BREAK;
-import static org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration.Defaults.DEFAULT_LINE_INDENTATION;
 import static org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration.Defaults.DEFAULT_DATA_TYPE_ATTRIBUTE_NAME;
+import static org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration.Defaults.DEFAULT_LINE_INDENTATION;
+import static org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration.Defaults.DEFAULT_NAMESPACE_MANAGER_PROVIDER;
 import static org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters.DATA_TYPE_ATTRIBUTE_NAME;
-import static org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters.LINE_BREAK;
 import static org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters.LINE_INDENTATION;
+import static org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters.NAMESPACE_MANAGER;
 
 import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.lowlevel.LowLevelConfiguration;
+import org.jsefa.common.util.OnDemandObjectProvider;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
 import org.jsefa.xml.namespace.NamespaceConstants;
@@ -37,12 +39,10 @@ import org.jsefa.xml.namespace.QName;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class XmlLowLevelConfiguration {
+public final class XmlLowLevelConfiguration extends LowLevelConfiguration {
     private NamespaceManager namespaceManager;
 
     private QName dataTypeAttributeName;
-
-    private String lineBreak;
 
     private String lineIndentation;
 
@@ -53,6 +53,7 @@ public final class XmlLowLevelConfiguration {
     }
 
     private XmlLowLevelConfiguration(XmlLowLevelConfiguration other) {
+        super(other);
         setNamespaceManager(other.getNamespaceManager().createCopy());
         setDataTypeAttributeName(other.getDataTypeAttributeName());
         setLineBreak(other.getLineBreak());
@@ -76,7 +77,8 @@ public final class XmlLowLevelConfiguration {
      */
     public NamespaceManager getNamespaceManager() {
         if (this.namespaceManager == null) {
-            this.namespaceManager = NamespaceManager.create();
+            NamespaceManager manager = InitialConfiguration.get(NAMESPACE_MANAGER, DEFAULT_NAMESPACE_MANAGER_PROVIDER);
+            this.namespaceManager = manager.createCopy();
         }
         return this.namespaceManager;
     }
@@ -92,18 +94,6 @@ public final class XmlLowLevelConfiguration {
                     DEFAULT_DATA_TYPE_ATTRIBUTE_NAME);
         }
         return this.dataTypeAttributeName;
-    }
-
-    /**
-     * Returns the line break used for serializing.
-     * 
-     * @return the line break
-     */
-    public String getLineBreak() {
-        if (this.lineBreak == null) {
-            this.lineBreak = InitialConfiguration.get(LINE_BREAK, DEFAULT_LINE_BREAK);
-        }
-        return this.lineBreak;
     }
 
     /**
@@ -147,15 +137,10 @@ public final class XmlLowLevelConfiguration {
     }
 
     /**
-     * Sets the line break to be used for serializing.
-     * 
-     * @param lineBreak the line break
+     * Set of default configuration values.
+     * @author Norman Lahme-Huetig
      */
-    public void setLineBreak(String lineBreak) {
-        this.lineBreak = lineBreak;
-    }
-    
-    interface Defaults {
+    public interface Defaults {
         /**
          * The name of the attribute used to denote the data type as used in xml
          * schema instances.
@@ -163,15 +148,21 @@ public final class XmlLowLevelConfiguration {
         QName DEFAULT_DATA_TYPE_ATTRIBUTE_NAME = QName.create(NamespaceConstants.XML_SCHEMA_INSTANCE_URI, "type");
 
         /**
-         * The default line break used if none is explicitly given.
-         */
-        String DEFAULT_LINE_BREAK = "\n";
-
-        /**
          * The default line indentation used if none is explicitly given.
          */
         String DEFAULT_LINE_INDENTATION = "  ";
 
+        /**
+         * The default namespace manager provider.
+         */
+        OnDemandObjectProvider DEFAULT_NAMESPACE_MANAGER_PROVIDER = new OnDemandObjectProvider() {
+            @SuppressWarnings("unchecked")
+            public NamespaceManager get() {
+                NamespaceManager namespaceManager = NamespaceManager.create();
+                namespaceManager.registerPreferredPrefix("xsi", NamespaceConstants.XML_SCHEMA_INSTANCE_URI);
+                return namespaceManager;
+            }
+        };
     }    
 
 }

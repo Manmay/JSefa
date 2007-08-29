@@ -16,12 +16,9 @@
 
 package org.jsefa.flr.lowlevel.config;
 
-import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.lowlevel.LowLevelConfiguration;
 import org.jsefa.flr.lowlevel.FlrLowLevelDeserializer;
 import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
-
-import static org.jsefa.flr.lowlevel.config.FlrLowLevelConfiguration.Defaults.DEFAULT_LINE_BREAK;
-import static org.jsefa.flr.lowlevel.config.FlrLowLevelInitialConfigurationParameters.LINE_BREAK;
 
 /**
  * Configuration object for creating a {@link FlrLowLevelSerializer} or
@@ -30,9 +27,7 @@ import static org.jsefa.flr.lowlevel.config.FlrLowLevelInitialConfigurationParam
  * @author Norman Lahme-Huetig
  * 
  */
-public class FlrLowLevelConfiguration {
-
-    private String lineBreak;
+public class FlrLowLevelConfiguration extends LowLevelConfiguration {
 
     /**
      * Constructs a new <code>FlrLowLevelConfiguration</code>.
@@ -41,7 +36,7 @@ public class FlrLowLevelConfiguration {
     }
 
     private FlrLowLevelConfiguration(FlrLowLevelConfiguration other) {
-        setLineBreak(other.getLineBreak());
+        super(other);
     }
 
     /**
@@ -51,31 +46,4 @@ public class FlrLowLevelConfiguration {
         return new FlrLowLevelConfiguration(this);
     }
 
-    /**
-     * Returns the line break <code>String</code>.
-     * 
-     * @return the line break <code>String</code>
-     */
-    public String getLineBreak() {
-        if (this.lineBreak == null) {
-            this.lineBreak = InitialConfiguration.get(LINE_BREAK, DEFAULT_LINE_BREAK);
-        }
-        return this.lineBreak;
-    }
-
-    /**
-     * Sets the line break <code>String</code>.
-     * 
-     * @param lineBreak the line break <code>String</code>
-     */
-    public void setLineBreak(String lineBreak) {
-        this.lineBreak = lineBreak;
-    }
-
-    interface Defaults {
-        /**
-         * The default line break used if none is explicitly given.
-         */
-        String DEFAULT_LINE_BREAK = "\n";
-    }
 }

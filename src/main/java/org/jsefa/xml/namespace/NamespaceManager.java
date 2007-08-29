@@ -17,7 +17,6 @@
 package org.jsefa.xml.namespace;
 
 import static org.jsefa.xml.namespace.NamespaceConstants.DEFAULT_NAMESPACE_PREFIX;
-import static org.jsefa.xml.namespace.NamespaceConstants.XML_SCHEMA_INSTANCE_URI;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,14 +24,18 @@ import java.util.Map;
 /**
  * A <code>NamespaceManager</code> manages namespace URIs and their prefixes.
  * It allows for <br>
- * 1. the registration of new prefix-URI-combinations, <br>
- * 2. the retrieval of the URI to a given prefix<br>
- * 3. the retrieval of a prefix to a given URI<br>
- * 4. the creation of a new prefix for a new URI
+ * 1. the registration of preferred prefixes for URIs (for root
+ * <code>NamespaceManager</code>s only),<br>
+ * 2. the registration of new prefix-URI-combinations, <br>
+ * 3. the retrieval of the URI to a given prefix<br>
+ * 4. the retrieval of a prefix to a given URI<br>
+ * 5. the creation of a new prefix for a new URI
  * <p>
  * A <code>NamespaceManager</code> may have a parent
  * <code>NamespaceManager</code> to which retrieval requests are delegated if
- * it has no own registries or if it has no result to the request.
+ * it has no own registries or if it has no result to the request. A
+ * <code>NamespaceManager</code> without a parent is called a root namespace
+ * manager.
  * <p>
  * Note: Instances of this class are intentionally not thread-safe.
  * 
@@ -62,20 +65,6 @@ public final class NamespaceManager {
     }
 
     /**
-     * Creates a new <code>NamespaceManager</code> with the given preferred
-     * prefixes. A preferred prefix for an URI will be taken when a <b>new</b>
-     * prefix shall be created with {@link #createPrefix} for the same URI.
-     * 
-     * @param preferredPrefixes a map with prefixes as keys and URIs as values.
-     * @return a <code>NamespaceManager</code>
-     */
-    public static NamespaceManager create(Map<String, String> preferredPrefixes) {
-        NamespaceManager manager = new NamespaceManager();
-        manager.preferredPrefixes.putAll(preferredPrefixes);
-        return manager;
-    }
-
-    /**
      * Creates a new <code>NamespaceManager</code> with the given
      * <code>NamespaceManager</code> as its parent.
      * 
@@ -87,10 +76,9 @@ public final class NamespaceManager {
     }
 
     private NamespaceManager() {
+        this.parent = null;
         createOwnRegistries();
         this.preferredPrefixes = new HashMap<String, String>();
-        registerStandardPreferredPrefixes();
-        this.parent = null;
     }
 
     private NamespaceManager(NamespaceManager other, boolean otherIsParent) {
@@ -121,7 +109,30 @@ public final class NamespaceManager {
     }
 
     /**
+     * Registers the given prefix to be the preferred one for the given URI. I.
+     * e. if a prefix is needed (call of {@link #getOrCreatePrefix}) for that
+     * URI the given preferred one is used and not an automatically created one.
+     * 
+     * @param prefix the preferred prefix
+     * @param uri the URI
+     */
+    public void registerPreferredPrefix(String prefix, String uri) {
+        if (this.parent != null) {
+            throw new NamespaceRegistrationException(
+                    "A preferred prefix can be registered for a root namespace manager only");
+        }
+        this.preferredPrefixes.put(uri, prefix);
+
+    }
+
+    /**
      * Registers a new prefix for a namespace uri.
+     * <p>
+     * During serialization a registered prefix is interpretated is being known
+     * at the current point in the xml document.
+     * <p>
+     * Note: Normally it is {@link #registerPreferredPrefix}
+     * what you want to call.
      * 
      * @param prefix the prefix
      * @param uri the uri
@@ -266,10 +277,6 @@ public final class NamespaceManager {
      */
     public NamespaceManager getParent() {
         return this.parent;
-    }
-
-    private void registerStandardPreferredPrefixes() {
-        this.preferredPrefixes.put(XML_SCHEMA_INSTANCE_URI, "xsi");
     }
 
     private void createOwnRegistries() {

@@ -38,7 +38,6 @@ public final class XmlDataTypeDefaultNameRegistry {
      */
     public XmlDataTypeDefaultNameRegistry() {
         this.defaultDataTypeNames = new ConcurrentHashMap<Class<?>, QName>();
-        registerStandards();
     }
     
     private XmlDataTypeDefaultNameRegistry(XmlDataTypeDefaultNameRegistry other) {
@@ -72,16 +71,6 @@ public final class XmlDataTypeDefaultNameRegistry {
      */
     public QName get(Class<?> objectType) {
         return this.defaultDataTypeNames.get(objectType);
-    }
-
-    private void registerStandards() {
-        register(String.class, XmlSchemaBuiltInDataTypeNames.STRING_DATA_TYPE_NAME);
-        register(int.class, XmlSchemaBuiltInDataTypeNames.INT_DATA_TYPE_NAME);
-        register(Integer.class, XmlSchemaBuiltInDataTypeNames.INTEGER_DATA_TYPE_NAME);
-        register(long.class, XmlSchemaBuiltInDataTypeNames.LONG_DATA_TYPE_NAME);
-        register(Long.class, XmlSchemaBuiltInDataTypeNames.LONG_DATA_TYPE_NAME);
-        register(boolean.class, XmlSchemaBuiltInDataTypeNames.BOOLEAN_DATA_TYPE_NAME);
-        register(Boolean.class, XmlSchemaBuiltInDataTypeNames.BOOLEAN_DATA_TYPE_NAME);
     }
 
 }

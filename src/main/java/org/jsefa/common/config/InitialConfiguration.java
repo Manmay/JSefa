@@ -19,6 +19,8 @@ package org.jsefa.common.config;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.jsefa.common.util.OnDemandObjectProvider;
+
 /**
  * The single initial configuration for JSefa. See sub interfaces of
  * {@link InitialConfigurationParameters} for the available parameters.
@@ -30,6 +32,33 @@ import java.util.concurrent.ConcurrentMap;
 public final class InitialConfiguration {
 
     private static final ConcurrentMap<String, Object> MAP = new ConcurrentHashMap<String, Object>();
+
+    /**
+     * Returns the value of the given parameter. If none is configured for the
+     * parameter, the <code>defaultValue</code> retrieved from the
+     * <code>OnDemandObjectProvider</code> is registered and returned.
+     * 
+     * @param parameter the parameter
+     * @param <T> the expected type of the parameter value
+     * @param defaultValueProvider the provider of the default value to use if
+     *                none is configured for the parameter in question.
+     * @return the value of the parameter
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(String parameter, OnDemandObjectProvider defaultValueProvider) {
+        T previousValue = (T) MAP.get(parameter);
+        if (previousValue != null) {
+            return previousValue;
+        } else {
+            T defaultValue = defaultValueProvider.get();
+            previousValue = (T) MAP.putIfAbsent(parameter, defaultValue);
+            if (previousValue != null) {
+                return previousValue;
+            } else {
+                return (T) defaultValue;
+            }
+        }
+    }
 
     /**
      * Returns the value of the given parameter. If none is configured for the

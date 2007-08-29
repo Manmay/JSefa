@@ -50,6 +50,7 @@ public class PolymorphismTest extends TestCase {
         subDTO.element2 = "e2";
         dto.element = subDTO;
         String serializationResult = JSefaTestUtil.serialize(XML, dto);
+        assertTrue("Default preferred prefix xsi not found", serializationResult.indexOf("xsi") > -1);
         assertTrue(serializationResult.indexOf("SubDTOADataType") > -1);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
     }

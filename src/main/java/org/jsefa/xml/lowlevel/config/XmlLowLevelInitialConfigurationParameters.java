@@ -17,7 +17,7 @@
 package org.jsefa.xml.lowlevel.config;
 
 import org.jsefa.common.config.Configuration;
-import org.jsefa.common.config.InitialConfigurationParameters;
+import org.jsefa.common.lowlevel.LowLevelInitialConfigurationParameters;
 
 /**
  * A collection of initial configuration parameters for low level XML.
@@ -26,18 +26,13 @@ import org.jsefa.common.config.InitialConfigurationParameters;
  * @author Norman Lahme-Huetig
  * 
  */
-public interface XmlLowLevelInitialConfigurationParameters extends InitialConfigurationParameters {
+public interface XmlLowLevelInitialConfigurationParameters extends LowLevelInitialConfigurationParameters {
 
     /**
      * Configuration parameter for the XmlLowLevelIOFactory class to use.
      */
     String LOW_LEVEL_IO_FACTORY_CLASS = "jsefa:xml:lowlevel:ioFactoryClass";
     
-    /**
-     * Configuration parameter for the line break to use.
-     */
-    String LINE_BREAK = "jsefa:xml:lowlevel:lineBreak";
-
     /**
      * Configuration parameter for the line indentation to use.
      */
@@ -47,4 +42,9 @@ public interface XmlLowLevelInitialConfigurationParameters extends InitialConfig
      * Configuration parameter for the name of the data type attribute to use.
      */
     String DATA_TYPE_ATTRIBUTE_NAME = "jsefa:xml:lowlevel:dataTypeAttributeName";
+    
+    /**
+     * Configuration parameter for the namespace manager to use.
+     */
+    String NAMESPACE_MANAGER = "jsefa:xml:lowlevel:namespaceManager";
 }

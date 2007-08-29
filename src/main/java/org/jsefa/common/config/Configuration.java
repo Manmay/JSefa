@@ -16,21 +16,34 @@
 
 package org.jsefa.common.config;
 
-import static org.jsefa.common.config.CommonInitialConfigurationParameters.OBJECT_ACCESSOR_PROVIDER_CLASS;
-import static org.jsefa.common.config.CommonInitialConfigurationParameters.SIMPLE_TYPE_CONVERTER_PROVIDER_CLASS;
+import static org.jsefa.common.config.InitialConfigurationParameters.OBJECT_ACCESSOR_PROVIDER_CLASS;
+import static org.jsefa.common.config.InitialConfigurationParameters.SIMPLE_TYPE_CONVERTER_PROVIDER;
+import static org.jsefa.common.config.Configuration.Defaults.DEFAULT_SIMPLE_TYPE_CONVERTER_PROVIDER_PROVIDER;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.jsefa.Deserializer;
 import org.jsefa.IOFactory;
 import org.jsefa.Serializer;
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.accessor.ReflectionBasedObjectAccessorProvider;
+import org.jsefa.common.converter.BigDecimalConverter;
+import org.jsefa.common.converter.BooleanConverter;
+import org.jsefa.common.converter.DateConverter;
+import org.jsefa.common.converter.EnumConverter;
+import org.jsefa.common.converter.IntegerConverter;
+import org.jsefa.common.converter.LongConverter;
+import org.jsefa.common.converter.StringConverter;
+import org.jsefa.common.converter.XMLGregorianCalendarConverter;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
-import org.jsefa.common.converter.provider.SimpleTypeConverterProviderImpl;
 import org.jsefa.common.mapping.EntryPoint;
 import org.jsefa.common.mapping.TypeMappingRegistry;
+import org.jsefa.common.util.OnDemandObjectProvider;
 import org.jsefa.common.util.ReflectionUtil;
 
 /**
@@ -72,7 +85,7 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
     @SuppressWarnings("unchecked")
     protected Configuration(Configuration<T, E> other) {
         setObjectAccessorProvider(other.getObjectAccessorProvider());
-        getSimpleTypeConverterProvider().registerAll(other.getSimpleTypeConverterProvider());
+        setSimpleTypeConverterProvider(other.getSimpleTypeConverterProvider().createCopy());
         setTypeMappingRegistry((T) other.getTypeMappingRegistry().createCopy());
         setEntryPoints(new ArrayList<E>(other.getEntryPoints()));
     }
@@ -147,9 +160,9 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
      */
     public final SimpleTypeConverterProvider getSimpleTypeConverterProvider() {
         if (this.simpleTypeConverterProvider == null) {
-            Class<SimpleTypeConverterProvider> theClass = InitialConfiguration.get(SIMPLE_TYPE_CONVERTER_PROVIDER_CLASS,
-                    SimpleTypeConverterProviderImpl.class);
-            this.simpleTypeConverterProvider = ReflectionUtil.createInstance(theClass);
+            SimpleTypeConverterProvider initialProvider = InitialConfiguration.get(SIMPLE_TYPE_CONVERTER_PROVIDER,
+                    DEFAULT_SIMPLE_TYPE_CONVERTER_PROVIDER_PROVIDER);
+            this.simpleTypeConverterProvider = initialProvider.createCopy();
         }
         return this.simpleTypeConverterProvider;
     }
@@ -187,5 +200,34 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
      * @return the default type mapping registry
      */
     protected abstract T createDefaultTypeMappingRegistry();
+
+    /**
+     * Set of default configuration values.
+     * 
+     * @author Norman Lahme-Huetig
+     */
+    public interface Defaults {
+        /**
+         * The default simple type converter provider provider.
+         */
+        OnDemandObjectProvider DEFAULT_SIMPLE_TYPE_CONVERTER_PROVIDER_PROVIDER = new OnDemandObjectProvider() {
+            @SuppressWarnings("unchecked")
+            public SimpleTypeConverterProvider get() {
+                SimpleTypeConverterProvider provider = new SimpleTypeConverterProvider();
+                provider.registerConverterType(String.class, StringConverter.class);
+                provider.registerConverterType(boolean.class, BooleanConverter.class);
+                provider.registerConverterType(Boolean.class, BooleanConverter.class);
+                provider.registerConverterType(long.class, LongConverter.class);
+                provider.registerConverterType(Long.class, LongConverter.class);
+                provider.registerConverterType(int.class, IntegerConverter.class);
+                provider.registerConverterType(Integer.class, IntegerConverter.class);
+                provider.registerConverterType(BigDecimal.class, BigDecimalConverter.class);
+                provider.registerConverterType(Date.class, DateConverter.class);
+                provider.registerConverterType(XMLGregorianCalendar.class, XMLGregorianCalendarConverter.class);
+                provider.registerConverterType(Enum.class, EnumConverter.class);
+                return provider;
+            }
+        };
+    }
 
 }

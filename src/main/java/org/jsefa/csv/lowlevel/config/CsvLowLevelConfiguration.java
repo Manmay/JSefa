@@ -16,10 +16,19 @@
 
 package org.jsefa.csv.lowlevel.config;
 
-import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.*;
-import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.*;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.ESCAPE_CHARACTER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.FIELD_DELIMITER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.QUOTE_CHARACTER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.QUOTE_CHARACTER_ESCAPE_MODE;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.USE_DELIMITER_AFTER_LAST_FIELD;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_ESCAPE_CHARACTER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_FIELD_DELIMITER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_QUOTE_CHARACTER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_USE_DELIMITER_AFTER_LAST_FIELD;
 
 import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.lowlevel.LowLevelConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;
 import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
 
@@ -30,7 +39,7 @@ import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class CsvLowLevelConfiguration {
+public final class CsvLowLevelConfiguration extends LowLevelConfiguration {
     private Character fieldDelimiter;
 
     private Character quoteCharacter;
@@ -39,8 +48,6 @@ public final class CsvLowLevelConfiguration {
 
     private Boolean useDelimiterAfterLastField;
 
-    private String lineBreak;
-    
     private Character escapeCharacter;
 
     /**
@@ -50,11 +57,11 @@ public final class CsvLowLevelConfiguration {
     }
 
     private CsvLowLevelConfiguration(CsvLowLevelConfiguration other) {
+        super(other);
         setFieldDelimiter(other.getFieldDelimiter());
         setUseDelimiterAfterLastField(other.getUseDelimiterAfterLastField());
         setQuoteCharacter(other.getQuoteCharacter());
         setQuoteCharacterEscapeMode(other.getQuoteCharacterEscapeMode());
-        setLineBreak(other.getLineBreak());
         setEscapeCharacter(other.getEscapeCharacter());
     }
 
@@ -117,19 +124,8 @@ public final class CsvLowLevelConfiguration {
     }
 
     /**
-     * Returns the line break <code>String</code>.
-     * 
-     * @return the line break <code>String</code>
-     */
-    public String getLineBreak() {
-        if (this.lineBreak == null) {
-            this.lineBreak = InitialConfiguration.get(LINE_BREAK, DEFAULT_LINE_BREAK);
-        }
-        return this.lineBreak;
-    }
-    
-    /**
      * Returns the escape character.
+     * 
      * @return the escape character.
      */
     public char getEscapeCharacter() {
@@ -156,9 +152,10 @@ public final class CsvLowLevelConfiguration {
     public void setQuoteCharacter(char quoteCharacter) {
         this.quoteCharacter = quoteCharacter;
     }
-    
+
     /**
      * Sets the escape character.
+     * 
      * @param escapeCharacter the escape character
      */
     public void setEscapeCharacter(char escapeCharacter) {
@@ -185,15 +182,11 @@ public final class CsvLowLevelConfiguration {
     }
 
     /**
-     * Sets the line break <code>String</code>.
+     * Set of default configuration values.
      * 
-     * @param lineBreak the line break <code>String</code>
+     * @author Norman Lahme-Huetig
      */
-    public void setLineBreak(String lineBreak) {
-        this.lineBreak = lineBreak;
-    }
-    
-    interface Defaults {
+    public interface Defaults {
 
         /**
          * The default character for escaping.
@@ -201,7 +194,8 @@ public final class CsvLowLevelConfiguration {
         char DEFAULT_ESCAPE_CHARACTER = '\\';
 
         /**
-         * The default field delimiter character used if none is explicitly given.
+         * The default field delimiter character used if none is explicitly
+         * given.
          */
         char DEFAULT_FIELD_DELIMITER = ';';
 
@@ -211,12 +205,8 @@ public final class CsvLowLevelConfiguration {
         char DEFAULT_QUOTE_CHARACTER = '\"';
 
         /**
-         * The default line break used if none is explicitly given.
-         */
-        String DEFAULT_LINE_BREAK = "\n";
-
-        /**
-         * The default quote character escape mode used if none is explicitly given.
+         * The default quote character escape mode used if none is explicitly
+         * given.
          */
         EscapeMode DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE = EscapeMode.DOUBLING;
 
@@ -226,6 +216,6 @@ public final class CsvLowLevelConfiguration {
          */
         boolean DEFAULT_USE_DELIMITER_AFTER_LAST_FIELD = false;
 
-    }    
+    }
 
 }

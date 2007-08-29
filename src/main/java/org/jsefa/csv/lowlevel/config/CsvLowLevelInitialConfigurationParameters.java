@@ -17,7 +17,7 @@
 package org.jsefa.csv.lowlevel.config;
 
 import org.jsefa.common.config.Configuration;
-import org.jsefa.common.config.InitialConfigurationParameters;
+import org.jsefa.common.lowlevel.LowLevelInitialConfigurationParameters;
 
 /**
  * A collection of initial configuration parameters for low level CSV.
@@ -26,7 +26,7 @@ import org.jsefa.common.config.InitialConfigurationParameters;
  * @author Norman Lahme-Huetig
  * 
  */
-public interface CsvLowLevelInitialConfigurationParameters extends InitialConfigurationParameters {
+public interface CsvLowLevelInitialConfigurationParameters extends LowLevelInitialConfigurationParameters {
     
     /**
      * Configuration parameter for the CsvLowLevelIOFactory class to use.
@@ -53,11 +53,6 @@ public interface CsvLowLevelInitialConfigurationParameters extends InitialConfig
      */
     String USE_DELIMITER_AFTER_LAST_FIELD = "jsefa:csv:lowlevel:useDelimiterAfterLastField";
 
-    /**
-     * Configuration parameter for the line break to use.
-     */
-    String LINE_BREAK = "jsefa:csv:lowlevel:lineBreak";
-    
     /**
      * Configuration parameter for the escape character to use.
      */

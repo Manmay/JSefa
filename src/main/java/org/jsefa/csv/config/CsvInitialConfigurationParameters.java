@@ -64,11 +64,6 @@ public interface CsvInitialConfigurationParameters extends InitialConfigurationP
     String USE_DELIMITER_AFTER_LAST_FIELD = CsvLowLevelInitialConfigurationParameters.USE_DELIMITER_AFTER_LAST_FIELD;
 
     /**
-     * Configuration parameter for the line break to use.
-     */
-    String LINE_BREAK = CsvLowLevelInitialConfigurationParameters.LINE_BREAK;
-    
-    /**
      * Configuration parameter for the escape character to use.
      */
     String ESCAPE_CHARACTER = CsvLowLevelInitialConfigurationParameters.ESCAPE_CHARACTER;    

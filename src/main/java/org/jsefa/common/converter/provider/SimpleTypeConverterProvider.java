@@ -37,15 +37,28 @@ import org.jsefa.common.util.ReflectionUtil;
  * @author Norman Lahme-Huetig
  * 
  */
-public abstract class SimpleTypeConverterProvider {
+public final class SimpleTypeConverterProvider {
     private final ConcurrentMap<Class<?>, Class<? extends SimpleTypeConverter>> converterTypeMap;
 
     /**
      * Constructs a <code>SimpleTypeConverterProvider</code>.
      */
-    protected SimpleTypeConverterProvider() {
+    public SimpleTypeConverterProvider() {
         this.converterTypeMap = new ConcurrentHashMap<Class<?>, Class<? extends SimpleTypeConverter>>();
-        registerStandardConverterTypes();
+    }
+
+    private SimpleTypeConverterProvider(SimpleTypeConverterProvider other) {
+        this.converterTypeMap = new ConcurrentHashMap<Class<?>, Class<? extends SimpleTypeConverter>>(
+                other.converterTypeMap);
+    }
+    
+    /**
+     * Creates a copy of this <code>SimpleTypeConverterProvider</code>.
+     * 
+     * @return a copy of this <code>SimpleTypeConverterProvider</code>
+     */
+    public SimpleTypeConverterProvider createCopy() {
+        return new SimpleTypeConverterProvider(this);
     }
 
     /**
@@ -114,23 +127,6 @@ public abstract class SimpleTypeConverterProvider {
     public void registerConverterType(Class<?> objectType, Class<? extends SimpleTypeConverter> converterType) {
         this.converterTypeMap.put(objectType, converterType);
     }
-
-    /**
-     * Merges the content of the other SimpleTypeConverter into this one.
-     * <p>
-     * This overrides existing registrations of converter types for data type
-     * names which are known to both simple type converters.
-     * 
-     * @param other a simple type converter
-     */
-    public void registerAll(SimpleTypeConverterProvider other) {
-        this.converterTypeMap.putAll(other.converterTypeMap);
-    }
-
-    /**
-     * Registers the standard converter types.
-     */
-    protected abstract void registerStandardConverterTypes();
 
     private Class<? extends SimpleTypeConverter> getConverterType(Class<?> objectType) {
         Class<?> type = objectType;

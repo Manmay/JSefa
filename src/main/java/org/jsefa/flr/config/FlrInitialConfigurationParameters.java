@@ -43,9 +43,4 @@ public interface FlrInitialConfigurationParameters extends InitialConfigurationP
      */
     String LOW_LEVEL_IO_FACTORY_CLASS = FlrLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS;    
 
-    /**
-     * Configuration parameter for the line break to use.
-     */
-    String LINE_BREAK = FlrLowLevelInitialConfigurationParameters.LINE_BREAK;    
-    
 }

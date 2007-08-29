@@ -17,13 +17,17 @@
 package org.jsefa.common.util;
 
 /**
- * Collection of some general constants.
+ * Provides an object which is costly to create or to retrieve and which is
+ * needed only conditionally needed.
+ * 
  * @author Norman Lahme-Huetig
- *
+ * 
  */
-public interface GeneralConstants {
+public interface OnDemandObjectProvider {
     /**
-     * Special character denoting that no character is given.
+     * Returns the object in question.
+     * @param <T> the expected type of the parameter value
+     * @return the object
      */
-    char NO_CHARACTER = 0;
+    <T> T get();
 }
