@@ -50,7 +50,7 @@ public final class InitialConfiguration {
         if (previousValue != null) {
             return previousValue;
         } else {
-            T defaultValue = defaultValueProvider.get();
+            T defaultValue = (T) defaultValueProvider.get();
             previousValue = (T) MAP.putIfAbsent(parameter, defaultValue);
             if (previousValue != null) {
                 return previousValue;
