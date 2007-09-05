@@ -26,8 +26,8 @@ whatever). The current implementation provides support for XML, CSV, and FLR.
 
 2. RELEASE INFO
 
-JSefa ${version} requires J2SE 1.5 and some external jar files (see lib directory
-and the including readme.txt).
+JSefa ${version} requires J2SE 1.5 (or above) and some external jar files (see lib
+directory and the including readme.txt).
 
 Contents:
 * lib
