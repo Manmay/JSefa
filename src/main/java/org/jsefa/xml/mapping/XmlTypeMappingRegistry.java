@@ -63,7 +63,7 @@ public final class XmlTypeMappingRegistry extends HierarchicalTypeMappingRegistr
 
     private void registerStandards() {
         registerStandard(STRING_DATA_TYPE_NAME, String.class, StringConverter.create());
-        registerStandard(INT_DATA_TYPE_NAME, int.class, IntegerConverter.create());
+        registerStandard(INT_DATA_TYPE_NAME, Integer.class, IntegerConverter.create());
         registerStandard(INTEGER_DATA_TYPE_NAME, Integer.class, IntegerConverter.create());
         registerStandard(LONG_DATA_TYPE_NAME, Long.class, LongConverter.create());
         registerStandard(BOOLEAN_DATA_TYPE_NAME, Boolean.class, BooleanConverter
