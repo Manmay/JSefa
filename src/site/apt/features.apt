@@ -44,11 +44,11 @@ Feature Highlights
     For example you can specify the format of a field of type <<<Date>>> to be <<<dd.MM.yyyy>>> just by adding <<<format = "dd.MM.yyyy">>> to the annotation.
     You can also write your own converter and state that this converter should be used for this specific field. By providing a converter you can define additional simple types.
     
-  * Different scopes for converter
+  * Different configuration levels
   
-    You can set the scope of validity for a converter to global or local. For example you can state that for each <<<Date>>>
-    the <<<XmlDateTimeConverter>>> should be responsible (in contrast to the default <<<DateConverter>>> to be compliant to XML Schema date notation)
-    no matter to which class the respective field belongs. You can also declare that for a specific field of a specific class another converter should be used (this overrides the global setting).
+    You can set configuration parameters at three different levels. For example you can state that for each <<<Date>>> the <<<XmlDateTimeConverter>>> should be responsible (in contrast to the default <<<DateConverter>>> to be compliant to XML Schema date notation) no matter to which class the respective field belongs or to what XML dialect your class belongs.
+    You can also restrict this to a given XML dialect such that the default converter is still used for all other dialects.
+    Or you declare that for a specific field of a specific class another converter should be used.
   
   * Inheritance
     
