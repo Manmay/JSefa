@@ -24,6 +24,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.jsefa.IOFactoryException;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
 import org.jsefa.csv.annotation.CsvSubRecord;
@@ -76,6 +77,52 @@ public class SubRecordTest extends TestCase {
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(FLR, dto);
     }
 
+    /**
+     * Tests a DTO with a single sub record containing itself a single sub
+     * record (CSV).
+     */
+    public void testSingleSubRecordDepth1CSV() {
+        SingleSubRecordDepth1DTO dto = createSingleSubRecordDepth1DTO();
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, dto);
+    }
+
+    /**
+     * Tests a DTO with a single sub record containing itself a single sub
+     * record (FLR).
+     */
+    public void testSingleSubRecordDepth1FLR() {
+        SingleSubRecordDepth1DTO dto = createSingleSubRecordDepth1DTO();
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(FLR, dto);
+    }
+
+    /**
+     * Tests a DTO with a complex field containing a single sub record (CSV).
+     * This is not allowed so an exception is expected.
+     */
+    public void testIllegalSingleSubRecordCSV() {
+        IllegalSingleSubRecordDTO dto = createIllegalSingleSubRecordDTO();
+        try {
+            JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, dto);
+            fail("TypeMappingException expected but not thrown");
+        } catch (IOFactoryException e) {
+            assertTrue(true);
+        }
+    }
+
+    /**
+     * Tests a DTO with a complex field containing a single sub record (FLR).
+     * This is not allowed so an exception is expected.
+     */
+    public void testIllegalSingleSubRecordFLR() {
+        IllegalSingleSubRecordDTO dto = createIllegalSingleSubRecordDTO();
+        try {
+            JSefaTestUtil.assertRepeatedRoundTripSucceeds(FLR, dto);
+            fail("TypeMappingException expected but not thrown");
+        } catch (IOFactoryException e) {
+            assertTrue(true);
+        }
+    }
+
     private SimpleDTO createSimpleDTO(String content) {
         SimpleDTO obj = new SimpleDTO();
         obj.simpleField = content;
@@ -97,6 +144,20 @@ public class SubRecordTest extends TestCase {
         return dto;
     }
 
+    private SingleSubRecordDepth1DTO createSingleSubRecordDepth1DTO() {
+        SingleSubRecordDepth1DTO obj = new SingleSubRecordDepth1DTO();
+        obj.fieldA = "contentA";
+        obj.subRecordField = createSingleSubRecordDTO();
+        return obj;
+    }
+
+    private IllegalSingleSubRecordDTO createIllegalSingleSubRecordDTO() {
+        IllegalSingleSubRecordDTO dto = new IllegalSingleSubRecordDTO();
+        dto.fieldA = "fieldA content";
+        dto.subRecordField = createSingleSubRecordDTO();
+        return dto;
+    }
+
     @CsvDataType(defaultPrefix = "LT")
     @FlrDataType(defaultPrefix = "LT")
     static class SingleSubRecordListDTO extends AbstractTestDTO {
@@ -104,8 +165,8 @@ public class SubRecordTest extends TestCase {
         @FlrField(pos = 1, length = 25)
         String fieldA;
 
-        @CsvSubRecordList(pos = 2, records = { @Record(prefix = "ST", objectType = SimpleDTO.class) })
-        @FlrSubRecordList(pos = 2, records = { @Record(prefix = "ST") })
+        @CsvSubRecordList(pos = 2, records = {@Record(prefix = "ST", objectType = SimpleDTO.class)})
+        @FlrSubRecordList(pos = 2, records = {@Record(prefix = "ST")})
         List<SimpleDTO> subRecordListField = new ArrayList<SimpleDTO>();
 
     }
@@ -120,6 +181,32 @@ public class SubRecordTest extends TestCase {
         @CsvSubRecord(pos = 2, prefix = "ST")
         @FlrSubRecord(pos = 2, prefix = "ST")
         SimpleDTO subRecordField;
+
+    }
+
+    @CsvDataType(defaultPrefix = "RT")
+    @FlrDataType(defaultPrefix = "RT")
+    static class SingleSubRecordDepth1DTO extends AbstractTestDTO {
+        @CsvField(pos = 1)
+        @FlrField(pos = 1, length = 25)
+        String fieldA;
+
+        @CsvSubRecord(pos = 2, prefix = "DT")
+        @FlrSubRecord(pos = 2, prefix = "DT")
+        SingleSubRecordDTO subRecordField;
+
+    }
+
+    @CsvDataType(defaultPrefix = "IT")
+    @FlrDataType(defaultPrefix = "IT")
+    static class IllegalSingleSubRecordDTO extends AbstractTestDTO {
+        @CsvField(pos = 1)
+        @FlrField(pos = 1)
+        SingleSubRecordDTO subRecordField;
+
+        @CsvField(pos = 2)
+        @FlrField(pos = 2, length = 25)
+        String fieldA;
 
     }
 
