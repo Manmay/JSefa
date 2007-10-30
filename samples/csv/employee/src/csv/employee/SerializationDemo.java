@@ -25,10 +25,8 @@ import org.jsefa.common.converter.SimpleTypeConverterConfiguration;
 import org.jsefa.csv.CsvIOFactory;
 import org.jsefa.csv.CsvSerializer;
 
-import xml.yellowpages.Department;
-
 /**
- * Demo for demonstrating the serialization of a {@link Department}.
+ * Demo for demonstrating the serialization of an {@link Employee}.
  * <p>
  * The code should be self explaining
  * 
