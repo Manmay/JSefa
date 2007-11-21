@@ -177,17 +177,14 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
                         if ((event != CDATA) && (event != CHARACTERS)) {
                             this.currentItem = new TextContentImpl(text);
                         } else {
-                            StringBuilder buffer = new StringBuilder();
-                            buffer.append(text);
-                            while (this.streamReader.hasNext()) {
+                            StringBuilder buffer = new StringBuilder(text);
+                            do {
+                                buffer.append(this.streamReader.getText());
                                 event = this.streamReader.next();
-                                if ((event == CDATA) || (event == CHARACTERS)) {
-                                    buffer.append(this.streamReader.getText());
-                                } else {
+                                if ((event != CDATA) && (event != CHARACTERS)) {
                                     break;
                                 }
-
-                            }
+                            } while (this.streamReader.hasNext());
                             this.currentItem = new TextContentImpl(buffer.toString());
                         }
                     }
