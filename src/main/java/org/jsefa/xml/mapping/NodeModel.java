@@ -61,13 +61,13 @@ public final class NodeModel {
      * one of the node descriptor. In this case it does only indirectly
      * determine the type mapping for the node. The field may be null.
      * 
-     * @param nodeModel the descriptor of the node to create a serialization
+     * @param nodeDescriptor the descriptor of the node to create a serialization
      *            model for
      * @param dataTypeName the name of the data type.
      * @param fieldName the name of the field; may be null.
      */
-    public NodeModel(NodeDescriptor nodeModel, QName dataTypeName, String fieldName) {
-        this.node = nodeModel;
+    public NodeModel(NodeDescriptor nodeDescriptor, QName dataTypeName, String fieldName) {
+        this.node = nodeDescriptor;
         this.dataTypeName = dataTypeName;
         this.fieldName = fieldName;
         this.dataTypeAttributeRequired = false;
