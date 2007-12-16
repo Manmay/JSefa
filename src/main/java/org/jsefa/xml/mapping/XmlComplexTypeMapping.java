@@ -66,7 +66,7 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
     }
 
     /**
-     * Declares that a node descriped by the given node descriptor maps to the
+     * Declares that a node described by the given node descriptor maps to the
      * combination of the given field name and the given field type. The
      * combination of the field name and field type must uniquely map to the
      * node descriptor.
