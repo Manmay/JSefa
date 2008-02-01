@@ -18,7 +18,6 @@ package org.jsefa.xml.lowlevel.model;
 
 import org.jsefa.xml.namespace.QName;
 
-
 /**
  * Implementation of {@link Attribute}.
  * <p>
@@ -35,6 +34,7 @@ public final class AttributeImpl implements Attribute {
 
     /**
      * Constructs a new <code>AttributeImpl</code>.
+     * 
      * @param name the name of the attribute
      * @param value the value of the attribute
      */

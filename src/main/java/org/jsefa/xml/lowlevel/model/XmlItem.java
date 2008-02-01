@@ -17,8 +17,7 @@
 package org.jsefa.xml.lowlevel.model;
 
 /**
- * Top-level interface for xml items returned during xml low level
- * deserialization.
+ * Top-level interface for xml items returned during xml low level deserialization.
  * 
  * @author Norman Lahme-Huetig
  * 

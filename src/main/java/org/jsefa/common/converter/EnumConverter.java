@@ -25,15 +25,12 @@ import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Converter for JDK 1.5 enums. <br>
- * The format is an array of mappings from the original <code>String</code>
- * representation of an enum value to the one which shall be used for
- * serialization. Each mapping has the form <br>
+ * The format is an array of mappings from the original <code>String</code> representation of an enum value to
+ * the one which shall be used for serialization. Each mapping has the form <br>
  * originalRepresentation=newRepresentation<br>
- * Example:
- * <code>{"SENIOR_DEVELOPER=senior developer", "JUNIOR_DEVELOPER=junior developer"}</code>
+ * Example: <code>{"SENIOR_DEVELOPER=senior developer", "JUNIOR_DEVELOPER=junior developer"}</code>
  * <p>
- * These mappings override the display name declarations provided by the
- * {@link EnumConstant} annotations.
+ * These mappings override the display name declarations provided by the {@link EnumConstant} annotations.
  * <p>
  * It is thread safe.
  * 

@@ -17,8 +17,8 @@
 package org.jsefa.xml;
 
 /**
- * Exception thrown when an unsupported character set encoding is detected or
- * an error occurs during encoding detection.
+ * Exception thrown when an unsupported character set encoding is detected or an error occurs during encoding
+ * detection.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -29,8 +29,7 @@ public class XmlEncodingException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new <code>XmlEncodingException</code> with the specified
-     * detail message.
+     * Constructs a new <code>XmlEncodingException</code> with the specified detail message.
      * 
      * @param message the detail message.
      */
@@ -39,8 +38,7 @@ public class XmlEncodingException extends RuntimeException {
     }
 
     /**
-     * Constructs a new <code>XmlEncodingException</code> with the specified
-     * detail message and cause.
+     * Constructs a new <code>XmlEncodingException</code> with the specified detail message and cause.
      * 
      * @param message the detail message
      * @param cause the cause
@@ -50,8 +48,7 @@ public class XmlEncodingException extends RuntimeException {
     }
 
     /**
-     * Constructs a new <code>XmlEncodingException</code> with the specified
-     * cause.
+     * Constructs a new <code>XmlEncodingException</code> with the specified cause.
      * 
      * @param cause the cause.
      */

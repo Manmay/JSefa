@@ -27,8 +27,7 @@ import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 
 /**
- * A configuration object used when creating a CSV IO factory. It uses lazy
- * initialization.
+ * A configuration object used when creating a CSV IO factory. It uses lazy initialization.
  * 
  * @see Configuration
  * @author Norman Lahme-Huetig
@@ -139,8 +138,7 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
     /**
      * Returns true if the last CSV field should end with a delimiter.
      * 
-     * @return true, if the last CSV field should end with a delimiter;
-     *         otherwise false
+     * @return true, if the last CSV field should end with a delimiter; otherwise false
      * @see CsvLowLevelConfiguration#getUseDelimiterAfterLastField
      */
     public boolean getUseDelimiterAfterLastField() {
@@ -180,8 +178,7 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
     /**
      * Specifies whether the last CSV field should end with a delimiter or not.
      * 
-     * @param useDelimiterAfterLastField true, if the last CSV field should end
-     *                with a delimiter; otherwise false.
+     * @param useDelimiterAfterLastField true, if the last CSV field should end with a delimiter; otherwise false.
      * @see CsvLowLevelConfiguration#setUseDelimiterAfterLastField
      */
     public void setUseDelimiterAfterLastField(boolean useDelimiterAfterLastField) {
@@ -215,7 +212,7 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
     protected RbfTypeMappingRegistry createDefaultTypeMappingRegistry() {
         return new RbfTypeMappingRegistry();
     }
-    
+
     /**
      * Set of default configuration values.
      * 
@@ -227,6 +224,6 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
          */
         QuoteMode DEFAULT_QUOTE_MODE = QuoteMode.NEVER;
 
-    }    
+    }
 
 }

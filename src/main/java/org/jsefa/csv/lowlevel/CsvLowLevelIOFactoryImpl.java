@@ -18,8 +18,6 @@ package org.jsefa.csv.lowlevel;
 
 import org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration;
 
-
-
 /**
  * Implementation of {@link CsvLowLevelIOFactory}.
  * <p>
@@ -33,8 +31,8 @@ public class CsvLowLevelIOFactoryImpl extends CsvLowLevelIOFactory {
     private final CsvLowLevelConfiguration config;
 
     /**
-     * Creates a new <code>CsvLowLevelIOFactoryImpl</code> for <code>CsvLowLevelSerializer</code>s
-     * and <code>CsvLowLevelDeserializer</code>s using the given configuration.
+     * Creates a new <code>CsvLowLevelIOFactoryImpl</code> for <code>CsvLowLevelSerializer</code>s and
+     * <code>CsvLowLevelDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.
      * @return a <code>CsvLowLevelIOFactoryImpl</code> factory
@@ -42,7 +40,7 @@ public class CsvLowLevelIOFactoryImpl extends CsvLowLevelIOFactory {
     public static CsvLowLevelIOFactoryImpl createFactory(CsvLowLevelConfiguration config) {
         return new CsvLowLevelIOFactoryImpl(config);
     }
-    
+
     CsvLowLevelIOFactoryImpl(CsvLowLevelConfiguration config) {
         this.config = config;
     }

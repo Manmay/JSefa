@@ -27,8 +27,7 @@ public final class LowLevelDeserializationException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new <code>LowLevelDeserializationException</code> with the
-     * specified detail message.
+     * Constructs a new <code>LowLevelDeserializationException</code> with the specified detail message.
      * 
      * @param message the detail message.
      */
@@ -37,8 +36,8 @@ public final class LowLevelDeserializationException extends RuntimeException {
     }
 
     /**
-     * Constructs a new <code>LowLevelDeserializationException</code> with the
-     * specified detail message and cause.
+     * Constructs a new <code>LowLevelDeserializationException</code> with the specified detail message and
+     * cause.
      * 
      * @param message the detail message
      * @param cause the cause
@@ -48,8 +47,7 @@ public final class LowLevelDeserializationException extends RuntimeException {
     }
 
     /**
-     * Constructs a new <code>LowLevelDeserializationException</code> with the
-     * specified cause.
+     * Constructs a new <code>LowLevelDeserializationException</code> with the specified cause.
      * 
      * @param cause the cause.
      */

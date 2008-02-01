@@ -26,11 +26,12 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
  * 
  */
 public interface CsvLowLevelDeserializer extends RbfLowLevelDeserializer {
-    
+
     /**
      * Returns the next field of the current record.
+     * 
      * @param quoteMode the quote mode
      * @return the field value
      */
-    String nextField(QuoteMode quoteMode); 
+    String nextField(QuoteMode quoteMode);
 }

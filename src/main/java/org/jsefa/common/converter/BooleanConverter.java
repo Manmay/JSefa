@@ -18,8 +18,8 @@ package org.jsefa.common.converter;
 
 /**
  * Converter for <code>Boolean</code> objects.<br>
- * The format consists of two Strings. The first token is the literal for true
- * and the second the literal for false.<br>
+ * The format consists of two Strings. The first token is the literal for true and the second the literal for
+ * false.<br>
  * <p>
  * It is thread-safe.
  * 
@@ -27,20 +27,17 @@ package org.jsefa.common.converter;
  */
 public class BooleanConverter implements SimpleTypeConverter {
     /**
-     * Format <code>String</code> with "true" for <code>true</code> and
-     * "false" for <code>false</code>.
+     * Format <code>String</code> with "true" for <code>true</code> and "false" for <code>false</code>.
      */
     protected static final String[] FORMAT_TRUE_FALSE = {"true", "false"};
 
     /**
-     * Format <code>String</code> with "yes" for <code>true</code> and "no"
-     * for <code>false</code>.
+     * Format <code>String</code> with "yes" for <code>true</code> and "no" for <code>false</code>.
      */
     protected static final String[] FORMAT_YES_NO = {"yes", "no"};
 
     /**
-     * Format <code>String</code> with "1" for <code>true</code> and "0" for
-     * <code>false</code>.
+     * Format <code>String</code> with "1" for <code>true</code> and "0" for <code>false</code>.
      */
     protected static final String[] FORMAT_BINARY = {"1", "0"};
 
@@ -50,8 +47,7 @@ public class BooleanConverter implements SimpleTypeConverter {
 
     /**
      * Creates a new <code>BooleanConverter</code>.<br>
-     * If no format is given, the default format (see
-     * {@link #getDefaultFormat()}) is used.
+     * If no format is given, the default format (see {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration.
      * @return a boolean converter
@@ -63,8 +59,7 @@ public class BooleanConverter implements SimpleTypeConverter {
 
     /**
      * Constructs a new <code>BooleanConverter</code>.<br>
-     * If no format is given, the default format (see
-     * {@link #getDefaultFormat()}) is used.
+     * If no format is given, the default format (see {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration.
      * @throws ConversionException if the given format is not valid.

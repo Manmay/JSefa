@@ -22,8 +22,7 @@ import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.rbf.lowlevel.RbfLowLevelSerializerImpl;
 
 /**
- * Implementation of {@link CsvLowLevelSerializer} based on
- * {@link RbfLowLevelSerializerImpl}.
+ * Implementation of {@link CsvLowLevelSerializer} based on {@link RbfLowLevelSerializerImpl}.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -123,8 +122,7 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
         int index = 0;
         while (index < value.length()) {
             char currentChar = value.charAt(index++);
-            if (currentChar == this.config.getEscapeCharacter()
-                    || currentChar == this.config.getFieldDelimiter()) {
+            if (currentChar == this.config.getEscapeCharacter() || currentChar == this.config.getFieldDelimiter()) {
                 writeChar(this.config.getEscapeCharacter());
             }
             writeChar(currentChar);
@@ -134,8 +132,7 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
     private boolean needsQuotes(String value) {
         for (int i = 0; i < value.length(); i++) {
             char currentChar = value.charAt(i);
-            if (currentChar == this.config.getEscapeCharacter()
-                    || currentChar == this.config.getFieldDelimiter()) {
+            if (currentChar == this.config.getEscapeCharacter() || currentChar == this.config.getFieldDelimiter()) {
                 return true;
             }
         }

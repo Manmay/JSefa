@@ -31,20 +31,17 @@ public enum QuoteMode {
     ALWAYS,
 
     /**
-     * Denotes that a field value is surrounded by quotes only if it contains
-     * the delimiter char or line break.
+     * Denotes that a field value is surrounded by quotes only if it contains the delimiter char or line break.
      */
     ON_DEMAND,
 
     /**
-     * Denotes that a field value is never surrounded by quotes whereas single
-     * characters may be escaped instead.
+     * Denotes that a field value is never surrounded by quotes whereas single characters may be escaped instead.
      */
     NEVER,
 
     /**
-     * Denotes that the quote mode which is declared as the default one should
-     * be used.
+     * Denotes that the quote mode which is declared as the default one should be used.
      */
     DEFAULT;
 }

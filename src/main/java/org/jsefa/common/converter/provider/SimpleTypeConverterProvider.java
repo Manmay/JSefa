@@ -28,9 +28,8 @@ import org.jsefa.common.util.ReflectionUtil;
 /**
  * Provider for {@link SimpleTypeConverter}.
  * <p>
- * Each <code>SimpleTypeConverter</code> must have a static factory method
- * <code>create</code>, which is either parameterless or with exactly one
- * parameter of type {@link SimpleTypeConverterConfiguration}.
+ * Each <code>SimpleTypeConverter</code> must have a static factory method <code>create</code>, which is
+ * either parameterless or with exactly one parameter of type {@link SimpleTypeConverterConfiguration}.
  * <p>
  * It is thread-safe.
  * 
@@ -51,7 +50,7 @@ public final class SimpleTypeConverterProvider {
         this.converterTypeMap = new ConcurrentHashMap<Class<?>, Class<? extends SimpleTypeConverter>>(
                 other.converterTypeMap);
     }
-    
+
     /**
      * Creates a copy of this <code>SimpleTypeConverterProvider</code>.
      * 
@@ -62,20 +61,18 @@ public final class SimpleTypeConverterProvider {
     }
 
     /**
-     * Returns true if and only if this provider has a
-     * <code>SimpleTypeConverter</code> for the given object type.
+     * Returns true if and only if this provider has a <code>SimpleTypeConverter</code> for the given object
+     * type.
      * 
      * @param objectType the type of the object a converter is needed for
-     * @return true if this provider has a <code>SimpleTypeConverter</code>
-     *         for the given type; false otherwise.
+     * @return true if this provider has a <code>SimpleTypeConverter</code> for the given type; false otherwise.
      */
     public boolean hasConverterFor(Class<?> objectType) {
         return getConverterType(objectType) != null;
     }
 
     /**
-     * Returns a <code>SimpleTypeConverter</code> for the given object type
-     * and format.
+     * Returns a <code>SimpleTypeConverter</code> for the given object type and format.
      * 
      * @param objectType the type of the object a converter is needed for
      * @param format the format the converter must be initialized with
@@ -90,8 +87,7 @@ public final class SimpleTypeConverterProvider {
     }
 
     /**
-     * Returns an instance of the given <code>SimpleTypeConverter</code> type
-     * initialized with the given format.
+     * Returns an instance of the given <code>SimpleTypeConverter</code> type initialized with the given format.
      * 
      * @param converterType the <code>SimpleTypeConverter</code> type
      * @param objectType the type of the object a converter is needed for
@@ -118,8 +114,8 @@ public final class SimpleTypeConverterProvider {
     }
 
     /**
-     * Registers the given <code>SimpleTypeConverter</code> type as being
-     * responsible for values of the given object type.
+     * Registers the given <code>SimpleTypeConverter</code> type as being responsible for values of the given
+     * object type.
      * 
      * @param objectType the object type
      * @param converterType the <code>SimpleTypeConverter</code> type

@@ -27,8 +27,7 @@ import org.jsefa.rbf.RbfSerializer;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 
 /**
- * Default implementation of {@link FlrSerializer} based on
- * {@link RbfSerializer}.
+ * Default implementation of {@link FlrSerializer} based on {@link RbfSerializer}.
  * 
  * @author Norman Lahme-Huetig
  * 

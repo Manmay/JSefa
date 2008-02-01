@@ -47,11 +47,9 @@ public final class FlrTypeMappingFactory extends RbfTypeMappingFactory {
     /**
      * Constructs a new <code>FlrTypeMappingFactory</code>.
      * 
-     * @param typeMappingRegistry the type mapping registry. New types will be
-     *                registered using that registry.
+     * @param typeMappingRegistry the type mapping registry. New types will be registered using that registry.
      * @param objectAccessorProvider the object accessor provider to use
-     * @param simpleTypeConverterProvider the simple type converter provider to
-     *                use
+     * @param simpleTypeConverterProvider the simple type converter provider to use
      * @param defaultPadCharacter the default pad character to be used
      */
     public FlrTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,

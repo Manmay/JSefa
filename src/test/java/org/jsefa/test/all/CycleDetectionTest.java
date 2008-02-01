@@ -32,8 +32,7 @@ import org.jsefa.xml.annotation.XmlElement;
 import static org.jsefa.test.common.JSefaTestUtil.FormatType.*;
 
 /**
- * Tests to test if cycles in the object graph are detected during
- * serialization.
+ * Tests to test if cycles in the object graph are detected during serialization.
  * 
  * @author Norman Lahme-Huetig
  * 

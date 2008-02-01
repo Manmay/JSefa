@@ -16,57 +16,47 @@
 
 package org.jsefa.xml.mapping;
 
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Utility class providing methods used in different type mapping classes.
+ * Utility class providing methods used in different type mapping contexts.
  * <p>
  * This class is thread-safe.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-final class XmlTypeMappingUtil {
+public final class XmlTypeMappingUtil {
 
-    static void finishNodeModelsByNodeDescriptor(Map<NodeDescriptor, NodeModel> nodeModelsByNodeDescriptor) {
-        Set<NodeDescriptor> nodeDescriptorSet = new HashSet<NodeDescriptor>(nodeModelsByNodeDescriptor.keySet());
-        Set<NodeDescriptor> ambiguousNodeDescriptors = new HashSet<NodeDescriptor>();
-        for (NodeDescriptor nodeDescriptor : nodeDescriptorSet) {
-            NodeDescriptor simplifiedNodeDescriptor = createSimplifiedNodeDescriptor(nodeDescriptor);
-            if (!ambiguousNodeDescriptors.contains(simplifiedNodeDescriptor)) {
-                if (nodeModelsByNodeDescriptor.get(simplifiedNodeDescriptor) != null) {
-                    nodeModelsByNodeDescriptor.remove(simplifiedNodeDescriptor);
-                    ambiguousNodeDescriptors.add(simplifiedNodeDescriptor);
-                } else {
-                    nodeModelsByNodeDescriptor.put(simplifiedNodeDescriptor, nodeModelsByNodeDescriptor
-                            .get(nodeDescriptor));
+    /**
+     * Creates a map of node mappings with node descriptors as keys. For each
+     * element mapping contained in the given collection of node mappings an
+     * additional simplified descriptor is created if the element name is not
+     * ambiguous so that the element mapping has two keys.
+     * 
+     * @param <D> the expected type of the node descriptor 
+     * @param <M> the expected type of the node mappings
+     * @param nodeMappings the node mappings
+     * @return a map of node mappings with node descriptors as keys
+     */
+    @SuppressWarnings("unchecked")
+    public static <D extends NodeDescriptor, M extends NodeMapping<?>> Map<D, M> createNodeMappingsByNodeDescriptorMap(
+            Collection<M> nodeMappings) {
+        Map<D, M> result = new HashMap<D, M>();
+        for (M nodeMapping : nodeMappings) {
+            result.put((D) nodeMapping.getNodeDescriptor(), nodeMapping);
+            if (nodeMapping instanceof ElementMapping) {
+                ElementMapping elementMapping = (ElementMapping) nodeMapping;
+                if (!elementMapping.elementNameIsAmbiguous()) {
+                    ElementDescriptor simplifiedElementDescriptor = new ElementDescriptor(elementMapping
+                            .getNodeDescriptor().getName(), null);
+                    result.put((D) simplifiedElementDescriptor, nodeMapping);
                 }
             }
         }
-        for (NodeModel nodeModel : nodeModelsByNodeDescriptor.values()) {
-            if (!nodeModel.isFinished()) {
-                NodeDescriptor simplifiedNodeDescriptor = createSimplifiedNodeDescriptor(nodeModel
-                        .getNodeDescriptor());
-                if (nodeModelsByNodeDescriptor.get(simplifiedNodeDescriptor) == null) {
-                    nodeModel.setRequiresDataTypeAttribute();
-                }
-                nodeModel.finish();
-            }
-        }
-    }
-
-    private static NodeDescriptor createSimplifiedNodeDescriptor(NodeDescriptor nodeDescriptor) {
-        if (nodeDescriptor instanceof ElementDescriptor) {
-            return new ElementDescriptor(nodeDescriptor.getName(), null);
-        } else if (nodeDescriptor instanceof AttributeDescriptor) {
-            return new AttributeDescriptor(nodeDescriptor.getName(), null);
-        } else if (nodeDescriptor instanceof TextContentDescriptor) {
-            return new TextContentDescriptor(null);
-        } else {
-            throw new UnsupportedOperationException("Unsupported node type: " + nodeDescriptor.getType());
-        }
+        return result;
     }
 
     private XmlTypeMappingUtil() {

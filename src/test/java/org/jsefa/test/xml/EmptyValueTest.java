@@ -21,7 +21,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-
 import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
 
 import org.jsefa.test.common.AbstractTestDTO;
@@ -33,8 +32,8 @@ import org.jsefa.xml.annotation.XmlElementList;
 import org.jsefa.xml.annotation.XmlTextContent;
 
 /**
- * Tests the correct serialization/deserialization of empty DTOs mapped to
- * complex elements, empty lists and empty <code>String</code> fields.
+ * Tests the correct serialization/deserialization of empty DTOs mapped to complex elements, empty lists and empty
+ * <code>String</code> fields.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -42,8 +41,7 @@ import org.jsefa.xml.annotation.XmlTextContent;
 public class EmptyValueTest extends TestCase {
 
     /**
-     * Tests the correct serialization/deserialization of a DTO with an empty
-     * <code>String</code> field.
+     * Tests the correct serialization/deserialization of a DTO with an empty <code>String</code> field.
      */
     public void testSimpleElement() {
         SimpleElementTestDTO dto = new SimpleElementTestDTO();
@@ -54,8 +52,7 @@ public class EmptyValueTest extends TestCase {
     }
 
     /**
-     * Tests the correct serialization/deserialization of a DTO mapped to a
-     * element with an empty text content.
+     * Tests the correct serialization/deserialization of a DTO mapped to a element with an empty text content.
      */
     public void testTextContentElement() {
         TextContentElementTestDTO dto = new TextContentElementTestDTO();
@@ -66,8 +63,7 @@ public class EmptyValueTest extends TestCase {
     }
 
     /**
-     * Tests the correct serialization/deserialization of a DTO mapped to a
-     * complex element with an empty field.
+     * Tests the correct serialization/deserialization of a DTO mapped to a complex element with an empty field.
      */
     public void testComplexElement() {
         ComplexElementTestDTO dto = new ComplexElementTestDTO();
@@ -78,12 +74,11 @@ public class EmptyValueTest extends TestCase {
     }
 
     /**
-     * Tests the correct serialization/deserialization of a DTO mapped to an
-     * empty element list.
+     * Tests the correct serialization/deserialization of a DTO mapped to an empty element list.
      */
     public void testElementList() {
         ElementListTestDTO dto = new ElementListTestDTO();
-        dto.elementList = new ArrayList<Object>();
+        dto.elementList = new ArrayList<String>();
         String serializationResult = JSefaTestUtil.serialize(XML, dto);
         assertEmptyElementWritten(serializationResult, "elementList");
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
@@ -116,8 +111,8 @@ public class EmptyValueTest extends TestCase {
 
     @XmlDataType()
     static final class ElementListTestDTO extends AbstractTestDTO {
-        @XmlElementList(items = {@ListItem(name = "item", objectType = String.class)})
-        List<Object> elementList;
+        @XmlElementList(items = {@ListItem(name = "item")})
+        List<String> elementList;
     }
 
 }

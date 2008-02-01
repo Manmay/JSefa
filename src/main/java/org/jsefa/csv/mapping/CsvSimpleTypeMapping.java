@@ -23,6 +23,8 @@ import org.jsefa.csv.lowlevel.config.QuoteMode;
 
 /**
  * A mapping between a java object type and a simple CSV data type.
+ * <p>
+ * Instances of this class are immutable and thread safe.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig
@@ -33,8 +35,7 @@ public final class CsvSimpleTypeMapping extends SimpleTypeMapping<String> {
     private final QuoteMode quoteMode;
 
     /**
-     * Constructs a new <code>CsvSimpleTypeMapping</code> from the given
-     * arguments.
+     * Constructs a new <code>CsvSimpleTypeMapping</code> from the given arguments.
      * 
      * @param objectType the object type
      * @param dataTypeName the data type name
@@ -45,7 +46,6 @@ public final class CsvSimpleTypeMapping extends SimpleTypeMapping<String> {
             QuoteMode quoteMode) {
         super(objectType, dataTypeName, simpleTypeConverter);
         this.quoteMode = quoteMode;
-        finish();
     }
 
     /**

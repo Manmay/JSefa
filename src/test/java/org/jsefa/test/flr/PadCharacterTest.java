@@ -25,8 +25,7 @@ import org.jsefa.flr.lowlevel.Align;
 import org.jsefa.test.common.JSefaTestUtil;
 
 /**
- * Tests to test the FLR serialization/deserialization with focus on pad
- * character.
+ * Tests to test the FLR serialization/deserialization with focus on pad character.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
@@ -35,8 +34,7 @@ import org.jsefa.test.common.JSefaTestUtil;
 public class PadCharacterTest extends TestCase {
 
     /**
-     * Test to test the FLR serialization/deserialization with focus on the
-     * pad character.
+     * Test to test the FLR serialization/deserialization with focus on the pad character.
      */
     public void testPadCharacterDTO() {
         TestDTO dto = createPadCharacterDTO("value", "value2");

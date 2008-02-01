@@ -30,8 +30,8 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElementList;
 
 /**
- * Test to test lists whereas the type of the list entries is determinable from
- * the generic argument of the list field.
+ * Test to test lists whereas the type of the list entries is determinable from the generic argument of the list
+ * field.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -55,7 +55,6 @@ public class ShortSyntaxListTypeTest extends TestCase {
         @XmlElementList(items = @ListItem(name = "item"))
         List<String> list;
     }
-
 
     /**
      * Tests a list with <code>String</code> and <code>Integer</code> elements.

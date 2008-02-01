@@ -38,8 +38,7 @@ import org.jsefa.xml.annotation.XmlTextContent;
 public class NoValueTest extends TestCase {
 
     /**
-     * Tests serialization/deserialization with a null value for an element
-     * list.
+     * Tests serialization/deserialization with a null value for an element list.
      */
     public void testElementList() {
         Object dto = new ElementListTestDTO();
@@ -48,11 +47,10 @@ public class NoValueTest extends TestCase {
     }
 
     /**
-     * Tests serialization/deserialization with a null value for the text
-     * content of an element.
+     * Tests serialization/deserialization with a null value for the text content of an element.
      * <p>
-     * Note that a round trip check is not possible as the deserialization will
-     * return an empty <code>String</code> for the text content.
+     * Note that a round trip check is not possible as the deserialization will return an empty <code>String</code>
+     * for the text content.
      */
     @SuppressWarnings("unchecked")
     public void testTextContent() {
@@ -74,7 +72,7 @@ public class NoValueTest extends TestCase {
 
     @XmlDataType()
     static class ElementListTestDTO extends AbstractTestDTO {
-        @XmlElementList(items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(items = {@ListItem(name = "item")})
         List<String> elementList;
     }
 

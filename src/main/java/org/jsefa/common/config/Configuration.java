@@ -47,14 +47,12 @@ import org.jsefa.common.util.OnDemandObjectProvider;
 import org.jsefa.common.util.ReflectionUtil;
 
 /**
- * The abstract superclass for configuration object classes. It uses lazy
- * initialization.
+ * The abstract superclass for configuration object classes. It uses lazy initialization.
  * <p>
- * A configuration object is used when creating a new {@link IOFactory}. One
- * configuration object can be used for the creation of multiple factories as
- * each new factory holds its own copy of the configuration object. So the
- * configuration object can be changed after creating a factory with it without
- * affecting the configuration of the factory.
+ * A configuration object is used when creating a new {@link IOFactory}. One configuration object can be used for
+ * the creation of multiple factories as each new factory holds its own copy of the configuration object. So the
+ * configuration object can be changed after creating a factory with it without affecting the configuration of the
+ * factory.
  * 
  * @param <T> the type of the TypeMappingRegistry
  * @param <E> the type of the EntryPoint
@@ -112,14 +110,13 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
     }
 
     /**
-     * Returns the entry points. An entry point is required for every type of
-     * object which will be passed to {@link Serializer#write} or which should
-     * be returned from {@link Deserializer#next} and only for these objects
-     * (not for the objects related to these ones). If more than one entry point
-     * is defined for the same data type name, then <br>
+     * Returns the entry points. An entry point is required for every type of object which will be passed to
+     * {@link Serializer#write} or which should be returned from {@link Deserializer#next} and only for these
+     * objects (not for the objects related to these ones). If more than one entry point is defined for the same
+     * data type name, then <br>
      * a) the last one is used for serialization<br>
-     * b) all are used for deserialization whereas their respective designators
-     * are used as alternative designators for the same data type.
+     * b) all are used for deserialization whereas their respective designators are used as alternative designators
+     * for the same data type.
      * 
      * @return the entry points.
      */
@@ -179,8 +176,7 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
     /**
      * Sets the <code>SimpleTypeConverterProvider</code>.
      * 
-     * @param simpleTypeConverterProvider the
-     *                <code>SimpleTypeConverterProvider</code>
+     * @param simpleTypeConverterProvider the <code>SimpleTypeConverterProvider</code>
      */
     public final void setSimpleTypeConverterProvider(SimpleTypeConverterProvider simpleTypeConverterProvider) {
         this.simpleTypeConverterProvider = simpleTypeConverterProvider;
@@ -194,8 +190,7 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
     public abstract Configuration<T, E> createCopy();
 
     /**
-     * Creates the default type mapping registry to be used if none is
-     * explicitly given.
+     * Creates the default type mapping registry to be used if none is explicitly given.
      * 
      * @return the default type mapping registry
      */

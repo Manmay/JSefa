@@ -27,8 +27,7 @@ import org.jsefa.rbf.RbfDeserializer;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 
 /**
- * Default implementation of {@link FlrDeserializer} based on
- * {@link RbfDeserializer}.
+ * Default implementation of {@link FlrDeserializer} based on {@link RbfDeserializer}.
  * 
  * @author Norman Lahme-Huetig
  * 

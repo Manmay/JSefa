@@ -146,7 +146,7 @@ public class QuoteModeTest extends TestCase {
         config.setQuoteCharacterEscapeMode(escapeMode);
         return config;
     }
-    
+
     private CsvConfiguration createConfig(QuoteMode defaultQuoteMode, EscapeMode escapeMode) {
         CsvConfiguration config = new CsvConfiguration();
         config.setDefaultQuoteMode(defaultQuoteMode);

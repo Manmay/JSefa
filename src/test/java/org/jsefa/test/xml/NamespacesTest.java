@@ -40,8 +40,7 @@ import org.jsefa.xml.annotation.XmlNamespaces;
 import org.jsefa.xml.namespace.NamespaceConstants;
 
 /**
- * Tests to correct serialization/deserialization with different namespace
- * declaration scenarios.
+ * Tests to correct serialization/deserialization with different namespace declaration scenarios.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
@@ -101,8 +100,7 @@ public class NamespacesTest extends TestCase {
     }
 
     /**
-     * Tests the case when 2 default namespaces are given with the second
-     * overwriting the first.
+     * Tests the case when 2 default namespaces are given with the second overwriting the first.
      */
     public void testOverwrittenDefaultNamespace() {
         DefaultNamespaceOverridingTestParentDTO obj = new DefaultNamespaceOverridingTestParentDTO();
@@ -132,8 +130,7 @@ public class NamespacesTest extends TestCase {
     }
 
     /**
-     * Tests the case when 2 explicit namespaces are given with the second
-     * overwriting the first.
+     * Tests the case when 2 explicit namespaces are given with the second overwriting the first.
      */
     public void testOverwrittenExplicitNamespace() {
         ExplicitNamespaceOverridingTestParentDTO obj = new ExplicitNamespaceOverridingTestParentDTO();
@@ -161,8 +158,7 @@ public class NamespacesTest extends TestCase {
     }
 
     /**
-     * Tests the case when a default namespace is erased (the parent has a
-     * default namespace but the child not).
+     * Tests the case when a default namespace is erased (the parent has a default namespace but the child not).
      */
     public void testEraseDefaultNamespace() {
         DefaultNamespaceErasureTestParentDTO obj = new DefaultNamespaceErasureTestParentDTO();
@@ -243,7 +239,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement()
         String element;
 
-        @XmlElementList(implicit = false, items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(implicit = false, items = {@ListItem(name = "item")})
         List<String> elementList = new ArrayList<String>();
     }
 
@@ -256,7 +252,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement()
         String element;
 
-        @XmlElementList(implicit = false, items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(implicit = false, items = {@ListItem(name = "item")})
         List<String> elementList = new ArrayList<String>();
     }
 
@@ -269,8 +265,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement(name = "a:element")
         String element;
 
-        @XmlElementList(name = "a:elementList", implicit = false,
-                items = {@ListItem(name = "a:item", objectType = String.class)})
+        @XmlElementList(name = "a:elementList", implicit = false, items = {@ListItem(name = "a:item")})
         List<String> elementList = new ArrayList<String>();
     }
 
@@ -283,7 +278,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement()
         String element;
 
-        @XmlElementList(implicit = false, items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(implicit = false, items = {@ListItem(name = "item")})
         List<String> elementList = new ArrayList<String>();
 
         @XmlElement()
@@ -299,7 +294,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement()
         String elementB;
 
-        @XmlElementList(implicit = false, items = {@ListItem(name = "itemB", objectType = String.class)})
+        @XmlElementList(implicit = false, items = {@ListItem(name = "itemB")})
         List<String> elementListB = new ArrayList<String>();
     }
 
@@ -312,8 +307,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement(name = "a:element")
         String element;
 
-        @XmlElementList(name = "a:elementList", implicit = false,
-                items = {@ListItem(name = "a:item", objectType = String.class)})
+        @XmlElementList(name = "a:elementList", implicit = false, items = {@ListItem(name = "a:item")})
         List<String> elementList = new ArrayList<String>();
 
         @XmlElement(name = "a:element2")
@@ -329,8 +323,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement(name = "a:elementB")
         String elementB;
 
-        @XmlElementList(name = "a:elementListB", implicit = false,
-                items = {@ListItem(name = "a:itemB", objectType = String.class)})
+        @XmlElementList(name = "a:elementListB", implicit = false, items = {@ListItem(name = "a:itemB")})
         List<String> elementListB = new ArrayList<String>();
     }
 
@@ -343,7 +336,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement()
         String element;
 
-        @XmlElementList(implicit = false, items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(implicit = false, items = {@ListItem(name = "item")})
         List<String> elementList = new ArrayList<String>();
 
         @XmlElement()
@@ -358,7 +351,7 @@ public class NamespacesTest extends TestCase {
         @XmlElement()
         String elementB;
 
-        @XmlElementList(implicit = false, items = {@ListItem(name = "itemB", objectType = String.class)})
+        @XmlElementList(implicit = false, items = {@ListItem(name = "itemB")})
         List<String> elementListB = new ArrayList<String>();
     }
 

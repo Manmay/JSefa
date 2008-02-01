@@ -40,8 +40,7 @@ public enum XmlItemType {
      */
     ELEMENT_END,
     /**
-     * Denotes that the xml item represents text content (subsequent character
-     * nodes and CDATA sections).
+     * Denotes that the xml item represents text content (subsequent character nodes and CDATA sections).
      */
     TEXT_CONTENT;
 }

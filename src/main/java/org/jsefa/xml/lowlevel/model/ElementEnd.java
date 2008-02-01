@@ -18,7 +18,6 @@ package org.jsefa.xml.lowlevel.model;
 
 import org.jsefa.xml.namespace.QName;
 
-
 /**
  * An xml item describing the end of a xml element.
  * 

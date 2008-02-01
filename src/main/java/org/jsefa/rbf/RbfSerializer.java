@@ -26,12 +26,12 @@ import org.jsefa.Serializer;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
-import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
+import org.jsefa.rbf.mapping.RecordMapping;
 
 /**
  * Abstract implementation of {@link Serializer} for RBF formats.
@@ -156,30 +156,30 @@ public abstract class RbfSerializer implements Serializer {
             if (object != null) {
                 fieldValue = typeMapping.getObjectAccessor().getValue(object, fieldName);
             }
-            String fieldDataTypeName = typeMapping.getNodeModel(fieldName).getDataTypeName();
+            String fieldDataTypeName = typeMapping.getNodeMapping(fieldName).getDataTypeName();
             writeValue(fieldValue, getTypeMapping(fieldDataTypeName));
         }
     }
 
     private void writeSubRecords(Object object, RbfComplexTypeMapping typeMapping) {
-        for (String fieldName : typeMapping.getFieldNames(NodeType.SUB_RECORD)) {
+        for (String fieldName : typeMapping.getFieldNames(NodeType.RECORD)) {
             Object fieldValue = typeMapping.getObjectAccessor().getValue(object, fieldName);
             if (fieldValue == null) {
                 continue;
             }
-            NodeModel nodeModel = typeMapping.getNodeModel(fieldName);
-            TypeMapping<?> subRecordTypeMapping = getTypeMapping(nodeModel.getDataTypeName());
+            RecordMapping recordMapping = typeMapping.getNodeMapping(fieldName);
+            TypeMapping<?> subRecordTypeMapping = getTypeMapping(recordMapping.getDataTypeName());
             if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
                 getLowLevelSerializer().finishRecord();
-                writePrefix(nodeModel.getPrefix());
+                writePrefix(recordMapping.getPrefix());
                 writeValue(fieldValue, subRecordTypeMapping);
             } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
                 RbfListTypeMapping listTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
                 for (Object listItem : (List<?>) fieldValue) {
                     getLowLevelSerializer().finishRecord();
-                    NodeModel itemNodeModel = listTypeMapping.getNodeModel(listItem.getClass());
-                    writePrefix(itemNodeModel.getPrefix());
-                    writeValue(listItem, getTypeMapping(itemNodeModel.getDataTypeName()));
+                    RecordMapping itemRecordMapping = listTypeMapping.getRecordMapping(listItem.getClass());
+                    writePrefix(itemRecordMapping.getPrefix());
+                    writeValue(listItem, getTypeMapping(itemRecordMapping.getDataTypeName()));
                 }
             }
         }

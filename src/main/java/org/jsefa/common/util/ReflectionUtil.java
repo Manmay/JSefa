@@ -50,6 +50,7 @@ public final class ReflectionUtil {
 
     /**
      * Creates a new instance of the given object type using the default constructor.
+     * 
      * @param <T> the type of the object to create
      * @param objectType the object type
      * @return an object
@@ -63,8 +64,7 @@ public final class ReflectionUtil {
     }
 
     /**
-     * Returns the fields of the given class. These include the inherited
-     * fields, too.
+     * Returns the fields of the given class. These include the inherited fields, too.
      * 
      * @param objectType the class
      * @return the list of fields.
@@ -82,9 +82,8 @@ public final class ReflectionUtil {
     }
 
     /**
-     * Returns the path of classes to the given object type in reverse order.
-     * The first element is the given object type, the second its superclass
-     * etc.
+     * Returns the path of classes to the given object type in reverse order. The first element is the given object
+     * type, the second its superclass etc.
      * 
      * @param objectType the object type
      * @return a list of classes
@@ -99,9 +98,10 @@ public final class ReflectionUtil {
         Collections.reverse(result);
         return result;
     }
-    
+
     /**
      * Returns the method on the objectType with the given name and given parameter types.
+     * 
      * @param objectType the object type
      * @param methodName the method name
      * @param parameterTypes the parameter types
@@ -134,7 +134,7 @@ public final class ReflectionUtil {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Calls the given method with the given parameters on the given object.
      * 
@@ -154,8 +154,7 @@ public final class ReflectionUtil {
     }
 
     /**
-     * Returns the first argument of the type of the given field or null if it
-     * does not exist.
+     * Returns the first argument of the type of the given field or null if it does not exist.
      * 
      * @param field the field
      * @return a class or null

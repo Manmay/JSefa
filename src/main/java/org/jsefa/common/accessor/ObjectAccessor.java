@@ -17,8 +17,8 @@
 package org.jsefa.common.accessor;
 
 /**
- * An <code>ObjectAccessor</code> provides access to an object (i.e. creates
- * it) and to its fields (retrieval and setting of field values).
+ * An <code>ObjectAccessor</code> provides access to an object (i.e. creates it) and to its fields (retrieval and
+ * setting of field values).
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -26,16 +26,14 @@ package org.jsefa.common.accessor;
 public interface ObjectAccessor {
 
     /**
-     * Creates a new instance of the class this <code>ObjectAccessor</code>
-     * was created for.
+     * Creates a new instance of the class this <code>ObjectAccessor</code> was created for.
      * 
      * @return a new object.
      */
     Object createObject();
 
     /**
-     * Returns the value of the field with the name <code>fieldName</code> of
-     * the given object.
+     * Returns the value of the field with the name <code>fieldName</code> of the given object.
      * 
      * @param object the object
      * @param fieldName the field name
@@ -44,8 +42,7 @@ public interface ObjectAccessor {
     Object getValue(Object object, String fieldName);
 
     /**
-     * Sets the value of the field with the name <code>fieldName</code> of the
-     * given object.
+     * Sets the value of the field with the name <code>fieldName</code> of the given object.
      * 
      * @param object the object
      * @param fieldName the field name

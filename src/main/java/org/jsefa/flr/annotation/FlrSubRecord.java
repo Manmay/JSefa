@@ -35,28 +35,25 @@ public @interface FlrSubRecord {
     /**
      * The position of the field with the following semantic:
      * <p>
-     * If the position of a field A is less than the position of a field B, than
-     * field A comes (not necessarily directly) before field B.<br>
+     * If the position of a field A is less than the position of a field B, than field A comes (not necessarily
+     * directly) before field B.<br>
      * The positions of all fields must specify a total order of the fields.
      * 
      */
     int pos();
 
     /**
-     * The prefix of the sub record. The prefix serves the purpose of
-     * identifying the sub record.
+     * The prefix of the sub record. The prefix serves the purpose of identifying the sub record.
      */
     String prefix();
 
     /**
-     * The name of the data type of the FLR sub record this annotation
-     * describes. If not set, it must be determinable from the type of the
-     * annotated field.
+     * The name of the data type of the FLR sub record this annotation describes. If not set, it must be
+     * determinable from the type of the annotated field.
      * <p>
-     * It should be explicitly set if the type mapping should not be created
-     * from the annotations given in the class of the annotated field. This is
-     * useful when mixing explicit type mapping creation with annotation based
-     * type mapping creation.
+     * It should be explicitly set if the type mapping should not be created from the annotations given in the
+     * class of the annotated field. This is useful when mixing explicit type mapping creation with annotation
+     * based type mapping creation.
      */
     String dataTypeName() default "";
 }

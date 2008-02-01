@@ -33,8 +33,8 @@ import org.jsefa.xml.namespace.NamespaceManager;
 import org.jsefa.xml.namespace.QName;
 
 /**
- * Configuration object for creating a {@link XmlLowLevelSerializer} or
- * {@link XmlLowLevelDeserializer}. It uses lazy initialization.
+ * Configuration object for creating a {@link XmlLowLevelSerializer} or {@link XmlLowLevelDeserializer}. It uses
+ * lazy initialization.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -70,14 +70,14 @@ public final class XmlLowLevelConfiguration extends LowLevelConfiguration {
     }
 
     /**
-     * Returns the <code>NamespaceManager</code> to be used for serialization
-     * only.
+     * Returns the <code>NamespaceManager</code> to be used for serialization only.
      * 
      * @return a the namespace manager
      */
     public NamespaceManager getNamespaceManager() {
         if (this.namespaceManager == null) {
-            NamespaceManager manager = InitialConfiguration.get(NAMESPACE_MANAGER, DEFAULT_NAMESPACE_MANAGER_PROVIDER);
+            NamespaceManager manager = InitialConfiguration.get(NAMESPACE_MANAGER,
+                    DEFAULT_NAMESPACE_MANAGER_PROVIDER);
             this.namespaceManager = manager.createCopy();
         }
         return this.namespaceManager;
@@ -118,8 +118,7 @@ public final class XmlLowLevelConfiguration extends LowLevelConfiguration {
     }
 
     /**
-     * Sets the name of the attribute that denotes the data type of the
-     * respective element.
+     * Sets the name of the attribute that denotes the data type of the respective element.
      * 
      * @param dataTypeAttributeName the data type attribute name
      */
@@ -138,12 +137,12 @@ public final class XmlLowLevelConfiguration extends LowLevelConfiguration {
 
     /**
      * Set of default configuration values.
+     * 
      * @author Norman Lahme-Huetig
      */
     public interface Defaults {
         /**
-         * The name of the attribute used to denote the data type as used in xml
-         * schema instances.
+         * The name of the attribute used to denote the data type as used in xml schema instances.
          */
         QName DEFAULT_DATA_TYPE_ATTRIBUTE_NAME = QName.create(NamespaceConstants.XML_SCHEMA_INSTANCE_URI, "type");
 
@@ -163,6 +162,6 @@ public final class XmlLowLevelConfiguration extends LowLevelConfiguration {
                 return namespaceManager;
             }
         };
-    }    
+    }
 
 }

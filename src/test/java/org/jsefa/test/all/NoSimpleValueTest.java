@@ -33,8 +33,7 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests to test the serialization/deserialization of DTOs with absent simple
- * values.
+ * Tests to test the serialization/deserialization of DTOs with absent simple values.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
@@ -59,7 +58,7 @@ public class NoSimpleValueTest extends TestCase {
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
         assertTrue(JSefaTestUtil.serialize(XML, dto).indexOf("attribute") < 0);
     }
-    
+
     /**
      * Test with null value at start (CSV).
      */

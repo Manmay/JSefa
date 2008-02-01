@@ -17,8 +17,7 @@
 package org.jsefa.common.util;
 
 /**
- * Provides an object which is costly to create or to retrieve and which is
- * needed only conditionally needed.
+ * Provides an object which is costly to create or to retrieve and which is needed only conditionally needed.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -26,6 +25,7 @@ package org.jsefa.common.util;
 public interface OnDemandObjectProvider {
     /**
      * Returns the object in question.
+     * 
      * @param <T> the expected type of the parameter value
      * @return the object
      */

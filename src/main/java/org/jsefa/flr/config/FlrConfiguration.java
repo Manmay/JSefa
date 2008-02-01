@@ -26,8 +26,8 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 import static org.jsefa.flr.config.FlrInitialConfigurationParameters.DEFAUT_PAD_CHARACTER;
 
 /**
- * A configuration object used when creating an FLR IO factory. It uses lazy
- * initialization for the low level configuration.
+ * A configuration object used when creating an FLR IO factory. It uses lazy initialization for the low level
+ * configuration.
  * 
  * @see Configuration
  * @author Norman Lahme-Huetig
@@ -68,7 +68,7 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
         if (this.defaultPadCharacter == GeneralConstants.NO_CHARACTER) {
             this.defaultPadCharacter = (Character) InitialConfiguration.get(DEFAUT_PAD_CHARACTER,
                     Defaults.DEFAULT_PAD_CHARACTER);
-        }        
+        }
         return this.defaultPadCharacter;
     }
 
@@ -145,5 +145,5 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
          * The default pad character.
          */
         char DEFAULT_PAD_CHARACTER = ' ';
-    }    
+    }
 }

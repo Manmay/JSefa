@@ -32,8 +32,7 @@ public enum NodeType {
      */
     ATTRIBUTE,
     /**
-     * node type for the content of non-simple xml elements without child
-     * elements.
+     * node type for the content of non-simple xml elements without child elements.
      */
     TEXT_CONTENT
 }

@@ -28,8 +28,8 @@ import org.jsefa.xml.annotation.XmlNamespaces;
 import org.jsefa.xml.namespace.NamespaceConstants;
 
 /**
- * Tests to test the correct serialization/deserialization when a data type name
- * (denoting a simple type mapping) is specified for an annotated field.
+ * Tests to test the correct serialization/deserialization when a data type name (denoting a simple type mapping)
+ * is specified for an annotated field.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -140,7 +140,6 @@ public class StandardDataTypeNamesTest extends TestCase {
         @XmlElement(dataTypeName = "xs:long")
         Long element2;
     }
-
 
     @XmlDataType()
     @XmlNamespaces(@Namespace(prefix = "xs", uri = NamespaceConstants.XML_SCHEMA_URI))

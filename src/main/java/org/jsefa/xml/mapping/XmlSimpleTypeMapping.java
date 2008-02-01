@@ -23,6 +23,8 @@ import org.jsefa.xml.namespace.QName;
 
 /**
  * A mapping between a java object type and a simple XML data type.
+ * <p>
+ * Instances of this class are immutable and thread safe.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig
@@ -39,7 +41,6 @@ public final class XmlSimpleTypeMapping extends SimpleTypeMapping<QName> {
      */
     public XmlSimpleTypeMapping(QName dataTypeName, Class<?> objectType, SimpleTypeConverter simpleTypeConverter) {
         super(objectType, dataTypeName, simpleTypeConverter);
-        finish();
     }
 
 }

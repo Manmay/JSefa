@@ -17,45 +17,38 @@
 package org.jsefa.rbf.mapping;
 
 /**
- * A model of a node used for serialization and deserialization.
- * <p>
- * Instances of this class are immutable and thread-safe.
+ * A mapping between an rbf node and a java object. This mapping is used for serialization and deserialization.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public final class NodeModel {
+public abstract class NodeMapping {
 
     private final String dataTypeName;
 
+    private final Class<?> objectType;
+
     private final String fieldName;
 
-    private final String prefix;
-
     /**
-     * Constructs a new <code>NodeModel</code> for the given data type name
-     * and field name.
-     * 
-     * @param dataTypename the data type name
-     * @param fieldName the name of the field; may be null.
-     */
-    public NodeModel(String dataTypename, String fieldName) {
-        this(dataTypename, fieldName, null);
-    }
-
-    /**
-     * Constructs a new <code>NodeModel</code> for the given data type name,
-     * prefix, and field name.
+     * Constructs a new <code>NodeMapping</code>.
      * 
      * @param dataTypeName the data type name
-     * @param fieldName the name of the field; may be null
-     * @param prefix the prefix; may be null
+     * @param objectType the object type
+     * @param fieldName the name of the field
      */
-    public NodeModel(String dataTypeName, String fieldName, String prefix) {
+    public NodeMapping(String dataTypeName, Class<?> objectType, String fieldName) {
         this.dataTypeName = dataTypeName;
+        this.objectType = objectType;
         this.fieldName = fieldName;
-        this.prefix = prefix;
     }
+
+    /**
+     * Returns the node type.
+     * 
+     * @return the node type
+     */
+    public abstract NodeType getNodeType();
 
     /**
      * Returns the data type name.
@@ -67,12 +60,12 @@ public final class NodeModel {
     }
 
     /**
-     * Returns the prefix or null if none exists.
+     * Returns the object type.
      * 
-     * @return the prefix
+     * @return the object type
      */
-    public String getPrefix() {
-        return this.prefix;
+    public Class<?> getObjectType() {
+        return this.objectType;
     }
 
     /**

@@ -16,7 +16,6 @@
 
 package org.jsefa.xml.lowlevel.model;
 
-
 /**
  * Implementation of {@link TextContent}.
  * <p>
@@ -31,6 +30,7 @@ public final class TextContentImpl implements TextContent {
 
     /**
      * Constructs a new <code>TextContentImpl</code>.
+     * 
      * @param content the content
      */
     public TextContentImpl(String content) {

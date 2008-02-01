@@ -31,8 +31,7 @@ import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
 
 /**
- * Test for testing the correct serialization/deserialization with equally named
- * elements of different data types.
+ * Test for testing the correct serialization/deserialization with equally named elements of different data types.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -40,8 +39,8 @@ import org.jsefa.xml.annotation.XmlElementList;
 public class PolymorphismTest extends TestCase {
 
     /**
-     * Tests a polymorphic element, i. e. an element with different possible
-     * data types which are all descendants of a single super type.
+     * Tests a polymorphic element, i. e. an element with different possible data types which are all descendants
+     * of a single super type.
      */
     public void testPolymorphicElement() {
         PolymorphicElementDTO dto = new PolymorphicElementDTO();
@@ -56,8 +55,8 @@ public class PolymorphismTest extends TestCase {
     }
 
     /**
-     * Tests polymorphic list items, i. e. equally named elements of a list with different possible
-     * data types which are all descendants of a single super type.
+     * Tests polymorphic list items, i. e. equally named elements of a list with different possible data types
+     * which are all descendants of a single super type.
      */
     public void testPolymorphicListItems() {
         PolymorphicListItemDTO dto = new PolymorphicListItemDTO();
@@ -84,7 +83,7 @@ public class PolymorphismTest extends TestCase {
 
     @XmlDataType()
     static final class PolymorphicListItemDTO extends AbstractTestDTO {
-        @XmlElementList(implicit = true, items = {@ListItem(name = "item", objectType = SuperDTOType.class)})
+        @XmlElementList(implicit = true, items = {@ListItem(name = "item")})
         List<SuperDTOType> elementList = new ArrayList<SuperDTOType>();
     }
 

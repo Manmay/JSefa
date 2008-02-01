@@ -18,8 +18,6 @@ package org.jsefa.flr.lowlevel;
 
 import org.jsefa.flr.lowlevel.config.FlrLowLevelConfiguration;
 
-
-
 /**
  * Implementation of {@link FlrLowLevelIOFactory}.
  * <p>
@@ -33,8 +31,8 @@ public class FlrLowLevelIOFactoryImpl extends FlrLowLevelIOFactory {
     private final FlrLowLevelConfiguration config;
 
     /**
-     * Creates a new <code>FlrLowLevelIOFactoryImpl</code> for <code>FlrLowLevelSerializer</code>s
-     * and <code>FlrLowLevelDeserializer</code>s using the given configuration.
+     * Creates a new <code>FlrLowLevelIOFactoryImpl</code> for <code>FlrLowLevelSerializer</code>s and
+     * <code>FlrLowLevelDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.
      * @return a <code>FlrLowLevelIOFactoryImpl</code> factory
@@ -42,7 +40,7 @@ public class FlrLowLevelIOFactoryImpl extends FlrLowLevelIOFactory {
     public static FlrLowLevelIOFactoryImpl createFactory(FlrLowLevelConfiguration config) {
         return new FlrLowLevelIOFactoryImpl(config);
     }
-    
+
     FlrLowLevelIOFactoryImpl(FlrLowLevelConfiguration config) {
         this.config = config;
     }

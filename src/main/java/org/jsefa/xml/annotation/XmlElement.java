@@ -26,8 +26,8 @@ import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
 
 /**
- * An annotation stating that the annotated java field should be mapped to a xml
- * element during XML serialization and deserialization.
+ * An annotation stating that the annotated java field should be mapped to a xml element during XML serialization
+ * and deserialization.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -37,45 +37,41 @@ import org.jsefa.common.converter.SimpleTypeConverter;
 public @interface XmlElement {
 
     /**
-     * The name of the element this annotation describes. It has the following
-     * format:<br>
+     * The name of the element this annotation describes. It has the following format:<br>
      * [prefix:]localname<br>
      */
     String name() default "";
 
     /**
-     * The name of the data type of the element this annotation describes. If
-     * not set, it must be determinable from the type of the annotated field.
+     * The name of the data type of the element this annotation describes. If not set, it must be determinable from
+     * the type of the annotated field.
      * <p>
-     * It should be explicitly set if the type mapping should not be created
-     * from the annotations given in the class of the annotated field. This is
-     * useful when mixing explicit type mapping creation with annotation based
-     * type mapping creation.
+     * It should be explicitly set if the type mapping should not be created from the annotations given in the
+     * class of the annotated field. This is useful when mixing explicit type mapping creation with annotation
+     * based type mapping creation.
      */
     String dataTypeName() default "";
 
     /**
      * The position of the xml element with the following semantic:
      * <p>
-     * If the position of a element A is less than the position of a element B,
-     * than element A comes (not necessarily directly) before element B.<br>
-     * All elements with the default position value (-1) will come after all
-     * elements with explicitly given positions.
+     * If the position of a element A is less than the position of a element B, than element A comes (not
+     * necessarily directly) before element B.<br>
+     * All elements with the default position value (-1) will come after all elements with explicitly given
+     * positions.
      */
     int pos() default -1;
 
     /**
-     * The format to be used to construct a <code>SimpleTypeConverter</code>
-     * for the xml element which must have a simple data type (no children, no
-     * data holding attributes). The <code>SimpleTypeConverter</code> class
+     * The format to be used to construct a <code>SimpleTypeConverter</code> for the xml element which must have
+     * a simple data type (no children, no data holding attributes). The <code>SimpleTypeConverter</code> class
      * will be determined using the type of the java field with this annotation.
      */
     String[] format() default {};
 
     /**
-     * Specifies the converter type to be used for the xml element which must
-     * have a simple data type (no children, no data holding attributes). In the
-     * default case the converter type is determined using the type of the java
+     * Specifies the converter type to be used for the xml element which must have a simple data type (no children,
+     * no data holding attributes). In the default case the converter type is determined using the type of the java
      * field with this annotation.
      */
     Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;

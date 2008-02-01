@@ -24,8 +24,8 @@ import org.jsefa.csv.CsvIOFactory;
 import org.jsefa.flr.FlrIOFactory;
 
 /**
- * Demo for demonstrating the deserialization of a {@link Employee}. The same
- * {@link Employee} class is used for CSV and a FLR format.
+ * Demo for demonstrating the deserialization of a {@link Employee}. The same {@link Employee} class is used for
+ * CSV and a FLR format.
  * <p>
  * The code should be self explaining.
  * 

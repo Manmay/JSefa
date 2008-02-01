@@ -32,15 +32,15 @@ public interface FlrInitialConfigurationParameters extends InitialConfigurationP
      * Configuration parameter for the FlrIOFactory class to use.
      */
     String IO_FACTORY_CLASS = "jsefa:flr:ioFactoryClass";
-    
+
     /**
      * Configuration parameter for the default pad character to use.
      */
     String DEFAUT_PAD_CHARACTER = "jsefa:flr:defaultPadCharacter";
-    
+
     /**
      * Configuration parameter for the FlrLowLevelIOFactory class to use.
      */
-    String LOW_LEVEL_IO_FACTORY_CLASS = FlrLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS;    
+    String LOW_LEVEL_IO_FACTORY_CLASS = FlrLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS;
 
 }

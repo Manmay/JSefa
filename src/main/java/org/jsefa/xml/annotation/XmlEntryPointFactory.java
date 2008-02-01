@@ -34,19 +34,16 @@ import org.jsefa.xml.namespace.QNameParser;
  */
 public final class XmlEntryPointFactory {
     /**
-     * Creates entry points for the given object types and their descendants
-     * using their annotations.
+     * Creates entry points for the given object types and their descendants using their annotations.
      * <p>
      * The following rules apply:
      * <p>
-     * 1. For each two object types A and B in <code>objectTypes</code> with B
-     * being a descendant of A and A < B (A comes before B in
-     * <code>objectTypes</code>), the resulting list contains an entry point
-     * with an element name taken from B and not from A.
+     * 1. For each two object types A and B in <code>objectTypes</code> with B being a descendant of A and A < B
+     * (A comes before B in <code>objectTypes</code>), the resulting list contains an entry point with an
+     * element name taken from B and not from A.
      * <p>
-     * 2. For each descendant B of an object type A in <code>objectTypes</code>
-     * the resulting list contains an entry point with an element name taken
-     * from A and not from B as long as rule 1 does not apply.
+     * 2. For each descendant B of an object type A in <code>objectTypes</code> the resulting list contains an
+     * entry point with an element name taken from A and not from B as long as rule 1 does not apply.
      * 
      * @param objectTypes the object types
      * @param typeMappingFactory the type mapping factory

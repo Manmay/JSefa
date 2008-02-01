@@ -18,8 +18,9 @@ package org.jsefa.common.util;
 
 /**
  * Collection of some general constants.
+ * 
  * @author Norman Lahme-Huetig
- *
+ * 
  */
 public interface GeneralConstants {
     /**

@@ -19,8 +19,7 @@ package org.jsefa.xml.namespace;
 /**
  * A qualified name consisting of a namespace uri and a local name.
  * <p>
- * Both must not be null. Use {@link NamespaceConstants#NO_NAMESPACE_URI} to describe
- * that no namespace is given.
+ * Both must not be null. Use {@link NamespaceConstants#NO_NAMESPACE_URI} to describe that no namespace is given.
  * <p>
  * Instances of this class are immutable and thread safe.
  * 
@@ -49,8 +48,8 @@ public final class QName {
     /**
      * Creates a new <code>QName</code>.
      * <p>
-     * Use {@link NamespaceConstants#NO_NAMESPACE_URI} for the argument
-     * <code>uri</code> if no namespace is given.
+     * Use {@link NamespaceConstants#NO_NAMESPACE_URI} for the argument <code>uri</code> if no namespace is
+     * given.
      * 
      * @param uri the namespace uri (not null)
      * @param localName the local name
@@ -112,8 +111,7 @@ public final class QName {
     }
 
     /**
-     * Returns a <code>String</code> representation of this qualified name
-     * with the following format:
+     * Returns a <code>String</code> representation of this qualified name with the following format:
      * <p>
      * [uri#]localName.
      * 

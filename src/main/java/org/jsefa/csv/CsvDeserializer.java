@@ -22,12 +22,11 @@ import org.jsefa.Deserializer;
  * Iterator-style interface for stream based CSV deserializer.
  * <p>
  * Notes:<br>
- * 1. Empty fields representing a simple value (e.g. a <code>String</code> or
- * <code>Date</code>) will be deserialized to <code>null</code> and not to
- * an empty value.<br>
- * 2. Empty field sequences (e.g. ';;;' with ';' as the delimiter) representing
- * a complex value (a value of a class annotated with <code>CsvDataType</code>)
- * will be deserialized to <code>null</code> and not to an empty value.
+ * 1. Empty fields representing a simple value (e.g. a <code>String</code> or <code>Date</code>) will be
+ * deserialized to <code>null</code> and not to an empty value.<br>
+ * 2. Empty field sequences (e.g. ';;;' with ';' as the delimiter) representing a complex value (a value of a class
+ * annotated with <code>CsvDataType</code>) will be deserialized to <code>null</code> and not to an empty
+ * value.
  * 
  * @see Deserializer
  * @author Norman Lahme-Huetig

@@ -32,7 +32,7 @@ public interface XmlLowLevelInitialConfigurationParameters extends LowLevelIniti
      * Configuration parameter for the XmlLowLevelIOFactory class to use.
      */
     String LOW_LEVEL_IO_FACTORY_CLASS = "jsefa:xml:lowlevel:ioFactoryClass";
-    
+
     /**
      * Configuration parameter for the line indentation to use.
      */
@@ -42,7 +42,7 @@ public interface XmlLowLevelInitialConfigurationParameters extends LowLevelIniti
      * Configuration parameter for the name of the data type attribute to use.
      */
     String DATA_TYPE_ATTRIBUTE_NAME = "jsefa:xml:lowlevel:dataTypeAttributeName";
-    
+
     /**
      * Configuration parameter for the namespace manager to use.
      */

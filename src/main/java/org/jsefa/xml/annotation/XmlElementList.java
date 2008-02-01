@@ -23,8 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation stating that the annotated java field should be mapped to a xml
- * element with list type during XML serialization and deserialization.
+ * An annotation stating that the annotated java field should be mapped to a xml element with list type during XML
+ * serialization and deserialization.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -33,8 +33,7 @@ import java.lang.annotation.Target;
 @Target({FIELD})
 public @interface XmlElementList {
     /**
-     * The name of the element this annotation describes. It has the following
-     * format:<br>
+     * The name of the element this annotation describes. It has the following format:<br>
      * [prefix:]localname<br>
      */
     String name() default "";
@@ -42,16 +41,15 @@ public @interface XmlElementList {
     /**
      * The position of the xml element with the following semantic:
      * <p>
-     * If the position of a element A is less than the position of a element B,
-     * than element A comes (not necessarily directly) before element B.<br>
-     * All elements with the default position value (-1) will come after all
-     * elements with explicitly given positions.
+     * If the position of a element A is less than the position of a element B, than element A comes (not
+     * necessarily directly) before element B.<br>
+     * All elements with the default position value (-1) will come after all elements with explicitly given
+     * positions.
      */
     int pos() default -1;
 
     /**
-     * True, if there is no embracing element around the list items; false
-     * otherwise.
+     * True, if there is no embracing element around the list items; false otherwise.
      */
     boolean implicit() default false;
 

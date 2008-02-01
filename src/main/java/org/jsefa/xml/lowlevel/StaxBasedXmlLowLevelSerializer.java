@@ -171,7 +171,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             try {
                 this.streamWriter.writeCharacters(text);
             } catch (XMLStreamException e) {
-                throw new LowLevelSerializationException("Unable to finish element", e);
+                throw new LowLevelSerializationException("Unable to write text", e);
             }
         }
     }

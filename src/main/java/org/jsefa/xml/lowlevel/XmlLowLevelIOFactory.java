@@ -26,16 +26,13 @@ import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
 import org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters;
 
 /**
- * Factory for creating {@link XmlLowLevelDeserializer}s and
- * {@link XmlLowLevelSerializer}s.
+ * Factory for creating {@link XmlLowLevelDeserializer}s and {@link XmlLowLevelSerializer}s.
  * 
- * This is the abstract base class for concrete factories. Each subclass must
- * provide a static method <code>create(XmlLowLevelConfiguration config)</code>
- * as well as implement the abstract methods.
+ * This is the abstract base class for concrete factories. Each subclass must provide a static method
+ * <code>create(XmlLowLevelConfiguration config)</code> as well as implement the abstract methods.
  * <p>
- * This class provides a static factory method
- * {@link #createFactory(XmlLowLevelConfiguration)} to create an instance of a
- * concrete <code>XmlLowLevelIOFactory</code>.
+ * This class provides a static factory method {@link #createFactory(XmlLowLevelConfiguration)} to create an
+ * instance of a concrete <code>XmlLowLevelIOFactory</code>.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -43,8 +40,7 @@ import org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters;
 public abstract class XmlLowLevelIOFactory implements LowLevelIOFactory {
 
     /**
-     * Creates a new <code>XmlLowLevelIOFactory</code> for
-     * <code>XmlLowLevelSerializer</code>s and
+     * Creates a new <code>XmlLowLevelIOFactory</code> for <code>XmlLowLevelSerializer</code>s and
      * <code>XmlLowLevelDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.

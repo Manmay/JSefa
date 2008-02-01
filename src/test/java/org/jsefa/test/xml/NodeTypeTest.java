@@ -32,7 +32,6 @@ import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
 import org.jsefa.xml.annotation.XmlTextContent;
 
-
 /**
  * Tests to test the node type annotation.
  * 
@@ -107,7 +106,7 @@ public final class NodeTypeTest extends TestCase {
 
     @XmlDataType()
     static final class ElementListItemDTO extends AbstractTestDTO {
-        @XmlElementList(items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(items = {@ListItem(name = "item")})
         List<String> elementList;
     }
 

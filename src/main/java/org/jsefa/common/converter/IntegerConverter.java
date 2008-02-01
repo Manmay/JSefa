@@ -16,7 +16,6 @@
 
 package org.jsefa.common.converter;
 
-
 /**
  * Converter for <code>Integer</code> objects.
  * <p>
@@ -26,17 +25,18 @@ package org.jsefa.common.converter;
  */
 public final class IntegerConverter implements SimpleTypeConverter {
     private static final IntegerConverter INSTANCE = new IntegerConverter();
-    
+
     /**
      * Returns the single <code>IntegerConverter</code>.
+     * 
      * @return the single integer converter.
      */
     public static IntegerConverter create() {
         return INSTANCE;
     }
-    
+
     private IntegerConverter() {
-        
+
     }
 
     /**

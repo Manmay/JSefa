@@ -31,8 +31,7 @@ public abstract class SimpleTypeMapping<T> extends TypeMapping<T> {
     private final SimpleTypeConverter simpleTypeConverter;
 
     /**
-     * Constructs a new <code>SimpleTypeMapping</code> from the given
-     * arguments.
+     * Constructs a new <code>SimpleTypeMapping</code> from the given arguments.
      * 
      * @param objectType the object type
      * @param dataTypeName the data type name

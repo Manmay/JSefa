@@ -21,8 +21,8 @@ import org.jsefa.flr.lowlevel.FlrLowLevelDeserializer;
 import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
 
 /**
- * Configuration object for creating a {@link FlrLowLevelSerializer} or
- * {@link FlrLowLevelDeserializer}. It uses lazy initialization.
+ * Configuration object for creating a {@link FlrLowLevelSerializer} or {@link FlrLowLevelDeserializer}. It uses
+ * lazy initialization.
  * 
  * @author Norman Lahme-Huetig
  * 

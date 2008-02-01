@@ -31,10 +31,8 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
 
-
 /**
- * Tests to test the element name, attribute name and element list name
- * generation.
+ * Tests to test the element name, attribute name and element list name generation.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -127,14 +125,13 @@ public final class NodeNameTest extends TestCase {
 
     @XmlDataType()
     static final class DefaultListNameTestDTO extends AbstractTestDTO {
-        @XmlElementList(implicit = false, items = {@ListItem(name = "listContent", objectType = String.class)})
+        @XmlElementList(implicit = false, items = {@ListItem(name = "listContent")})
         List<String> elementList = new ArrayList<String>();
     }
 
     @XmlDataType()
     static final class ExplicitListNameTestDTO extends AbstractTestDTO {
-        @XmlElementList(name = "explicitListName", implicit = false,
-                items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(name = "explicitListName", implicit = false, items = {@ListItem(name = "item")})
         List<String> elementList = new ArrayList<String>();
     }
 

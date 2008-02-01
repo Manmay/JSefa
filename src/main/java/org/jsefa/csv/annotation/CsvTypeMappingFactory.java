@@ -47,16 +47,14 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
     /**
      * Constructs a new <code>CsvTypeMappingFactory</code>.
      * 
-     * @param typeMappingRegistry the type mapping registry. New types will be
-     *            registered using that registry.
-     * @param simpleTypeConverterProvider the simple type converter provider to
-     *            use
+     * @param typeMappingRegistry the type mapping registry. New types will be registered using that registry.
+     * @param simpleTypeConverterProvider the simple type converter provider to use
      * @param objectAccessorProvider the object accessor provider to use
      * @param defaultQuoteMode the default quote mode to use
      */
     public CsvTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
-            SimpleTypeConverterProvider simpleTypeConverterProvider, ObjectAccessorProvider objectAccessorProvider,
-            QuoteMode defaultQuoteMode) {
+            SimpleTypeConverterProvider simpleTypeConverterProvider,
+            ObjectAccessorProvider objectAccessorProvider, QuoteMode defaultQuoteMode) {
         super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider, ANNOTATIONS);
         this.defaultQuoteMode = defaultQuoteMode;
     }

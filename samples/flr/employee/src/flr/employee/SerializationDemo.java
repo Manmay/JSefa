@@ -46,8 +46,8 @@ public class SerializationDemo {
 
         serializer.write(createEmployee("Erwin Schmidt", Role.SENIOR_DEVELOPER, false, "23.5.1964",
                 new BigDecimal(7.83)));
-        serializer.write(createEmployee("Betty Meier", Role.JUNIOR_DEVELOPER, null, "1.1.1984",
-                new BigDecimal(4.28)));
+        serializer.write(createEmployee("Betty Meier", Role.JUNIOR_DEVELOPER, null, "1.1.1984", new BigDecimal(
+                4.28)));
 
         serializer.close(true);
         System.out.println("Result:");
@@ -68,7 +68,7 @@ public class SerializationDemo {
 
     private Date createDate(String date) {
         return DateConverter.create(SimpleTypeConverterConfiguration.EMPTY).fromString(date);
-    }    
+    }
 
     /**
      * Main method.

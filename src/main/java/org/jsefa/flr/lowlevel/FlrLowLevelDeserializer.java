@@ -25,7 +25,7 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
  * 
  */
 public interface FlrLowLevelDeserializer extends RbfLowLevelDeserializer {
-    
+
     /**
      * Returns the next field of the current record.
      * 

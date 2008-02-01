@@ -32,17 +32,17 @@ public interface XmlInitialConfigurationParameters extends InitialConfigurationP
      * Configuration parameter for the XmlIOFactory class to use.
      */
     String IO_FACTORY_CLASS = "jsefa:xml:ioFactoryClass";
-    
+
     /**
      * Configuration parameter for the XmlDataTypeDefaultNameRegistry.
      */
     String DATA_TYPE_DEFAULT_NAME_REGISTRY = "jsefa:xml:dataTypeDefaultNameRegistry";
-    
+
     /**
      * Configuration parameter for the XmlLowLevelIOFactory class to use.
      */
     String LOW_LEVEL_IO_FACTORY_CLASS = XmlLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS;
-    
+
     /**
      * Configuration parameter for the line indentation to use.
      */
@@ -52,9 +52,9 @@ public interface XmlInitialConfigurationParameters extends InitialConfigurationP
      * Configuration parameter for the name of the data type attribute to use.
      */
     String DATA_TYPE_ATTRIBUTE_NAME = XmlLowLevelInitialConfigurationParameters.DATA_TYPE_ATTRIBUTE_NAME;
-    
+
     /**
      * Configuration parameter for the namespace manager to use.
      */
-    String NAMESPACE_MANAGER = XmlLowLevelInitialConfigurationParameters.NAMESPACE_MANAGER;    
+    String NAMESPACE_MANAGER = XmlLowLevelInitialConfigurationParameters.NAMESPACE_MANAGER;
 }

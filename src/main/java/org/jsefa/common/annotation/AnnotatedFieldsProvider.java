@@ -34,15 +34,13 @@ import org.jsefa.common.util.ReflectionUtil;
 public final class AnnotatedFieldsProvider {
 
     /**
-     * Returns a list of fields which are annotated in the given
-     * <code>objectType</code> with one of the given annotation classes. The
-     * fields are sorted according to their respective position values with the
-     * following semantics:
+     * Returns a list of fields which are annotated in the given <code>objectType</code> with one of the given
+     * annotation classes. The fields are sorted according to their respective position values with the following
+     * semantics:
      * <p>
-     * If the position of a field A is less than the position of a field B, than
-     * field A comes (not necessarily directly) before field B.<br>
-     * All fields with the default position value (-1) will come after all
-     * fields with explicit positions.
+     * If the position of a field A is less than the position of a field B, than field A comes (not necessarily
+     * directly) before field B.<br>
+     * All fields with the default position value (-1) will come after all fields with explicit positions.
      * 
      * @param objectType the object type
      * @param annotationClasses the annotation classes
@@ -79,10 +77,9 @@ public final class AnnotatedFieldsProvider {
     }
 
     /**
-     * Returns all fields of the given object type or one of its ancestors which
-     * are annotated with at least one of the given annotation classes.<br>
-     * Note: there is no commitment to a specific order for the returned list of
-     * fields.
+     * Returns all fields of the given object type or one of its ancestors which are annotated with at least one of
+     * the given annotation classes.<br>
+     * Note: there is no commitment to a specific order for the returned list of fields.
      * 
      * @param objectType the object type
      * @param annotationClasses the annotation classes

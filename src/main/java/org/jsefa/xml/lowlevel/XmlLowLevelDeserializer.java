@@ -32,8 +32,7 @@ public interface XmlLowLevelDeserializer extends LowLevelDeserializer {
     /**
      * Returns true if another xml item can be deserialized from the stream.
      * 
-     * @return true, if another xml item can be deserialized from the stream,
-     *         otherwise false.
+     * @return true, if another xml item can be deserialized from the stream, otherwise false.
      * @throws LowLevelDeserializationException
      */
     boolean hasNext();
@@ -44,8 +43,7 @@ public interface XmlLowLevelDeserializer extends LowLevelDeserializer {
     void moveToNext();
 
     /**
-     * Returns the type of the current xml item. See {@link XmlItemType} for the
-     * different values allowed.
+     * Returns the type of the current xml item. See {@link XmlItemType} for the different values allowed.
      * 
      * @return the type of the current xml item.
      */

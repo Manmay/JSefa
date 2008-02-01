@@ -22,8 +22,7 @@ import java.util.Collection;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 
 /**
- * Factory for creating {@link RbfEntryPoint}s from annotated classes using the
- * {@link FlrDataType} annotation.
+ * Factory for creating {@link RbfEntryPoint}s from annotated classes using the {@link FlrDataType} annotation.
  * 
  * @author Norman Lahme-Huetig
  * 

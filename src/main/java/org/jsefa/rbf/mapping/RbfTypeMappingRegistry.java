@@ -33,8 +33,7 @@ public final class RbfTypeMappingRegistry extends TypeMappingRegistry<String> {
     }
 
     /**
-     * Constructs a new <code>RbfTypeMappingRegistry</code> as a copy of the
-     * given one.
+     * Constructs a new <code>RbfTypeMappingRegistry</code> as a copy of the given one.
      * 
      * @param other the registry that serves as a model for creating a new one
      */

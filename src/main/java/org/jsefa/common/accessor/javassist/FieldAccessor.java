@@ -17,8 +17,7 @@
 package org.jsefa.common.accessor.javassist;
 
 /**
- * An accessor to a field of an object for which this <code>FieldAccessor</code>
- * was created for.
+ * An accessor to a field of an object for which this <code>FieldAccessor</code> was created for.
  * 
  * @author Norman Lahme-Huetig
  * 

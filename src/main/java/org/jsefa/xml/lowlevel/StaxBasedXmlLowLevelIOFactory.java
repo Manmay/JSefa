@@ -27,12 +27,12 @@ import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
  * 
  */
 public final class StaxBasedXmlLowLevelIOFactory extends XmlLowLevelIOFactory {
-    
+
     private final XmlLowLevelConfiguration config;
 
     /**
-     * Creates a new <code>StaxBasedXmlLowLevelIOFactory</code> for <code>XmlLowLevelSerializer</code>s
-     * and <code>XmlLowLevelDeserializer</code>s using the given configuration.
+     * Creates a new <code>StaxBasedXmlLowLevelIOFactory</code> for <code>XmlLowLevelSerializer</code>s and
+     * <code>XmlLowLevelDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.
      * @return a <code>StaxBasedXmlLowLevelIOFactory</code> factory
@@ -40,7 +40,7 @@ public final class StaxBasedXmlLowLevelIOFactory extends XmlLowLevelIOFactory {
     public static StaxBasedXmlLowLevelIOFactory createFactory(XmlLowLevelConfiguration config) {
         return new StaxBasedXmlLowLevelIOFactory(config);
     }
-    
+
     StaxBasedXmlLowLevelIOFactory(XmlLowLevelConfiguration config) {
         this.config = config;
     }

@@ -37,8 +37,8 @@ import org.jsefa.xml.annotation.XmlElementList;
 import org.jsefa.xml.annotation.XmlTextContent;
 
 /**
- * Tests for testing the configurability of simple types (concerning format
- * and/or converterType) for different xml node types.
+ * Tests for testing the configurability of simple types (concerning format and/or converterType) for different xml
+ * node types.
  * 
  * @author Marko Kovacevic
  * 
@@ -161,6 +161,7 @@ public class SimpleTypeConfigurabilityTest extends TestCase {
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-02-28T14:21:27.000-01:00") >= 0);
         assertTrue(JSefaTestUtil.serialize(XML, obj).indexOf("2007-03-01T14:21:27.000-01:00") >= 0);
     }
+
     private Date getDateForFormat(String inputString) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy:HH:mm:ss");
         try {

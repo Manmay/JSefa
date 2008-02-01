@@ -24,10 +24,10 @@ import java.util.List;
 import org.jsefa.common.util.ReflectionUtil;
 
 /**
- * Provider for annotation data (data given via annotations). It provides a
- * simple solution to the following drawbacks of annotations: <br>
- * 1) Annotations can not extend an interface so that it is not possible to
- * express that several annotations do provide the same kind of data.<br>
+ * Provider for annotation data (data given via annotations). It provides a simple solution to the following
+ * drawbacks of annotations: <br>
+ * 1) Annotations can not extend an interface so that it is not possible to express that several annotations do
+ * provide the same kind of data.<br>
  * 2) Annotated data can not be set to null.
  * <p>
  * 
@@ -36,13 +36,12 @@ import org.jsefa.common.util.ReflectionUtil;
  */
 public final class AnnotationDataProvider {
 
-    private static final List<?> NULL_OBJECTS = Arrays
-            .asList(new Object[]{"", NoConverterType.class, NoClass.class});
+    private static final List<?> NULL_OBJECTS = Arrays.asList(new Object[]{"", NoConverterType.class,
+            NoClass.class});
 
     /**
-     * Returns the data with the given <code>annotationDataName</code> of the
-     * given annotation or null if it is to be interpreted as null (as the empty
-     * <code>String</code>, an empty array or special classes used as
+     * Returns the data with the given <code>annotationDataName</code> of the given annotation or null if it is
+     * to be interpreted as null (as the empty <code>String</code>, an empty array or special classes used as
      * defaults for the annotation data).
      * 
      * @param <T> the expected type of the data to return
@@ -65,11 +64,10 @@ public final class AnnotationDataProvider {
     }
 
     /**
-     * Returns the data with the given <code>annotationDataName</code> of the
-     * annotation the given annotatedElement is annotated with and which class
-     * is one of the given annotation classes. Returns null, if the data is to
-     * be interpreted as null (as the empty <code>String</code> or special
-     * classes used as defaults for the annotation data).
+     * Returns the data with the given <code>annotationDataName</code> of the annotation the given
+     * annotatedElement is annotated with and which class is one of the given annotation classes. Returns null, if
+     * the data is to be interpreted as null (as the empty <code>String</code> or special classes used as
+     * defaults for the annotation data).
      * 
      * @param <T> the expected type of the returned data
      * @param annotatedElement the annotated element

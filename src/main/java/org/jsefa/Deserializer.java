@@ -36,8 +36,7 @@ public interface Deserializer {
     /**
      * Returns true if another object can be deserialized from the stream.
      * 
-     * @return true, if another object can be deserialized from the stream,
-     *         otherwise false.
+     * @return true, if another object can be deserialized from the stream, otherwise false.
      * @throws DeserializationException
      */
     boolean hasNext();
@@ -52,8 +51,8 @@ public interface Deserializer {
     <T> T next();
 
     /**
-     * Closes the deserialization stream. The underlying reader will be closed
-     * only if <code>closeReader</code> is true.
+     * Closes the deserialization stream. The underlying reader will be closed only if <code>closeReader</code>
+     * is true.
      * 
      * @param closeReader if true, the underlying reader will be closed, too.
      * @throws DeserializationException

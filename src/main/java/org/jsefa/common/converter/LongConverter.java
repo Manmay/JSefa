@@ -16,7 +16,6 @@
 
 package org.jsefa.common.converter;
 
-
 /**
  * Converter for <code>Long</code> objects.
  * <p>
@@ -26,19 +25,20 @@ package org.jsefa.common.converter;
  */
 public final class LongConverter implements SimpleTypeConverter {
     private static final LongConverter INSTANCE = new LongConverter();
-    
+
     /**
      * Returns the single <code>LongConverter</code>.
+     * 
      * @return the single long converter.
      */
     public static LongConverter create() {
         return INSTANCE;
     }
-    
+
     private LongConverter() {
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */

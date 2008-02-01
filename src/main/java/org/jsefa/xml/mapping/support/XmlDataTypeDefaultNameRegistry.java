@@ -39,11 +39,11 @@ public final class XmlDataTypeDefaultNameRegistry {
     public XmlDataTypeDefaultNameRegistry() {
         this.defaultDataTypeNames = new ConcurrentHashMap<Class<?>, QName>();
     }
-    
+
     private XmlDataTypeDefaultNameRegistry(XmlDataTypeDefaultNameRegistry other) {
         this.defaultDataTypeNames = new ConcurrentHashMap<Class<?>, QName>(other.defaultDataTypeNames);
     }
-    
+
     /**
      * Creates a copy of this <code>XmlDataTypeDefaultNameRegistry</code>.
      * 

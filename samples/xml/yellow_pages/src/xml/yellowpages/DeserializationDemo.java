@@ -23,8 +23,7 @@ import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.XmlReaderFactory;
 
 /**
- * Demo for demonstrating the deserialization of the document
- * "yellow-pages.xml".
+ * Demo for demonstrating the deserialization of the document "yellow-pages.xml".
  * <p>
  * The code should be self explaining.
  * 

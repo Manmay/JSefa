@@ -20,20 +20,16 @@ import org.jsefa.Deserializer;
 import org.jsefa.Serializer;
 
 /**
- * An entry point describes an item of the respective format that should be
- * serialized or deserialized. An entry point is required for every type of
- * object which will be passed to {@link Serializer#write} or which should be
- * returned from {@link Deserializer#next} and only for these objects (not for
- * the objects related to these ones).
+ * An entry point describes an item of the respective format that should be serialized or deserialized. An entry
+ * point is required for every type of object which will be passed to {@link Serializer#write} or which should be
+ * returned from {@link Deserializer#next} and only for these objects (not for the objects related to these ones).
  * <p>
  * Each entry point consists of two non empty and non null parts:<br>
  * 1) A data type name which unambiguously maps to a {@link TypeMapping}.<br>
- * 2) A designator that designates the item of the respective format (e. g. the
- * name of the xml element).
+ * 2) A designator that designates the item of the respective format (e. g. the name of the xml element).
  * <p>
  * 
- * Instances of this class are immutable and thread-safe. This must be true for
- * all subclasses, too.
+ * Instances of this class are immutable and thread-safe. This must be true for all subclasses, too.
  * 
  * @author Norman Lahme-Huetig
  * 

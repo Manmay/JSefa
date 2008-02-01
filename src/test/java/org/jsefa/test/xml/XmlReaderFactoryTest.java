@@ -37,7 +37,7 @@ import org.jsefa.xml.XmlReaderFactory;
  */
 public class XmlReaderFactoryTest extends TestCase {
     private static final String TEST_TEXT = "abc\u00E4\u00F6\u00FC\u00DF";
-    
+
     /**
      * Tests for correct detection of ISO-8859-1 character set encoding.
      */
@@ -51,7 +51,7 @@ public class XmlReaderFactoryTest extends TestCase {
     public void testUTF16BE() {
         checkForEncoding("UTF-16BE");
     }
-    
+
     /**
      * Tests for correct detection of UTF-16 little-endian character set encoding.
      */

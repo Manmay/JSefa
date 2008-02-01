@@ -26,9 +26,8 @@ import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
 
 /**
- * An annotation stating that the annotated java field should be mapped to the
- * content of the xml node with the data type described by the class the
- * annotated field is part of.
+ * An annotation stating that the annotated java field should be mapped to the content of the xml node with the
+ * data type described by the class the annotated field is part of.
  * <p>
  * 
  * @author Norman Lahme-Huetig
@@ -38,16 +37,15 @@ import org.jsefa.common.converter.SimpleTypeConverter;
 @Target({FIELD})
 public @interface XmlTextContent {
     /**
-     * The format to be used to construct a <code>SimpleTypeConverter</code>
-     * for the content. The <code>SimpleTypeConverter</code> class will be
-     * determined using the type of the java field with this annotation.
+     * The format to be used to construct a <code>SimpleTypeConverter</code> for the content. The
+     * <code>SimpleTypeConverter</code> class will be determined using the type of the java field with this
+     * annotation.
      */
     String[] format() default {};
 
     /**
-     * Specifies the converter type to be used for the xml attribute. In the
-     * default case the converter type is determined using the type of the java
-     * field with this annotation.
+     * Specifies the converter type to be used for the xml attribute. In the default case the converter type is
+     * determined using the type of the java field with this annotation.
      */
     Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;
 

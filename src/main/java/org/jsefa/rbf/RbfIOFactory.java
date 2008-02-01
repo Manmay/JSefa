@@ -29,18 +29,17 @@ import org.jsefa.IOFactoryException;
 import org.jsefa.Serializer;
 import org.jsefa.common.config.Configuration;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
+import org.jsefa.rbf.mapping.RecordMapping;
 
 /**
  * Abstract super class for RBF factories.
  * <p>
- * Instances of this class are immutable and thread-safe. This must be true for
- * all subclasses, too.
+ * Instances of this class are immutable and thread-safe. This must be true for all subclasses, too.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -48,7 +47,7 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
  * @param <S> the serializer type
  * @param <D> the deserializer type
  */
-public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint>, 
+public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint>,
     S extends Serializer, D extends Deserializer> implements IOFactory {
 
     private final C config;
@@ -148,8 +147,7 @@ public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistr
     protected abstract D createDeserializer(C config, Map<String, RbfEntryPoint> entryPointsByPrefix);
 
     /**
-     * Returns true if and only if a prefix is required for the given entry
-     * points.
+     * Returns true if and only if a prefix is required for the given entry points.
      * 
      * @param entryPoints the entry points
      * @return true, if a prefix is required; false otherwise.
@@ -184,20 +182,15 @@ public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistr
      * <p>
      * Suppose a tree of prefix where<br>
      * 1. the root is an artificial prefix which is always unique <br>
-     * 2. the ordered children of the root are the prefixes of the entry points
-     * in their respective order <br>
-     * 3. the ordered children of a prefix n which is not covered by 1. or 2. is
-     * the ordered list of prefixes associated with the sub records or sub
-     * record lists of the complex type associated with the prefix n.
+     * 2. the ordered children of the root are the prefixes of the entry points in their respective order <br>
+     * 3. the ordered children of a prefix n which is not covered by 1. or 2. is the ordered list of prefixes
+     * associated with the sub records or sub record lists of the complex type associated with the prefix n.
      * <p>
-     * For a given prefix n the set S(n) is defined as the set of prefixes
-     * containing exactly <br>
-     * 1. the sibling prefixes "to the left" of n as well as their descendants,
-     * and<br>
+     * For a given prefix n the set S(n) is defined as the set of prefixes containing exactly <br>
+     * 1. the sibling prefixes "to the left" of n as well as their descendants, and<br>
      * 2. n itself if n is associated to a list type mapping.
      * <p>
-     * Then a prefix n is called "contextual unique" if it is not contained in
-     * S(n).
+     * Then a prefix n is called "contextual unique" if it is not contained in S(n).
      * 
      * @param entryPoints the entry points.
      */
@@ -220,17 +213,19 @@ public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistr
         TypeMapping<?> typeMapping = this.config.getTypeMappingRegistry().get(dataTypeName);
         if (typeMapping instanceof RbfComplexTypeMapping) {
             RbfComplexTypeMapping complexTypeMapping = (RbfComplexTypeMapping) typeMapping;
-            for (String fieldName : complexTypeMapping.getFieldNames(NodeType.SUB_RECORD)) {
-                NodeModel nodeModel = complexTypeMapping.getNodeModel(fieldName);
-                assertPrefixContextualUniqueness(nodeModel.getPrefix(), nodeModel.getDataTypeName(), usedPrefixes);
+            for (String fieldName : complexTypeMapping.getFieldNames(NodeType.RECORD)) {
+                RecordMapping recordMapping = complexTypeMapping.getNodeMapping(fieldName);
+                assertPrefixContextualUniqueness(recordMapping.getPrefix(), recordMapping.getDataTypeName(),
+                        usedPrefixes);
             }
         }
         if (typeMapping instanceof RbfListTypeMapping) {
             usedPrefixes.add(prefix);
             RbfListTypeMapping listTypeMapping = (RbfListTypeMapping) typeMapping;
             for (String itemPrefix : listTypeMapping.getPrefixes()) {
-                NodeModel nodeModel = listTypeMapping.getNodeModel(itemPrefix);
-                assertPrefixContextualUniqueness(nodeModel.getPrefix(), nodeModel.getDataTypeName(), usedPrefixes);
+                RecordMapping recordMapping = listTypeMapping.getRecordMapping(itemPrefix);
+                assertPrefixContextualUniqueness(recordMapping.getPrefix(), recordMapping.getDataTypeName(),
+                        usedPrefixes);
             }
         }
         usedPrefixes.add(prefix);

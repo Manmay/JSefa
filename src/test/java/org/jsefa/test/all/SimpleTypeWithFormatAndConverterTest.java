@@ -42,8 +42,8 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests to test the serialization/deserialization of different simple types
- * with an explicit format and an explicit converter annotation.
+ * Tests to test the serialization/deserialization of different simple types with an explicit format and an
+ * explicit converter annotation.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
@@ -182,7 +182,7 @@ public class SimpleTypeWithFormatAndConverterTest extends TestCase {
                 "ENUM_VALUE3=enum value 3"}, converterType = EnumConverter.class)
         @FlrField(pos = 1, length = 15, format = {"ENUM_VALUE1=enum value 1", "ENUM_VALUE2=enum value 2",
                 "ENUM_VALUE3=enum value 3"}, converterType = EnumConverter.class)
-        @XmlElement(format = {"ENUM_VALUE1=enum value 1", "ENUM_VALUE2=enum value 2", "ENUM_VALUE3=enum value 3"}, 
+        @XmlElement(format = {"ENUM_VALUE1=enum value 1", "ENUM_VALUE2=enum value 2", "ENUM_VALUE3=enum value 3"},
                 converterType = EnumConverter.class)
         EnumType enumField;
     }

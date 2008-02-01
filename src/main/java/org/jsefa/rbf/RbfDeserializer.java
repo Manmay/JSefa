@@ -27,12 +27,12 @@ import org.jsefa.SerializationException;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
-import org.jsefa.rbf.mapping.NodeModel;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
+import org.jsefa.rbf.mapping.RecordMapping;
 
 /**
  * Abstract implementation of {@link Deserializer} for RBF types.
@@ -187,7 +187,7 @@ public abstract class RbfDeserializer implements Deserializer {
     private boolean readFields(Object object, RbfComplexTypeMapping typeMapping) {
         boolean hasContent = false;
         for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
-            String fieldDataTypeName = typeMapping.getNodeModel(fieldName).getDataTypeName();
+            String fieldDataTypeName = typeMapping.getNodeMapping(fieldName).getDataTypeName();
             Object fieldValue = readValue(getTypeMapping(fieldDataTypeName));
             if (fieldValue != null) {
                 typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
@@ -199,16 +199,16 @@ public abstract class RbfDeserializer implements Deserializer {
 
     private boolean readSubRecords(Object object, RbfComplexTypeMapping typeMapping) {
         boolean hasContent = false;
-        if (!typeMapping.getFieldNames(NodeType.SUB_RECORD).isEmpty()) {
+        if (!typeMapping.getFieldNames(NodeType.RECORD).isEmpty()) {
             boolean hasRecord = getLowLevelDeserializer().readNextRecord();
-            for (String fieldName : typeMapping.getFieldNames(NodeType.SUB_RECORD)) {
+            for (String fieldName : typeMapping.getFieldNames(NodeType.RECORD)) {
                 if (!hasRecord) {
                     break;
                 }
-                NodeModel subRecordNodeModel = typeMapping.getNodeModel(fieldName);
-                TypeMapping<?> subRecordTypeMapping = getTypeMapping(subRecordNodeModel.getDataTypeName());
+                RecordMapping subRecordNodeMapping = typeMapping.getNodeMapping(fieldName);
+                TypeMapping<?> subRecordTypeMapping = getTypeMapping(subRecordNodeMapping.getDataTypeName());
                 if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
-                    if (subRecordNodeModel.getPrefix().equals(readPrefix())) {
+                    if (subRecordNodeMapping.getPrefix().equals(readPrefix())) {
                         Object fieldValue = readValue(subRecordTypeMapping);
                         if (fieldValue != null) {
                             typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
@@ -221,8 +221,8 @@ public abstract class RbfDeserializer implements Deserializer {
                     RbfListTypeMapping subRecordListTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
                     String prefix = readPrefix();
                     while (subRecordListTypeMapping.getPrefixes().contains(prefix)) {
-                        TypeMapping<?> listItemTypeMapping = getTypeMapping(subRecordListTypeMapping.getNodeModel(
-                                prefix).getDataTypeName());
+                        TypeMapping<?> listItemTypeMapping = getTypeMapping(subRecordListTypeMapping
+                                .getRecordMapping(prefix).getDataTypeName());
                         Object listItemValue = readValue(listItemTypeMapping);
                         if (listItemValue != null) {
                             fieldValue.add(listItemValue);

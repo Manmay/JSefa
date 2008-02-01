@@ -31,8 +31,7 @@ import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
 
 /**
- * Tests to test implicit lists with <code>String</code> elements and elements
- * of different depth.
+ * Tests to test implicit lists with <code>String</code> elements and elements of different depth.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
@@ -111,25 +110,25 @@ public class ImplicitListTypeTest extends TestCase {
 
     @XmlDataType()
     static final class ListWithStringElements extends AbstractTestDTO {
-        @XmlElementList(implicit = true, items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(implicit = true, items = {@ListItem(name = "item")})
         List<String> list;
     }
 
     @XmlDataType()
     static final class ListWithDepth0Elements extends AbstractTestDTO {
-        @XmlElementList(implicit = true, items = {@ListItem(name = "item", objectType = Depth0DTO.class)})
+        @XmlElementList(implicit = true, items = {@ListItem(name = "item")})
         List<Depth0DTO> list;
     }
 
     @XmlDataType()
     static final class ListWithDepth1Elements extends AbstractTestDTO {
-        @XmlElementList(implicit = true, items = {@ListItem(name = "item", objectType = Depth1DTO.class)})
+        @XmlElementList(implicit = true, items = {@ListItem(name = "item")})
         List<Depth1DTO> list;
     }
 
     @XmlDataType()
     static final class ListWithDepth2Elements extends AbstractTestDTO {
-        @XmlElementList(implicit = true, items = {@ListItem(name = "item", objectType = Depth2DTO.class)})
+        @XmlElementList(implicit = true, items = {@ListItem(name = "item")})
         List<Depth2DTO> list;
     }
 

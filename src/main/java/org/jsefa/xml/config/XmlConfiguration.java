@@ -31,8 +31,7 @@ import org.jsefa.xml.namespace.NamespaceManager;
 import org.jsefa.xml.namespace.QName;
 
 /**
- * A configuration object used when creating an XML IO factory. It uses lazy
- * initialization.
+ * A configuration object used when creating an XML IO factory. It uses lazy initialization.
  * 
  * @see Configuration
  * @author Norman Lahme-Huetig
@@ -71,8 +70,8 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
      */
     public XmlDataTypeDefaultNameRegistry getDataTypeDefaultNameRegistry() {
         if (this.dataTypeDefaultNameRegistry == null) {
-            XmlDataTypeDefaultNameRegistry initialRegistry = InitialConfiguration.get(DATA_TYPE_DEFAULT_NAME_REGISTRY,
-                    DEFAULT_DATA_TYPE_DEFAULT_NAME_REGISTRY_PROVIDER);
+            XmlDataTypeDefaultNameRegistry initialRegistry = InitialConfiguration.get(
+                    DATA_TYPE_DEFAULT_NAME_REGISTRY, DEFAULT_DATA_TYPE_DEFAULT_NAME_REGISTRY_PROVIDER);
             this.dataTypeDefaultNameRegistry = initialRegistry.createCopy();
         }
         return this.dataTypeDefaultNameRegistry;
@@ -100,8 +99,7 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
     }
 
     /**
-     * Returns the <code>NamespaceManager</code> to be used for serialization
-     * only.
+     * Returns the <code>NamespaceManager</code> to be used for serialization only.
      * 
      * @return a the namespace manager
      * @see XmlLowLevelConfiguration#getNamespaceManager
@@ -160,8 +158,7 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
     }
 
     /**
-     * Sets the name of the attribute that denotes the data type of the
-     * respective element.
+     * Sets the name of the attribute that denotes the data type of the respective element.
      * 
      * @param dataTypeAttributeName the data type attribute name
      * @see XmlLowLevelConfiguration#setDataTypeAttributeName
@@ -197,9 +194,10 @@ public final class XmlConfiguration extends Configuration<XmlTypeMappingRegistry
     protected XmlTypeMappingRegistry createDefaultTypeMappingRegistry() {
         return new XmlTypeMappingRegistry();
     }
-    
+
     /**
      * Set of default configuration values.
+     * 
      * @author Norman Lahme-Huetig
      */
     public interface Defaults {

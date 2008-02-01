@@ -31,9 +31,10 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
     private final String lineBreak;
 
     private Writer writer;
-    
+
     /**
      * Constructs a new <code>RbfLowLevelSerializerImpl</code>.
+     * 
      * @param lineBreak the line break to use
      */
     public RbfLowLevelSerializerImpl(String lineBreak) {
@@ -68,19 +69,19 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
             }
         }
     }
-    
+
     /**
      * Called after opening a new input stream. Override to perform extra action.
      */
     protected void afterOpen() {
-        
+
     }
-    
+
     /**
      * Called before a record is finished. Override to perform extra action.
      */
     protected void beforeFinishRecord() {
-        
+
     }
 
     /**
@@ -108,14 +109,13 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
             throw new SerializationException(e);
         }
     }
-    
+
     private void writeNewLine() {
         try {
             this.writer.write(this.lineBreak);
         } catch (IOException e) {
             throw new SerializationException(e);
         }
-    }    
-    
+    }
 
 }

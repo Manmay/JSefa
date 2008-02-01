@@ -29,8 +29,8 @@ import org.jsefa.xml.namespace.QName;
 public interface XmlLowLevelSerializer extends LowLevelSerializer {
 
     /**
-     * Writes the XML Declaration. Note that the encoding parameter does not set
-     * the actual encoding of the underlying writer.
+     * Writes the XML Declaration. Note that the encoding parameter does not set the actual encoding of the
+     * underlying writer.
      * 
      * @param version version of the xml document
      * @param encoding encoding of the xml declaration
@@ -62,8 +62,8 @@ public interface XmlLowLevelSerializer extends LowLevelSerializer {
     void writeAttribute(QName name, String value);
 
     /**
-     * Writes the given text as the content of the current element if the text
-     * is not empty. Otherwise nothing happens.
+     * Writes the given text as the content of the current element if the text is not empty. Otherwise nothing
+     * happens.
      * 
      * @param text the text.
      */

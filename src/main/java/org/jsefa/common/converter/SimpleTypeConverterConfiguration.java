@@ -28,8 +28,8 @@ public final class SimpleTypeConverterConfiguration {
     private String[] format;
 
     /**
-     * The empty configuration. This indicates that the default configuration
-     * values should be used for the respective simple type converter.
+     * The empty configuration. This indicates that the default configuration values should be used for the
+     * respective simple type converter.
      */
     public static final SimpleTypeConverterConfiguration EMPTY = new SimpleTypeConverterConfiguration(null, null);
 

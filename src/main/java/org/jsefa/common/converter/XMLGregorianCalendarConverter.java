@@ -29,9 +29,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
  */
 public final class XMLGregorianCalendarConverter implements SimpleTypeConverter {
     private final DatatypeFactory factory;
-    
+
     /**
      * Constructs a <code>XMLGregorianCalendarConverter</code>.
+     * 
      * @return a xml gregorian calendar converter
      */
     public static XMLGregorianCalendarConverter create() {

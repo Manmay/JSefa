@@ -28,18 +28,15 @@ import org.jsefa.common.lowlevel.LowLevelDeserializer;
 public interface RbfLowLevelDeserializer extends LowLevelDeserializer {
 
     /**
-     * Reads the next record from the stream. Returns true, if it could be read
-     * and false otherwise.
+     * Reads the next record from the stream. Returns true, if it could be read and false otherwise.
      * 
-     * @return true, if another record could be read from the stream, otherwise
-     *         false.
+     * @return true, if another record could be read from the stream, otherwise false.
      * @throws DeserializationException
      */
     boolean readNextRecord();
 
     /**
-     * Unreads the already read record so that it can be read again with
-     * {@link #readNextRecord()}.
+     * Unreads the already read record so that it can be read again with {@link #readNextRecord()}.
      */
     void unreadRecord();
 

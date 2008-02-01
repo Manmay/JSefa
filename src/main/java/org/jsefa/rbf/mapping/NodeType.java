@@ -28,7 +28,7 @@ public enum NodeType {
      */
     FIELD,
     /**
-     * node type for sub records.
+     * node type for records.
      */
-    SUB_RECORD
+    RECORD
 }

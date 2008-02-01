@@ -18,8 +18,8 @@ package org.jsefa.xml;
 
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.jsefa.DeserializationException;
 import org.jsefa.SerializationException;
@@ -34,11 +34,13 @@ import org.jsefa.xml.lowlevel.model.TextContent;
 import org.jsefa.xml.lowlevel.model.XmlItem;
 import org.jsefa.xml.lowlevel.model.XmlItemType;
 import org.jsefa.xml.mapping.AttributeDescriptor;
+import org.jsefa.xml.mapping.AttributeMapping;
 import org.jsefa.xml.mapping.ElementDescriptor;
-import org.jsefa.xml.mapping.NodeModel;
+import org.jsefa.xml.mapping.ElementMapping;
+import org.jsefa.xml.mapping.NodeMapping;
 import org.jsefa.xml.mapping.TextContentDescriptor;
+import org.jsefa.xml.mapping.TextContentMapping;
 import org.jsefa.xml.mapping.XmlComplexTypeMapping;
-import org.jsefa.xml.mapping.XmlEntryPoint;
 import org.jsefa.xml.mapping.XmlListTypeMapping;
 import org.jsefa.xml.mapping.XmlSimpleTypeMapping;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
@@ -53,15 +55,16 @@ import org.jsefa.xml.namespace.QName;
 public final class XmlDeserializerImpl implements XmlDeserializer {
     private final XmlTypeMappingRegistry typeMappingRegistry;
 
-    private final Collection<XmlEntryPoint> entryPoints;
+    private final Map<ElementDescriptor, ElementMapping> entryElementMappings;
 
     private final XmlLowLevelDeserializer lowLevelDeserializer;
 
-    private XmlEntryPoint currentEntryPoint;
+    private ElementMapping currentEntryElementMapping;
 
-    XmlDeserializerImpl(XmlConfiguration config, XmlLowLevelDeserializer lowLevelDeserializer) {
+    XmlDeserializerImpl(XmlConfiguration config, Map<ElementDescriptor, ElementMapping> entryElementMappings,
+            XmlLowLevelDeserializer lowLevelDeserializer) {
         this.typeMappingRegistry = config.getTypeMappingRegistry();
-        this.entryPoints = config.getEntryPoints();
+        this.entryElementMappings = entryElementMappings;
         this.lowLevelDeserializer = lowLevelDeserializer;
     }
 
@@ -69,7 +72,7 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
      * {@inheritDoc}
      */
     public void open(Reader reader) {
-        this.currentEntryPoint = null;
+        this.currentEntryElementMapping = null;
         try {
             this.lowLevelDeserializer.open(reader);
         } catch (Exception e) {
@@ -85,8 +88,8 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
             if (!this.lowLevelDeserializer.hasNext()) {
                 return false;
             }
-            if (this.currentEntryPoint == null) {
-                return moveToNextEntryPoint();
+            if (this.currentEntryElementMapping == null) {
+                return moveToNextEntryElement();
             } else {
                 return true;
             }
@@ -106,13 +109,13 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
             if (!hasNext()) {
                 return null;
             }
-            return (T) deserializeElement(this.currentEntryPoint.getDataTypeName());
+            return (T) deserializeElement(this.currentEntryElementMapping.getDataTypeName());
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
             throw new DeserializationException("Error while deserializing", e);
         } finally {
-            this.currentEntryPoint = null;
+            this.currentEntryElementMapping = null;
         }
     }
 
@@ -150,22 +153,24 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     private Object deserializeComplexElement(XmlComplexTypeMapping typeMapping) {
         ObjectAccessor objectAccessor = typeMapping.getObjectAccessor();
         Object object = objectAccessor.createObject();
-        ElementStart elementStart = (ElementStart) getCurrentXmlItem();
+        ElementStart elementStart = getCurrentXmlItem();
         for (Attribute attribute : elementStart.getAttributes()) {
-            AttributeDescriptor attributeDescriptor = new AttributeDescriptor(attribute.getName(), null);
-            NodeModel nodeModel = typeMapping.getNodeModel(attributeDescriptor);
-            if (nodeModel != null) {
-                XmlSimpleTypeMapping attributeTypeMapping = getSimpleTypeMapping(nodeModel.getDataTypeName());
+            AttributeDescriptor attributeDescriptor = new AttributeDescriptor(attribute.getName());
+            AttributeMapping attributeMapping = typeMapping.getNodeMapping(attributeDescriptor);
+            if (attributeMapping != null) {
+                XmlSimpleTypeMapping attributeTypeMapping = getSimpleTypeMapping(attributeMapping
+                        .getDataTypeName());
                 Object value = attributeTypeMapping.getSimpleTypeConverter().fromString(attribute.getValue());
                 if (value != null) {
-                    objectAccessor.setValue(object, nodeModel.getFieldName(), value);
+                    objectAccessor.setValue(object, attributeMapping.getFieldDescriptor().getName(), value);
                 }
             }
         }
         if (typeMapping.isTextContentAllowed()) {
-            NodeModel textContentModel = typeMapping.getNodeModel(new TextContentDescriptor(null));
-            TypeMapping<QName> textContentTypeMapping = getSimpleTypeMapping(textContentModel.getDataTypeName());
-            String fieldName = textContentModel.getFieldName();
+            TextContentMapping textContentMapping = typeMapping
+                    .getNodeMapping(TextContentDescriptor.getInstance());
+            TypeMapping<QName> textContentTypeMapping = getSimpleTypeMapping(textContentMapping.getDataTypeName());
+            String fieldName = textContentMapping.getFieldDescriptor().getName();
             Object value = deserializeSimpleElement((XmlSimpleTypeMapping) textContentTypeMapping);
             if (value != null) {
                 objectAccessor.setValue(object, fieldName, value);
@@ -173,10 +178,10 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         } else {
             int childDepth = getCurrentDepth() + 1;
             while (moveToNextElement(childDepth)) {
-                NodeModel childNodeModel = typeMapping.getNodeModel(getCurrentElementDescriptor());
-                if (childNodeModel != null) {
-                    String fieldName = childNodeModel.getFieldName();
-                    Object value = deserializeElement(childNodeModel.getDataTypeName());
+                ElementMapping childElementMapping = typeMapping.getNodeMapping(getCurrentElementDescriptor());
+                if (childElementMapping != null) {
+                    String fieldName = childElementMapping.getFieldDescriptor().getName();
+                    Object value = deserializeElement(childElementMapping.getDataTypeName());
                     if (value != null) {
                         if (value instanceof List) {
                             List<Object> currentList = (List<Object>) objectAccessor.getValue(object, fieldName);
@@ -198,14 +203,14 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     private List<Object> deserializeListElement(XmlListTypeMapping typeMapping) {
         List<Object> listValue = new ArrayList<Object>();
         if (typeMapping.isImplicit()) {
-            listValue.add(deserializeElement(typeMapping.getNodeModel(getCurrentElementDescriptor())
+            listValue.add(deserializeElement(typeMapping.getElementMapping(getCurrentElementDescriptor())
                     .getDataTypeName()));
         } else {
             int childDepth = getCurrentDepth() + 1;
             while (moveToNextElement(childDepth)) {
-                NodeModel listItemNodeModel = typeMapping.getNodeModel(getCurrentElementDescriptor());
-                if (listItemNodeModel != null) {
-                    listValue.add(deserializeElement(listItemNodeModel.getDataTypeName()));
+                NodeMapping<?> listItemNodeMapping = typeMapping.getElementMapping(getCurrentElementDescriptor());
+                if (listItemNodeMapping != null) {
+                    listValue.add(deserializeElement(listItemNodeMapping.getDataTypeName()));
                 }
             }
         }
@@ -213,7 +218,7 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     }
 
     private ElementDescriptor getCurrentElementDescriptor() {
-        ElementStart elementStart = (ElementStart) getCurrentXmlItem();
+        ElementStart elementStart = getCurrentXmlItem();
         return new ElementDescriptor(elementStart.getName(), elementStart.getDataTypeName());
     }
 
@@ -230,14 +235,14 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         this.lowLevelDeserializer.moveToNext();
     }
 
-    private QName moveToNextElement() {
+    private boolean moveToNextElement() {
         while (this.lowLevelDeserializer.hasNext()) {
             moveToNextXmlItem();
             if (getCurrentXmlItemType() == XmlItemType.ELEMENT_START) {
-                return ((ElementStart) getCurrentXmlItem()).getName();
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     private boolean moveToNextElement(int elementDepth) {
@@ -256,26 +261,20 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         return false;
     }
 
-    private boolean moveToNextEntryPoint() {
-        this.currentEntryPoint = null;
-        QName elementName = moveToNextElement();
-        while (elementName != null) {
-            for (XmlEntryPoint entryPoint : this.entryPoints) {
-                if (entryPoint.getDesignator().equals(elementName)) {
-                    QName dataTypeName = ((ElementStart) getCurrentXmlItem()).getDataTypeName();
-                    if (dataTypeName == null || dataTypeName.equals(entryPoint.getDataTypeName())) {
-                        this.currentEntryPoint = entryPoint;
-                        return true;
-                    }
-                }
+    private boolean moveToNextEntryElement() {
+        this.currentEntryElementMapping = null;
+        while (moveToNextElement()) {
+            this.currentEntryElementMapping = this.entryElementMappings.get(getCurrentElementDescriptor());
+            if (this.currentEntryElementMapping != null) {
+                return true;
             }
-            elementName = moveToNextElement();
         }
         return false;
     }
 
-    private XmlItem getCurrentXmlItem() {
-        return this.lowLevelDeserializer.current();
+    @SuppressWarnings("unchecked")
+    private <T extends XmlItem> T getCurrentXmlItem() {
+        return (T) this.lowLevelDeserializer.current();
     }
 
     private XmlItemType getCurrentXmlItemType() {

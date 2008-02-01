@@ -27,8 +27,7 @@ import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
 
 /**
- * Tests to test the RBF serialization/deserialization of different DTOs
- * in/from one stream by using prefixes.
+ * Tests to test the RBF serialization/deserialization of different DTOs in/from one stream by using prefixes.
  * 
  * @author Norman Lahme-Huetig
  * 

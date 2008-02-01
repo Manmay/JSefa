@@ -73,9 +73,8 @@ public final class JSefaTestUtil {
     }
 
     /**
-     * Does a repeated round trip check, i. e. serializes the given dtos,
-     * deserializes them back again and tests if the result equals the input.
-     * This check is repeated several times.
+     * Does a repeated round trip check, i. e. serializes the given dtos, deserializes them back again and tests if
+     * the result equals the input. This check is repeated several times.
      * 
      * @param formatType the format type
      * @param dtos the DTOs
@@ -85,9 +84,8 @@ public final class JSefaTestUtil {
     }
 
     /**
-     * Does a repeated round trip check, i. e. serializes the given dtos,
-     * deserializes them back again and tests if the result equals the input.
-     * This check is repeated several times.
+     * Does a repeated round trip check, i. e. serializes the given dtos, deserializes them back again and tests if
+     * the result equals the input. This check is repeated several times.
      * 
      * @param formatType the format type
      * @param config the configuration
@@ -128,9 +126,10 @@ public final class JSefaTestUtil {
         IOFactory ioFactory = createIOFactory(formatType, config, getObjectTypes(Arrays.asList(objects)));
         return serialize(ioFactory, Arrays.asList(objects));
     }
-    
+
     /**
      * Serializes the given object using an {@link IOFactory} constructed for the given object type.
+     * 
      * @param formatType the format type
      * @param objectType the object type
      * @param object the object to serialize
@@ -145,8 +144,7 @@ public final class JSefaTestUtil {
     }
 
     /**
-     * Deserializes an object of the given DTO from the given
-     * <code>String</code>.
+     * Deserializes an object of the given DTO from the given <code>String</code>.
      * 
      * @param <T> the type of the object
      * @param formatType the format type
@@ -159,8 +157,7 @@ public final class JSefaTestUtil {
     }
 
     /**
-     * Deserializes an object of the given DTO from the given
-     * <code>String</code>.
+     * Deserializes an object of the given DTO from the given <code>String</code>.
      * 
      * @param <T> the type of the object
      * @param formatType the format type
@@ -184,6 +181,7 @@ public final class JSefaTestUtil {
 
     /**
      * Creates a default configuration for the given format type.
+     * 
      * @param formatType the format type
      * @return a configuration
      */
@@ -203,6 +201,7 @@ public final class JSefaTestUtil {
 
     /**
      * Creates a <code>IOFactory</code>.
+     * 
      * @param formatType the format type
      * @param objectTypes the object types
      * @return an <code>IOFactory</code>
@@ -224,6 +223,7 @@ public final class JSefaTestUtil {
 
     /**
      * Creates a <code>IOFactory</code>.
+     * 
      * @param formatType the format type
      * @param config the configuration
      * @param objectTypes the object types

@@ -26,7 +26,6 @@ import performance.DeepDTO.Level3DTO;
 import performance.DeepDTO.Level4DTO;
 import performance.DeepDTO.Level5DTO;
 
-
 /**
  * Factory for creating DTOs used in {@link AbstractPerformanceDemo}.
  * 
@@ -99,11 +98,11 @@ final class DTOFactory {
     private DTOFactory() {
 
     }
-    
+
     private static Date createDate(String date) {
         return createDate(date, "dd.MM.yyyy");
     }
-    
+
     private static Date createDate(String date, String format) {
         try {
             SimpleDateFormat df = new SimpleDateFormat(format);

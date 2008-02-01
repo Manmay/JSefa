@@ -27,8 +27,7 @@ public class ConversionException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new <code>ConversionException</code> with the specified
-     * detail messagage.
+     * Constructs a new <code>ConversionException</code> with the specified detail messagage.
      * 
      * @param message the detail message.
      */
@@ -37,8 +36,7 @@ public class ConversionException extends RuntimeException {
     }
 
     /**
-     * Constructs a new <code>ConversionException</code> with the specified
-     * detail messagage and cause.
+     * Constructs a new <code>ConversionException</code> with the specified detail messagage and cause.
      * 
      * @param message the detail message
      * @param cause the cause

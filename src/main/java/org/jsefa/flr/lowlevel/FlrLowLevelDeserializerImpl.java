@@ -20,8 +20,7 @@ import org.jsefa.flr.lowlevel.config.FlrLowLevelConfiguration;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
 
 /**
- * Implementation of {@link FlrLowLevelDeserializer} based on
- * {@link RbfLowLevelDeserializerImpl}.
+ * Implementation of {@link FlrLowLevelDeserializer} based on {@link RbfLowLevelDeserializerImpl}.
  * 
  * @author Norman Lahme-Huetig
  * 

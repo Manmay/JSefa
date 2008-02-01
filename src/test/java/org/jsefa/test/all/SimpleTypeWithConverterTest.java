@@ -40,8 +40,8 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests to test the serialization/deserialization of different simple
- * types with no explicit format but an explicit converter annotation.
+ * Tests to test the serialization/deserialization of different simple types with no explicit format but an
+ * explicit converter annotation.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig

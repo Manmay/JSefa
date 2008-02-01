@@ -22,21 +22,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A <code>NamespaceManager</code> manages namespace URIs and their prefixes.
- * It allows for <br>
- * 1. the registration of preferred prefixes for URIs (for root
- * <code>NamespaceManager</code>s only),<br>
- * 2. the registration of prefixes for URIs which are interpreted during
- * serialization as being known at the current point in document,<br>
+ * A <code>NamespaceManager</code> manages namespace URIs and their prefixes. It allows for <br>
+ * 1. the registration of preferred prefixes for URIs (for root <code>NamespaceManager</code>s only),<br>
+ * 2. the registration of prefixes for URIs which are interpreted during serialization as being known at the
+ * current point in document,<br>
  * 3. the retrieval of a prefix to a given URI<br>
  * 4. the retrieval of the URI to a given prefix<br>
  * 5. the creation of a new prefix for a new URI
  * <p>
- * A <code>NamespaceManager</code> may have a parent
- * <code>NamespaceManager</code> to which retrieval requests are delegated if
- * it has no own registries or if it has no result to the request. A
- * <code>NamespaceManager</code> without a parent is called a root namespace
- * manager.
+ * A <code>NamespaceManager</code> may have a parent <code>NamespaceManager</code> to which retrieval requests
+ * are delegated if it has no own registries or if it has no result to the request. A <code>NamespaceManager</code>
+ * without a parent is called a root namespace manager.
  * <p>
  * Note: Instances of this class are intentionally not thread-safe.
  * 
@@ -66,8 +62,7 @@ public final class NamespaceManager {
     }
 
     /**
-     * Creates a new <code>NamespaceManager</code> with the given
-     * <code>NamespaceManager</code> as its parent.
+     * Creates a new <code>NamespaceManager</code> with the given <code>NamespaceManager</code> as its parent.
      * 
      * @param parent the parent of this namespace manager.
      * @return a <code>NamespaceManager</code>
@@ -99,9 +94,8 @@ public final class NamespaceManager {
     }
 
     /**
-     * Creates a copy of this <code>NamespaceManager</code>. The copy has its
-     * own registries but has the same (identical) parent as the this
-     * <code>NamespaceManager</code>.
+     * Creates a copy of this <code>NamespaceManager</code>. The copy has its own registries but has the same
+     * (identical) parent as the this <code>NamespaceManager</code>.
      * 
      * @return a copy of this <code>NamespaceManager</code>
      */
@@ -110,8 +104,7 @@ public final class NamespaceManager {
     }
 
     /**
-     * Returns the parent namespace manager of this namespace manager - if
-     * exists.
+     * Returns the parent namespace manager of this namespace manager - if exists.
      * 
      * @return the parent namespace manager or null if none exists.
      */
@@ -120,9 +113,9 @@ public final class NamespaceManager {
     }
 
     /**
-     * Registers the given prefix to be the preferred one for the given URI. I.
-     * e. if a prefix is needed (call of {@link #getOrCreatePrefix}) for that
-     * URI the given preferred one is used and not an automatically created one.
+     * Registers the given prefix to be the preferred one for the given URI. I. e. if a prefix is needed (call of
+     * {@link #getOrCreatePrefix}) for that URI the given preferred one is used and not an automatically created
+     * one.
      * 
      * @param prefix the preferred prefix
      * @param uri the URI
@@ -139,19 +132,17 @@ public final class NamespaceManager {
     /**
      * Registers the given prefix for the given namespace uri.
      * <p>
-     * During serialization a registered prefix is interpretated is being known
-     * at the current point in the xml document.
+     * During serialization a registered prefix is interpretated is being known at the current point in the xml
+     * document.
      * <p>
-     * Note: Normally it is {@link #registerPreferredPrefix} what you want to
-     * call.
+     * Note: Normally it is {@link #registerPreferredPrefix} what you want to call.
      * 
      * @param prefix the prefix
      * @param uri the uri
      * @throws NullPointerException if one of the arguments is null
      * @throws NamespaceRegistrationException if <br>
      *                 1. the prefix is already bound to another uri<br>
-     *                 2. the prefix is an explicit prefix and the uri is
-     *                 already bound to another explicit prefix
+     *                 2. the prefix is an explicit prefix and the uri is already bound to another explicit prefix
      */
     public void registerPrefix(String prefix, String uri) {
         if (prefix == null || uri == null) {
@@ -187,12 +178,12 @@ public final class NamespaceManager {
     }
 
     /**
-     * Returns the prefix which is registered for the given namespace uri. If
-     * this namespace manager has no registration for the given uri, then its
-     * parent namespace manager is asked for it (in the case a parent exists).
+     * Returns the prefix which is registered for the given namespace uri. If this namespace manager has no
+     * registration for the given uri, then its parent namespace manager is asked for it (in the case a parent
+     * exists).
      * <p>
-     * If the parent namespace manager returns a prefix which is known for this
-     * namespace manager (the prefix is overwritten), then null is returned.
+     * If the parent namespace manager returns a prefix which is known for this namespace manager (the prefix is
+     * overwritten), then null is returned.
      * 
      * @param uri the namespace uri
      * @param defaultAllowed true, if the prefix may be the default one.
@@ -223,9 +214,8 @@ public final class NamespaceManager {
     }
 
     /**
-     * Returns the registered prefix for the given namespace uri or creates a
-     * new one and registers it. For the latter case a preferred prefix is
-     * returned if it exists for the given URI and if the prefix is not already
+     * Returns the registered prefix for the given namespace uri or creates a new one and registers it. For the
+     * latter case a preferred prefix is returned if it exists for the given URI and if the prefix is not already
      * bound to another URI.
      * 
      * @param uri the uri to get a prefix for
@@ -257,9 +247,8 @@ public final class NamespaceManager {
     }
 
     /**
-     * Returns the namespace uri the given prefix is registered for. If this
-     * namespace manager has no registration for the given prefix, than its
-     * parent namespace manager is asked for it (in the case a parent exists).
+     * Returns the namespace uri the given prefix is registered for. If this namespace manager has no registration
+     * for the given prefix, than its parent namespace manager is asked for it (in the case a parent exists).
      * 
      * @param prefix the prefix
      * @return the uri or null if none is registered for the given prefix

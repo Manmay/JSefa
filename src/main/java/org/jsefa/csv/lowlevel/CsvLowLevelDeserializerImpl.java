@@ -23,8 +23,7 @@ import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
 
 /**
- * Implementation of {@link CsvLowLevelDeserializer} based on
- * {@link RbfLowLevelDeserializerImpl}.
+ * Implementation of {@link CsvLowLevelDeserializer} based on {@link RbfLowLevelDeserializerImpl}.
  * 
  * @author Norman Lahme-Huetig
  * 

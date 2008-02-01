@@ -19,23 +19,75 @@ package org.jsefa.xml.mapping;
 import org.jsefa.xml.namespace.QName;
 
 /**
- * Descriptor for a xml attribute.
+ * Descriptor for an xml attribute.
  * <p>
  * Instances of this class are immutable and thread safe.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public final class AttributeDescriptor extends NodeDescriptor {
+public final class AttributeDescriptor implements NodeDescriptor {
+
+    private final QName name;
+
+    private final int hashCode;
 
     /**
      * Constructs a new <code>AttributeDescriptor</code>.
      * 
      * @param name the name of the attribute
-     * @param dataTypeName the name of its data type
      */
-    public AttributeDescriptor(QName name, QName dataTypeName) {
-        super(name, dataTypeName, NodeType.ATTRIBUTE);
+    public AttributeDescriptor(QName name) {
+        this.name = name;
+        this.hashCode = calculateHashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public NodeType getType() {
+        return NodeType.ATTRIBUTE;
+    }
+
+    /**
+     * Returns the name of the attribute.
+     * 
+     * @return the attribute name
+     */
+    public QName getName() {
+        return this.name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        return this.hashCode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof AttributeDescriptor)) {
+            return false;
+        }
+        final AttributeDescriptor other = (AttributeDescriptor) obj;
+        return name.equals(other.name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return getName().toString();
+    }
+
+    private int calculateHashCode() {
+        return name.hashCode();
     }
 
 }

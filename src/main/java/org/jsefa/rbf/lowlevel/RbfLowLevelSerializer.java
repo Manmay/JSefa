@@ -26,10 +26,10 @@ import org.jsefa.common.lowlevel.LowLevelSerializer;
  */
 
 public interface RbfLowLevelSerializer extends LowLevelSerializer {
-    
+
     /**
      * Finishes the current record.
      */
     void finishRecord();
-    
+
 }

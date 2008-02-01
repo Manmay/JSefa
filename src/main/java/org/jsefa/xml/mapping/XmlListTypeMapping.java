@@ -16,16 +16,18 @@
 
 package org.jsefa.xml.mapping;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.common.mapping.TypeMappingException;
 import org.jsefa.xml.namespace.QName;
 
 /**
  * A mapping between a java object type and a XML list data type.
+ * <p>
+ * Instances of this class are immutable and thread safe.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig
@@ -35,86 +37,55 @@ public final class XmlListTypeMapping extends TypeMapping<QName> {
 
     private final boolean implicit;
 
-    private final Map<NodeDescriptor, NodeModel> nodeModelsByNodeDescriptor;
+    private final Map<ElementDescriptor, ElementMapping> elementMappingsByElementDescriptor;
 
-    private final Map<Class<?>, NodeModel> nodeModelsByObjectType;
+    private final Map<Class<?>, ElementMapping> elementMappingsByObjectType;
 
     /**
      * Constructs a new <code>XmlListTypeMapping</code>.
      * 
      * @param dataTypeName the data type name
-     * @param implicit true, if there is no embracing element around the list
-     *            items; false otherwise
+     * @param implicit true, if there is no embracing element around the list items; false otherwise
+     * @param elementMappings the element mappings
      */
-    public XmlListTypeMapping(QName dataTypeName, boolean implicit) {
+    public XmlListTypeMapping(QName dataTypeName, boolean implicit, Collection<ElementMapping> elementMappings) {
         super(List.class, dataTypeName);
         this.implicit = implicit;
-        this.nodeModelsByNodeDescriptor = new HashMap<NodeDescriptor, NodeModel>();
-        this.nodeModelsByObjectType = new HashMap<Class<?>, NodeModel>();
+        this.elementMappingsByElementDescriptor = XmlTypeMappingUtil
+                .createNodeMappingsByNodeDescriptorMap(elementMappings);
+        this.elementMappingsByObjectType = createElementMappingsByObjectTypeMap(elementMappings);
     }
 
     /**
-     * Specifies which list item object type maps to which element.
-     * 
-     * @param elementDescriptor the element descriptor
-     * @param objectType the object type
-     */
-    public void register(ElementDescriptor elementDescriptor, Class<?> objectType) {
-        assertNotFinished();
-        if (this.nodeModelsByNodeDescriptor.containsKey(elementDescriptor)) {
-            throw new TypeMappingException("The element " + elementDescriptor.getName()
-                    + " is already registered for the list with data type name " + this.getDataTypeName());
-        }
-        if (this.nodeModelsByObjectType.containsKey(objectType)) {
-            throw new TypeMappingException("The object type " + objectType.getName()
-                    + " is already registered for the list with data type name " + this.getDataTypeName());
-        }
-        NodeModel nodeModel = new NodeModel(elementDescriptor, null);
-        this.nodeModelsByNodeDescriptor.put(elementDescriptor, nodeModel);
-        this.nodeModelsByObjectType.put(objectType, nodeModel);
-    }
-    
-    /**
      * Returns true, if an element descriptor is already bound to the given object type.
+     * 
      * @param objectType the object type
      * @return true, if an element descriptor is already bound to the given object type; false otherwise
      */
     public boolean hasRegistrationFor(Class<?> objectType) {
-        return this.nodeModelsByObjectType.containsKey(objectType);
+        return this.elementMappingsByObjectType.containsKey(objectType);
     }
 
     /**
-     * Finishes the construction of the type mapping. This method must be called
-     * after the last call to <code>register</code>.
-     */
-    public void finish() {
-        XmlTypeMappingUtil.finishNodeModelsByNodeDescriptor(this.nodeModelsByNodeDescriptor);
-        super.finish();
-    }
-
-    /**
-     * Returns true, if there is no embracing element around the list items;
-     * false otherwise.
+     * Returns true, if there is no embracing element around the list items; false otherwise.
      * 
-     * @return true, if there is no embracing element around the list items;
-     *         false otherwise
+     * @return true, if there is no embracing element around the list items; false otherwise
      */
     public boolean isImplicit() {
         return this.implicit;
     }
 
     /**
-     * Returns the node model for a list item object with the given object type.
-     * If none is registered for the object type the one for its super type is
-     * returned (and so on).
+     * Returns the element mapping for a list item object with the given object type. If none is registered for the
+     * object type the one for its super type is returned (and so on).
      * 
      * @param objectType the object type.
-     * @return the node model.
+     * @return the element mapping
      */
-    public NodeModel getNodeModel(Class<?> objectType) {
+    public ElementMapping getElementMapping(Class<?> objectType) {
         Class<?> currentObjectType = objectType;
         while (currentObjectType != null) {
-            NodeModel result = this.nodeModelsByObjectType.get(currentObjectType);
+            ElementMapping result = this.elementMappingsByObjectType.get(currentObjectType);
             if (result != null) {
                 return result;
             }
@@ -124,13 +95,22 @@ public final class XmlListTypeMapping extends TypeMapping<QName> {
     }
 
     /**
-     * Returns the node model for the given element descriptor.
+     * Returns the element mapping for the given element descriptor.
      * 
      * @param elementDescriptor the element descriptor
-     * @return the node model
+     * @return the element mapping
      */
-    public NodeModel getNodeModel(ElementDescriptor elementDescriptor) {
-        return this.nodeModelsByNodeDescriptor.get(elementDescriptor);
+    public ElementMapping getElementMapping(ElementDescriptor elementDescriptor) {
+        return this.elementMappingsByElementDescriptor.get(elementDescriptor);
+    }
+
+    private Map<Class<?>, ElementMapping> createElementMappingsByObjectTypeMap(
+            Collection<ElementMapping> elementMappings) {
+        Map<Class<?>, ElementMapping> result = new HashMap<Class<?>, ElementMapping>();
+        for (ElementMapping elementMapping : elementMappings) {
+            result.put(elementMapping.getObjectType(), elementMapping);
+        }
+        return result;
     }
 
 }

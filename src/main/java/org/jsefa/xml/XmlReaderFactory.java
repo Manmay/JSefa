@@ -31,12 +31,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Factory for creating {@link Reader} from different sources suitable to read a
- * xml document providing autodetection of the character set encoding.
+ * Factory for creating {@link Reader} from different sources suitable to read a xml document providing
+ * autodetection of the character set encoding.
  * <p>
  * The autodetection mechanism follows the recommendations of <a
- * href="http://www.w3.org/TR/2004/REC-xml-20040204/#sec-guessing">Section F.1
- * of the XML specification</a>.
+ * href="http://www.w3.org/TR/2004/REC-xml-20040204/#sec-guessing">Section F.1 of the XML specification</a>.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -72,13 +71,13 @@ public final class XmlReaderFactory {
             .compile("<\\?xml.*encoding\\s*=\\s*((?:\"[^\"]*\")|(?:'[^']*')).*\\?>");
 
     /**
-     * Creates a <code>Reader</code> from the given <code>File</code> with
-     * an autodetected character set encoding.
+     * Creates a <code>Reader</code> from the given <code>File</code> with an autodetected character set
+     * encoding.
      * 
      * @param file the file to create a reader for
      * @return a <code>Reader</code>
-     * @throws XmlEncodingException if an unsupported encoding is detected or an
-     *             error occurs while encoding detection
+     * @throws XmlEncodingException if an unsupported encoding is detected or an error occurs while encoding
+     *                 detection
      */
     public static Reader create(File file) {
         try {
@@ -89,13 +88,13 @@ public final class XmlReaderFactory {
     }
 
     /**
-     * Creates a <code>Reader</code> from the given <code>InputStream</code>
-     * with an autodetected character set encoding.
+     * Creates a <code>Reader</code> from the given <code>InputStream</code> with an autodetected character set
+     * encoding.
      * 
      * @param inputStream the input stream to create a reader for
      * @return a <code>Reader</code>
-     * @throws XmlEncodingException if an unsupported encoding is detected or an
-     *             error occurs while encoding detection
+     * @throws XmlEncodingException if an unsupported encoding is detected or an error occurs while encoding
+     *                 detection
      */
     public static Reader create(InputStream inputStream) {
         PushbackInputStream pushbackInputStream = new PushbackInputStream(inputStream, 128);

@@ -30,33 +30,29 @@ import org.jsefa.flr.config.FlrInitialConfigurationParameters;
 /**
  * Factory for creating {@link FlrSerializer}s and {@link FlrDeserializer}s.
  * <p>
- * This is the abstract base class for concrete factories. Each subclass must
- * provide a static method <code>create(FlrConfiguration config)</code> as
- * well as implement the abstract methods.
+ * This is the abstract base class for concrete factories. Each subclass must provide a static method
+ * <code>create(FlrConfiguration config)</code> as well as implement the abstract methods.
  * <p>
- * This class provides a static factory method
- * {@link #createFactory(FlrConfiguration)} to create an instance of a concrete
- * <code>FlrIOFactory</code>.
+ * This class provides a static factory method {@link #createFactory(FlrConfiguration)} to create an instance of a
+ * concrete <code>FlrIOFactory</code>.
  * <p>
- * This class also provides static facade methods hiding the details of
- * creating entry points based on annotated object types.
+ * This class also provides static facade methods hiding the details of creating entry points based on annotated
+ * object types.
  * 
  * @author Norman Lahme-Huetig
  */
 public abstract class FlrIOFactory implements IOFactory {
 
     /**
-     * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s
-     * and <code>FlrDeserializer</code>s using the given configuration.
+     * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s and
+     * <code>FlrDeserializer</code>s using the given configuration.
      * <p>
-     * Note that the configuration should provide a non empty collection of
-     * entry points.<br>
+     * Note that the configuration should provide a non empty collection of entry points.<br>
      * You can use the methods {@link #createFactory(Class...)} or
-     * {@link #createFactory(FlrConfiguration, Class...)} if you want to get the
-     * entry points automatically created from annotated classes.
+     * {@link #createFactory(FlrConfiguration, Class...)} if you want to get the entry points automatically created
+     * from annotated classes.
      * 
-     * @param config the configuration object. It will be copied so that the
-     *                given one can be modified or reused.
+     * @param config the configuration object. It will be copied so that the given one can be modified or reused.
      * @return an <code>FlrIOFactory</code> factory
      * @throws IOFactoryException
      */
@@ -76,16 +72,14 @@ public abstract class FlrIOFactory implements IOFactory {
     }
 
     /**
-     * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s
-     * and <code>FlrDeserializer</code>s which can handle objects of the
-     * given object types.
+     * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s and
+     * <code>FlrDeserializer</code>s which can handle objects of the given object types.
      * <p>
      * 
-     * It creates a new {@link FlrConfiguration} with entry points generated
-     * from the annotations found in the given object types.
+     * It creates a new {@link FlrConfiguration} with entry points generated from the annotations found in the
+     * given object types.
      * 
-     * @param objectTypes object types for which entry points should be created
-     *                from annotations
+     * @param objectTypes object types for which entry points should be created from annotations
      * @return a <code>FlrIOFactory</code> factory
      * @throws IOFactoryException
      */
@@ -94,15 +88,12 @@ public abstract class FlrIOFactory implements IOFactory {
     }
 
     /**
-     * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s
-     * and <code>FlrDeserializer</code>s which can handle objects of the
-     * given object types as well as those object types for which entry points
-     * are defined in the <code>config</code>.
+     * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s and
+     * <code>FlrDeserializer</code>s which can handle objects of the given object types as well as those object
+     * types for which entry points are defined in the <code>config</code>.
      * 
-     * @param config the configuration object. It will be copied so that the
-     *                given one can be modified or reused.
-     * @param objectTypes object types for which entry points should be created
-     *                from annotations
+     * @param config the configuration object. It will be copied so that the given one can be modified or reused.
+     * @param objectTypes object types for which entry points should be created from annotations
      * @return a a <code>FlrIOFactory</code> factory
      * @throws IOFactoryException
      */

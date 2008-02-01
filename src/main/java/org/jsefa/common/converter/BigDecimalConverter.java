@@ -25,8 +25,8 @@ import java.util.Locale;
 
 /**
  * Converter for <code>BigDecimal</code> objects.<br>
- * The format consists of two <code>String</code>s. The first denotes the
- * {@link Locale} and the second is a pattern as used by {@link DecimalFormat}.<br>
+ * The format consists of two <code>String</code>s. The first denotes the {@link Locale} and the second is a
+ * pattern as used by {@link DecimalFormat}.<br>
  * <p>
  * It is thread-safe.
  * 
@@ -44,8 +44,7 @@ public class BigDecimalConverter implements SimpleTypeConverter {
 
     /**
      * Creates a <code>BigDecimalConverter</code>.<br>
-     * If no format is given, the default format (see
-     * {@link #getDefaultFormat()}) is used.
+     * If no format is given, the default format (see {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration
      * @return a big decimal converter
@@ -57,8 +56,7 @@ public class BigDecimalConverter implements SimpleTypeConverter {
 
     /**
      * Constructs a new <code>BigDecimalConverter</code>.<br>
-     * If no format is given, the default format (see
-     * {@link #getDefaultFormat()}) is used.
+     * If no format is given, the default format (see {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration
      * @throws ConversionException if the given format is not valid.

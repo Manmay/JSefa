@@ -39,21 +39,19 @@ public @interface CsvField {
     /**
      * The position of the field with the following semantic:
      * <p>
-     * If the position of a field A is less than the position of a field B, than
-     * field A comes (not necessarily directly) before field B.<br>
+     * If the position of a field A is less than the position of a field B, than field A comes (not necessarily
+     * directly) before field B.<br>
      * The positions of all fields must specify a total order.
      */
     int pos();
 
     /**
-     * The name of the data type of the CSV field this annotation describes. If
-     * not set, it must be determinable from the type of the annotated java
-     * field.
+     * The name of the data type of the CSV field this annotation describes. If not set, it must be determinable
+     * from the type of the annotated java field.
      * <p>
-     * It should be explicitly set if the type mapping should not be created
-     * from the annotations given in the class of the annotated field. This is
-     * useful when mixing explicit type mapping creation with annotation based
-     * type mapping creation.
+     * It should be explicitly set if the type mapping should not be created from the annotations given in the
+     * class of the annotated field. This is useful when mixing explicit type mapping creation with annotation
+     * based type mapping creation.
      */
     String dataTypeName() default "";
 
@@ -63,15 +61,14 @@ public @interface CsvField {
     QuoteMode quoteMode() default QuoteMode.DEFAULT;
 
     /**
-     * The format to be used to construct a <code>SimpleTypeConverter</code>
-     * for this field. The <code>SimpleTypeConverter</code> class will be
-     * determined using the type of the annotated java field.
+     * The format to be used to construct a <code>SimpleTypeConverter</code> for this field. The
+     * <code>SimpleTypeConverter</code> class will be determined using the type of the annotated java field.
      */
     String[] format() default {};
 
     /**
-     * Specifies the converter type to be used. In the default case the
-     * converter type is determined using the type of the annotated java field.
+     * Specifies the converter type to be used. In the default case the converter type is determined using the type
+     * of the annotated java field.
      */
     Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;
 }

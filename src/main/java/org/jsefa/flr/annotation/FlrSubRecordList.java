@@ -37,8 +37,8 @@ public @interface FlrSubRecordList {
     /**
      * The position of the field with the following semantic:
      * <p>
-     * If the position of a field A is less than the position of a field B, than
-     * field A comes (not necessarily directly) before field B.<br>
+     * If the position of a field A is less than the position of a field B, than field A comes (not necessarily
+     * directly) before field B.<br>
      * The positions of all fields must specify a total order of the fields.
      * 
      */

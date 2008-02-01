@@ -26,16 +26,13 @@ import org.jsefa.flr.lowlevel.config.FlrLowLevelConfiguration;
 import org.jsefa.flr.lowlevel.config.FlrLowLevelInitialConfigurationParameters;
 
 /**
- * Factory for creating {@link FlrLowLevelDeserializer}s and
- * {@link FlrLowLevelSerializer}s.
+ * Factory for creating {@link FlrLowLevelDeserializer}s and {@link FlrLowLevelSerializer}s.
  * 
- * This is the abstract base class for concrete factories. Each subclass must
- * provide a static method <code>create(FlrLowLevelConfiguration config)</code>
- * as well as implement the abstract methods.
+ * This is the abstract base class for concrete factories. Each subclass must provide a static method
+ * <code>create(FlrLowLevelConfiguration config)</code> as well as implement the abstract methods.
  * <p>
- * This class provides a static factory method
- * {@link #createFactory(FlrLowLevelConfiguration)} to create an instance of a
- * concrete <code>FlrLowLevelIOFactory</code>.
+ * This class provides a static factory method {@link #createFactory(FlrLowLevelConfiguration)} to create an
+ * instance of a concrete <code>FlrLowLevelIOFactory</code>.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -43,8 +40,7 @@ import org.jsefa.flr.lowlevel.config.FlrLowLevelInitialConfigurationParameters;
 public abstract class FlrLowLevelIOFactory implements LowLevelIOFactory {
 
     /**
-     * Creates a new <code>FlrLowLevelIOFactory</code> for
-     * <code>FlrLowLevelSerializer</code>s and
+     * Creates a new <code>FlrLowLevelIOFactory</code> for <code>FlrLowLevelSerializer</code>s and
      * <code>FlrLowLevelDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.
@@ -53,7 +49,8 @@ public abstract class FlrLowLevelIOFactory implements LowLevelIOFactory {
      */
     public static FlrLowLevelIOFactory createFactory(FlrLowLevelConfiguration config) {
         Class<FlrLowLevelIOFactory> factoryClass = InitialConfiguration.get(
-                FlrLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS, FlrLowLevelIOFactoryImpl.class);
+                FlrLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS,
+                FlrLowLevelIOFactoryImpl.class);
         Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
                 FlrLowLevelConfiguration.class);
         if (createMethod == null) {

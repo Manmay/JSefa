@@ -35,11 +35,11 @@ public interface LowLevelDeserializer {
     void open(Reader reader);
 
     /**
-     * Closes the deserialization stream. The underlying reader will be closed
-     * only if <code>closeReader</code> is true.
+     * Closes the deserialization stream. The underlying reader will be closed only if <code>closeReader</code>
+     * is true.
      * 
      * @param closeReader if true, the underlying reader will be closed, too.
      * @throws DeserializationException
      */
-    void close(boolean closeReader);    
+    void close(boolean closeReader);
 }

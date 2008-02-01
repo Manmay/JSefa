@@ -22,12 +22,10 @@ import org.jsefa.Serializer;
  * Iterator-style interface for stream based FLR serializer.
  * <p>
  * Note on handling of <code>null</code> values:<br>
- * 1. <code>null</code> values of simple types (e.g. <code>String</code> or
- * <code>Date</code>) will be serialized to a sequence of pad characters with
- * the respective field length.<br>
- * 2. <code>null</code> values of complex types (classes annotated with
- * <code>FlrDataType</code>) will be serialized to a sequence of sequences of
- * pad characters according to the fields of the complex type.
+ * 1. <code>null</code> values of simple types (e.g. <code>String</code> or <code>Date</code>) will be
+ * serialized to a sequence of pad characters with the respective field length.<br>
+ * 2. <code>null</code> values of complex types (classes annotated with <code>FlrDataType</code>) will be
+ * serialized to a sequence of sequences of pad characters according to the fields of the complex type.
  * 
  * @see Serializer
  * @author Norman Lahme-Huetig

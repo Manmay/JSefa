@@ -18,16 +18,14 @@ package org.jsefa.xml.lowlevel.model;
 
 import org.jsefa.xml.namespace.QName;
 
-
 /**
  * Implementation of {@link ElementStart}.
  * <p>
- * For performance reason no defensive copy of the attributes is made. A new
- * instance of <code>ElementStartImpl</code> takes control of the given array
- * of attributes. Furthermore {@link #getAttributes} directly returns this list -
- * no copy or view is created. Thus a client must not change the array of
- * attributes after creating a new <code>ElementStartImpl</code> and must not
- * change the result of {@link #getAttributes}.
+ * For performance reason no defensive copy of the attributes is made. A new instance of
+ * <code>ElementStartImpl</code> takes control of the given array of attributes. Furthermore
+ * {@link #getAttributes} directly returns this list - no copy or view is created. Thus a client must not change
+ * the array of attributes after creating a new <code>ElementStartImpl</code> and must not change the result of
+ * {@link #getAttributes}.
  * <p>
  * Respecting this an instance of this class is thread-safe.
  * 
@@ -46,8 +44,8 @@ public final class ElementStartImpl implements ElementStart {
     /**
      * Constructs a new <code>ElementStartImpl</code>.
      * <p>
-     * Note: the new <code>ElementStartImpl</code> takes control of the given
-     * <code>attributes</code> list; it makes no defensive copy of it.
+     * Note: the new <code>ElementStartImpl</code> takes control of the given <code>attributes</code> list; it
+     * makes no defensive copy of it.
      * 
      * @param name the name of the element
      * @param dataTypeName the data type name

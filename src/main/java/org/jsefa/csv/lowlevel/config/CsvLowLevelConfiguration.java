@@ -33,8 +33,8 @@ import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;
 import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
 
 /**
- * Configuration object for creating a {@link CsvLowLevelSerializer} or
- * {@link CsvLowLevelDeserializer}. It uses lazy initialization.
+ * Configuration object for creating a {@link CsvLowLevelSerializer} or {@link CsvLowLevelDeserializer}. It uses
+ * lazy initialization.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -112,8 +112,7 @@ public final class CsvLowLevelConfiguration extends LowLevelConfiguration {
     /**
      * Returns true if the last CSV field should end with a delimiter.
      * 
-     * @return true, if the last CSV field should end with a delimiter;
-     *         otherwise false
+     * @return true, if the last CSV field should end with a delimiter; otherwise false
      */
     public boolean getUseDelimiterAfterLastField() {
         if (this.useDelimiterAfterLastField == null) {
@@ -165,8 +164,7 @@ public final class CsvLowLevelConfiguration extends LowLevelConfiguration {
     /**
      * Specifies whether the last CSV field should end with a delimiter or not.
      * 
-     * @param useDelimiterAfterLastField true, if the last CSV field should end
-     *                with a delimiter; otherwise false.
+     * @param useDelimiterAfterLastField true, if the last CSV field should end with a delimiter; otherwise false.
      */
     public void setUseDelimiterAfterLastField(boolean useDelimiterAfterLastField) {
         this.useDelimiterAfterLastField = useDelimiterAfterLastField;
@@ -194,8 +192,7 @@ public final class CsvLowLevelConfiguration extends LowLevelConfiguration {
         char DEFAULT_ESCAPE_CHARACTER = '\\';
 
         /**
-         * The default field delimiter character used if none is explicitly
-         * given.
+         * The default field delimiter character used if none is explicitly given.
          */
         char DEFAULT_FIELD_DELIMITER = ';';
 
@@ -205,14 +202,12 @@ public final class CsvLowLevelConfiguration extends LowLevelConfiguration {
         char DEFAULT_QUOTE_CHARACTER = '\"';
 
         /**
-         * The default quote character escape mode used if none is explicitly
-         * given.
+         * The default quote character escape mode used if none is explicitly given.
          */
         EscapeMode DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE = EscapeMode.DOUBLING;
 
         /**
-         * The default value whether to use a delimiter after the line or not if
-         * none is explicitly given.
+         * The default value whether to use a delimiter after the line or not if none is explicitly given.
          */
         boolean DEFAULT_USE_DELIMITER_AFTER_LAST_FIELD = false;
 

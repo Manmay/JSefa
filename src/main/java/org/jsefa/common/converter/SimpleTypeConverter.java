@@ -33,8 +33,8 @@ public interface SimpleTypeConverter {
     String toString(Object value);
 
     /**
-     * Converts the given <code>String</code> object into an object with the
-     * simple data type this converter is intended for.
+     * Converts the given <code>String</code> object into an object with the simple data type this converter is
+     * intended for.
      * 
      * @param value the <code>String</code> object to convert
      * @return the converted value

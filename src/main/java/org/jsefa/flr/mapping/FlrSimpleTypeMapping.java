@@ -23,6 +23,8 @@ import org.jsefa.flr.lowlevel.Align;
 
 /**
  * A mapping between a java object type and a simple FLR data type.
+ * <p>
+ * Instances of this class are immutable and thread safe.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig
@@ -37,8 +39,7 @@ public final class FlrSimpleTypeMapping extends SimpleTypeMapping<String> {
     private final Align align;
 
     /**
-     * Constructs a new <code>FlrSimpleTypeMapping</code> from the given
-     * arguments.
+     * Constructs a new <code>FlrSimpleTypeMapping</code> from the given arguments.
      * 
      * @param objectType the object type
      * @param dataTypeName the data type name
@@ -53,7 +54,6 @@ public final class FlrSimpleTypeMapping extends SimpleTypeMapping<String> {
         this.length = length;
         this.padCharacter = padCharacter;
         this.align = align;
-        finish();
     }
 
     /**

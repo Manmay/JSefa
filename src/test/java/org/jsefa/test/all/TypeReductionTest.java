@@ -30,12 +30,10 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests to testing the correct serialization when a subtype of an expected
- * type is given (without polymorphism).
+ * Tests to testing the correct serialization when a subtype of an expected type is given (without polymorphism).
  * <p>
- * The expected result is that the known super type is determined and the fields
- * of this supertype are serialized (and not the additional fields of the
- * subtype).
+ * The expected result is that the known super type is determined and the fields of this supertype are serialized
+ * (and not the additional fields of the subtype).
  * 
  * @author Norman Lahme-Huetig
  * 

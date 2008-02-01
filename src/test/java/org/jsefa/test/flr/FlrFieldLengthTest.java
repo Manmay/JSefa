@@ -24,8 +24,7 @@ import org.jsefa.flr.annotation.FlrField;
 import org.jsefa.test.common.JSefaTestUtil;
 
 /**
- * Tests to test the FLR serialization/deserialization with focus on the
- * length-handling.
+ * Tests to test the FLR serialization/deserialization with focus on the length-handling.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
@@ -41,8 +40,7 @@ public class FlrFieldLengthTest extends TestCase {
     }
 
     /**
-     * Tests the case that the value is shorter than the length of the FLR
-     * field.
+     * Tests the case that the value is shorter than the length of the FLR field.
      */
     public void testShorter() {
         check("123456", "123456#");

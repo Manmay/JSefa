@@ -17,32 +17,26 @@
 package org.jsefa.xml.namespace;
 
 /**
- * A <code>QNameParser</code> allows for creating a {@link QName} from its
- * <code>String</code> representation.
+ * A <code>QNameParser</code> allows for creating a {@link QName} from its <code>String</code> representation.
  * <p>
  * The format is <code>prefix:localname</code><br>
- * if an explicit prefix is given and <code>localname</code> if no explicit
- * prefix is given.
+ * if an explicit prefix is given and <code>localname</code> if no explicit prefix is given.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
 public final class QNameParser {
     /**
-     * Creates a {@link QName} from a <code>String</code> representation using
-     * the given namespace manager for namespace prefix resolving.
+     * Creates a {@link QName} from a <code>String</code> representation using the given namespace manager for
+     * namespace prefix resolving.
      * <p>
-     * In the case the <code>String</code> representation contains no prefix
-     * it is assumed that the name belongs to the default namespace only if the
-     * argument <code>forElement</code> is true and if a default namespace is
-     * registered.
+     * In the case the <code>String</code> representation contains no prefix it is assumed that the name belongs
+     * to the default namespace only if the argument <code>forElement</code> is true and if a default namespace
+     * is registered.
      * 
-     * @param name the <code>String</code> representation of the
-     *            <code>QName</code> as desribed above
-     * @param forElement true, if a default namespace should be taken into
-     *            account; false otherwise.
-     * @param namespaceManager the namespace manager used to retrieve the URI
-     *            for a given prefix
+     * @param name the <code>String</code> representation of the <code>QName</code> as desribed above
+     * @param forElement true, if a default namespace should be taken into account; false otherwise.
+     * @param namespaceManager the namespace manager used to retrieve the URI for a given prefix
      * @return the <code>QName</code>
      */
     public static QName parse(String name, boolean forElement, NamespaceManager namespaceManager) {

@@ -10,8 +10,7 @@ import org.jsefa.xml.lowlevel.model.TextContent;
 import org.jsefa.xml.lowlevel.model.XmlItemType;
 
 /**
- * Tests to test the correct behaviour of the stax based low level
- * implementation.
+ * Tests to test the correct behaviour of the stax based low level implementation.
  * 
  * @author Norman Lahme-Huetig
  * 

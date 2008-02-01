@@ -16,8 +16,6 @@
 
 package org.jsefa.xml;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +24,10 @@ import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelIOFactory;
 import org.jsefa.xml.mapping.ElementDescriptor;
-import org.jsefa.xml.mapping.NodeModel;
+import org.jsefa.xml.mapping.ElementMapping;
+import org.jsefa.xml.mapping.ElementMappingsBuilder;
 import org.jsefa.xml.mapping.XmlEntryPoint;
-import org.jsefa.xml.namespace.QName;
+import org.jsefa.xml.mapping.XmlTypeMappingUtil;
 
 /**
  * Default implementation of {@link XmlIOFactory}.
@@ -41,13 +40,15 @@ public class XmlIOFactoryImpl extends XmlIOFactory {
 
     private final XmlConfiguration config;
 
-    private final Map<Class<?>, NodeModel> entryNodeModels;
+    Map<ElementDescriptor, ElementMapping> entryElementMappingsByElementDescriptor;
+
+    private final Map<Class<?>, ElementMapping> entryElementMappingsByObjectType;
 
     private final XmlLowLevelIOFactory lowLevelIOFactory;
 
     /**
-     * Creates a new <code>XmlIOFactory</code> for <code>XmlSerializer</code>s
-     * and <code>XmlDeserializer</code>s using the given configuration.
+     * Creates a new <code>XmlIOFactory</code> for <code>XmlSerializer</code>s and
+     * <code>XmlDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.
      * @return a <code>XmlIOFactory</code> factory
@@ -59,7 +60,8 @@ public class XmlIOFactoryImpl extends XmlIOFactory {
 
     XmlIOFactoryImpl(XmlConfiguration config) {
         this.config = config;
-        this.entryNodeModels = createEntryNodeModels();
+        this.entryElementMappingsByElementDescriptor = createEntryElementMappingsByElementDescriptor();
+        this.entryElementMappingsByObjectType = createEntryElementMappingsByObjectType();
         this.lowLevelIOFactory = XmlLowLevelIOFactory.createFactory(config.getLowLevelConfiguration());
     }
 
@@ -67,18 +69,20 @@ public class XmlIOFactoryImpl extends XmlIOFactory {
      * {@inheritDoc}
      */
     public XmlSerializer createSerializer() {
-        return new XmlSerializerImpl(this.config, this.entryNodeModels, this.lowLevelIOFactory.createSerializer());
+        return new XmlSerializerImpl(this.config, this.entryElementMappingsByObjectType, this.lowLevelIOFactory
+                .createSerializer());
     }
 
     /**
      * {@inheritDoc}
      */
     public XmlDeserializer createDeserializer() {
-        return new XmlDeserializerImpl(this.config, this.lowLevelIOFactory.createDeserializer());
+        return new XmlDeserializerImpl(this.config, entryElementMappingsByElementDescriptor,
+                this.lowLevelIOFactory.createDeserializer());
     }
 
-    private Map<Class<?>, NodeModel> createEntryNodeModels() {
-        Map<Class<?>, NodeModel> nodeModels = new HashMap<Class<?>, NodeModel>();
+    private Map<ElementDescriptor, ElementMapping> createEntryElementMappingsByElementDescriptor() {
+        ElementMappingsBuilder elementMappingsBuilder = new ElementMappingsBuilder();
         for (XmlEntryPoint entryPoint : config.getEntryPoints()) {
             TypeMapping<?> typeMapping = config.getTypeMappingRegistry().get(entryPoint.getDataTypeName());
             if (typeMapping == null) {
@@ -86,39 +90,18 @@ public class XmlIOFactoryImpl extends XmlIOFactory {
             }
             ElementDescriptor elementDescriptor = new ElementDescriptor(entryPoint.getDesignator(), entryPoint
                     .getDataTypeName());
-            NodeModel nodeModel = new NodeModel(elementDescriptor, null);
-            nodeModels.put(typeMapping.getObjectType(), nodeModel);
+            elementMappingsBuilder.addMapping(entryPoint.getDataTypeName(), elementDescriptor, typeMapping
+                    .getObjectType(), null);
         }
-        markAmbiguousNodeModels(nodeModels.values());
-        finishNodeModels(nodeModels.values());
-        return nodeModels;
+        return XmlTypeMappingUtil.createNodeMappingsByNodeDescriptorMap(elementMappingsBuilder.getResult());
     }
 
-    private void markAmbiguousNodeModels(Collection<NodeModel> nodeModels) {
-        Map<QName, Collection<NodeModel>> nameToModels = new HashMap<QName, Collection<NodeModel>>();
-        for (NodeModel nodeModel : nodeModels) {
-            QName name = nodeModel.getNodeDescriptor().getName();
-            Collection<NodeModel> models = nameToModels.get(name);
-            if (models == null) {
-                models = new ArrayList<NodeModel>();
-                nameToModels.put(name, models);
-            }
-            models.add(nodeModel);
+    private Map<Class<?>, ElementMapping> createEntryElementMappingsByObjectType() {
+        Map<Class<?>, ElementMapping> elementMappings = new HashMap<Class<?>, ElementMapping>();
+        for (ElementMapping elementMapping : this.entryElementMappingsByElementDescriptor.values()) {
+            elementMappings.put(elementMapping.getObjectType(), elementMapping);
         }
-        for (QName name : nameToModels.keySet()) {
-            Collection<NodeModel> models = nameToModels.get(name);
-            if (models.size() > 1) {
-                for (NodeModel nodeModel : models) {
-                    nodeModel.setRequiresDataTypeAttribute();
-                }
-            }
-        }
-    }
-
-    private void finishNodeModels(Collection<NodeModel> nodeModels) {
-        for (NodeModel nodeModel : nodeModels) {
-            nodeModel.finish();
-        }
+        return elementMappings;
     }
 
 }

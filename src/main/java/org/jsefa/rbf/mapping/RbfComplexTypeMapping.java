@@ -17,7 +17,9 @@
 package org.jsefa.rbf.mapping;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,8 @@ import org.jsefa.common.mapping.TypeMapping;
 
 /**
  * A mapping between a java object type and a complex RBF data type.
+ * <p>
+ * Instances of this class are immutable and thread safe.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig
@@ -36,9 +40,9 @@ import org.jsefa.common.mapping.TypeMapping;
 public final class RbfComplexTypeMapping extends TypeMapping<String> {
     private final ObjectAccessor objectAccessor;
 
-    private final Map<String, NodeModel> nodeModels;
+    private final EnumMap<NodeType, List<String>> fieldNamesByNodeType;
 
-    private final Map<NodeType, List<String>> fieldNamesByNodeType;
+    private final Map<String, NodeMapping> nodeMappingsByFieldName;
 
     /**
      * Constructs a new <code>RbfComplexTypeMapping</code>.
@@ -46,49 +50,14 @@ public final class RbfComplexTypeMapping extends TypeMapping<String> {
      * @param objectType the object type
      * @param dataTypeName the data type name
      * @param objectAccessor the object accessor
+     * @param nodeMappings the node mappings
      */
-    public RbfComplexTypeMapping(Class<?> objectType, String dataTypeName, ObjectAccessor objectAccessor) {
+    public RbfComplexTypeMapping(Class<?> objectType, String dataTypeName, ObjectAccessor objectAccessor,
+            Collection<NodeMapping> nodeMappings) {
         super(objectType, dataTypeName);
         this.objectAccessor = objectAccessor;
-        this.nodeModels = new HashMap<String, NodeModel>();
-        this.fieldNamesByNodeType = new HashMap<NodeType, List<String>>();
-    }
-
-    /**
-     * Specifies that the field with the given name maps to a node of the given
-     * node type and a data type with the given name.
-     * 
-     * @param fieldName the field name
-     * @param nodeType the node type
-     * @param dataTypeName the name of its data type
-     */
-    public void register(String fieldName, NodeType nodeType, String dataTypeName) {
-        assertNotFinished();
-        List<String> fieldNames = getOrCreateFieldNameList(nodeType);
-        if (!fieldNames.contains(fieldName)) {
-            fieldNames.add(fieldName);
-        }
-        NodeModel nodeModel = new NodeModel(dataTypeName, fieldName);
-        this.nodeModels.put(fieldName, nodeModel);
-    }
-
-    /**
-     * Specifies that the field with the given name maps to a node of the given
-     * node type, with the given prefix and a data type with the given name.
-     * 
-     * @param fieldName the field name
-     * @param nodeType the node type
-     * @param dataTypeName the name of its data type
-     * @param prefix the prefix
-     */
-    public void registerWithPrefix(String fieldName, NodeType nodeType, String dataTypeName, String prefix) {
-        assertNotFinished();
-        List<String> fieldNames = getOrCreateFieldNameList(nodeType);
-        if (!fieldNames.contains(fieldName)) {
-            fieldNames.add(fieldName);
-        }
-        NodeModel nodeModel = new NodeModel(dataTypeName, fieldName, prefix);
-        this.nodeModels.put(fieldName, nodeModel);
+        this.fieldNamesByNodeType = createFieldNamesByNodeType(nodeMappings);
+        this.nodeMappingsByFieldName = createNodeMappingsByFieldNameMap(nodeMappings);
     }
 
     /**
@@ -101,8 +70,7 @@ public final class RbfComplexTypeMapping extends TypeMapping<String> {
     }
 
     /**
-     * Returns the names of all fields which maps to a node of the given node
-     * type.
+     * Returns the names of all fields which maps to a node of the given node type.
      * 
      * @param nodeType the node type
      * @return the list of fields (the order does matter).
@@ -117,20 +85,38 @@ public final class RbfComplexTypeMapping extends TypeMapping<String> {
     }
 
     /**
-     * Returns the node model for the field with the given name.
+     * Returns the node mapping for the field with the given name.
      * 
+     * @param <T> the expected type of the node mapping
      * @param fieldName the field name
-     * @return the node model
+     * @return the node mapping
      */
-    public NodeModel getNodeModel(String fieldName) {
-        return this.nodeModels.get(fieldName);
+    @SuppressWarnings("unchecked")
+    public <T extends NodeMapping> T getNodeMapping(String fieldName) {
+        return (T) this.nodeMappingsByFieldName.get(fieldName);
     }
 
-    private List<String> getOrCreateFieldNameList(NodeType nodeType) {
-        List<String> result = this.fieldNamesByNodeType.get(nodeType);
-        if (result == null) {
-            result = new ArrayList<String>();
-            this.fieldNamesByNodeType.put(nodeType, result);
+    private Map<String, NodeMapping> createNodeMappingsByFieldNameMap(Collection<NodeMapping> nodeMappings) {
+        Map<String, NodeMapping> result = new HashMap<String, NodeMapping>();
+        for (NodeMapping nodeMapping : nodeMappings) {
+            result.put(nodeMapping.getFieldName(), nodeMapping);
+        }
+        return result;
+    }
+
+    private EnumMap<NodeType, List<String>> createFieldNamesByNodeType(Collection<NodeMapping> nodeMappings) {
+        EnumMap<NodeType, List<String>> result = new EnumMap<NodeType, List<String>>(NodeType.class);
+        for (NodeMapping nodeMapping : nodeMappings) {
+            NodeType nodeType = nodeMapping.getNodeType();
+            List<String> fieldNames = result.get(nodeType);
+            if (fieldNames == null) {
+                fieldNames = new ArrayList<String>();
+                result.put(nodeType, fieldNames);
+            }
+            String fieldName = nodeMapping.getFieldName();
+            if (!fieldNames.contains(fieldName)) {
+                fieldNames.add(fieldName);
+            }
         }
         return result;
     }

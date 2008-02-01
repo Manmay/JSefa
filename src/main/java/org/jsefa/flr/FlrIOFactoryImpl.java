@@ -39,8 +39,8 @@ public final class FlrIOFactoryImpl extends FlrIOFactory {
     private final FlrLowLevelIOFactory lowLevelIOFactory;
 
     /**
-     * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s
-     * and <code>FlrDeserializer</code>s using the given configuration.
+     * Creates a new <code>FlrIOFactory</code> for <code>FlrSerializer</code>s and
+     * <code>FlrDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.
      * @return a <code>FlrIOFactory</code> factory

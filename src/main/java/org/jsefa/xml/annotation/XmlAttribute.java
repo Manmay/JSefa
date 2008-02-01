@@ -26,8 +26,8 @@ import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
 
 /**
- * An annotation stating that the annotated java field should be mapped to a xml
- * attribute during XML serialization and deserialization.
+ * An annotation stating that the annotated java field should be mapped to a xml attribute during XML serialization
+ * and deserialization.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -36,34 +36,31 @@ import org.jsefa.common.converter.SimpleTypeConverter;
 @Target({FIELD})
 public @interface XmlAttribute {
     /**
-     * The name of the xml attribute this annotation describes. It has the
-     * following format:<br>
+     * The name of the xml attribute this annotation describes. It has the following format:<br>
      * [prefix:]localname<br>
      */
     String name() default "";
 
     /**
-     * The name of the data type of the attribute this annotation describes. If
-     * not set, it must be determinable from the type of the annotated field.
+     * The name of the data type of the attribute this annotation describes. If not set, it must be determinable
+     * from the type of the annotated field.
      * <p>
-     * It should be explicitly set if the type mapping should not be created
-     * from the annotations given in the class of the annotated field. This is
-     * useful when mixing explicit type mapping creation with annotation based
-     * type mapping creation.
+     * It should be explicitly set if the type mapping should not be created from the annotations given in the
+     * class of the annotated field. This is useful when mixing explicit type mapping creation with annotation
+     * based type mapping creation.
      */
     String dataTypeName() default "";
 
     /**
-     * The format to be used to construct a <code>SimpleTypeConverter</code>
-     * for the xml attribute. The <code>SimpleTypeConverter</code> class will
-     * be determined using the type of the java field with this annotation.
+     * The format to be used to construct a <code>SimpleTypeConverter</code> for the xml attribute. The
+     * <code>SimpleTypeConverter</code> class will be determined using the type of the java field with this
+     * annotation.
      */
     String[] format() default {};
 
     /**
-     * Specifies the converter type to be used for the xml attribute. In the
-     * default case the converter type is determined using the type of the java
-     * field with this annotation.
+     * Specifies the converter type to be used for the xml attribute. In the default case the converter type is
+     * determined using the type of the java field with this annotation.
      */
     Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;
 

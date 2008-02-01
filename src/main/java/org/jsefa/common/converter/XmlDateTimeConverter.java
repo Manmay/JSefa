@@ -54,8 +54,7 @@ public class XmlDateTimeConverter implements SimpleTypeConverter {
 
     /**
      * Constructs a <code>XmlDateTimeConverter</code>.<br>
-     * If no format is given, the default format (see
-     * {@link #getDefaultFormat()}) is used.
+     * If no format is given, the default format (see {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration
      * @return a xml date time converter
@@ -66,8 +65,7 @@ public class XmlDateTimeConverter implements SimpleTypeConverter {
 
     /**
      * Constructs a <code>XmlDateTimeConverter</code>.<br>
-     * If no format is given, the default format (see
-     * {@link #getDefaultFormat()}) is used.
+     * If no format is given, the default format (see {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration
      */
@@ -126,10 +124,9 @@ public class XmlDateTimeConverter implements SimpleTypeConverter {
     }
 
     /**
-     * Creates a new <code>GregorianCalendar</code> from the given
-     * <code>XMLGregorianCalendar</code>. The implementation is based on
-     * {@link XMLGregorianCalendarImpl#toGregorianCalendar} and improved for
-     * better performance (using caching for time zones).
+     * Creates a new <code>GregorianCalendar</code> from the given <code>XMLGregorianCalendar</code>. The
+     * implementation is based on {@link XMLGregorianCalendarImpl#toGregorianCalendar} and improved for better
+     * performance (using caching for time zones).
      * 
      * @param cal the <code>XMLGregorianCalendar</code> to convert
      * @return the <code>GregorianCalendar</code>
@@ -181,8 +178,7 @@ public class XmlDateTimeConverter implements SimpleTypeConverter {
     }
 
     /**
-     * Provider for <code>TimeZone</code>s which caches the objects for
-     * better performance.
+     * Provider for <code>TimeZone</code>s which caches the objects for better performance.
      * <p>
      * It is thread-safe.
      * 

@@ -22,8 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * A registry for {@link TypeMapping}s with support for hierarchical relations
- * between the data types.
+ * A registry for {@link TypeMapping}s with support for hierarchical relations between the data types.
  * <p>
  * Instances of this class are thread-safe. This must be true for all subclasses, too.
  * 
@@ -44,8 +43,7 @@ public abstract class HierarchicalTypeMappingRegistry<T> extends TypeMappingRegi
     }
 
     /**
-     * Constructs a new <code>HierarchicalTypeMappingRegistry</code> as a copy
-     * of the given one.
+     * Constructs a new <code>HierarchicalTypeMappingRegistry</code> as a copy of the given one.
      * 
      * @param other the registry that serves as a model for creating a new one
      */
@@ -60,8 +58,7 @@ public abstract class HierarchicalTypeMappingRegistry<T> extends TypeMappingRegi
     }
 
     /**
-     * Registers a subtype relation between the data types denoted by the given
-     * names.
+     * Registers a subtype relation between the data types denoted by the given names.
      * 
      * @param superDataTypeName the name of the super data type
      * @param subDataTypeName the name of the sub data type
@@ -76,12 +73,10 @@ public abstract class HierarchicalTypeMappingRegistry<T> extends TypeMappingRegi
     }
 
     /**
-     * Returns a collection of all data type names which denote direct or
-     * indirect sub data types of the one denoted by rootDataTypeName. The given
-     * root data type name is also included.
+     * Returns a collection of all data type names which denote direct or indirect sub data types of the one
+     * denoted by rootDataTypeName. The given root data type name is also included.
      * 
-     * @param rootDataTypeName the data type name denotig the root of the type
-     *            hierarchy to retrieve.
+     * @param rootDataTypeName the data type name denotig the root of the type hierarchy to retrieve.
      * @return a collection of data type names including the root data type name
      */
     public final Collection<T> getDataTypeNameTreeElements(T rootDataTypeName) {

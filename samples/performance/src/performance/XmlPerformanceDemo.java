@@ -22,8 +22,6 @@ import org.jsefa.xml.XmlIOFactory;
 import org.jsefa.xml.XmlSerializer;
 import org.jsefa.xml.namespace.QName;
 
-
-
 /**
  * Demo for demonstrating the XML serialization/deserialization performance.
  * 
@@ -46,7 +44,7 @@ public class XmlPerformanceDemo extends AbstractPerformanceDemo {
     protected IOFactory createIOFactory(Class<?> objectType) {
         return XmlIOFactory.createFactory(objectType);
     }
-    
+
     /**
      * {@inheritDoc}
      */

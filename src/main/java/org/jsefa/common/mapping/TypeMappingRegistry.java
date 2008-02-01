@@ -20,9 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * A registry for {@link TypeMapping}s. It provides the registration of
- * {@link TypeMapping}s under their respective data type name and the retrieval
- * of them given their data type name.
+ * A registry for {@link TypeMapping}s. It provides the registration of {@link TypeMapping}s under their
+ * respective data type name and the retrieval of them given their data type name.
  * <p>
  * It is thread-safe and all subclasses should be thread-safe, too.
  * 
@@ -42,8 +41,7 @@ public abstract class TypeMappingRegistry<D> {
     }
 
     /**
-     * Constructs a new <code>TypeMappingRegistry</code> as a copy of the
-     * given one.
+     * Constructs a new <code>TypeMappingRegistry</code> as a copy of the given one.
      * 
      * @param other the registry to copy
      */
@@ -70,7 +68,7 @@ public abstract class TypeMappingRegistry<D> {
     public final TypeMapping<D> get(D dataTypeName) {
         return this.typeMappings.get(dataTypeName);
     }
-    
+
     /**
      * Creates a copy of this <code>TypeMappingRegistry</code>.
      * 

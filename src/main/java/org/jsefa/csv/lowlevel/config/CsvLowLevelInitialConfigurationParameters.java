@@ -27,12 +27,12 @@ import org.jsefa.common.lowlevel.config.LowLevelInitialConfigurationParameters;
  * 
  */
 public interface CsvLowLevelInitialConfigurationParameters extends LowLevelInitialConfigurationParameters {
-    
+
     /**
      * Configuration parameter for the CsvLowLevelIOFactory class to use.
      */
-    String LOW_LEVEL_IO_FACTORY_CLASS = "jsefa:csv:lowlevel:ioFactoryClass";    
-    
+    String LOW_LEVEL_IO_FACTORY_CLASS = "jsefa:csv:lowlevel:ioFactoryClass";
+
     /**
      * Configuration parameter for the field delimiter to use.
      */

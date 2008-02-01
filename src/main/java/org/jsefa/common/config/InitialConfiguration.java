@@ -22,8 +22,8 @@ import java.util.concurrent.ConcurrentMap;
 import org.jsefa.common.util.OnDemandObjectProvider;
 
 /**
- * The single initial configuration for JSefa. See sub interfaces of
- * {@link InitialConfigurationParameters} for the available parameters.
+ * The single initial configuration for JSefa. See sub interfaces of {@link InitialConfigurationParameters} for the
+ * available parameters.
  * 
  * @see Configuration
  * @author Norman Lahme-Huetig
@@ -34,14 +34,14 @@ public final class InitialConfiguration {
     private static final ConcurrentMap<String, Object> MAP = new ConcurrentHashMap<String, Object>();
 
     /**
-     * Returns the value of the given parameter. If none is configured for the
-     * parameter, the <code>defaultValue</code> retrieved from the
-     * <code>OnDemandObjectProvider</code> is registered and returned.
+     * Returns the value of the given parameter. If none is configured for the parameter, the
+     * <code>defaultValue</code> retrieved from the <code>OnDemandObjectProvider</code> is registered and
+     * returned.
      * 
      * @param parameter the parameter
      * @param <T> the expected type of the parameter value
-     * @param defaultValueProvider the provider of the default value to use if
-     *                none is configured for the parameter in question.
+     * @param defaultValueProvider the provider of the default value to use if none is configured for the parameter
+     *                in question.
      * @return the value of the parameter
      */
     @SuppressWarnings("unchecked")
@@ -61,13 +61,12 @@ public final class InitialConfiguration {
     }
 
     /**
-     * Returns the value of the given parameter. If none is configured for the
-     * parameter, the <code>defaultValue</code> is registered and returned.
+     * Returns the value of the given parameter. If none is configured for the parameter, the
+     * <code>defaultValue</code> is registered and returned.
      * 
      * @param parameter the parameter
      * @param <T> the expected type of the parameter value
-     * @param defaultValue the default value to use if none is configured for
-     *                the parameter in question.
+     * @param defaultValue the default value to use if none is configured for the parameter in question.
      * @return the value of the parameter
      */
     @SuppressWarnings("unchecked")
@@ -81,14 +80,12 @@ public final class InitialConfiguration {
     }
 
     /**
-     * Sets the parameter value of the given parameter to the given value if the
-     * parameter is not already bound to another value. Otherwise an
-     * {@link InitialConfigurationException} will be thrown.
+     * Sets the parameter value of the given parameter to the given value if the parameter is not already bound to
+     * another value. Otherwise an {@link InitialConfigurationException} will be thrown.
      * 
      * @param parameter the parameter
      * @param value the value
-     * @throws InitialConfigurationException if the parameter is already bound
-     *                 to another value.
+     * @throws InitialConfigurationException if the parameter is already bound to another value.
      */
     public static void set(String parameter, Object value) {
         Object other = MAP.putIfAbsent(parameter, value);

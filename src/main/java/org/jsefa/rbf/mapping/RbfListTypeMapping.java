@@ -16,6 +16,7 @@
 
 package org.jsefa.rbf.mapping;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ import org.jsefa.common.mapping.TypeMapping;
 
 /**
  * A mapping between a java object type and a RBF list data type.
+ * <p>
+ * Instances of this class are immutable and thread safe.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig
@@ -33,54 +36,40 @@ import org.jsefa.common.mapping.TypeMapping;
 
 public final class RbfListTypeMapping extends TypeMapping<String> {
 
-    private final Map<String, NodeModel> nodeModelsByPrefix;
+    private final Map<String, RecordMapping> recordMappingsByPrefix;
 
-    private final Map<Class<?>, NodeModel> nodeModelsByObjectType;
+    private final Map<Class<?>, RecordMapping> recordMappingsByObjectType;
 
     /**
      * Constructs a new <code>RbfListTypeMapping</code>.
      * 
      * @param dataTypeName the data type name
+     * @param recordMappings the record mappings
      */
-    public RbfListTypeMapping(String dataTypeName) {
+    public RbfListTypeMapping(String dataTypeName, Collection<RecordMapping> recordMappings) {
         super(List.class, dataTypeName);
-        this.nodeModelsByPrefix = new HashMap<String, NodeModel>();
-        this.nodeModelsByObjectType = new HashMap<Class<?>, NodeModel>();
+        this.recordMappingsByPrefix = createRecordMappingsByPrefixMap(recordMappings);
+        this.recordMappingsByObjectType = createRecordMappingsByObjectTypeMap(recordMappings);
     }
 
     /**
-     * Registeres the list item with the given data type name, prefix and object
-     * type.
-     * 
-     * @param dataTypeName the data type name
-     * @param prefix the prefix
-     * @param objectType the object type
-     */
-    public void register(String dataTypeName, String prefix, Class<?> objectType) {
-        assertNotFinished();
-        NodeModel nodeModel = new NodeModel(dataTypeName, null, prefix);
-        this.nodeModelsByPrefix.put(prefix, nodeModel);
-        this.nodeModelsByObjectType.put(objectType, nodeModel);
-    }
-
-    /**
-     * Returns the node model for the given object type.
+     * Returns the record mapping for the given object type.
      * 
      * @param objectType the object type
-     * @return a node model
+     * @return a record mapping
      */
-    public NodeModel getNodeModel(Class<?> objectType) {
-        return this.nodeModelsByObjectType.get(objectType);
+    public RecordMapping getRecordMapping(Class<?> objectType) {
+        return this.recordMappingsByObjectType.get(objectType);
     }
 
     /**
-     * Returns the node model for the given prefix.
+     * Returns the record mapping for the given prefix.
      * 
      * @param prefix the prefix
-     * @return a node model
+     * @return a record mapping
      */
-    public NodeModel getNodeModel(String prefix) {
-        return this.nodeModelsByPrefix.get(prefix);
+    public RecordMapping getRecordMapping(String prefix) {
+        return this.recordMappingsByPrefix.get(prefix);
     }
 
     /**
@@ -89,7 +78,23 @@ public final class RbfListTypeMapping extends TypeMapping<String> {
      * @return the set of prefixes.
      */
     public Set<String> getPrefixes() {
-        return this.nodeModelsByPrefix.keySet();
+        return this.recordMappingsByPrefix.keySet();
     }
 
+    private Map<String, RecordMapping> createRecordMappingsByPrefixMap(Collection<RecordMapping> recordMappings) {
+        Map<String, RecordMapping> result = new HashMap<String, RecordMapping>();
+        for (RecordMapping recordMapping : recordMappings) {
+            result.put(recordMapping.getPrefix(), recordMapping);
+        }
+        return result;
+    }
+
+    private Map<Class<?>, RecordMapping> createRecordMappingsByObjectTypeMap(
+            Collection<RecordMapping> recordMappings) {
+        Map<Class<?>, RecordMapping> result = new HashMap<Class<?>, RecordMapping>();
+        for (RecordMapping recordMapping : recordMappings) {
+            result.put(recordMapping.getObjectType(), recordMapping);
+        }
+        return result;
+    }
 }

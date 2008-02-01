@@ -22,11 +22,10 @@ import java.util.Date;
 
 /**
  * Converter for <code>Date</code> objects.<br>
- * The format consists of one String describing the date format as required by
- * {@link SimpleDateFormat},e. g. ""dd.MM.yyyy".<br>
+ * The format consists of one String describing the date format as required by {@link SimpleDateFormat},e. g.
+ * ""dd.MM.yyyy".<br>
  * <p>
- * It is thread-safe (the access to the non-thread-safe {@link SimpleDateFormat}
- * is synchronized).
+ * It is thread-safe (the access to the non-thread-safe {@link SimpleDateFormat} is synchronized).
  * 
  * @author Norman Lahme-Huetig
  */
@@ -40,8 +39,7 @@ public class DateConverter implements SimpleTypeConverter {
 
     /**
      * Constructs a <code>DateConverter</code>.<br>
-     * If no format is given, the default format (see
-     * {@link #getDefaultFormat()}) is used.
+     * If no format is given, the default format (see {@link #getDefaultFormat()}) is used.
      * 
      * @param configuration the configuration
      * @return a date converter
@@ -53,8 +51,7 @@ public class DateConverter implements SimpleTypeConverter {
 
     /**
      * Constructs a new <code>DateConverter</code>.<br>
-     * If no format is given, the default format (see
-     * {@link #getDefaultFormat()}) is used.
+     * If no format is given, the default format (see {@link #getDefaultFormat()}) is used.
      * 
      * 
      * @param configuration the configuration

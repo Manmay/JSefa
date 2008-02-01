@@ -23,14 +23,12 @@ import org.jsefa.common.config.InitialConfiguration;
 import org.jsefa.common.lowlevel.LowLevelIOFactory;
 
 /**
- * The abstract superclass for low level configuration object classes. It uses
- * lazy initialization.
+ * The abstract superclass for low level configuration object classes. It uses lazy initialization.
  * <p>
- * A configuration object is used when creating a new {@link LowLevelIOFactory}.
- * One configuration object can be used for the creation of multiple factories
- * as each new factory holds its own copy of the configuration object. So the
- * configuration object can be changed after creating a factory with it without
- * affecting the configuration of the factory.
+ * A configuration object is used when creating a new {@link LowLevelIOFactory}. One configuration object can be
+ * used for the creation of multiple factories as each new factory holds its own copy of the configuration object.
+ * So the configuration object can be changed after creating a factory with it without affecting the configuration
+ * of the factory.
  * 
  * @author Norman Lahme-Huetig
  */
@@ -46,8 +44,7 @@ public abstract class LowLevelConfiguration {
     }
 
     /**
-     * Constructs a new <code>LowLevelConfiguration</code> as a copy of the
-     * given one.
+     * Constructs a new <code>LowLevelConfiguration</code> as a copy of the given one.
      * 
      * @param other the other config
      */

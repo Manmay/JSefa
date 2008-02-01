@@ -23,11 +23,15 @@ import java.util.Map;
 
 import org.jsefa.SerializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
+import org.jsefa.common.mapping.FieldDescriptor;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
-import org.jsefa.xml.mapping.NodeModel;
+import org.jsefa.xml.mapping.AttributeMapping;
+import org.jsefa.xml.mapping.ElementMapping;
+import org.jsefa.xml.mapping.NodeMapping;
 import org.jsefa.xml.mapping.NodeType;
+import org.jsefa.xml.mapping.TextContentMapping;
 import org.jsefa.xml.mapping.XmlComplexTypeMapping;
 import org.jsefa.xml.mapping.XmlListTypeMapping;
 import org.jsefa.xml.mapping.XmlSimpleTypeMapping;
@@ -42,16 +46,16 @@ import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
 public final class XmlSerializerImpl implements XmlSerializer {
     private final XmlTypeMappingRegistry typeMappingRegistry;
 
-    private final Map<Class<?>, NodeModel> entryNodeModels;
+    private final Map<Class<?>, ElementMapping> entryElementMappings;
 
     private final XmlLowLevelSerializer lowLevelSerializer;
 
     private IdentityHashMap<Object, Object> complexObjectsOnPath;
 
-    XmlSerializerImpl(XmlConfiguration config, Map<Class<?>, NodeModel> entryNodeModels,
+    XmlSerializerImpl(XmlConfiguration config, Map<Class<?>, ElementMapping> entryElementMappings,
             XmlLowLevelSerializer lowLevelSerializer) {
         this.typeMappingRegistry = config.getTypeMappingRegistry();
-        this.entryNodeModels = entryNodeModels;
+        this.entryElementMappings = entryElementMappings;
         this.lowLevelSerializer = lowLevelSerializer;
         this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
     }
@@ -77,22 +81,22 @@ public final class XmlSerializerImpl implements XmlSerializer {
             return;
         }
         try {
-            NodeModel nodeModel = this.entryNodeModels.get(object.getClass());
-            if (nodeModel == null) {
+            ElementMapping nodeMapping = this.entryElementMappings.get(object.getClass());
+            if (nodeMapping == null) {
                 Class<?> objectType = object.getClass().getSuperclass();
                 while (objectType != null) {
-                    nodeModel = this.entryNodeModels.get(objectType);
-                    if (nodeModel != null) {
+                    nodeMapping = this.entryElementMappings.get(objectType);
+                    if (nodeMapping != null) {
                         break;
                     }
                     objectType = objectType.getSuperclass();
                 }
             }
-            if (nodeModel == null) {
+            if (nodeMapping == null) {
                 throw new SerializationException("The following class was not registered for serialization: "
                         + object.getClass());
             }
-            serializeElement(object, nodeModel);
+            serializeElement(object, nodeMapping);
         } catch (SerializationException e) {
             throw e;
         } catch (Exception e) {
@@ -118,40 +122,42 @@ public final class XmlSerializerImpl implements XmlSerializer {
         return this.lowLevelSerializer;
     }
 
-    private void serializeAttribute(Object object, NodeModel nodeModel) {
+    private void serializeAttribute(Object object, AttributeMapping attributeMapping) {
         if (object == null) {
             return;
         }
-        String attributeValue = getSimpleTypeMapping(nodeModel).getSimpleTypeConverter().toString(object);
-        this.lowLevelSerializer.writeAttribute(nodeModel.getNodeDescriptor().getName(), attributeValue);
+        String attributeValue = getSimpleTypeMapping(attributeMapping).getSimpleTypeConverter().toString(object);
+        this.lowLevelSerializer.writeAttribute(attributeMapping.getNodeDescriptor().getName(), attributeValue);
     }
 
-    private void serializeElement(Object object, NodeModel nodeModel) {
-        TypeMapping<?> typeMapping = this.typeMappingRegistry.get(nodeModel.getDataTypeName());
+    private void serializeElement(Object object, ElementMapping elementMapping) {
+        TypeMapping<?> typeMapping = this.typeMappingRegistry.get(elementMapping.getDataTypeName());
         if (typeMapping == null) {
             throw new SerializationException("No type mapping given for data type name "
-                    + nodeModel.getDataTypeName());
+                    + elementMapping.getDataTypeName());
         }
         if (typeMapping instanceof XmlSimpleTypeMapping) {
-            serializeSimpleElement(object, nodeModel, (XmlSimpleTypeMapping) typeMapping);
+            serializeSimpleElement(object, elementMapping, (XmlSimpleTypeMapping) typeMapping);
         } else if (typeMapping instanceof XmlComplexTypeMapping) {
-            serializeComplexElement(object, nodeModel, (XmlComplexTypeMapping) typeMapping);
+            serializeComplexElement(object, elementMapping, (XmlComplexTypeMapping) typeMapping);
         } else if (typeMapping instanceof XmlListTypeMapping) {
-            serializeListElement((List<?>) object, nodeModel, (XmlListTypeMapping) typeMapping);
+            serializeListElement((List<?>) object, elementMapping, (XmlListTypeMapping) typeMapping);
         }
     }
 
-    private void serializeSimpleElement(Object object, NodeModel nodeModel, XmlSimpleTypeMapping simpleTypeMapping) {
+    private void serializeSimpleElement(Object object, ElementMapping elementMapping,
+            XmlSimpleTypeMapping simpleTypeMapping) {
         if (object == null) {
             return;
         }
         String elementValue = simpleTypeMapping.getSimpleTypeConverter().toString(object);
-        writeStartElement(nodeModel);
+        writeStartElement(elementMapping);
         this.lowLevelSerializer.writeText(elementValue);
         this.lowLevelSerializer.writeEndElement();
     }
 
-    private void serializeComplexElement(Object object, NodeModel nodeModel, XmlComplexTypeMapping typeMapping) {
+    private void serializeComplexElement(Object object, ElementMapping elementMapping,
+            XmlComplexTypeMapping typeMapping) {
         if (object == null) {
             return;
         }
@@ -161,20 +167,23 @@ public final class XmlSerializerImpl implements XmlSerializer {
             this.complexObjectsOnPath.put(object, object);
         }
         ObjectAccessor objectAccessor = typeMapping.getObjectAccessor();
-        writeStartElement(nodeModel);
+        writeStartElement(elementMapping);
         for (String fieldName : typeMapping.getFieldNames(NodeType.ATTRIBUTE)) {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
-                NodeModel attributeModel = typeMapping.getNodeModel(fieldName, fieldValue.getClass());
-                serializeAttribute(fieldValue, attributeModel);
+                AttributeMapping attributeMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
+                        fieldValue.getClass()));
+                serializeAttribute(fieldValue, attributeMapping);
             }
         }
 
         for (String fieldName : typeMapping.getFieldNames(NodeType.TEXT_CONTENT)) {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
-                NodeModel textModel = typeMapping.getNodeModel(fieldName, fieldValue.getClass());
-                String value = getSimpleTypeMapping(textModel).getSimpleTypeConverter().toString(fieldValue);
+                TextContentMapping textContentMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
+                        fieldValue.getClass()));
+                String value = getSimpleTypeMapping(textContentMapping).getSimpleTypeConverter().toString(
+                        fieldValue);
                 this.lowLevelSerializer.writeText(value);
             }
 
@@ -186,32 +195,34 @@ public final class XmlSerializerImpl implements XmlSerializer {
                 if (List.class.isAssignableFrom(fieldClass)) {
                     fieldClass = List.class;
                 }
-                NodeModel childNodeModel = typeMapping.getNodeModel(fieldName, fieldClass);
-                if (childNodeModel == null) {
+                ElementMapping childElementMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
+                        fieldClass));
+                if (childElementMapping == null) {
                     throw new SerializationException("Unable to serialize field class " + fieldClass.getName()
                             + " for field " + fieldName + " within object type " + typeMapping.getObjectType());
                 }
-                serializeElement(fieldValue, childNodeModel);
+                serializeElement(fieldValue, childElementMapping);
             }
         }
         this.lowLevelSerializer.writeEndElement();
         this.complexObjectsOnPath.remove(object);
     }
 
-    private void serializeListElement(List<?> listObject, NodeModel nodeModel, XmlListTypeMapping typeMapping) {
+    private void serializeListElement(List<?> listObject, ElementMapping elementMapping,
+            XmlListTypeMapping typeMapping) {
         if (listObject == null) {
             return;
         }
         if (!typeMapping.isImplicit()) {
-            writeStartElement(nodeModel);
+            writeStartElement(elementMapping);
         }
         for (Object listItemValue : listObject) {
-            NodeModel listItemNodeModel = typeMapping.getNodeModel(listItemValue.getClass());
-            if (listItemNodeModel == null) {
-                throw new SerializationException("No node model found for list item with class "
+            ElementMapping listItemMapping = typeMapping.getElementMapping(listItemValue.getClass());
+            if (listItemMapping == null) {
+                throw new SerializationException("No element mapping found for list item with class "
                         + listItemValue.getClass());
             }
-            serializeElement(listItemValue, listItemNodeModel);
+            serializeElement(listItemValue, listItemMapping);
         }
         if (!typeMapping.isImplicit()) {
             this.lowLevelSerializer.writeEndElement();
@@ -219,16 +230,16 @@ public final class XmlSerializerImpl implements XmlSerializer {
 
     }
 
-    private XmlSimpleTypeMapping getSimpleTypeMapping(NodeModel nodeModel) {
-        return (XmlSimpleTypeMapping) this.typeMappingRegistry.get(nodeModel.getDataTypeName());
+    private XmlSimpleTypeMapping getSimpleTypeMapping(NodeMapping<?> nodeMapping) {
+        return (XmlSimpleTypeMapping) this.typeMappingRegistry.get(nodeMapping.getDataTypeName());
     }
 
-    private void writeStartElement(NodeModel nodeModel) {
-        if (nodeModel.requiresDataTypeAttribute()) {
-            this.lowLevelSerializer.writeStartElement(nodeModel.getNodeDescriptor().getName(), nodeModel
+    private void writeStartElement(ElementMapping elementMapping) {
+        if (elementMapping.elementNameIsAmbiguous()) {
+            this.lowLevelSerializer.writeStartElement(elementMapping.getNodeDescriptor().getName(), elementMapping
                     .getDataTypeName());
         } else {
-            this.lowLevelSerializer.writeStartElement(nodeModel.getNodeDescriptor().getName(), null);
+            this.lowLevelSerializer.writeStartElement(elementMapping.getNodeDescriptor().getName(), null);
         }
     }
 

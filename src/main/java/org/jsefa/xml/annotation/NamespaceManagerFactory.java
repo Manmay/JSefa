@@ -19,16 +19,15 @@ package org.jsefa.xml.annotation;
 import org.jsefa.xml.namespace.NamespaceManager;
 
 /**
- * Factory for creating a {@link NamespaceManager} based on the
- * {@link XmlNamespaces} annotation of a given class.
+ * Factory for creating a {@link NamespaceManager} based on the {@link XmlNamespaces} annotation of a given class.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
 public final class NamespaceManagerFactory {
     /**
-     * Creates a new <code>NamespaceManager</code> and registers the namespace
-     * declarations the given object type is annotated with.
+     * Creates a new <code>NamespaceManager</code> and registers the namespace declarations the given object type
+     * is annotated with.
      * 
      * @param objectType the object type
      * @return a new namespace manager

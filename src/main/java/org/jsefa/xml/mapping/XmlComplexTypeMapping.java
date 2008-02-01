@@ -17,20 +17,22 @@
 package org.jsefa.xml.mapping;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jsefa.common.accessor.ObjectAccessor;
+import org.jsefa.common.mapping.FieldDescriptor;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.xml.namespace.QName;
 
 /**
  * A mapping between a java object type and a XML complex data type.
+ * <p>
+ * Instances of this class are immutable and thread safe.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig
@@ -39,15 +41,13 @@ import org.jsefa.xml.namespace.QName;
 public final class XmlComplexTypeMapping extends TypeMapping<QName> {
     private final EnumMap<NodeType, List<String>> fieldNamesByNodeType;
 
-    private final Map<NodeDescriptor, NodeModel> nodeModelsByNodeDescriptor;
+    private final Map<NodeDescriptor, NodeMapping<?>> nodeMappingsByNodeDescriptor;
 
-    private final Map<TypedField, NodeModel> nodeModelsByTypedField;
-
-    private final Map<String, NodeModel> nodeModelsByFieldName;
+    private final Map<FieldDescriptor, NodeMapping<?>> nodeMappingsByFieldDescriptor;
 
     private final ObjectAccessor objectAccessor;
 
-    private boolean textContentAllowed = false;
+    private final boolean textContentAllowed;
 
     /**
      * Constructs a new <code>XmlComplexTypeMapping</code>.
@@ -55,75 +55,29 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
      * @param objectType the object type
      * @param dataTypeName the data type name
      * @param objectAccessor the object accessor
+     * @param nodeMappings the node mappings
      */
-    public XmlComplexTypeMapping(Class<?> objectType, QName dataTypeName, ObjectAccessor objectAccessor) {
+    public XmlComplexTypeMapping(Class<?> objectType, QName dataTypeName, ObjectAccessor objectAccessor,
+            Collection<NodeMapping<?>> nodeMappings) {
         super(objectType, dataTypeName);
         this.objectAccessor = objectAccessor;
-        this.fieldNamesByNodeType = new EnumMap<NodeType, List<String>>(NodeType.class);
-        this.nodeModelsByNodeDescriptor = new HashMap<NodeDescriptor, NodeModel>();
-        this.nodeModelsByTypedField = new HashMap<TypedField, NodeModel>();
-        this.nodeModelsByFieldName = new HashMap<String, NodeModel>();
-    }
-
-    /**
-     * Declares that a node described by the given node descriptor maps to the
-     * combination of the given field name and the given field type. The
-     * combination of the field name and field type must uniquely map to the
-     * node descriptor.
-     * 
-     * @param fieldName the field name
-     * @param fieldType the field type
-     * @param nodeDescriptor the node descriptor
-     */
-    public void register(String fieldName, Class<?> fieldType, NodeDescriptor nodeDescriptor) {
-        register(fieldName, fieldType, nodeDescriptor, nodeDescriptor.getDataTypeName(), false);
-    }
-
-    /**
-     * Declares that a node described by the given node descriptor maps to the
-     * combination of the given field name, the given field type and the given
-     * data type name. The given data type name is different from the data type
-     * name of the node and identifies a type mapping from which the type
-     * mapping for the node can be determined. Thus the given data type name
-     * determines the type mapping of the node only <b>indirectly</b>.
-     * 
-     * @param fieldName the field name
-     * @param fieldType the field type
-     * @param nodeDescriptor the node descriptor
-     * @param dataTypeName the data type name
-     */
-    public void registerIndirect(String fieldName, Class<?> fieldType, NodeDescriptor nodeDescriptor,
-            QName dataTypeName) {
-        register(fieldName, fieldType, nodeDescriptor, dataTypeName, true);
-    }
-
-    /**
-     * Finishes the construction of the type mapping. This method must be called
-     * after the last call to <code>register</code> or
-     * <code>registerIndirect</code>.
-     */
-    public void finish() {
-        registerNodeModelsByFieldName();
-        XmlTypeMappingUtil.finishNodeModelsByNodeDescriptor(this.nodeModelsByNodeDescriptor);
-        if (this.fieldNamesByNodeType.get(NodeType.TEXT_CONTENT) != null) {
-            this.textContentAllowed = true;
-        }
-        super.finish();
+        this.fieldNamesByNodeType = createFieldNamesByNodeType(nodeMappings);
+        this.nodeMappingsByNodeDescriptor = XmlTypeMappingUtil.createNodeMappingsByNodeDescriptorMap(nodeMappings);
+        this.nodeMappingsByFieldDescriptor = createNodeMappingsByFieldDescriptorMap(nodeMappings);
+        this.textContentAllowed = this.fieldNamesByNodeType.get(NodeType.TEXT_CONTENT) != null;
     }
 
     /**
      * Returns true if and only if a text content is allowed for this data type.
      * 
-     * @return true, if a text content is allowed for this data type; false
-     *         otherwise.
+     * @return true, if a text content is allowed for this data type; false otherwise.
      */
     public boolean isTextContentAllowed() {
         return this.textContentAllowed;
     }
 
     /**
-     * Returns the names of all fields which maps to a node of the given node
-     * type.
+     * Returns the names of all fields which maps to a node of the given node type.
      * 
      * @param nodeType the node type
      * @return the list of fields (the order does matter).
@@ -138,19 +92,20 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
     }
 
     /**
-     * Returns the node model for the given combination of a field name and a
-     * field type (the class of the field value).
+     * Returns the node mapping for the given field descriptor.
      * 
-     * @param fieldName the field name
-     * @param fieldType the field typee
-     * @return the node model.
+     * @param <T> the expected type of the node mapping
+     * @param fieldDescriptor the field descriptor
+     * @return the node mapping.
      */
-    public NodeModel getNodeModel(String fieldName, Class<?> fieldType) {
-        NodeModel result = this.nodeModelsByFieldName.get(fieldName);
+    @SuppressWarnings("unchecked")
+    public <T extends NodeMapping<?>> T getNodeMapping(FieldDescriptor fieldDescriptor) {
+        T result = (T) this.nodeMappingsByFieldDescriptor.get(fieldDescriptor);
         if (result == null) {
-            Class<?> type = fieldType;
+            Class<?> type = fieldDescriptor.getObjectType().getSuperclass();
             while (type != null) {
-                result = this.nodeModelsByTypedField.get(new TypedField(fieldName, type));
+                result = (T) this.nodeMappingsByFieldDescriptor.get(new FieldDescriptor(fieldDescriptor.getName(),
+                        type));
                 if (result != null) {
                     break;
                 }
@@ -161,13 +116,15 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
     }
 
     /**
-     * Returns the node model for the given node descriptor.
+     * Returns the node mapping for the given node descriptor.
      * 
+     * @param <T> the expected type of the node mapping
      * @param nodeDescriptor the descriptor of the node
-     * @return the node model
+     * @return the node mapping
      */
-    public NodeModel getNodeModel(NodeDescriptor nodeDescriptor) {
-        return this.nodeModelsByNodeDescriptor.get(nodeDescriptor);
+    @SuppressWarnings("unchecked")
+    public <T extends NodeMapping> T getNodeMapping(NodeDescriptor nodeDescriptor) {
+        return (T) this.nodeMappingsByNodeDescriptor.get(nodeDescriptor);
     }
 
     /**
@@ -179,98 +136,30 @@ public final class XmlComplexTypeMapping extends TypeMapping<QName> {
         return this.objectAccessor;
     }
 
-    private void register(String fieldName, Class<?> fieldType, NodeDescriptor nodeDescriptor, QName dataTypeName,
-            boolean indirect) {
-        assertNotFinished();
-        List<String> fieldNames = getOrCreateFieldNameList(nodeDescriptor.getType());
-        if (!fieldNames.contains(fieldName)) {
-            fieldNames.add(fieldName);
-        }
-
-        TypedField field = new TypedField(fieldName, fieldType);
-        NodeModel nodeModel;
-        if (indirect) {
-            nodeModel = new NodeModel(nodeDescriptor, dataTypeName, fieldName);
-        } else {
-            nodeModel = new NodeModel(nodeDescriptor, fieldName);
-        }
-        this.nodeModelsByTypedField.put(field, nodeModel);
-        this.nodeModelsByNodeDescriptor.put(nodeDescriptor, nodeModel);
-    }
-
-    private List<String> getOrCreateFieldNameList(NodeType nodeType) {
-        List<String> result = this.fieldNamesByNodeType.get(nodeType);
-        if (result == null) {
-            result = new ArrayList<String>();
-            this.fieldNamesByNodeType.put(nodeType, result);
+    private EnumMap<NodeType, List<String>> createFieldNamesByNodeType(Collection<NodeMapping<?>> nodeMappings) {
+        EnumMap<NodeType, List<String>> result = new EnumMap<NodeType, List<String>>(NodeType.class);
+        for (NodeMapping<?> nodeMapping : nodeMappings) {
+            NodeType nodeType = nodeMapping.getNodeDescriptor().getType();
+            List<String> fieldNames = result.get(nodeType);
+            if (fieldNames == null) {
+                fieldNames = new ArrayList<String>();
+                result.put(nodeType, fieldNames);
+            }
+            String fieldName = nodeMapping.getFieldDescriptor().getName();
+            if (!fieldNames.contains(fieldName)) {
+                fieldNames.add(fieldName);
+            }
         }
         return result;
     }
 
-    private void registerNodeModelsByFieldName() {
-        Set<String> ambiguousFieldNames = new HashSet<String>();
-        for (TypedField typedField : this.nodeModelsByTypedField.keySet()) {
-            if (!ambiguousFieldNames.contains(typedField.getName())) {
-                if (this.nodeModelsByFieldName.get(typedField.getName()) == null) {
-                    this.nodeModelsByFieldName.put(typedField.getName(), this.nodeModelsByTypedField
-                            .get(typedField));
-                } else {
-                    ambiguousFieldNames.add(typedField.getName());
-                    this.nodeModelsByFieldName.remove(typedField.getName());
-                }
-            }
+    private Map<FieldDescriptor, NodeMapping<?>> createNodeMappingsByFieldDescriptorMap(
+            Collection<NodeMapping<?>> nodeMappings) {
+        Map<FieldDescriptor, NodeMapping<?>> result = new HashMap<FieldDescriptor, NodeMapping<?>>();
+        for (NodeMapping<?> nodeMapping : nodeMappings) {
+            result.put(nodeMapping.getFieldDescriptor(), nodeMapping);
         }
-    }
-
-    /**
-     * Encapsulates the combination of a field name and a potential type of the
-     * field value.
-     * <p>
-     * Instances of this class are immutable and thread-safe.
-     * 
-     * @author Norman Lahme-Huetig
-     * 
-     */
-    private static final class TypedField {
-        private final String name;
-
-        private final Class<?> objectType;
-
-        private final int hashCode;
-
-        public TypedField(String name, Class<?> objectType) {
-            this.name = name;
-            this.objectType = objectType;
-            this.hashCode = 37 * (17 + getName().hashCode()) + getObjectType().hashCode();
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public Class<?> getObjectType() {
-            return this.objectType;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof TypedField)) {
-                return false;
-            }
-            TypedField other = (TypedField) obj;
-            return getName().equals(other.getName()) && getObjectType().equals(other.getObjectType());
-        }
-
-        @Override
-        public int hashCode() {
-            return this.hashCode;
-        }
-
-        @Override
-        public String toString() {
-            return getName() + "@" + getObjectType().getName();
-        }
-
+        return result;
     }
 
 }

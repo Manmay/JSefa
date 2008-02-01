@@ -38,8 +38,8 @@ import org.jsefa.xml.annotation.XmlElementList;
 public class NodePositionTest extends TestCase {
 
     /**
-     * Test the node position when all nodes are declared with a position
-     * annotation (i. e. there is a total order on the set of nodes).
+     * Test the node position when all nodes are declared with a position annotation (i. e. there is a total order
+     * on the set of nodes).
      */
     public void testTotalOrder() {
         TotalOrderTestDTO obj = new TotalOrderTestDTO();
@@ -51,8 +51,8 @@ public class NodePositionTest extends TestCase {
     }
 
     /**
-     * Test the node position when not all nodes are declared with a position
-     * annotation (i. e. there is a partial order on the set of nodes).
+     * Test the node position when not all nodes are declared with a position annotation (i. e. there is a partial
+     * order on the set of nodes).
      * 
      */
     public void testPartialOrder() {
@@ -69,13 +69,13 @@ public class NodePositionTest extends TestCase {
         assertTrue(xmlDoc.indexOf(elementNameB) >= 0);
         assertTrue(xmlDoc.indexOf(elementNameA) < xmlDoc.indexOf(elementNameB));
     }
-    
+
     @XmlDataType()
     static final class TotalOrderTestDTO {
         @XmlElement(pos = 1)
         String element1 = "e1";
 
-        @XmlElementList(pos = 65, implicit = false, items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(pos = 65, implicit = false, items = {@ListItem(name = "item")})
         List<String> elementList5 = new ArrayList<String>();
 
         @XmlElement(pos = 40)
@@ -84,7 +84,7 @@ public class NodePositionTest extends TestCase {
         @XmlElement(pos = 2)
         String element2 = "e2";
 
-        @XmlElementList(pos = 3, implicit = false, items = {@ListItem(name = "item", objectType = String.class)})
+        @XmlElementList(pos = 3, implicit = false, items = {@ListItem(name = "item")})
         List<String> elementList3 = new ArrayList<String>();
     }
 
@@ -98,18 +98,16 @@ public class NodePositionTest extends TestCase {
 
         String element6 = "e6";
 
-        @XmlElementList(pos = 4, implicit = false, items = {@ListItem(name = "listContent", objectType = String.class)})
+        @XmlElementList(pos = 4, implicit = false, items = {@ListItem(name = "listContent")})
         List<String> elementList4 = new ArrayList<String>();
 
         @XmlElement(pos = 3)
         String element3 = "e3";
 
-        @XmlElementList(pos = 2, implicit = false, items = {@ListItem(name = "listContent", objectType = String.class)})
+        @XmlElementList(pos = 2, implicit = false, items = {@ListItem(name = "listContent")})
         List<String> elementList2 = new ArrayList<String>();
 
         String element7 = "e7";
     }
-
-    
 
 }

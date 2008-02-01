@@ -38,8 +38,8 @@ public class CsvIOFactoryImpl extends CsvIOFactory {
     private final CsvLowLevelIOFactory lowLevelIOFactory;
 
     /**
-     * Creates a new <code>CsvIOFactory</code> for <code>CsvSerializer</code>s
-     * and <code>CsvDeserializer</code>s using the given configuration.
+     * Creates a new <code>CsvIOFactory</code> for <code>CsvSerializer</code>s and
+     * <code>CsvDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.
      * @return a <code>CsvIOFactory</code> factory

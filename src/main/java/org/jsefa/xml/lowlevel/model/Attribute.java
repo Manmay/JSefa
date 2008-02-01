@@ -18,7 +18,6 @@ package org.jsefa.xml.lowlevel.model;
 
 import org.jsefa.xml.namespace.QName;
 
-
 /**
  * An attribute of a xml element.
  * 

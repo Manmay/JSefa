@@ -78,7 +78,7 @@ public final class SerializationDemo {
 
     private Date createDate(String date) {
         return DateConverter.create(SimpleTypeConverterConfiguration.EMPTY).fromString(date);
-    }    
+    }
 
     /**
      * Main method.

@@ -34,17 +34,15 @@ import org.jsefa.common.mapping.EntryPoint;
 @Target({TYPE})
 public @interface CsvDataType {
     /**
-     * The name of the data type. The name must be unique within the set of data
-     * types used within one CSV document. If it is not explicitly set it will be
-     * generated automatically from the class name.
+     * The name of the data type. The name must be unique within the set of data types used within one CSV
+     * document. If it is not explicitly set it will be generated automatically from the class name.
      */
     String name() default "";
 
     /**
-     * The default prefix of the CSV the annotated class describes. The prefix
-     * is used to determine the {@link EntryPoint} during deserialization or
-     * serialization. By defining prefixes one can write different record types
-     * into the same stream.
+     * The default prefix of the CSV the annotated class describes. The prefix is used to determine the
+     * {@link EntryPoint} during deserialization or serialization. By defining prefixes one can write different
+     * record types into the same stream.
      */
     String defaultPrefix() default "";
 }

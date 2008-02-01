@@ -17,6 +17,8 @@
 package org.jsefa.common.annotation;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
@@ -24,10 +26,9 @@ import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingRegistry;
 
 /**
- * Abstract super class for factories which can create {@link TypeMapping}s
- * from annotated classes.
+ * Abstract super class for factories which can create {@link TypeMapping}s from annotated classes.
  * <p>
- * It is thread safe and all subclasses should be thread-safe, too.
+ * All subclasses should be thread-safe.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -43,13 +44,13 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
 
     private final R typeMappingRegistry;
 
+    private final ConcurrentMap<D, D> newDataTypeNames;
+
     /**
      * Constructs a new <code>TypeMappingFactory</code>.
      * 
-     * @param typeMappingRegistry the type mapping registry. New types will be
-     *            registered using that registry.
-     * @param simpleTypeConverterProvider the simple type converter provider to
-     *            use
+     * @param typeMappingRegistry the type mapping registry. New types will be registered using that registry.
+     * @param simpleTypeConverterProvider the simple type converter provider to use
      * @param objectAccessorProvider the object accessor provider to use
      */
     public TypeMappingFactory(R typeMappingRegistry, SimpleTypeConverterProvider simpleTypeConverterProvider,
@@ -57,13 +58,13 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
         this.typeMappingRegistry = typeMappingRegistry;
         this.simpleTypeConverterProvider = simpleTypeConverterProvider;
         this.objectAccessorProvider = objectAccessorProvider;
+        this.newDataTypeNames = new ConcurrentHashMap<D, D>();
     }
 
     /**
-     * Creates a type mapping for the given object type, registers it with the
-     * type mapping registry and returns its data type name. The first two steps
-     * are omitted if a type mapping is already registered for the given object
-     * type.
+     * Creates a type mapping for the given object type, registers it with the type mapping registry and returns
+     * its data type name. The first two steps are omitted if a type mapping is already registered for the given
+     * object type.
      * 
      * @param objectType the object type to create a type mapping for.
      * @return the name of the created or found data type.
@@ -77,6 +78,25 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      */
     public final R getTypeMappingRegistry() {
         return typeMappingRegistry;
+    }
+
+    /**
+     * Called before creating a new type mapping with the given data type name. Returns true, if the type mapping
+     * registry has no entry for the data type name and if it is the first time this method is called with the
+     * given argument; otherwise false.
+     * <p>
+     * The purpose of this method is to prevent from creating duplicates and from falling in an endless loop in
+     * case of a cycle in the type mapping graph.
+     * 
+     * @param dataTypeName the data type name
+     * @return true, if no type mapping with the given name already exists or is already under construction.
+     */
+    protected final boolean prepareToCreate(D dataTypeName) {
+        if (this.typeMappingRegistry.get(dataTypeName) != null || this.newDataTypeNames.containsKey(dataTypeName)) {
+            return false;
+        }
+        this.newDataTypeNames.put(dataTypeName, dataTypeName);
+        return true;
     }
 
     /**

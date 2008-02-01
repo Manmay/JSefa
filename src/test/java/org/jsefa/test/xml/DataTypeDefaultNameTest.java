@@ -24,8 +24,7 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests to test elements with an xsd:type attribute denoting a standard data
- * type.
+ * Tests to test elements with an xsd:type attribute denoting a standard data type.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -38,7 +37,7 @@ public class DataTypeDefaultNameTest extends TestCase {
         StringTestDTO testDTO = deserialize(StringTestDTO.class, "xs:string", "content");
         assertEquals("content", testDTO.element);
     }
-    
+
     /**
      * Tests it with 'xs:int'.
      */

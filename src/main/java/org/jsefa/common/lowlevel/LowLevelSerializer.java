@@ -34,13 +34,13 @@ public interface LowLevelSerializer {
      * @throws SerializationException
      */
     void open(Writer writer);
-    
+
     /**
-     * Closes the serialization stream. The underlying writer will be closed
-     * only if <code>closeWriter</code> is true, too.
+     * Closes the serialization stream. The underlying writer will be closed only if <code>closeWriter</code> is
+     * true, too.
      * 
      * @param closeWriter if true, the underlying writer will be closed, too.
      * @throws SerializationException
      */
-    void close(boolean closeWriter);    
+    void close(boolean closeWriter);
 }

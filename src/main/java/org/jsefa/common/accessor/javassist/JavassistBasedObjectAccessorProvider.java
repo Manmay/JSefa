@@ -36,8 +36,8 @@ import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Javassist based implementation of {@link ObjectAccessorProvider} which uses
- * {@link ReflectionBasedObjectAccessorProvider} as a fallback (for private
- * attributes and for those with primitive types).
+ * {@link ReflectionBasedObjectAccessorProvider} as a fallback (for private attributes and for those with primitive
+ * types).
  * <p>
  * This implementation is thread-safe.
  * 

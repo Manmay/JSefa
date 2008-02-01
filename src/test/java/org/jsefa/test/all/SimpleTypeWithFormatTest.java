@@ -37,8 +37,8 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests to test the serialization/deserialization of different simple
- * types with an explicit format and no explicit converter annotation.
+ * Tests to test the serialization/deserialization of different simple types with an explicit format and no
+ * explicit converter annotation.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
@@ -214,5 +214,5 @@ public class SimpleTypeWithFormatTest extends TestCase {
 
     private Date createDate(String date) {
         return DateConverter.create(SimpleTypeConverterConfiguration.EMPTY).fromString(date);
-    }    
+    }
 }

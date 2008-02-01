@@ -18,7 +18,6 @@ package org.jsefa.xml.lowlevel.model;
 
 import org.jsefa.xml.namespace.QName;
 
-
 /**
  * Implementation of {@link ElementEnd}.
  * <p>
@@ -34,6 +33,7 @@ public final class ElementEndImpl implements ElementEnd {
 
     /**
      * Constructs a new <code>ElementEndImpl</code>.
+     * 
      * @param name the name of the element
      * @param depth the depth of the element
      */

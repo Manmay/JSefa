@@ -32,8 +32,7 @@ import java.lang.annotation.Target;
 @Target({TYPE})
 public @interface XmlNamespaces {
     /**
-     * A list of <code>Namespace</code>s each of which represents a namespace
-     * declaration.
+     * A list of <code>Namespace</code>s each of which represents a namespace declaration.
      */
     Namespace[] value();
 }

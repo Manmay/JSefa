@@ -22,7 +22,6 @@ import java.io.Reader;
 
 import org.jsefa.DeserializationException;
 
-
 /**
  * Abstract implementation of {@link RbfLowLevelDeserializer}.
  * 
@@ -30,7 +29,7 @@ import org.jsefa.DeserializationException;
  * 
  */
 public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserializer {
-    
+
     private BufferedReader reader;
 
     private boolean linePrefetched;
@@ -38,7 +37,7 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
     private String currentLine;
 
     private int currentIndex;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -51,7 +50,7 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
             this.reader = new BufferedReader(reader);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,7 +70,7 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
             throw new DeserializationException(e);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -79,7 +78,7 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
         this.currentIndex = 0;
         this.linePrefetched = true;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -92,12 +91,11 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
             }
         }
     }
-    
+
     /**
      * Returns true, if there is another character on the current line to read.
      * 
-     * @return true, if there is another character on the current line to read;
-     *         false otherwise.
+     * @return true, if there is another character on the current line to read; false otherwise.
      */
     protected final boolean hasNextChar() {
         return this.currentIndex < this.currentLine.length();
@@ -117,8 +115,7 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
     }
 
     /**
-     * Returns the next character of the current line and moves one character
-     * forward.
+     * Returns the next character of the current line and moves one character forward.
      * 
      * @return a character
      */
@@ -131,8 +128,8 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
     }
 
     /**
-     * Returns the next <code>String</code> with the given length of the
-     * current line and moves forward accordingly.
+     * Returns the next <code>String</code> with the given length of the current line and moves forward
+     * accordingly.
      * 
      * @param length the length of the <code>String</code> to return
      * @return a <code>String</code>
@@ -154,5 +151,5 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
      */
     protected final int remainingLineLength() {
         return this.currentLine.length() - this.currentIndex;
-    }    
+    }
 }

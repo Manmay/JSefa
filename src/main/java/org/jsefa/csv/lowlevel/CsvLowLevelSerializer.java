@@ -26,9 +26,10 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
  * 
  */
 public interface CsvLowLevelSerializer extends RbfLowLevelSerializer {
-    
+
     /**
      * Writes the next field.
+     * 
      * @param value the field value
      * @param quoteMode the quote mode to use
      */

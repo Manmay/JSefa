@@ -23,14 +23,13 @@ import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
  * Iterator-style interface for stream based xml serializer.
  * <p>
  * Notes on handling of <code>null</code> values:<br>
- * 1. A field mapped to an attribute, a simple type element, complex type
- * element or list type element with no value (<code>null</code>) will not
- * be serialized, i. e. no element or attribute will be created for this field.<br>
- * 2. An object mapped to a complex element with all fields having a null value
- * will be serialized to an empty element. This includes objects mapped to
- * complex elements with a text content. For those objects the serialzation
- * result is the same for a null and for an empty text content, but the
- * deserialization will create an empty <code>String</code> in both cases.
+ * 1. A field mapped to an attribute, a simple type element, complex type element or list type element with no
+ * value (<code>null</code>) will not be serialized, i. e. no element or attribute will be created for this
+ * field.<br>
+ * 2. An object mapped to a complex element with all fields having a null value will be serialized to an empty
+ * element. This includes objects mapped to complex elements with a text content. For those objects the
+ * serialzation result is the same for a null and for an empty text content, but the deserialization will create an
+ * empty <code>String</code> in both cases.
  * 
  * @see Serializer
  * @author Norman Lahme-Huetig

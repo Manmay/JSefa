@@ -26,16 +26,13 @@ import org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration;
 import org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters;
 
 /**
- * Factory for creating {@link CsvLowLevelDeserializer}s and
- * {@link CsvLowLevelSerializer}s.
+ * Factory for creating {@link CsvLowLevelDeserializer}s and {@link CsvLowLevelSerializer}s.
  * 
- * This is the abstract base class for concrete factories. Each subclass must
- * provide a static method <code>create(CsvLowLevelConfiguration config)</code>
- * as well as implement the abstract methods.
+ * This is the abstract base class for concrete factories. Each subclass must provide a static method
+ * <code>create(CsvLowLevelConfiguration config)</code> as well as implement the abstract methods.
  * <p>
- * This class provides a static factory method
- * {@link #createFactory(CsvLowLevelConfiguration)} to create an instance of a
- * concrete <code>CsvLowLevelIOFactory</code>.
+ * This class provides a static factory method {@link #createFactory(CsvLowLevelConfiguration)} to create an
+ * instance of a concrete <code>CsvLowLevelIOFactory</code>.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -43,8 +40,7 @@ import org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters;
 public abstract class CsvLowLevelIOFactory implements LowLevelIOFactory {
 
     /**
-     * Creates a new <code>CsvLowLevelIOFactory</code> for
-     * <code>CsvLowLevelSerializer</code>s and
+     * Creates a new <code>CsvLowLevelIOFactory</code> for <code>CsvLowLevelSerializer</code>s and
      * <code>CsvLowLevelDeserializer</code>s using the given configuration.
      * 
      * @param config the configuration object.
@@ -53,7 +49,8 @@ public abstract class CsvLowLevelIOFactory implements LowLevelIOFactory {
      */
     public static CsvLowLevelIOFactory createFactory(CsvLowLevelConfiguration config) {
         Class<CsvLowLevelIOFactory> factoryClass = InitialConfiguration.get(
-                CsvLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS, CsvLowLevelIOFactoryImpl.class);
+                CsvLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS,
+                CsvLowLevelIOFactoryImpl.class);
         Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
                 CsvLowLevelConfiguration.class);
         if (createMethod == null) {

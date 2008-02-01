@@ -30,48 +30,40 @@ import org.jsefa.common.converter.SimpleTypeConverter;
 public @interface ListItem {
 
     /**
-     * The name of the element this annotation describes. It has the following
-     * format:<br>
+     * The name of the element this annotation describes. It has the following format:<br>
      * [prefix:]localname<br>
      */
     String name();
 
     /**
-     * The name of the data type this <code>ListItem</code> describes. If not
-     * set, it must be determinable from the given object type or from the
-     * generic parameter argument of the annotated field.
+     * The name of the data type this <code>ListItem</code> describes. If not set, it must be determinable from
+     * the given object type or from the generic parameter argument of the annotated field.
      * <p>
-     * It should be explicitly set if the type mapping should not be created
-     * from the annotations given in the class <code>objectType</code>. This
-     * is useful when mixing explicit type mapping creation with annotation
+     * It should be explicitly set if the type mapping should not be created from the annotations given in the
+     * class <code>objectType</code>. This is useful when mixing explicit type mapping creation with annotation
      * based type mapping creation.
      */
     String dataTypeName() default "";
 
     /**
-     * The type of the object this <code>ListItem</code> describes. From this
-     * the data type must be determinable if it is not explicity given. If the
-     * object type is not set or determinable from the generic parameter
-     * argument of the annotated field, the data type name must be given
-     * explicitly.
+     * The type of the object this <code>ListItem</code> describes. From this the data type must be determinable
+     * if it is not explicity given. If the object type is not set or determinable from the generic parameter
+     * argument of the annotated field, the data type name must be given explicitly.
      * <p>
-     * The object type will be ignored if the data type name is given
-     * explicitly.
+     * The object type will be ignored if the data type name is given explicitly.
      */
     Class<?> objectType() default NoClass.class;
 
     /**
-     * The format to be used to construct a <code>SimpleTypeConverter</code>
-     * for the xml element which must have a simple data type (no children, no
-     * data holding attributes). The <code>SimpleTypeConverter</code> class
+     * The format to be used to construct a <code>SimpleTypeConverter</code> for the xml element which must have
+     * a simple data type (no children, no data holding attributes). The <code>SimpleTypeConverter</code> class
      * will be determined using the type of the java field with this annotation.
      */
     String[] format() default {};
 
     /**
-     * Specifies the converter type to be used for the xml element which must
-     * have a simple data type (no children, no data holding attributes). In the
-     * default case the converter type is determined using the type of the list
+     * Specifies the converter type to be used for the xml element which must have a simple data type (no children,
+     * no data holding attributes). In the default case the converter type is determined using the type of the list
      * item.
      */
     Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;

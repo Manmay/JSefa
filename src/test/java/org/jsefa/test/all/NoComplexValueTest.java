@@ -32,15 +32,14 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests to test the serialization/deserialization of DTOs with absent
- * complex values.
+ * Tests to test the serialization/deserialization of DTOs with absent complex values.
  * 
  * @author Marko Kovacevic
  * @author Norman Lahme-Huetig
  * 
  */
 public class NoComplexValueTest extends TestCase {
-    
+
     /**
      * Test with null value element (XML).
      */
@@ -104,7 +103,7 @@ public class NoComplexValueTest extends TestCase {
         dto.fieldC = fieldC;
         return dto;
     }
-    
+
     private ChildDTO createChildDTO(String fieldValue) {
         ChildDTO dto = new ChildDTO();
         dto.fieldD = fieldValue;
@@ -126,7 +125,7 @@ public class NoComplexValueTest extends TestCase {
         @FlrField(pos = 3)
         ChildDTO fieldC;
     }
-    
+
     @XmlDataType()
     static final class XmlParentDTO extends AbstractTestDTO {
         @XmlElement()

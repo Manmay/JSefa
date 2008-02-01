@@ -24,8 +24,7 @@ package org.jsefa.common.annotation;
  */
 public interface AnnotationDataNames {
     /**
-     * Name of the annotation data used to denote the position of an annotated
-     * java field.
+     * Name of the annotation data used to denote the position of an annotated java field.
      */
     String POS = "pos";
 

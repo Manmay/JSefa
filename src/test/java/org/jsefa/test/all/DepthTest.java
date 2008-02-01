@@ -31,8 +31,7 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests to test the serialization/deserialization of DTOs with different
- * depth.
+ * Tests to test the serialization/deserialization of DTOs with different depth.
  * 
  * @author Norman Lahme-Huetig
  * 

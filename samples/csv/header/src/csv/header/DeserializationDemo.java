@@ -25,12 +25,10 @@ import org.jsefa.Deserializer;
 import org.jsefa.csv.CsvIOFactory;
 
 /**
- * Demo for demonstrating the deserialization of the document "person.csv" which
- * contains a header.
+ * Demo for demonstrating the deserialization of the document "person.csv" which contains a header.
  * <p>
- * There is no need for a special support for headers as one can use the Reader
- * given to {@link Deserializer#open(Reader)} to read the header first. This
- * example shows this idiom.
+ * There is no need for a special support for headers as one can use the Reader given to
+ * {@link Deserializer#open(Reader)} to read the header first. This example shows this idiom.
  * <p>
  * The code should be self explaining.
  * 

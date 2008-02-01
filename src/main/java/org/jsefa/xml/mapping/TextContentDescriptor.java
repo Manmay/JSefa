@@ -16,26 +16,37 @@
 
 package org.jsefa.xml.mapping;
 
-import org.jsefa.xml.namespace.QName;
-
 /**
- * Descriptor for the content of a non-simple xml element without child
- * elements.
+ * Descriptor for the content of a non-simple xml element without child elements. There is only one instance of
+ * this class.
  * <p>
- * Instances of this class are immutable and thread-safe.
+ * The instance of this class is immutable and thread-safe.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public final class TextContentDescriptor extends NodeDescriptor {
+public final class TextContentDescriptor implements NodeDescriptor {
+
+    private static final TextContentDescriptor INSTANCE = new TextContentDescriptor();
 
     /**
-     * Constructs a new <code>Attribute</code>.
+     * Returns the single instance of this class.
      * 
-     * @param dataTypeName the name the data type
+     * @return the single <code>TextContentDescriptor</code>
      */
-    public TextContentDescriptor(QName dataTypeName) {
-        super(null, dataTypeName, NodeType.TEXT_CONTENT);
+    public static TextContentDescriptor getInstance() {
+        return TextContentDescriptor.INSTANCE;
+    }
+
+    private TextContentDescriptor() {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public NodeType getType() {
+        return NodeType.TEXT_CONTENT;
     }
 
 }

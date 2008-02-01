@@ -37,12 +37,12 @@ public interface CsvInitialConfigurationParameters extends InitialConfigurationP
      * Configuration parameter for the default quote mode to use.
      */
     String DEFAUT_QUOTE_MODE = "jsefa:csv:defaultQuoteMode";
-    
+
     /**
      * Configuration parameter for the CsvLowLevelIOFactory class to use.
      */
-    String LOW_LEVEL_IO_FACTORY_CLASS = CsvLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS;    
-    
+    String LOW_LEVEL_IO_FACTORY_CLASS = CsvLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS;
+
     /**
      * Configuration parameter for the field delimiter to use.
      */
@@ -66,5 +66,5 @@ public interface CsvInitialConfigurationParameters extends InitialConfigurationP
     /**
      * Configuration parameter for the escape character to use.
      */
-    String ESCAPE_CHARACTER = CsvLowLevelInitialConfigurationParameters.ESCAPE_CHARACTER;    
+    String ESCAPE_CHARACTER = CsvLowLevelInitialConfigurationParameters.ESCAPE_CHARACTER;
 }

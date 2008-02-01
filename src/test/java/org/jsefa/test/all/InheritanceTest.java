@@ -88,7 +88,7 @@ public class InheritanceTest extends TestCase {
         object.fieldD = "d";
         return object;
     }
-    
+
     private ParentDTO createParentDTO() {
         ParentDTO object = new ParentDTO();
         object.fieldA = "a";

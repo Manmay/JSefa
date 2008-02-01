@@ -32,8 +32,7 @@ import org.jsefa.common.mapping.HierarchicalTypeMappingRegistry;
 import org.jsefa.xml.namespace.QName;
 
 /**
- * A registry for xml type mappings with standard type mappings already
- * registered.
+ * A registry for xml type mappings with standard type mappings already registered.
  * <p>
  * Instances of this class are thread-safe.
  * 
@@ -43,17 +42,15 @@ import org.jsefa.xml.namespace.QName;
 public final class XmlTypeMappingRegistry extends HierarchicalTypeMappingRegistry<QName> {
 
     /**
-     * Constructs a new <code>XmlTypeMappingRegistry</code> with standard type
-     * mappings already registered.
+     * Constructs a new <code>XmlTypeMappingRegistry</code> with standard type mappings already registered.
      */
     public XmlTypeMappingRegistry() {
         registerStandards();
     }
 
     /**
-     * Constructs a new <code>XmlTypeMappingRegistry</code> from the given one
-     * as a model so that the other one and its components can be modified
-     * without affecting this configuration object.
+     * Constructs a new <code>XmlTypeMappingRegistry</code> from the given one as a model so that the other one
+     * and its components can be modified without affecting this configuration object.
      * 
      * @param other the registry that serves as a model for creating a new one
      */

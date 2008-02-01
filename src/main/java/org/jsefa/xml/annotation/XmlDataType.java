@@ -23,10 +23,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation declaring a complex data type with its relevant sub object
- * types. Each object type which should map to a complex element and for which a
- * type mapping should be constructed from annotations must be annotated with
- * this annotation.
+ * An annotation declaring a complex data type with its relevant sub object types. Each object type which should
+ * map to a complex element and for which a type mapping should be constructed from annotations must be annotated
+ * with this annotation.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -35,16 +34,15 @@ import java.lang.annotation.Target;
 @Target({TYPE})
 public @interface XmlDataType {
     /**
-     * The name of the data type. The name must be unique within the set of data
-     * types used within one XML document. If not set a name will be created
-     * from the name of the class.
+     * The name of the data type. The name must be unique within the set of data types used within one XML
+     * document. If not set a name will be created from the name of the class.
      */
     String name() default "";
 
     /**
-     * The relevant sub object types of the one which is annotated with this
-     * annotation. Only subclasses of the annotated class which are mentioned in
-     * this array are considered in the serialization/deserialization process.
+     * The relevant sub object types of the one which is annotated with this annotation. Only subclasses of the
+     * annotated class which are mentioned in this array are considered in the serialization/deserialization
+     * process.
      */
     Class<?>[] subObjectTypes() default {};
 

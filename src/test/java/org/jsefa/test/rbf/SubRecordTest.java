@@ -69,8 +69,7 @@ public class SubRecordTest extends TestCase {
     }
 
     /**
-     * Tests a DTO with a single sub record list using the short annotation
-     * syntax (FLR).
+     * Tests a DTO with a single sub record list using the short annotation syntax (FLR).
      */
     public void testSingleSubRecordListFLR() {
         SingleSubRecordListDTO dto = createSingleSubRecordListDTO();
@@ -78,8 +77,7 @@ public class SubRecordTest extends TestCase {
     }
 
     /**
-     * Tests a DTO with a single sub record containing itself a single sub
-     * record (CSV).
+     * Tests a DTO with a single sub record containing itself a single sub record (CSV).
      */
     public void testSingleSubRecordDepth1CSV() {
         SingleSubRecordDepth1DTO dto = createSingleSubRecordDepth1DTO();
@@ -87,8 +85,7 @@ public class SubRecordTest extends TestCase {
     }
 
     /**
-     * Tests a DTO with a single sub record containing itself a single sub
-     * record (FLR).
+     * Tests a DTO with a single sub record containing itself a single sub record (FLR).
      */
     public void testSingleSubRecordDepth1FLR() {
         SingleSubRecordDepth1DTO dto = createSingleSubRecordDepth1DTO();
@@ -96,8 +93,8 @@ public class SubRecordTest extends TestCase {
     }
 
     /**
-     * Tests a DTO with a complex field containing a single sub record (CSV).
-     * This is not allowed so an exception is expected.
+     * Tests a DTO with a complex field containing a single sub record (CSV). This is not allowed so an exception
+     * is expected.
      */
     public void testIllegalSingleSubRecordCSV() {
         IllegalSingleSubRecordDTO dto = createIllegalSingleSubRecordDTO();
@@ -110,8 +107,8 @@ public class SubRecordTest extends TestCase {
     }
 
     /**
-     * Tests a DTO with a complex field containing a single sub record (FLR).
-     * This is not allowed so an exception is expected.
+     * Tests a DTO with a complex field containing a single sub record (FLR). This is not allowed so an exception
+     * is expected.
      */
     public void testIllegalSingleSubRecordFLR() {
         IllegalSingleSubRecordDTO dto = createIllegalSingleSubRecordDTO();

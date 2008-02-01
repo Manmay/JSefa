@@ -73,8 +73,7 @@ abstract class AbstractPerformanceDemo {
     protected abstract IOFactory createIOFactory(Class<?> objectType);
 
     /**
-     * Override to perform special action after start (before writing the first
-     * DTO).
+     * Override to perform special action after start (before writing the first DTO).
      * 
      * @param serializer the serializer
      */
@@ -83,8 +82,7 @@ abstract class AbstractPerformanceDemo {
     }
 
     /**
-     * Override to perfom special action before finish (after writing the last
-     * DTO).
+     * Override to perfom special action before finish (after writing the last DTO).
      * 
      * @param serializer the serializer
      */

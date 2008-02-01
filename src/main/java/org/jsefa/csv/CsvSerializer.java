@@ -22,11 +22,10 @@ import org.jsefa.Serializer;
  * Iterator-style interface for stream based CSV serializer.
  * <p>
  * Note on handling of <code>null</code> values:<br>
- * 1. <code>null</code> values of simple types (e.g. <code>String</code> or
- * <code>Date</code>) will be serialized to an empty string.<br>
- * 2. <code>null</code> values of complex types (classes annotated with
- * <code>CsvDataType</code>) will be serialized to a sequence of empty CSV
- * fields (e. g. ';;;;;').
+ * 1. <code>null</code> values of simple types (e.g. <code>String</code> or <code>Date</code>) will be
+ * serialized to an empty string.<br>
+ * 2. <code>null</code> values of complex types (classes annotated with <code>CsvDataType</code>) will be
+ * serialized to a sequence of empty CSV fields (e. g. ';;;;;').
  * 
  * @see Serializer
  * @author Norman Lahme-Huetig
