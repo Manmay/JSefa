@@ -39,6 +39,7 @@ public interface XmlLowLevelDeserializer extends LowLevelDeserializer {
 
     /**
      * Moves to the next xml item which can be deserialized.
+     * @throws LowLevelDeserializationException
      */
     void moveToNext();
 
@@ -53,6 +54,7 @@ public interface XmlLowLevelDeserializer extends LowLevelDeserializer {
      * Returns the current xml item.
      * 
      * @return the current xml item.
+     * @throws LowLevelDeserializationException
      */
     XmlItem current();
 

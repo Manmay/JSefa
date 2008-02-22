@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.jsefa.DeserializationException;
 import org.jsefa.Deserializer;
-import org.jsefa.SerializationException;
+import org.jsefa.common.lowlevel.InputPosition;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
@@ -103,7 +103,7 @@ public abstract class RbfDeserializer implements Deserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException(e);
+            throw new DeserializationException("Error while deserializing", e);
         }
 
     }
@@ -125,7 +125,7 @@ public abstract class RbfDeserializer implements Deserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException(e);
+            throw new DeserializationException("Error while deserializing", e);
         }
 
     }
@@ -137,8 +137,15 @@ public abstract class RbfDeserializer implements Deserializer {
         try {
             getLowLevelDeserializer().close(closeReader);
         } catch (Exception e) {
-            throw new SerializationException("Error while closing the serialization stream");
+            throw new DeserializationException("Error while closing the serialization stream", e);
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public final InputPosition getInputPosition() {
+        return getLowLevelDeserializer().getInputPosition();
     }
 
     /**

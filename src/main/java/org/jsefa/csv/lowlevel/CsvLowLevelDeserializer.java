@@ -16,6 +16,7 @@
 
 package org.jsefa.csv.lowlevel;
 
+import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
 
@@ -32,6 +33,7 @@ public interface CsvLowLevelDeserializer extends RbfLowLevelDeserializer {
      * 
      * @param quoteMode the quote mode
      * @return the field value
+     * @throws LowLevelDeserializationException
      */
     String nextField(QuoteMode quoteMode);
 }

@@ -16,7 +16,7 @@
 
 package org.jsefa.rbf.lowlevel;
 
-import org.jsefa.DeserializationException;
+import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.common.lowlevel.LowLevelDeserializer;
 
 /**
@@ -31,7 +31,7 @@ public interface RbfLowLevelDeserializer extends LowLevelDeserializer {
      * Reads the next record from the stream. Returns true, if it could be read and false otherwise.
      * 
      * @return true, if another record could be read from the stream, otherwise false.
-     * @throws DeserializationException
+     * @throws LowLevelDeserializationException
      */
     boolean readNextRecord();
 

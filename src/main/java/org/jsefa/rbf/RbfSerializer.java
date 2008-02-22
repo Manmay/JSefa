@@ -68,7 +68,7 @@ public abstract class RbfSerializer implements Serializer {
         try {
             getLowLevelSerializer().open(writer);
         } catch (Exception e) {
-            throw new SerializationException("Error while opening the serialization stream");
+            throw new SerializationException("Error while opening the serialization stream", e);
         }
     }
 
@@ -100,7 +100,7 @@ public abstract class RbfSerializer implements Serializer {
         try {
             getLowLevelSerializer().close(closeWriter);
         } catch (Exception e) {
-            throw new SerializationException("Error while closing the serialization stream");
+            throw new SerializationException("Error while closing the serialization stream", e);
         }
 
     }

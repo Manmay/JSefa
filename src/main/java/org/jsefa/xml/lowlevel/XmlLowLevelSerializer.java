@@ -42,6 +42,7 @@ public interface XmlLowLevelSerializer extends LowLevelSerializer {
      * Writes the start tag of an element.
      * 
      * @param name the name of the element
+     * @throws LowLevelSerializationException
      */
     void writeStartElement(QName name);
 
@@ -50,6 +51,7 @@ public interface XmlLowLevelSerializer extends LowLevelSerializer {
      * 
      * @param name the name of the element
      * @param dataTypeName the name of its data type
+     * @throws LowLevelSerializationException
      */
     void writeStartElement(QName name, QName dataTypeName);
 
@@ -58,6 +60,7 @@ public interface XmlLowLevelSerializer extends LowLevelSerializer {
      * 
      * @param name the attribute name
      * @param value the attribute value
+     * @throws LowLevelSerializationException
      */
     void writeAttribute(QName name, String value);
 
@@ -66,11 +69,13 @@ public interface XmlLowLevelSerializer extends LowLevelSerializer {
      * happens.
      * 
      * @param text the text.
+     * @throws LowLevelSerializationException
      */
     void writeText(String text);
 
     /**
      * Writes the end tag of the current element.
+     * @throws LowLevelSerializationException
      */
     void writeEndElement();
 

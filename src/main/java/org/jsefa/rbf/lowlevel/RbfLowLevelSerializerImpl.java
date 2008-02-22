@@ -19,7 +19,8 @@ package org.jsefa.rbf.lowlevel;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.jsefa.SerializationException;
+import org.jsefa.common.lowlevel.LowLevelDeserializationException;
+import org.jsefa.common.lowlevel.LowLevelSerializationException;
 
 /**
  * Abstract implementation of {@link RbfLowLevelSerializer}.
@@ -65,7 +66,7 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
             try {
                 this.writer.close();
             } catch (IOException e) {
-                throw new SerializationException(e);
+                throw new LowLevelSerializationException("Error while closing the serialization stream", e);
             }
         }
     }
@@ -93,7 +94,7 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
         try {
             this.writer.write(character);
         } catch (IOException e) {
-            throw new SerializationException(e);
+            throw new LowLevelDeserializationException("Error while serializing", e);
         }
     }
 
@@ -106,7 +107,7 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
         try {
             this.writer.write(value);
         } catch (IOException e) {
-            throw new SerializationException(e);
+            throw new LowLevelSerializationException("Error while serializing", e);
         }
     }
 
@@ -114,7 +115,7 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
         try {
             this.writer.write(this.lineBreak);
         } catch (IOException e) {
-            throw new SerializationException(e);
+            throw new LowLevelSerializationException("Error while serializing", e);
         }
     }
 

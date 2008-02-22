@@ -18,6 +18,8 @@ package org.jsefa;
 
 import java.io.Reader;
 
+import org.jsefa.common.lowlevel.InputPosition;
+
 /**
  * Iterator-style interface for stream based deserializers.
  * 
@@ -59,4 +61,9 @@ public interface Deserializer {
      */
     void close(boolean closeReader);
 
+    /**
+     * Returns information about the current position within the input stream.
+     * @return the input position or null if no position information is available
+     */
+    InputPosition getInputPosition();
 }

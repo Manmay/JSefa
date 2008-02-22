@@ -16,6 +16,7 @@
 
 package org.jsefa.csv.lowlevel;
 
+import org.jsefa.common.lowlevel.LowLevelSerializationException;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
 
@@ -32,6 +33,7 @@ public interface CsvLowLevelSerializer extends RbfLowLevelSerializer {
      * 
      * @param value the field value
      * @param quoteMode the quote mode to use
+     * @throws LowLevelSerializationException
      */
     void writeField(String value, QuoteMode quoteMode);
 

@@ -45,12 +45,4 @@ public final class LowLevelSerializationException extends RuntimeException {
         super(message, cause);
     }
 
-    /**
-     * Constructs a new <code>LowLevelSerializationException</code> with the specified cause.
-     * 
-     * @param cause the cause.
-     */
-    public LowLevelSerializationException(Throwable cause) {
-        super(cause);
-    }
 }

@@ -16,6 +16,7 @@
 
 package org.jsefa.flr.lowlevel;
 
+import org.jsefa.common.lowlevel.LowLevelSerializationException;
 import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
 
 /**
@@ -32,6 +33,7 @@ public interface FlrLowLevelSerializer extends RbfLowLevelSerializer {
      * @param length the length of the field
      * @param align the alignment
      * @param padCharacter the pad character
+     * @throws LowLevelSerializationException
      */
     void writeField(String value, int length, Align align, char padCharacter);
 }

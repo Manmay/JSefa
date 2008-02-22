@@ -18,8 +18,6 @@ package org.jsefa.common.lowlevel;
 
 import java.io.Writer;
 
-import org.jsefa.SerializationException;
-
 /**
  * Interface for stream based low level serializers.
  * 
@@ -31,7 +29,7 @@ public interface LowLevelSerializer {
      * Opens a new serialization stream based on the given writer.
      * 
      * @param writer the writer to base the stream on
-     * @throws SerializationException
+     * @throws LowLevelSerializationException
      */
     void open(Writer writer);
 
@@ -40,7 +38,7 @@ public interface LowLevelSerializer {
      * true, too.
      * 
      * @param closeWriter if true, the underlying writer will be closed, too.
-     * @throws SerializationException
+     * @throws LowLevelSerializationException
      */
     void close(boolean closeWriter);
 }

@@ -16,6 +16,7 @@
 
 package org.jsefa.flr.lowlevel;
 
+import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
 
 /**
@@ -33,6 +34,7 @@ public interface FlrLowLevelDeserializer extends RbfLowLevelDeserializer {
      * @param align the alignment
      * @param padCharacter the pad character
      * @return the field value
+     * @throws LowLevelDeserializationException
      */
     String nextField(int length, Align align, char padCharacter);
 

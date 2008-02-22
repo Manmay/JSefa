@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsefa.DeserializationException;
-import org.jsefa.SerializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
+import org.jsefa.common.lowlevel.InputPosition;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
@@ -96,7 +96,7 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException(e);
+            throw new DeserializationException("Error while deserializing", e);
         }
     }
 
@@ -126,10 +126,17 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         try {
             this.lowLevelDeserializer.close(closeReader);
         } catch (Exception e) {
-            throw new SerializationException("Error while closing the deserialization stream");
+            throw new DeserializationException("Error while closing the deserialization stream");
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public InputPosition getInputPosition() {
+        return this.lowLevelDeserializer.getInputPosition();
+    }
+    
     private Object deserializeElement(QName dataTypeName) {
         TypeMapping<QName> typeMapping = this.typeMappingRegistry.get(dataTypeName);
         if (typeMapping instanceof XmlSimpleTypeMapping) {

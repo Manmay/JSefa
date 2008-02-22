@@ -16,7 +16,9 @@
 
 package org.jsefa.xml.lowlevel;
 
-import java.io.IOException;
+import static org.jsefa.xml.namespace.NamespaceConstants.DEFAULT_NAMESPACE_PREFIX;
+import static org.jsefa.xml.namespace.NamespaceConstants.NO_NAMESPACE_URI;
+
 import java.io.Writer;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -25,8 +27,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.jsefa.common.lowlevel.LowLevelSerializationException;
 import org.jsefa.xml.lowlevel.config.XmlLowLevelConfiguration;
-
-import static org.jsefa.xml.namespace.NamespaceConstants.*;
 import org.jsefa.xml.namespace.NamespaceManager;
 import org.jsefa.xml.namespace.QName;
 
@@ -67,7 +67,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
         try {
             this.streamWriter = factory.createXMLStreamWriter(writer);
         } catch (XMLStreamException e) {
-            throw new LowLevelSerializationException("Unable to create stax writer", e);
+            throw new LowLevelSerializationException("Error while opening the serialization stream", e);
         }
         this.depth = -1;
         this.namespaceManager = this.config.getNamespaceManager();
@@ -81,7 +81,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             this.streamWriter.writeStartDocument(encoding, version);
             writeLineBreak();
         } catch (XMLStreamException e) {
-            throw new LowLevelSerializationException(e);
+            throw new LowLevelSerializationException("Error while serializing", e);
         }
     }
 
@@ -203,10 +203,8 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             if (closeWriter) {
                 this.writer.close();
             }
-        } catch (XMLStreamException e) {
-            throw new LowLevelSerializationException("Unable to close writer", e);
-        } catch (IOException e) {
-            throw new LowLevelSerializationException("Unable to close writer", e);
+        } catch (Exception e) {
+            throw new LowLevelSerializationException("Error while closing the serialization stream", e);
         }
     }
 

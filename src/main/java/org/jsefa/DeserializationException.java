@@ -45,13 +45,4 @@ public final class DeserializationException extends RuntimeException {
         super(message, cause);
     }
 
-    /**
-     * Constructs a new <code>DeserializationException</code> with the specified cause.
-     * 
-     * @param cause the cause.
-     */
-    public DeserializationException(Throwable cause) {
-        super(cause);
-    }
-
 }

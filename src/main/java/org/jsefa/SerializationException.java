@@ -45,12 +45,4 @@ public final class SerializationException extends RuntimeException {
         super(message, cause);
     }
 
-    /**
-     * Constructs a new <code>SerializationException</code> with the specified cause.
-     * 
-     * @param cause the cause.
-     */
-    public SerializationException(Throwable cause) {
-        super(cause);
-    }
 }

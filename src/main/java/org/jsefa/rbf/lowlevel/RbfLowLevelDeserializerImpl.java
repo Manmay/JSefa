@@ -20,7 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.jsefa.DeserializationException;
+import org.jsefa.common.lowlevel.InputPosition;
+import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 
 /**
  * Abstract implementation of {@link RbfLowLevelDeserializer}.
@@ -36,13 +37,16 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
 
     private String currentLine;
 
-    private int currentIndex;
+    private int currentColumnNumber;
+    
+    private int currentLineNumber;
 
     /**
      * {@inheritDoc}
      */
     public final void open(Reader reader) {
         this.currentLine = null;
+        this.currentLineNumber = 0;
         this.linePrefetched = false;
         if (reader instanceof BufferedReader) {
             this.reader = (BufferedReader) reader;
@@ -55,19 +59,21 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
      * {@inheritDoc}
      */
     public final boolean readNextRecord() {
-        this.currentIndex = 0;
+        this.currentColumnNumber = 0;
         if (this.linePrefetched) {
             this.linePrefetched = false;
             return this.currentLine != null;
         }
         try {
             this.currentLine = this.reader.readLine();
+            this.currentLineNumber++;
             while (this.currentLine != null && this.currentLine.trim().length() == 0) {
                 this.currentLine = this.reader.readLine();
+                this.currentLineNumber++;
             }
             return this.currentLine != null;
         } catch (IOException e) {
-            throw new DeserializationException(e);
+            throw new LowLevelDeserializationException("Error while deserializing", e);
         }
     }
 
@@ -75,7 +81,7 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
      * {@inheritDoc}
      */
     public final void unreadRecord() {
-        this.currentIndex = 0;
+        this.currentColumnNumber = 0;
         this.linePrefetched = true;
     }
 
@@ -87,10 +93,24 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
             try {
                 this.reader.close();
             } catch (IOException e) {
-                throw new DeserializationException(e);
+                throw new LowLevelDeserializationException("Error while closing the deserialization stream", e);
             }
         }
+        this.reader = null;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public final InputPosition getInputPosition() {
+        if (this.reader != null) {
+            return new InputPosition(this.currentLineNumber, this.currentColumnNumber);
+        } else {
+            return null;
+        }
+    }
+
+    
 
     /**
      * Returns true, if there is another character on the current line to read.
@@ -98,7 +118,7 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
      * @return true, if there is another character on the current line to read; false otherwise.
      */
     protected final boolean hasNextChar() {
-        return this.currentIndex < this.currentLine.length();
+        return this.currentColumnNumber < this.currentLine.length();
     }
 
     /**
@@ -108,9 +128,9 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
      */
     protected final char peekChar() {
         try {
-            return this.currentLine.charAt(this.currentIndex);
+            return this.currentLine.charAt(this.currentColumnNumber);
         } catch (IndexOutOfBoundsException e) {
-            throw new DeserializationException("Unexpected end of line reached");
+            throw new LowLevelDeserializationException("Unexpected end of line reached");
         }
     }
 
@@ -121,9 +141,9 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
      */
     protected final char nextChar() {
         try {
-            return this.currentLine.charAt(this.currentIndex++);
+            return this.currentLine.charAt(this.currentColumnNumber++);
         } catch (IndexOutOfBoundsException e) {
-            throw new DeserializationException("Unexpected end of line reached");
+            throw new LowLevelDeserializationException("Unexpected end of line reached");
         }
     }
 
@@ -136,11 +156,11 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
      */
     protected final String nextString(int length) {
         try {
-            String value = this.currentLine.substring(this.currentIndex, this.currentIndex + length);
-            this.currentIndex += length;
+            String value = this.currentLine.substring(this.currentColumnNumber, this.currentColumnNumber + length);
+            this.currentColumnNumber += length;
             return value;
         } catch (IndexOutOfBoundsException e) {
-            throw new DeserializationException("Unexpected end of line reached");
+            throw new LowLevelDeserializationException("Unexpected end of line reached");
         }
     }
 
@@ -150,6 +170,6 @@ public abstract class RbfLowLevelDeserializerImpl implements RbfLowLevelDeserial
      * @return the number of remaining characters in the current line.
      */
     protected final int remainingLineLength() {
-        return this.currentLine.length() - this.currentIndex;
+        return this.currentLine.length() - this.currentColumnNumber;
     }
 }

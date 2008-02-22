@@ -46,13 +46,4 @@ public final class LowLevelDeserializationException extends RuntimeException {
         super(message, cause);
     }
 
-    /**
-     * Constructs a new <code>LowLevelDeserializationException</code> with the specified cause.
-     * 
-     * @param cause the cause.
-     */
-    public LowLevelDeserializationException(Throwable cause) {
-        super(cause);
-    }
-
 }

@@ -18,8 +18,6 @@ package org.jsefa.common.lowlevel;
 
 import java.io.Reader;
 
-import org.jsefa.DeserializationException;
-
 /**
  * Interface for stream based low level deserializers.
  * 
@@ -30,7 +28,7 @@ public interface LowLevelDeserializer {
      * Opens a new serialization stream based on the given reader.
      * 
      * @param reader the reader to base the stream on.
-     * @throws DeserializationException
+     * @throws LowLevelDeserializationException
      */
     void open(Reader reader);
 
@@ -39,7 +37,13 @@ public interface LowLevelDeserializer {
      * is true.
      * 
      * @param closeReader if true, the underlying reader will be closed, too.
-     * @throws DeserializationException
+     * @throws LowLevelDeserializationException
      */
     void close(boolean closeReader);
+    
+    /**
+     * Returns information about the current position within the input stream.
+     * @return the input position or null if no position information is available
+     */
+    InputPosition getInputPosition();
 }
