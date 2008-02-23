@@ -36,7 +36,7 @@ public final class InputPosition {
         this.columnNumber = columnNumber;
     }
     /**
-     * Returns the number of the current line within the input stream (beginning with 0).
+     * Returns the number of the current line within the input stream (beginning with 1).
      * 
      * @return the current line number.
      */
@@ -45,7 +45,7 @@ public final class InputPosition {
     }
 
     /**
-     * Returns the number of the current column within the current line within the input stream (beginning with 0).
+     * Returns the number of the current column within the current line within the input stream (beginning with 1).
      * 
      * @return the current column number.
      */
