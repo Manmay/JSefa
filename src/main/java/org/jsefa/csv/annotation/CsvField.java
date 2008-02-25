@@ -24,6 +24,7 @@ import java.lang.annotation.Target;
 
 import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.common.util.GeneralConstants;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 
 /**
@@ -59,6 +60,11 @@ public @interface CsvField {
      * The quote mode to use for the CSV field this annotation describes.
      */
     QuoteMode quoteMode() default QuoteMode.DEFAULT;
+    
+    /**
+     * The string to use for describing that no value is given for the CSV field this annotation describes.
+     */
+    String noValue() default GeneralConstants.DEFAULT_STRING;
 
     /**
      * The format to be used to construct a <code>SimpleTypeConverter</code> for this field. The

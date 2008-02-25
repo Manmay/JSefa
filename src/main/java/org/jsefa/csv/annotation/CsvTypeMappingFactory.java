@@ -22,6 +22,7 @@ import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.util.GeneralConstants;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
@@ -43,6 +44,8 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
             CsvSubRecord.class, CsvSubRecordList.class);
 
     private QuoteMode defaultQuoteMode;
+    
+    private String defaultNoValueString;
 
     /**
      * Constructs a new <code>CsvTypeMappingFactory</code>.
@@ -51,12 +54,14 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
      * @param simpleTypeConverterProvider the simple type converter provider to use
      * @param objectAccessorProvider the object accessor provider to use
      * @param defaultQuoteMode the default quote mode to use
+     * @param defaultNoValueString the default no value string to use
      */
     public CsvTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
             SimpleTypeConverterProvider simpleTypeConverterProvider,
-            ObjectAccessorProvider objectAccessorProvider, QuoteMode defaultQuoteMode) {
+            ObjectAccessorProvider objectAccessorProvider, QuoteMode defaultQuoteMode, String defaultNoValueString) {
         super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider, ANNOTATIONS);
         this.defaultQuoteMode = defaultQuoteMode;
+        this.defaultNoValueString = defaultNoValueString;
     }
 
     /**
@@ -69,7 +74,11 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
         if (quoteMode.equals(QuoteMode.DEFAULT)) {
             quoteMode = this.defaultQuoteMode;
         }
-        return new CsvSimpleTypeMapping(objectType, dataTypeName, converter, quoteMode);
+        String noValueString = fieldAnnotation.noValue();
+        if (noValueString.equals(GeneralConstants.DEFAULT_STRING)) {
+            noValueString = this.defaultNoValueString;
+        }
+        return new CsvSimpleTypeMapping(objectType, dataTypeName, converter, quoteMode, noValueString);
     }
 
 }

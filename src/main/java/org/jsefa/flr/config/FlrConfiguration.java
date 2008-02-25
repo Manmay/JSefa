@@ -37,7 +37,7 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
 
     private FlrLowLevelConfiguration lowLevelConfiguration;
 
-    private char defaultPadCharacter = GeneralConstants.NO_CHARACTER;
+    private char defaultPadCharacter = GeneralConstants.DEFAULT_CHARACTER;
 
     /**
      * Constructs a new <code>FlrConfiguration</code>.
@@ -65,7 +65,7 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
      * @return a character
      */
     public char getDefaultPadCharacter() {
-        if (this.defaultPadCharacter == GeneralConstants.NO_CHARACTER) {
+        if (this.defaultPadCharacter == GeneralConstants.DEFAULT_CHARACTER) {
             this.defaultPadCharacter = (Character) InitialConfiguration.get(DEFAUT_PAD_CHARACTER,
                     Defaults.DEFAULT_PAD_CHARACTER);
         }
@@ -78,7 +78,7 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
      * @param defaultPadCharacter the default pad character
      */
     public void setDefaultPadCharacter(char defaultPadCharacter) {
-        if (defaultPadCharacter == GeneralConstants.NO_CHARACTER) {
+        if (defaultPadCharacter == GeneralConstants.DEFAULT_CHARACTER) {
             this.defaultPadCharacter = (Character) InitialConfiguration.get(DEFAUT_PAD_CHARACTER,
                     Defaults.DEFAULT_PAD_CHARACTER);
         } else {

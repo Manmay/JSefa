@@ -74,9 +74,6 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
     }
 
     private void encodeAndWrite(String value, QuoteMode quoteMode) {
-        if (value == null) {
-            return;
-        }
         switch (quoteMode) {
         case ALWAYS:
             encodeAndWriteUsingQuotes(value);

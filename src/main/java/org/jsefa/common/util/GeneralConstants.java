@@ -24,7 +24,12 @@ package org.jsefa.common.util;
  */
 public interface GeneralConstants {
     /**
-     * Special character denoting that no character is given.
+     * Special character denoting that the character configured as the default one should be used.
      */
-    char NO_CHARACTER = 0;
+    char DEFAULT_CHARACTER = 0;
+
+    /**
+     * Special string denoting that the string configured as the default one should be used.
+     */
+    String DEFAULT_STRING = "DEFAULT_STRING";
 }

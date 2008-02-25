@@ -69,7 +69,7 @@ public @interface FlrField {
     /**
      * The pad character used to fill empty space.
      */
-    char padCharacter() default GeneralConstants.NO_CHARACTER;
+    char padCharacter() default GeneralConstants.DEFAULT_CHARACTER;
 
     /**
      * The alignment of values which length is less than the required fixed length.

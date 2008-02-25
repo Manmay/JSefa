@@ -70,7 +70,7 @@ public final class FlrTypeMappingFactory extends RbfTypeMappingFactory {
                     + field.getDeclaringClass().getName() + " must be > 0");
         }
         char padCharacter = fieldAnnotation.padCharacter();
-        if (padCharacter == GeneralConstants.NO_CHARACTER) {
+        if (padCharacter == GeneralConstants.DEFAULT_CHARACTER) {
             padCharacter = this.defaultPadCharacter;
         }
         return new FlrSimpleTypeMapping(objectType, dataTypeName, converter, fieldAnnotation.length(),

@@ -53,15 +53,15 @@ public final class CsvDeserializerImpl extends RbfDeserializer implements CsvDes
      * {@inheritDoc}
      */
     protected Object readSimpleValue(SimpleTypeMapping<?> typeMapping) {
-        String stringValue = this.lowLevelDeserializer.nextField(((CsvSimpleTypeMapping) typeMapping)
-                .getQuoteMode());
+        CsvSimpleTypeMapping csvSimpleTypeMapping = (CsvSimpleTypeMapping) typeMapping;
+        String stringValue = this.lowLevelDeserializer.nextField(csvSimpleTypeMapping.getQuoteMode());
         if (stringValue == null) {
             throw new DeserializationException("Unexpected end of line reached");
         }
-        if (stringValue.length() > 0) {
-            return typeMapping.getSimpleTypeConverter().fromString(stringValue);
-        } else {
+        if (stringValue.equals(csvSimpleTypeMapping.getNoValueString())) {
             return null;
+        } else {
+            return typeMapping.getSimpleTypeConverter().fromString(stringValue);
         }
     }
 

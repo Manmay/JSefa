@@ -31,7 +31,7 @@ public interface CsvLowLevelSerializer extends RbfLowLevelSerializer {
     /**
      * Writes the next field.
      * 
-     * @param value the field value
+     * @param value the field value (must not be null)
      * @param quoteMode the quote mode to use
      * @throws LowLevelSerializationException
      */

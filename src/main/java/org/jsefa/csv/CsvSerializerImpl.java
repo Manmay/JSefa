@@ -47,8 +47,12 @@ public final class CsvSerializerImpl extends RbfSerializer implements CsvSeriali
      * {@inheritDoc}
      */
     protected void writeSimpleValue(Object object, SimpleTypeMapping<?> mapping) {
+        CsvSimpleTypeMapping csvSimpleTypeMapping = ((CsvSimpleTypeMapping) mapping);
         String value = mapping.getSimpleTypeConverter().toString(object);
-        this.lowLevelSerializer.writeField(value, ((CsvSimpleTypeMapping) mapping).getQuoteMode());
+        if (value == null) {
+            value = csvSimpleTypeMapping.getNoValueString();
+        }
+        this.lowLevelSerializer.writeField(value, csvSimpleTypeMapping.getQuoteMode());
     }
 
     /**

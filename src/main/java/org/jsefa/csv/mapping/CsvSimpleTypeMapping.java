@@ -33,6 +33,8 @@ import org.jsefa.csv.lowlevel.config.QuoteMode;
 public final class CsvSimpleTypeMapping extends SimpleTypeMapping<String> {
 
     private final QuoteMode quoteMode;
+    
+    private final String noValueString;
 
     /**
      * Constructs a new <code>CsvSimpleTypeMapping</code> from the given arguments.
@@ -41,11 +43,13 @@ public final class CsvSimpleTypeMapping extends SimpleTypeMapping<String> {
      * @param dataTypeName the data type name
      * @param simpleTypeConverter the simple type converter
      * @param quoteMode the quote mode
+     * @param noValueString the string to use if no value is given
      */
     public CsvSimpleTypeMapping(Class<?> objectType, String dataTypeName, SimpleTypeConverter simpleTypeConverter,
-            QuoteMode quoteMode) {
+            QuoteMode quoteMode, String noValueString) {
         super(objectType, dataTypeName, simpleTypeConverter);
         this.quoteMode = quoteMode;
+        this.noValueString = noValueString;
     }
 
     /**
@@ -55,6 +59,14 @@ public final class CsvSimpleTypeMapping extends SimpleTypeMapping<String> {
      */
     public QuoteMode getQuoteMode() {
         return this.quoteMode;
+    }
+    
+    /**
+     * Returns the <code>String</code> to use if no value is given.
+     * @return the <code>String</code> to use if no value is given
+     */
+    public String getNoValueString() {
+        return this.noValueString;
     }
 
 }

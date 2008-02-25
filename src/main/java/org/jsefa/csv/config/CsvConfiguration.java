@@ -17,9 +17,11 @@
 package org.jsefa.csv.config;
 
 import static org.jsefa.csv.config.CsvInitialConfigurationParameters.DEFAUT_QUOTE_MODE;
+import static org.jsefa.csv.config.CsvInitialConfigurationParameters.DEFAULT_NO_VALUE_STRING;
 
 import org.jsefa.common.config.Configuration;
 import org.jsefa.common.config.InitialConfiguration;
+import org.jsefa.common.util.GeneralConstants;
 import org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration;
 import org.jsefa.csv.lowlevel.config.EscapeMode;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
@@ -37,6 +39,8 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
 
     private QuoteMode defaultQuoteMode;
 
+    private String defaultNoValueString;
+
     private CsvLowLevelConfiguration lowLevelConfiguration;
 
     /**
@@ -48,6 +52,7 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
     private CsvConfiguration(CsvConfiguration other) {
         super(other);
         setDefaultQuoteMode(other.getDefaultQuoteMode());
+        setDefaultNoValueString(other.getDefaultNoValueString());
         setLowLevelConfiguration(other.getLowLevelConfiguration().createCopy());
     }
 
@@ -72,6 +77,19 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
     }
 
     /**
+     * Returns the default no value string.
+     * 
+     * @return a no value string
+     */
+    public String getDefaultNoValueString() {
+        if (this.defaultNoValueString == null) {
+            this.defaultNoValueString = InitialConfiguration.get(DEFAULT_NO_VALUE_STRING,
+                    Defaults.DEFAULT_NO_VALUE_STRING);
+        }
+        return this.defaultNoValueString;
+    }
+
+    /**
      * Returns the low level configuration object.
      * 
      * @return the low level configuration object
@@ -93,6 +111,20 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
             this.defaultQuoteMode = InitialConfiguration.get(DEFAUT_QUOTE_MODE, Defaults.DEFAULT_QUOTE_MODE);
         } else {
             this.defaultQuoteMode = defaultQuoteMode;
+        }
+    }
+
+    /**
+     * Sets the default no value string.
+     * 
+     * @param defaultNoValueString a no value string
+     */
+    public void setDefaultNoValueString(String defaultNoValueString) {
+        if (defaultNoValueString.equals(GeneralConstants.DEFAULT_STRING)) {
+            this.defaultNoValueString = InitialConfiguration.get(DEFAULT_NO_VALUE_STRING,
+                    Defaults.DEFAULT_NO_VALUE_STRING);
+        } else {
+            this.defaultNoValueString = defaultNoValueString;
         }
     }
 
@@ -224,6 +256,10 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
          */
         QuoteMode DEFAULT_QUOTE_MODE = QuoteMode.NEVER;
 
+        /**
+         * The default no value string used if none is explicitly given.
+         */
+        String DEFAULT_NO_VALUE_STRING = "";
     }
 
 }

@@ -37,6 +37,11 @@ public interface CsvInitialConfigurationParameters extends InitialConfigurationP
      * Configuration parameter for the default quote mode to use.
      */
     String DEFAUT_QUOTE_MODE = "jsefa:csv:defaultQuoteMode";
+    
+    /**
+     * Configuration parameter for the default no value string to use.
+     */
+    String DEFAULT_NO_VALUE_STRING = "jsefa:csv:defaultNoValueString";
 
     /**
      * Configuration parameter for the CsvLowLevelIOFactory class to use.
