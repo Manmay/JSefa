@@ -18,6 +18,7 @@ package org.jsefa.csv;
 
 import java.util.Map;
 
+import org.jsefa.DeserializationException;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;
@@ -54,6 +55,9 @@ public final class CsvDeserializerImpl extends RbfDeserializer implements CsvDes
     protected Object readSimpleValue(SimpleTypeMapping<?> typeMapping) {
         String stringValue = this.lowLevelDeserializer.nextField(((CsvSimpleTypeMapping) typeMapping)
                 .getQuoteMode());
+        if (stringValue == null) {
+            throw new DeserializationException("Unexpected end of line reached");
+        }
         if (stringValue.length() > 0) {
             return typeMapping.getSimpleTypeConverter().fromString(stringValue);
         } else {
@@ -65,6 +69,7 @@ public final class CsvDeserializerImpl extends RbfDeserializer implements CsvDes
      * {@inheritDoc}
      */
     protected String readPrefix() {
+        // will never return null as this method is called for non empty lines only
         return lowLevelDeserializer.nextField(QuoteMode.NEVER);
     }
 

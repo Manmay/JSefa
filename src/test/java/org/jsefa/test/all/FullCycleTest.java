@@ -55,7 +55,7 @@ public class FullCycleTest extends TestCase {
      */
     public void testWithoutPrefixCSV() {
         check(CSV, "", 0, TestDTOA.class);
-        check(CSV, "01234567890123456789", 1, TestDTOA.class);
+        check(CSV, "0123456789;0123456789", 1, TestDTOA.class);
     }
 
     /**
@@ -71,7 +71,7 @@ public class FullCycleTest extends TestCase {
      */
     public void testWithPrefixesCSV() {
         check(CSV, "", 0, TestDTOB.class, TestDTOC.class);
-        check(CSV, "TYPE_B;01234567890123456789", 1, TestDTOB.class, TestDTOC.class);
+        check(CSV, "TYPE_B;0123456789;0123456789", 1, TestDTOB.class, TestDTOC.class);
     }
 
     /**

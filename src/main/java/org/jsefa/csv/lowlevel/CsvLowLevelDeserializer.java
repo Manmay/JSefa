@@ -30,9 +30,12 @@ public interface CsvLowLevelDeserializer extends RbfLowLevelDeserializer {
 
     /**
      * Returns the next field of the current record.
+     * <p>
+     * If the field is empty, the empty <code>String</code> will be returned.<br>
+     * If there is no next field, <code>null</code> will be returned.
      * 
      * @param quoteMode the quote mode
-     * @return the field value
+     * @return the field value or null if there is no next field
      * @throws LowLevelDeserializationException
      */
     String nextField(QuoteMode quoteMode);

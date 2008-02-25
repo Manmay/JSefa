@@ -33,6 +33,8 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
         CsvLowLevelDeserializer {
 
     private CsvLowLevelConfiguration config;
+    
+    private boolean lastFieldTerminatedWithDelimiter;
 
     /**
      * Constructs a new <code>CsvLowLevelDeserializerImpl</code>.
@@ -48,7 +50,7 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
      */
     public String nextField(QuoteMode quoteMode) {
         if (!hasNextChar()) {
-            return "";
+            return endOfLineField();
         }
         switch (quoteMode) {
         case ALWAYS:
@@ -62,10 +64,24 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
         }
     }
 
+    private String endOfLineField() {
+        if (this.config.getUseDelimiterAfterLastField()) {
+            return null;
+        } else {
+            if (this.lastFieldTerminatedWithDelimiter) {
+                this.lastFieldTerminatedWithDelimiter = false;
+                return "";
+            } else {
+                return null;
+            }
+        }
+    }
+
     private String readStringValueUsingQuotes() {
         char quoteChar = this.config.getQuoteCharacter();
         char startChar = nextChar();
         if (startChar == this.config.getFieldDelimiter()) {
+            this.lastFieldTerminatedWithDelimiter = true;
             return "";
         } else if (startChar != quoteChar) {
             throw new LowLevelDeserializationException("Expected quote char but got " + startChar);
@@ -89,9 +105,11 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
                 } else {
                     if (currentChar == quoteChar) {
                         if (!hasNextChar()) {
+                            this.lastFieldTerminatedWithDelimiter = false;
                             return result.toString();
                         } else if (hasNextChar() && peekChar() == fieldDelimiter) {
                             nextChar();
+                            this.lastFieldTerminatedWithDelimiter = true;
                             return result.toString();
                         }
                     }
@@ -108,6 +126,7 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
                 break;
             }
         }
+        this.lastFieldTerminatedWithDelimiter = false;
         return result.toString();
     }
 
@@ -120,11 +139,13 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
             while (hasNextChar()) {
                 char currentChar = nextChar();
                 if (currentChar == fieldDelimiter) {
+                    this.lastFieldTerminatedWithDelimiter = true;
                     return result.toString();
                 } else {
                     result.append(currentChar);
                 }
             }
+            this.lastFieldTerminatedWithDelimiter = false;
             return result.toString();
         }
     }
@@ -142,12 +163,14 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
                 if (currentChar == this.config.getEscapeCharacter()) {
                     encoded = true;
                 } else if (currentChar == fieldDelimiter) {
+                    this.lastFieldTerminatedWithDelimiter = true;
                     return result.toString();
                 } else {
                     result.append(currentChar);
                 }
             }
         }
+        this.lastFieldTerminatedWithDelimiter = false;
         return result.toString();
     }
 
