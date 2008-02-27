@@ -16,6 +16,15 @@
       <comments>The Apache License, Version 2.0</comments>
     </license>
   </licenses>
+  <scm>
+    <connection>
+      scm:svn:https://jsefa.svn.sourceforge.net/svnroot/jsefa/trunk
+    </connection>
+    <developerConnection>
+      scm:svn:https://jsefa.svn.sourceforge.net/svnroot/jsefa/trunk
+    </developerConnection>
+    <url>http://jsefa.svn.sourceforge.net/viewvc/jsefa/trunk/</url>
+  </scm>
   <developers>
     <developer>
       <id>nlahme</id>
