@@ -17,12 +17,12 @@ import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.test.common.AbstractTestDTO;
 
 /**
- * Tests to test the CSV deserialization with a <code>StoringHeaderAndFooterFilter</code>.
+ * Tests to test the CSV deserialization with a <code>HeaderAndFooterFilter</code>.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public class StoringHeaderAndFooterFilterTest extends TestCase {
+public class HeaderAndFooterFilterTest extends TestCase {
     /**
      * Test a CSV document with one header and no footer.
      */

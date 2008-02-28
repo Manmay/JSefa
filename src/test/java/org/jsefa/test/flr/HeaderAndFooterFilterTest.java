@@ -17,12 +17,12 @@ import org.jsefa.flr.config.FlrConfiguration;
 import org.jsefa.test.common.AbstractTestDTO;
 
 /**
- * Tests to test the FLR deserialization with a <code>StoringHeaderAndFooterFilter</code>.
+ * Tests to test the FLR deserialization with a <code>HeaderAndFooterFilter</code>.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public class StoringHeaderAndFooterFilterTest extends TestCase {
+public class HeaderAndFooterFilterTest extends TestCase {
     /**
      * Test a FLR document with one header and no footer.
      */
