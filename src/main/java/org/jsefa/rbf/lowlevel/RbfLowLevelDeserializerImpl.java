@@ -135,7 +135,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      */
     public final InputPosition getInputPosition() {
         if (this.reader != null) {
-            return new InputPosition(this.currentLine.lineIndex + 1, this.currentColumnIndex + 1);
+            return new InputPosition(this.currentLine.lineNumber, this.currentColumnIndex + 1);
         } else {
             return null;
         }
@@ -244,21 +244,21 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
     }
     
     private FilterResult filterCurrentLine() {
-        return this.config.getLineFilter().filter(this.currentLine.content, this.currentLine.lineIndex,
+        return this.config.getLineFilter().filter(this.currentLine.content, this.currentLine.lineNumber,
                 this.nextLine == null);
     }
     
     private void storeCurrentLine() {
-        this.storedLines.add(new Line(this.currentLine.content, this.currentLine.lineIndex, this.nextLine == null));
+        this.storedLines.add(new Line(this.currentLine.content, this.currentLine.lineNumber, this.nextLine == null));
     }
     
     private InputLine readNextNonEmptyLine(InputLine inputLine) {
         try {
             inputLine.content = this.reader.readLine();
-            inputLine.lineIndex++;
+            inputLine.lineNumber++;
             while (inputLine.content != null && inputLine.content.trim().length() == 0) {
                 inputLine.content = this.reader.readLine();
-                inputLine.lineIndex++;
+                inputLine.lineNumber++;
             }
             if (inputLine.content != null) {
                 return inputLine;
@@ -272,15 +272,15 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
     
     private static final class InputLine {
         String content;
-        int lineIndex;
+        int lineNumber;
         
         void copyFrom(InputLine other) {
             this.content = other.content;
-            this.lineIndex = other.lineIndex;
+            this.lineNumber = other.lineNumber;
         }
         
         boolean after(InputLine other) {
-            return this.lineIndex > other.lineIndex;
+            return this.lineNumber > other.lineNumber;
             
         }
     }

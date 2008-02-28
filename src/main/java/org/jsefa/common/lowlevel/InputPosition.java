@@ -52,4 +52,19 @@ public final class InputPosition {
     public int getColumnNumber() {
         return this.columnNumber;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append('[');
+        builder.append(Integer.toString(getLineNumber()));
+        builder.append(',');
+        builder.append(Integer.toString(getColumnNumber()));
+        builder.append(']');
+        return builder.toString();
+    }
+    
 }

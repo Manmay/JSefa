@@ -64,7 +64,7 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         this.withPrefix = true;
         this.entryPoint = null;
     }
-    
+
     /**
      * Constructs a new <code>AbstractRbfDeserializer</code>.
      * 
@@ -103,7 +103,8 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException("Error while deserializing", e);
+            throw new DeserializationException("Error while deserializing", e)
+                    .setInputPosition(getInputPosition());
         }
 
     }
@@ -125,7 +126,8 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException("Error while deserializing", e);
+            throw new DeserializationException("Error while deserializing", e)
+                    .setInputPosition(getInputPosition());
         }
 
     }
@@ -140,14 +142,14 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
             throw new DeserializationException("Error while closing the serialization stream", e);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public final InputPosition getInputPosition() {
         return getLowLevelDeserializer().getInputPosition();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -261,7 +263,8 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
     private TypeMapping<?> getTypeMapping(String dataTypeName) {
         TypeMapping<?> typeMapping = this.typeMappingRegistry.get(dataTypeName);
         if (typeMapping == null) {
-            throw new DeserializationException("Unknown data type name: " + dataTypeName);
+            throw new DeserializationException("Unknown data type name: " + dataTypeName)
+                    .setInputPosition(getInputPosition());
         }
         return typeMapping;
 

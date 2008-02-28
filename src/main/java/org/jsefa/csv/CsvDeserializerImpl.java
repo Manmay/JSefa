@@ -56,7 +56,7 @@ public final class CsvDeserializerImpl extends RbfDeserializerImpl implements Cs
         CsvSimpleTypeMapping csvSimpleTypeMapping = (CsvSimpleTypeMapping) typeMapping;
         String stringValue = this.lowLevelDeserializer.nextField(csvSimpleTypeMapping.getQuoteMode());
         if (stringValue == null) {
-            throw new DeserializationException("Unexpected end of line reached");
+            throw new DeserializationException("Unexpected end of line reached").setInputPosition(getInputPosition());
         }
         if (stringValue.equals(csvSimpleTypeMapping.getNoValueString())) {
             return null;

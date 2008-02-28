@@ -96,7 +96,7 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException("Error while deserializing", e);
+            throw new DeserializationException("Error while deserializing", e).setInputPosition(getInputPosition());
         }
     }
 
@@ -113,7 +113,7 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException("Error while deserializing", e);
+            throw new DeserializationException("Error while deserializing", e).setInputPosition(getInputPosition());
         } finally {
             this.currentEntryElementMapping = null;
         }

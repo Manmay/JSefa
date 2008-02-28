@@ -16,6 +16,8 @@
 
 package org.jsefa;
 
+import org.jsefa.common.lowlevel.InputPosition;
+
 /**
  * Exception thrown when an error occurs during deserialization.
  * 
@@ -25,6 +27,8 @@ package org.jsefa;
 public final class DeserializationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
+    
+    private InputPosition inputPosition;
 
     /**
      * Constructs a new <code>DeserializationException</code> with the specified detail message.
@@ -43,6 +47,35 @@ public final class DeserializationException extends RuntimeException {
      */
     public DeserializationException(String message, Throwable cause) {
         super(message, cause);
+    }
+    
+    /**
+     * Sets the position within the input stream where the error occurred.
+     * @param inputPosition the input position
+     * @return this
+     */
+    public DeserializationException setInputPosition(InputPosition inputPosition) {
+        this.inputPosition = inputPosition;
+        return this;
+    }
+    
+    /**
+     * Returns the position within the input stream where the error occurred.
+     * @return an input position
+     */
+    public InputPosition getInputPosition() {
+        return this.inputPosition;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMessage() {
+        StringBuilder result = new StringBuilder(super.getMessage());
+        result.append("\nPosition: ");
+        result.append(this.inputPosition);
+        return result.toString();
     }
 
 }
