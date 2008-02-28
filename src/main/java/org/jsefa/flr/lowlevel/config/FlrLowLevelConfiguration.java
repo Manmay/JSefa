@@ -16,9 +16,9 @@
 
 package org.jsefa.flr.lowlevel.config;
 
-import org.jsefa.common.lowlevel.config.LowLevelConfiguration;
 import org.jsefa.flr.lowlevel.FlrLowLevelDeserializer;
 import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
+import org.jsefa.rbf.lowlevel.config.RbfLowLevelConfiguration;
 
 /**
  * Configuration object for creating a {@link FlrLowLevelSerializer} or {@link FlrLowLevelDeserializer}. It uses
@@ -27,7 +27,7 @@ import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
  * @author Norman Lahme-Huetig
  * 
  */
-public class FlrLowLevelConfiguration extends LowLevelConfiguration {
+public class FlrLowLevelConfiguration extends RbfLowLevelConfiguration {
 
     /**
      * Constructs a new <code>FlrLowLevelConfiguration</code>.

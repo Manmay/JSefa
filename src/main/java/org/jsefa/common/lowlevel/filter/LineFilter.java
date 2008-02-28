@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 
-package org.jsefa.rbf.lowlevel;
-
-import org.jsefa.common.lowlevel.LowLevelSerializationException;
-import org.jsefa.common.lowlevel.LowLevelSerializer;
+package org.jsefa.common.lowlevel.filter;
 
 /**
- * Low level RBF Serializer.
+ * A filter for lines.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
-
-public interface RbfLowLevelSerializer extends LowLevelSerializer {
+public interface LineFilter {
 
     /**
-     * Finishes the current record.
-     * @throws LowLevelSerializationException
+     * Filters the given line.
+     * @param line the line
+     * @param lineNumber the number of the line
+     * @param isLastLine true, if it is the last line; false otherwise
+     * @return a Result
      */
-    void finishRecord();
-    
-    /**
-     * Writes the given line.
-     * @param line a line
-     */
-    void writeLine(String line);
+    FilterResult filter(String line, int lineNumber, boolean isLastLine);
 
 }

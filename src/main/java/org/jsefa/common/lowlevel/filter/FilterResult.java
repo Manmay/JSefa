@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package org.jsefa.rbf.lowlevel;
-
-import org.jsefa.common.lowlevel.LowLevelSerializationException;
-import org.jsefa.common.lowlevel.LowLevelSerializer;
+package org.jsefa.common.lowlevel.filter;
 
 /**
- * Low level RBF Serializer.
+ * The possible results of filtering a line.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
-
-public interface RbfLowLevelSerializer extends LowLevelSerializer {
+public enum FilterResult {
+    /**
+     * The line passed the filter.
+     */
+    PASSED,
 
     /**
-     * Finishes the current record.
-     * @throws LowLevelSerializationException
+     * The line failed the filter, e. g. should be skipped.
      */
-    void finishRecord();
-    
-    /**
-     * Writes the given line.
-     * @param line a line
-     */
-    void writeLine(String line);
+    FAILED,
 
+    /**
+     * The line failed the filter, e. g. should be skipped, but should be stored for later retrieval.
+     */
+    FAILED_BUT_STORE;
 }

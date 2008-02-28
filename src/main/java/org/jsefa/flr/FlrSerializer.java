@@ -17,6 +17,8 @@
 package org.jsefa.flr;
 
 import org.jsefa.Serializer;
+import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
+import org.jsefa.rbf.RbfSerializer;
 
 /**
  * Iterator-style interface for stream based FLR serializer.
@@ -31,6 +33,12 @@ import org.jsefa.Serializer;
  * @author Norman Lahme-Huetig
  * 
  */
-public interface FlrSerializer extends Serializer {
+public interface FlrSerializer extends RbfSerializer {
+    /**
+     * Returns a low level FLR serializer.
+     * 
+     * @return a low level FLR serializer.
+     */
+    FlrLowLevelSerializer getLowLevelSerializer();
 
 }

@@ -16,8 +16,8 @@
 
 package org.jsefa.csv.config;
 
-import static org.jsefa.csv.config.CsvInitialConfigurationParameters.DEFAUT_QUOTE_MODE;
 import static org.jsefa.csv.config.CsvInitialConfigurationParameters.DEFAULT_NO_VALUE_STRING;
+import static org.jsefa.csv.config.CsvInitialConfigurationParameters.DEFAUT_QUOTE_MODE;
 
 import org.jsefa.common.config.Configuration;
 import org.jsefa.common.config.InitialConfiguration;
@@ -25,8 +25,7 @@ import org.jsefa.common.util.GeneralConstants;
 import org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration;
 import org.jsefa.csv.lowlevel.config.EscapeMode;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
-import org.jsefa.rbf.mapping.RbfEntryPoint;
-import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
+import org.jsefa.rbf.config.RbfConfiguration;
 
 /**
  * A configuration object used when creating a CSV IO factory. It uses lazy initialization.
@@ -35,13 +34,11 @@ import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint> {
+public final class CsvConfiguration extends RbfConfiguration<CsvLowLevelConfiguration> {
 
     private QuoteMode defaultQuoteMode;
 
     private String defaultNoValueString;
-
-    private CsvLowLevelConfiguration lowLevelConfiguration;
 
     /**
      * Constructs a new <code>CsvConfiguration</code>.
@@ -53,7 +50,6 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
         super(other);
         setDefaultQuoteMode(other.getDefaultQuoteMode());
         setDefaultNoValueString(other.getDefaultNoValueString());
-        setLowLevelConfiguration(other.getLowLevelConfiguration().createCopy());
     }
 
     /**
@@ -90,18 +86,6 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
     }
 
     /**
-     * Returns the low level configuration object.
-     * 
-     * @return the low level configuration object
-     */
-    public CsvLowLevelConfiguration getLowLevelConfiguration() {
-        if (this.lowLevelConfiguration == null) {
-            this.lowLevelConfiguration = new CsvLowLevelConfiguration();
-        }
-        return this.lowLevelConfiguration;
-    }
-
-    /**
      * Sets the default quote mode.
      * 
      * @param defaultQuoteMode a quote mode
@@ -126,15 +110,6 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
         } else {
             this.defaultNoValueString = defaultNoValueString;
         }
-    }
-
-    /**
-     * Sets the CSV low level configuration object.
-     * 
-     * @param lowLevelConfig the CSV low level configuration object.
-     */
-    public void setLowLevelConfiguration(CsvLowLevelConfiguration lowLevelConfig) {
-        this.lowLevelConfiguration = lowLevelConfig;
     }
 
     /**
@@ -241,8 +216,8 @@ public final class CsvConfiguration extends Configuration<RbfTypeMappingRegistry
      * {@inheritDoc}
      */
     @Override
-    protected RbfTypeMappingRegistry createDefaultTypeMappingRegistry() {
-        return new RbfTypeMappingRegistry();
+    protected CsvLowLevelConfiguration createDefaultLowLevelConfiguration() {
+        return new CsvLowLevelConfiguration();
     }
 
     /**

@@ -25,7 +25,8 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelSerializerImpl;
  * @author Norman Lahme-Huetig
  * 
  */
-public class FlrLowLevelSerializerImpl extends RbfLowLevelSerializerImpl implements FlrLowLevelSerializer {
+public class FlrLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<FlrLowLevelConfiguration>
+    implements FlrLowLevelSerializer {
 
     /**
      * Constructs a new <code>FlrLowLevelSerializerImpl</code>.
@@ -33,7 +34,7 @@ public class FlrLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
      * @param config the configuration
      */
     public FlrLowLevelSerializerImpl(FlrLowLevelConfiguration config) {
-        super(config.getLineBreak());
+        super(config);
     }
 
     /**

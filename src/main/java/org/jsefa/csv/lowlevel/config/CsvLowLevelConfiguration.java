@@ -16,21 +16,21 @@
 
 package org.jsefa.csv.lowlevel.config;
 
-import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.ESCAPE_CHARACTER;
-import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.FIELD_DELIMITER;
-import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.QUOTE_CHARACTER;
-import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.QUOTE_CHARACTER_ESCAPE_MODE;
-import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.USE_DELIMITER_AFTER_LAST_FIELD;
 import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_ESCAPE_CHARACTER;
 import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_FIELD_DELIMITER;
 import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_QUOTE_CHARACTER;
 import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_QUOTE_CHARACTER_ESCAPE_MODE;
 import static org.jsefa.csv.lowlevel.config.CsvLowLevelConfiguration.Defaults.DEFAULT_USE_DELIMITER_AFTER_LAST_FIELD;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.ESCAPE_CHARACTER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.FIELD_DELIMITER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.QUOTE_CHARACTER;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.QUOTE_CHARACTER_ESCAPE_MODE;
+import static org.jsefa.csv.lowlevel.config.CsvLowLevelInitialConfigurationParameters.USE_DELIMITER_AFTER_LAST_FIELD;
 
 import org.jsefa.common.config.InitialConfiguration;
-import org.jsefa.common.lowlevel.config.LowLevelConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;
 import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
+import org.jsefa.rbf.lowlevel.config.RbfLowLevelConfiguration;
 
 /**
  * Configuration object for creating a {@link CsvLowLevelSerializer} or {@link CsvLowLevelDeserializer}. It uses
@@ -39,7 +39,7 @@ import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class CsvLowLevelConfiguration extends LowLevelConfiguration {
+public final class CsvLowLevelConfiguration extends RbfLowLevelConfiguration {
     private Character fieldDelimiter;
 
     private Character quoteCharacter;

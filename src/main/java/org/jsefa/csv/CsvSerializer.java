@@ -17,13 +17,17 @@
 package org.jsefa.csv;
 
 import org.jsefa.Serializer;
+import org.jsefa.csv.config.CsvConfiguration;
+import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
+import org.jsefa.rbf.RbfSerializer;
 
 /**
  * Iterator-style interface for stream based CSV serializer.
  * <p>
  * Note on handling of <code>null</code> values:<br>
  * 1. <code>null</code> values of simple types (e.g. <code>String</code> or <code>Date</code>) will be
- * serialized to an empty string.<br>
+ * serialized to an empty string (default) or the String explicitly configured as the null value string (see
+ * {@link CsvConfiguration#setDefaultNoValueString(String)}).<br>
  * 2. <code>null</code> values of complex types (classes annotated with <code>CsvDataType</code>) will be
  * serialized to a sequence of empty CSV fields (e. g. ';;;;;').
  * 
@@ -31,6 +35,11 @@ import org.jsefa.Serializer;
  * @author Norman Lahme-Huetig
  * 
  */
-public interface CsvSerializer extends Serializer {
-
+public interface CsvSerializer extends RbfSerializer {
+    /**
+     * Returns a low level CSV serializer.
+     * 
+     * @return a low level CSV serializer.
+     */
+    CsvLowLevelSerializer getLowLevelSerializer();
 }

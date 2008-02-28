@@ -21,25 +21,28 @@ import java.io.Writer;
 
 import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.common.lowlevel.LowLevelSerializationException;
+import org.jsefa.rbf.lowlevel.config.RbfLowLevelConfiguration;
 
 /**
  * Abstract implementation of {@link RbfLowLevelSerializer}.
  * 
+ * @param <C> the type of the RbfLowLevelConfiguration
  * @author Norman Lahme-Huetig
  * 
  */
-public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
-    private final String lineBreak;
+public class RbfLowLevelSerializerImpl<C extends RbfLowLevelConfiguration> implements RbfLowLevelSerializer {
+
+    private C config;
 
     private Writer writer;
 
     /**
      * Constructs a new <code>RbfLowLevelSerializerImpl</code>.
      * 
-     * @param lineBreak the line break to use
+     * @param config the configuration object
      */
-    public RbfLowLevelSerializerImpl(String lineBreak) {
-        this.lineBreak = lineBreak;
+    public RbfLowLevelSerializerImpl(C config) {
+        this.config = config;
     }
 
     /**
@@ -57,6 +60,14 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
         beforeFinishRecord();
         writeNewLine();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void writeLine(String line) {
+        writeString(line);
+        writeNewLine();
+    }
 
     /**
      * {@inheritDoc}
@@ -69,6 +80,14 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
                 throw new LowLevelSerializationException("Error while closing the serialization stream", e);
             }
         }
+    }
+
+    /**
+     * Returns the configuration object.
+     * @return the configuration object
+     */
+    protected final C getConfiguration() {
+        return this.config;
     }
 
     /**
@@ -113,7 +132,7 @@ public class RbfLowLevelSerializerImpl implements RbfLowLevelSerializer {
 
     private void writeNewLine() {
         try {
-            this.writer.write(this.lineBreak);
+            this.writer.write(this.config.getLineBreak());
         } catch (IOException e) {
             throw new LowLevelSerializationException("Error while serializing", e);
         }

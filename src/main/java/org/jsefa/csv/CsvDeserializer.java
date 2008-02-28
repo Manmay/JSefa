@@ -17,14 +17,18 @@
 package org.jsefa.csv;
 
 import org.jsefa.Deserializer;
+import org.jsefa.csv.config.CsvConfiguration;
+import org.jsefa.rbf.RbfDeserializer;
 
 /**
  * Iterator-style interface for stream based CSV deserializer.
  * <p>
  * Notes:<br>
- * 1. Empty fields representing a simple value (e.g. a <code>String</code> or <code>Date</code>) will be
+ * 1. A field with no value (an empty field) may be represented by the empty String (default) or any other String
+ * (see {@link CsvConfiguration#getDefaultNoValueString})<br>
+ * 2. Empty fields representing a simple value (e.g. a <code>String</code> or <code>Date</code>) will be
  * deserialized to <code>null</code> and not to an empty value.<br>
- * 2. Empty field sequences (e.g. ';;;' with ';' as the delimiter) representing a complex value (a value of a class
+ * 3. Empty field sequences (e.g. ';;;' with ';' as the delimiter) representing a complex value (a value of a class
  * annotated with <code>CsvDataType</code>) will be deserialized to <code>null</code> and not to an empty
  * value.
  * 
@@ -32,6 +36,6 @@ import org.jsefa.Deserializer;
  * @author Norman Lahme-Huetig
  */
 
-public interface CsvDeserializer extends Deserializer {
+public interface CsvDeserializer extends RbfDeserializer {
 
 }

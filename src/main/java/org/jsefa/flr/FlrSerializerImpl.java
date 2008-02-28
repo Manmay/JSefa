@@ -23,24 +23,21 @@ import org.jsefa.flr.config.FlrConfiguration;
 import org.jsefa.flr.lowlevel.Align;
 import org.jsefa.flr.lowlevel.FlrLowLevelSerializer;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
-import org.jsefa.rbf.RbfSerializer;
+import org.jsefa.rbf.RbfSerializerImpl;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 
 /**
- * Default implementation of {@link FlrSerializer} based on {@link RbfSerializer}.
+ * Default implementation of {@link FlrSerializer} based on {@link RbfSerializerImpl}.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
 
-public final class FlrSerializerImpl extends RbfSerializer implements FlrSerializer {
-
-    private final FlrLowLevelSerializer lowLevelSerializer;
+public final class FlrSerializerImpl extends RbfSerializerImpl<FlrLowLevelSerializer> implements FlrSerializer {
 
     FlrSerializerImpl(FlrConfiguration config, Map<Class<?>, RbfEntryPoint> entryPoints,
             FlrLowLevelSerializer lowLevelSerializer) {
-        super(config.getTypeMappingRegistry(), entryPoints);
-        this.lowLevelSerializer = lowLevelSerializer;
+        super(config.getTypeMappingRegistry(), entryPoints, lowLevelSerializer);
     }
 
     /**
@@ -52,7 +49,7 @@ public final class FlrSerializerImpl extends RbfSerializer implements FlrSeriali
         if (value == null) {
             value = "";
         }
-        this.lowLevelSerializer.writeField(value, flrMapping.getLength(), flrMapping.getAlign(), flrMapping
+        getLowLevelSerializer().writeField(value, flrMapping.getLength(), flrMapping.getAlign(), flrMapping
                 .getPadCharacter());
     }
 
@@ -61,15 +58,7 @@ public final class FlrSerializerImpl extends RbfSerializer implements FlrSeriali
      */
     @Override
     protected void writePrefix(String prefix) {
-        this.lowLevelSerializer.writeField(prefix, prefix.length(), Align.LEFT, ' ');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected FlrLowLevelSerializer getLowLevelSerializer() {
-        return this.lowLevelSerializer;
+        getLowLevelSerializer().writeField(prefix, prefix.length(), Align.LEFT, ' ');
     }
 
 }

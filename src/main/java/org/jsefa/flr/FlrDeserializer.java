@@ -17,6 +17,7 @@
 package org.jsefa.flr;
 
 import org.jsefa.Deserializer;
+import org.jsefa.rbf.RbfDeserializer;
 
 /**
  * Iterator-style interface for stream based FLR deserializer.
@@ -31,6 +32,6 @@ import org.jsefa.Deserializer;
  * @see Deserializer
  * @author Norman Lahme-Huetig
  */
-public interface FlrDeserializer extends Deserializer {
+public interface FlrDeserializer extends RbfDeserializer {
 
 }

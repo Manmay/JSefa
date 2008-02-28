@@ -27,9 +27,8 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelSerializerImpl;
  * @author Norman Lahme-Huetig
  * 
  */
-public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl implements CsvLowLevelSerializer {
-
-    private CsvLowLevelConfiguration config;
+public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<CsvLowLevelConfiguration>
+    implements CsvLowLevelSerializer {
 
     private int fieldCount;
 
@@ -39,8 +38,7 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
      * @param config the configuration
      */
     public CsvLowLevelSerializerImpl(CsvLowLevelConfiguration config) {
-        super(config.getLineBreak());
-        this.config = config;
+        super(config);
     }
 
     /**
@@ -56,7 +54,7 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
      */
     public void writeField(String value, QuoteMode quoteMode) {
         if (this.fieldCount > 0) {
-            writeChar(this.config.getFieldDelimiter());
+            writeChar(getConfiguration().getFieldDelimiter());
         }
         encodeAndWrite(value, quoteMode);
         fieldCount++;
@@ -67,8 +65,8 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
      */
     @Override
     protected void beforeFinishRecord() {
-        if (this.config.getUseDelimiterAfterLastField()) {
-            writeChar(this.config.getFieldDelimiter());
+        if (getConfiguration().getUseDelimiterAfterLastField()) {
+            writeChar(getConfiguration().getFieldDelimiter());
         }
         this.fieldCount = 0;
     }
@@ -90,9 +88,9 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
     }
 
     private void encodeAndWriteUsingQuotes(String value) {
-        char quoteChar = this.config.getQuoteCharacter();
-        char escapeCharacter = this.config.getEscapeCharacter();
-        if (this.config.getQuoteCharacterEscapeMode().equals(EscapeMode.DOUBLING)) {
+        char quoteChar = getConfiguration().getQuoteCharacter();
+        char escapeCharacter = getConfiguration().getEscapeCharacter();
+        if (getConfiguration().getQuoteCharacterEscapeMode().equals(EscapeMode.DOUBLING)) {
             escapeCharacter = quoteChar;
         }
         writeChar(quoteChar);
@@ -104,7 +102,7 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
             }
             writeChar(currentChar);
         }
-        writeChar(this.config.getQuoteCharacter());
+        writeChar(getConfiguration().getQuoteCharacter());
     }
 
     private void encodeAndWriteUsingQuotesOnDemand(String value) {
@@ -119,8 +117,9 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
         int index = 0;
         while (index < value.length()) {
             char currentChar = value.charAt(index++);
-            if (currentChar == this.config.getEscapeCharacter() || currentChar == this.config.getFieldDelimiter()) {
-                writeChar(this.config.getEscapeCharacter());
+            if (currentChar == getConfiguration().getEscapeCharacter()
+                    || currentChar == getConfiguration().getFieldDelimiter()) {
+                writeChar(getConfiguration().getEscapeCharacter());
             }
             writeChar(currentChar);
         }
@@ -129,7 +128,8 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl impleme
     private boolean needsQuotes(String value) {
         for (int i = 0; i < value.length(); i++) {
             char currentChar = value.charAt(i);
-            if (currentChar == this.config.getEscapeCharacter() || currentChar == this.config.getFieldDelimiter()) {
+            if (currentChar == getConfiguration().getEscapeCharacter()
+                    || currentChar == getConfiguration().getFieldDelimiter()) {
                 return true;
             }
         }

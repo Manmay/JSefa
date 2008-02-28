@@ -16,14 +16,13 @@
 
 package org.jsefa.flr.config;
 
+import static org.jsefa.flr.config.FlrInitialConfigurationParameters.DEFAUT_PAD_CHARACTER;
+
 import org.jsefa.common.config.Configuration;
 import org.jsefa.common.config.InitialConfiguration;
 import org.jsefa.common.util.GeneralConstants;
 import org.jsefa.flr.lowlevel.config.FlrLowLevelConfiguration;
-import org.jsefa.rbf.mapping.RbfEntryPoint;
-import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
-
-import static org.jsefa.flr.config.FlrInitialConfigurationParameters.DEFAUT_PAD_CHARACTER;
+import org.jsefa.rbf.config.RbfConfiguration;
 
 /**
  * A configuration object used when creating an FLR IO factory. It uses lazy initialization for the low level
@@ -33,9 +32,7 @@ import static org.jsefa.flr.config.FlrInitialConfigurationParameters.DEFAUT_PAD_
  * @author Norman Lahme-Huetig
  * 
  */
-public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint> {
-
-    private FlrLowLevelConfiguration lowLevelConfiguration;
+public final class FlrConfiguration extends RbfConfiguration<FlrLowLevelConfiguration> {
 
     private char defaultPadCharacter = GeneralConstants.DEFAULT_CHARACTER;
 
@@ -48,7 +45,6 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
     private FlrConfiguration(FlrConfiguration other) {
         super(other);
         setDefaultPadCharacter(other.getDefaultPadCharacter());
-        setLowLevelConfiguration(other.getLowLevelConfiguration().createCopy());
     }
 
     /**
@@ -87,27 +83,6 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
     }
 
     /**
-     * Returns the low level configuration object.
-     * 
-     * @return the low level configuration object
-     */
-    public FlrLowLevelConfiguration getLowLevelConfiguration() {
-        if (this.lowLevelConfiguration == null) {
-            this.lowLevelConfiguration = new FlrLowLevelConfiguration();
-        }
-        return this.lowLevelConfiguration;
-    }
-
-    /**
-     * Sets the FLR low level configuration object.
-     * 
-     * @param lowLevelConfig the FLR low level configuration object.
-     */
-    public void setLowLevelConfiguration(FlrLowLevelConfiguration lowLevelConfig) {
-        this.lowLevelConfiguration = lowLevelConfig;
-    }
-
-    /**
      * Returns the line break <code>String</code>.
      * 
      * @return the line break <code>String</code>
@@ -131,8 +106,8 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
      * {@inheritDoc}
      */
     @Override
-    protected RbfTypeMappingRegistry createDefaultTypeMappingRegistry() {
-        return new RbfTypeMappingRegistry();
+    protected FlrLowLevelConfiguration createDefaultLowLevelConfiguration() {
+        return new FlrLowLevelConfiguration();
     }
 
     /**
@@ -146,4 +121,6 @@ public final class FlrConfiguration extends Configuration<RbfTypeMappingRegistry
          */
         char DEFAULT_PAD_CHARACTER = ' ';
     }
+
+
 }

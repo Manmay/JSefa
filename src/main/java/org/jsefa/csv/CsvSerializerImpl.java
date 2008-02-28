@@ -23,24 +23,21 @@ import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelSerializer;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
-import org.jsefa.rbf.RbfSerializer;
+import org.jsefa.rbf.RbfSerializerImpl;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 
 /**
- * Default implementation of {@link CsvSerializer} based on {@link RbfSerializer}.
+ * Default implementation of {@link CsvSerializer} based on {@link RbfSerializerImpl}.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
 
-public final class CsvSerializerImpl extends RbfSerializer implements CsvSerializer {
-
-    private final CsvLowLevelSerializer lowLevelSerializer;
+public final class CsvSerializerImpl extends RbfSerializerImpl<CsvLowLevelSerializer> implements CsvSerializer {
 
     CsvSerializerImpl(CsvConfiguration config, Map<Class<?>, RbfEntryPoint> entryPoints,
             CsvLowLevelSerializer lowLevelSerializer) {
-        super(config.getTypeMappingRegistry(), entryPoints);
-        this.lowLevelSerializer = lowLevelSerializer;
+        super(config.getTypeMappingRegistry(), entryPoints, lowLevelSerializer);
     }
 
     /**
@@ -52,7 +49,7 @@ public final class CsvSerializerImpl extends RbfSerializer implements CsvSeriali
         if (value == null) {
             value = csvSimpleTypeMapping.getNoValueString();
         }
-        this.lowLevelSerializer.writeField(value, csvSimpleTypeMapping.getQuoteMode());
+        getLowLevelSerializer().writeField(value, csvSimpleTypeMapping.getQuoteMode());
     }
 
     /**
@@ -60,15 +57,7 @@ public final class CsvSerializerImpl extends RbfSerializer implements CsvSeriali
      */
     @Override
     protected void writePrefix(String prefix) {
-        this.lowLevelSerializer.writeField(prefix, QuoteMode.NEVER);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected CsvLowLevelSerializer getLowLevelSerializer() {
-        return this.lowLevelSerializer;
+        getLowLevelSerializer().writeField(prefix, QuoteMode.NEVER);
     }
 
 }

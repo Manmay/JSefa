@@ -24,16 +24,16 @@ import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
-import org.jsefa.rbf.RbfDeserializer;
+import org.jsefa.rbf.RbfDeserializerImpl;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 
 /**
- * Default implementation of {@link CsvDeserializer} based on {@link RbfDeserializer}.
+ * Default implementation of {@link CsvDeserializer} based on {@link RbfDeserializerImpl}.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public final class CsvDeserializerImpl extends RbfDeserializer implements CsvDeserializer {
+public final class CsvDeserializerImpl extends RbfDeserializerImpl implements CsvDeserializer {
 
     private final CsvLowLevelDeserializer lowLevelDeserializer;
 

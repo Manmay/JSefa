@@ -29,11 +29,9 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
  * 
  */
 
-public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerImpl implements
+public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerImpl<CsvLowLevelConfiguration> implements
         CsvLowLevelDeserializer {
 
-    private CsvLowLevelConfiguration config;
-    
     private boolean lastFieldTerminatedWithDelimiter;
 
     /**
@@ -42,7 +40,7 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
      * @param config the configuration
      */
     public CsvLowLevelDeserializerImpl(CsvLowLevelConfiguration config) {
-        this.config = config;
+        super(config);
     }
 
     /**
@@ -65,7 +63,7 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
     }
 
     private String endOfLineField() {
-        if (this.config.getUseDelimiterAfterLastField()) {
+        if (getConfiguration().getUseDelimiterAfterLastField()) {
             return null;
         } else {
             if (this.lastFieldTerminatedWithDelimiter) {
@@ -78,19 +76,19 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
     }
 
     private String readStringValueUsingQuotes() {
-        char quoteChar = this.config.getQuoteCharacter();
+        char quoteChar = getConfiguration().getQuoteCharacter();
         char startChar = nextChar();
-        if (startChar == this.config.getFieldDelimiter()) {
+        if (startChar == getConfiguration().getFieldDelimiter()) {
             this.lastFieldTerminatedWithDelimiter = true;
             return "";
         } else if (startChar != quoteChar) {
             throw new LowLevelDeserializationException("Expected quote char but got " + startChar);
         }
-        char escapeCharacter = this.config.getEscapeCharacter();
-        if (this.config.getQuoteCharacterEscapeMode().equals(EscapeMode.DOUBLING)) {
+        char escapeCharacter = getConfiguration().getEscapeCharacter();
+        if (getConfiguration().getQuoteCharacterEscapeMode().equals(EscapeMode.DOUBLING)) {
             escapeCharacter = quoteChar;
         }
-        return readStringValueUsingQuotes(quoteChar, escapeCharacter, this.config.getFieldDelimiter());
+        return readStringValueUsingQuotes(quoteChar, escapeCharacter, getConfiguration().getFieldDelimiter());
     }
 
     private String readStringValueUsingQuotes(char quoteChar, char escapeCharacter, char fieldDelimiter) {
@@ -131,10 +129,10 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
     }
 
     private String readStringValueUsingQuotesOnDemand() {
-        if (peekChar() == this.config.getQuoteCharacter()) {
+        if (peekChar() == getConfiguration().getQuoteCharacter()) {
             return readStringValueUsingQuotes();
         } else {
-            char fieldDelimiter = this.config.getFieldDelimiter();
+            char fieldDelimiter = getConfiguration().getFieldDelimiter();
             StringBuilder result = new StringBuilder(remainingLineLength());
             while (hasNextChar()) {
                 char currentChar = nextChar();
@@ -151,7 +149,7 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
     }
 
     private String readStringValueUsingEscapeCharacter() {
-        char fieldDelimiter = this.config.getFieldDelimiter();
+        char fieldDelimiter = getConfiguration().getFieldDelimiter();
         StringBuilder result = new StringBuilder(remainingLineLength());
         boolean encoded = false;
         while (hasNextChar()) {
@@ -160,7 +158,7 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
                 encoded = false;
                 result.append(currentChar);
             } else {
-                if (currentChar == this.config.getEscapeCharacter()) {
+                if (currentChar == getConfiguration().getEscapeCharacter()) {
                     encoded = true;
                 } else if (currentChar == fieldDelimiter) {
                     this.lastFieldTerminatedWithDelimiter = true;

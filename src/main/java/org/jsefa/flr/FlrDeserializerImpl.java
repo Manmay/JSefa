@@ -23,16 +23,16 @@ import org.jsefa.flr.config.FlrConfiguration;
 import org.jsefa.flr.lowlevel.Align;
 import org.jsefa.flr.lowlevel.FlrLowLevelDeserializer;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
-import org.jsefa.rbf.RbfDeserializer;
+import org.jsefa.rbf.RbfDeserializerImpl;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 
 /**
- * Default implementation of {@link FlrDeserializer} based on {@link RbfDeserializer}.
+ * Default implementation of {@link FlrDeserializer} based on {@link RbfDeserializerImpl}.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public final class FlrDeserializerImpl extends RbfDeserializer implements FlrDeserializer {
+public final class FlrDeserializerImpl extends RbfDeserializerImpl implements FlrDeserializer {
 
     private final FlrLowLevelDeserializer lowLevelDeserializer;
 

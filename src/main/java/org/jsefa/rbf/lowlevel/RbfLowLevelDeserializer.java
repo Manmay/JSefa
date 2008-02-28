@@ -16,8 +16,12 @@
 
 package org.jsefa.rbf.lowlevel;
 
+import java.util.List;
+
 import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.common.lowlevel.LowLevelDeserializer;
+import org.jsefa.common.lowlevel.filter.Line;
+import org.jsefa.common.lowlevel.filter.LineFilter;
 
 /**
  * Low level RBF Deserializer.
@@ -39,5 +43,11 @@ public interface RbfLowLevelDeserializer extends LowLevelDeserializer {
      * Unreads the already read record so that it can be read again with {@link #readNextRecord()}.
      */
     void unreadRecord();
-
+    
+    /**
+     * Returns a list of lines stored during deserialization.
+     * @see LineFilter
+     * @return a list of lines
+     */
+    List<Line> getStoredLines();
 }

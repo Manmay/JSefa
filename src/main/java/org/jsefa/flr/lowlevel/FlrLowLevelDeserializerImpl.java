@@ -25,13 +25,15 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
  * @author Norman Lahme-Huetig
  * 
  */
-public class FlrLowLevelDeserializerImpl extends RbfLowLevelDeserializerImpl implements FlrLowLevelDeserializer {
+public class FlrLowLevelDeserializerImpl extends RbfLowLevelDeserializerImpl<FlrLowLevelConfiguration>
+    implements FlrLowLevelDeserializer {
     /**
      * Constructs a new <code>FlrLowLevelDeserializerImpl</code>.
      * 
      * @param config the configuration
      */
     public FlrLowLevelDeserializerImpl(FlrLowLevelConfiguration config) {
+        super(config);
     }
 
     /**
