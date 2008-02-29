@@ -210,7 +210,7 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
                     hasContent = true;
                 }
             } catch (Exception e) {
-                throw createException(e, new ObjectPathElement(typeMapping.getObjectType(), fieldName));
+                throw createException(e, typeMapping, fieldName);
             }
         }
         return hasContent;
@@ -259,7 +259,7 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
                         }
                     }
                 } catch (Exception e) {
-                    throw createException(e, new ObjectPathElement(typeMapping.getObjectType(), fieldName));
+                    throw createException(e, typeMapping, fieldName);
                 }
             }
             getLowLevelDeserializer().unreadRecord();
@@ -299,7 +299,8 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         }
     }
 
-    private DeserializationException createException(Exception cause, ObjectPathElement elem) {
+    private DeserializationException createException(Exception cause, TypeMapping<?> typeMapping, String fieldName) {
+        ObjectPathElement elem = new ObjectPathElement(typeMapping.getObjectType(), fieldName);
         if (cause instanceof DeserializationException) {
             return ((DeserializationException) cause).add(elem);
         } else {

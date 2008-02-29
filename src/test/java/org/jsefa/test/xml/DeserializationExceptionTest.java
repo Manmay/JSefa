@@ -16,9 +16,12 @@
 
 package org.jsefa.test.xml;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.jsefa.DeserializationException;
+import org.jsefa.ObjectPathElement;
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
 import org.jsefa.test.common.JSefaTestUtil.FormatType;
@@ -32,45 +35,70 @@ import org.jsefa.xml.annotation.XmlElement;
  * 
  */
 public class DeserializationExceptionTest extends TestCase {
-    
+
     /**
      * Tests the correctness of the input position for a low level error (document is not well formed).
      */
     @SuppressWarnings("unchecked")
     public void testInputPositionForLowLevelError() {
-        String inputString = "<a>\n<b>\n</a>\n";
+        String inputString = "<simple><text>" + "\n" + "</simple>";
         try {
             JSefaTestUtil.deserialize(FormatType.XML, inputString, SimpleTestDTO.class);
             fail();
         } catch (DeserializationException e) {
             assertNotNull(e.getInputPosition());
-            assertEquals(e.getInputPosition().getLineNumber(), 3);
+            assertEquals(e.getInputPosition().getLineNumber(), 2);
         }
     }
-    
+
     /**
      * Tests the correctness of the input position for a conversion error.
      */
     @SuppressWarnings("unchecked")
     public void testInputPositionForConversionException() {
-        String inputString = "<a>\n<b>text</b>\n<c>error</c>\n</b>\n</a>\n";
+        String inputString = "<simple><text>ok</text>" + "\n" + "<number>error</number>" + "\n" + "</simple>";
         try {
             JSefaTestUtil.deserialize(FormatType.XML, inputString, SimpleTestDTO.class);
             fail();
         } catch (DeserializationException e) {
             assertNotNull(e.getInputPosition());
-            assertEquals(e.getInputPosition().getLineNumber(), 3);
+            assertEquals(e.getInputPosition().getLineNumber(), 2);
         }
     }
 
-    @XmlDataType(defaultElementName = "a")
-    static final class SimpleTestDTO extends AbstractTestDTO {
-        @XmlElement
-        String b;
-
-        @XmlElement
-        int c;
+    /**
+     * Tests the correctness of the object path for a conversion error.
+     */
+    @SuppressWarnings("unchecked")
+    public void testObjectPathForConversionException() {
+        String inputString = "<complex><simple><text>ok</text>" + "\n" + "<number>error</number>" + "\n"
+                + "</simple></complex>";
+        try {
+            JSefaTestUtil.deserialize(FormatType.XML, inputString, ComplexTestDTO.class);
+            fail();
+        } catch (DeserializationException e) {
+            List<ObjectPathElement> path = e.getObjectPath();
+            assertEquals(2, path.size());
+            assertEquals(ComplexTestDTO.class, path.get(0).getObjectType());
+            assertEquals("complexField", path.get(0).getFieldName());
+            assertEquals(SimpleTestDTO.class, path.get(1).getObjectType());
+            assertEquals("intField", path.get(1).getFieldName());
+        }
     }
-    
+
+    @XmlDataType(defaultElementName = "simple")
+    static final class SimpleTestDTO extends AbstractTestDTO {
+        @XmlElement(name = "text")
+        String stringField;
+
+        @XmlElement(name = "number")
+        int intField;
+    }
+
+    @XmlDataType(defaultElementName = "complex")
+    static final class ComplexTestDTO extends AbstractTestDTO {
+        @XmlElement(name = "simple")
+        SimpleTestDTO complexField;
+    }
 
 }

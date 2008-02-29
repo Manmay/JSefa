@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsefa.DeserializationException;
+import org.jsefa.ObjectPathElement;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.lowlevel.InputPosition;
 import org.jsefa.common.mapping.TypeMapping;
@@ -136,7 +137,7 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     public InputPosition getInputPosition() {
         return this.lowLevelDeserializer.getInputPosition();
     }
-    
+
     private Object deserializeElement(QName dataTypeName) {
         TypeMapping<QName> typeMapping = this.typeMappingRegistry.get(dataTypeName);
         if (typeMapping instanceof XmlSimpleTypeMapping) {
@@ -164,13 +165,17 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         for (Attribute attribute : elementStart.getAttributes()) {
             AttributeDescriptor attributeDescriptor = new AttributeDescriptor(attribute.getName());
             AttributeMapping attributeMapping = typeMapping.getNodeMapping(attributeDescriptor);
-            if (attributeMapping != null) {
-                XmlSimpleTypeMapping attributeTypeMapping = getSimpleTypeMapping(attributeMapping
-                        .getDataTypeName());
-                Object value = attributeTypeMapping.getSimpleTypeConverter().fromString(attribute.getValue());
-                if (value != null) {
-                    objectAccessor.setValue(object, attributeMapping.getFieldDescriptor().getName(), value);
+            try {
+                if (attributeMapping != null) {
+                    XmlSimpleTypeMapping attributeTypeMapping = getSimpleTypeMapping(attributeMapping
+                            .getDataTypeName());
+                    Object value = attributeTypeMapping.getSimpleTypeConverter().fromString(attribute.getValue());
+                    if (value != null) {
+                        objectAccessor.setValue(object, attributeMapping.getFieldDescriptor().getName(), value);
+                    }
                 }
+            } catch (Exception e) {
+                throw createException(e, typeMapping, attributeMapping.getFieldDescriptor().getName());
             }
         }
         if (typeMapping.isTextContentAllowed()) {
@@ -178,9 +183,13 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
                     .getNodeMapping(TextContentDescriptor.getInstance());
             TypeMapping<QName> textContentTypeMapping = getSimpleTypeMapping(textContentMapping.getDataTypeName());
             String fieldName = textContentMapping.getFieldDescriptor().getName();
-            Object value = deserializeSimpleElement((XmlSimpleTypeMapping) textContentTypeMapping);
-            if (value != null) {
-                objectAccessor.setValue(object, fieldName, value);
+            try {
+                Object value = deserializeSimpleElement((XmlSimpleTypeMapping) textContentTypeMapping);
+                if (value != null) {
+                    objectAccessor.setValue(object, fieldName, value);
+                }
+            } catch (Exception e) {
+                throw createException(e, typeMapping, fieldName);
             }
         } else {
             int childDepth = getCurrentDepth() + 1;
@@ -188,18 +197,23 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
                 ElementMapping childElementMapping = typeMapping.getNodeMapping(getCurrentElementDescriptor());
                 if (childElementMapping != null) {
                     String fieldName = childElementMapping.getFieldDescriptor().getName();
-                    Object value = deserializeElement(childElementMapping.getDataTypeName());
-                    if (value != null) {
-                        if (value instanceof List) {
-                            List<Object> currentList = (List<Object>) objectAccessor.getValue(object, fieldName);
-                            if (currentList != null) {
-                                currentList.addAll((List) value);
+                    try {
+                        Object value = deserializeElement(childElementMapping.getDataTypeName());
+                        if (value != null) {
+                            if (value instanceof List) {
+                                List<Object> currentList = (List<Object>) objectAccessor.getValue(object,
+                                        fieldName);
+                                if (currentList != null) {
+                                    currentList.addAll((List) value);
+                                } else {
+                                    objectAccessor.setValue(object, fieldName, value);
+                                }
                             } else {
                                 objectAccessor.setValue(object, fieldName, value);
                             }
-                        } else {
-                            objectAccessor.setValue(object, fieldName, value);
                         }
+                    } catch (Exception e) {
+                        throw createException(e, typeMapping, fieldName);
                     }
                 }
             }
@@ -294,6 +308,15 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
 
     private XmlSimpleTypeMapping getSimpleTypeMapping(QName dataTypeName) {
         return (XmlSimpleTypeMapping) this.typeMappingRegistry.get(dataTypeName);
+    }
+
+    private DeserializationException createException(Exception cause, TypeMapping<?> typeMapping, String fieldName) {
+        ObjectPathElement elem = new ObjectPathElement(typeMapping.getObjectType(), fieldName);
+        if (cause instanceof DeserializationException) {
+            return ((DeserializationException) cause).add(elem);
+        } else {
+            return new DeserializationException(cause).setInputPosition(getInputPosition()).add(elem);
+        }
     }
 
 }
