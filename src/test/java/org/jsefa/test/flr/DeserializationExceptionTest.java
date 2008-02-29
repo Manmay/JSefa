@@ -63,6 +63,20 @@ public class DeserializationExceptionTest extends TestCase {
         }
     }
 
+    /**
+     * Tests the correctness of the object path for a conversion error.
+     */
+    @SuppressWarnings("unchecked")
+    public void testObjectPathForConversionException() {
+        String inputString = "aaaaa    1\nbbbbb    2\nccccc    a";
+        try {
+            JSefaTestUtil.deserialize(FormatType.FLR, inputString, ComplexTestDTO.class);
+            fail();
+        } catch (DeserializationException e) {
+            assertFalse(e.getObjectPath().isEmpty());
+        }
+    }
+
     @FlrDataType()
     static final class SimpleTestDTO extends AbstractTestDTO {
         @FlrField(pos = 0, length = 5)
@@ -72,5 +86,10 @@ public class DeserializationExceptionTest extends TestCase {
         int c;
     }
     
+    @FlrDataType()
+    static final class ComplexTestDTO extends AbstractTestDTO {
+        @FlrField(pos = 0)
+        SimpleTestDTO dto;
+    }
 
 }

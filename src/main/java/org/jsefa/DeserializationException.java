@@ -16,6 +16,9 @@
 
 package org.jsefa;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jsefa.common.lowlevel.InputPosition;
 
 /**
@@ -28,7 +31,11 @@ public final class DeserializationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
     
+    private static final String DEFAULT_MESSAGE = "Error while deserializing";
+    
     private InputPosition inputPosition;
+    
+    private LinkedList<ObjectPathElement> objectPath;
 
     /**
      * Constructs a new <code>DeserializationException</code> with the specified detail message.
@@ -37,6 +44,7 @@ public final class DeserializationException extends RuntimeException {
      */
     public DeserializationException(String message) {
         super(message);
+        this.objectPath = new LinkedList<ObjectPathElement>();
     }
 
     /**
@@ -47,8 +55,19 @@ public final class DeserializationException extends RuntimeException {
      */
     public DeserializationException(String message, Throwable cause) {
         super(message, cause);
+        this.objectPath = new LinkedList<ObjectPathElement>();
     }
     
+    /**
+     * Constructs a new <code>DeserializationException</code> with the default detail message and cause.
+     * 
+     * @param cause the cause
+     */
+    public DeserializationException(Throwable cause) {
+        super(DEFAULT_MESSAGE, cause);
+        this.objectPath = new LinkedList<ObjectPathElement>();
+    }
+
     /**
      * Sets the position within the input stream where the error occurred.
      * @param inputPosition the input position
@@ -60,11 +79,29 @@ public final class DeserializationException extends RuntimeException {
     }
     
     /**
+     * Adds the given object path element to the front of the object path.
+     * @param element an object path element
+     * @return this
+     */
+    public DeserializationException add(ObjectPathElement element) {
+        this.objectPath.addFirst(element);
+        return this;
+    }
+
+    /**
      * Returns the position within the input stream where the error occurred.
      * @return an input position
      */
     public InputPosition getInputPosition() {
         return this.inputPosition;
+    }
+    
+    /**
+     * Returns the object path.
+     * @return the object path
+     */
+    public List<ObjectPathElement> getObjectPath() {
+        return this.objectPath;
     }
     
     /**
@@ -75,6 +112,16 @@ public final class DeserializationException extends RuntimeException {
         StringBuilder result = new StringBuilder(super.getMessage());
         result.append("\nPosition: ");
         result.append(this.inputPosition);
+        if (!this.objectPath.isEmpty()) {
+            result.append("\nObject Path: ");
+            for (int i = 0; i < this.objectPath.size(); i++) {
+                ObjectPathElement elem = this.objectPath.get(i);
+                if (i > 0) {
+                    result.append(".");
+                }
+                result.append(elem);
+            }
+        }
         return result.toString();
     }
 

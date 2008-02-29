@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsefa.DeserializationException;
+import org.jsefa.ObjectPathElement;
 import org.jsefa.common.lowlevel.InputPosition;
 import org.jsefa.common.lowlevel.filter.Line;
 import org.jsefa.common.mapping.SimpleTypeMapping;
@@ -103,8 +104,7 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException("Error while deserializing", e)
-                    .setInputPosition(getInputPosition());
+            throw new DeserializationException(e).setInputPosition(getInputPosition());
         }
 
     }
@@ -126,8 +126,7 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new DeserializationException("Error while deserializing", e)
-                    .setInputPosition(getInputPosition());
+            throw new DeserializationException(e).setInputPosition(getInputPosition());
         }
 
     }
@@ -203,11 +202,15 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
     private boolean readFields(Object object, RbfComplexTypeMapping typeMapping) {
         boolean hasContent = false;
         for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
-            String fieldDataTypeName = typeMapping.getNodeMapping(fieldName).getDataTypeName();
-            Object fieldValue = readValue(getTypeMapping(fieldDataTypeName));
-            if (fieldValue != null) {
-                typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
-                hasContent = true;
+            try {
+                String fieldDataTypeName = typeMapping.getNodeMapping(fieldName).getDataTypeName();
+                Object fieldValue = readValue(getTypeMapping(fieldDataTypeName));
+                if (fieldValue != null) {
+                    typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
+                    hasContent = true;
+                }
+            } catch (Exception e) {
+                throw createException(e, new ObjectPathElement(typeMapping.getObjectType(), fieldName));
             }
         }
         return hasContent;
@@ -218,41 +221,45 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         if (!typeMapping.getFieldNames(NodeType.RECORD).isEmpty()) {
             boolean hasRecord = getLowLevelDeserializer().readNextRecord();
             for (String fieldName : typeMapping.getFieldNames(NodeType.RECORD)) {
-                if (!hasRecord) {
-                    break;
-                }
-                RecordMapping subRecordNodeMapping = typeMapping.getNodeMapping(fieldName);
-                TypeMapping<?> subRecordTypeMapping = getTypeMapping(subRecordNodeMapping.getDataTypeName());
-                if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
-                    if (subRecordNodeMapping.getPrefix().equals(readPrefix())) {
-                        Object fieldValue = readValue(subRecordTypeMapping);
-                        if (fieldValue != null) {
+                try {
+                    if (!hasRecord) {
+                        break;
+                    }
+                    RecordMapping subRecordNodeMapping = typeMapping.getNodeMapping(fieldName);
+                    TypeMapping<?> subRecordTypeMapping = getTypeMapping(subRecordNodeMapping.getDataTypeName());
+                    if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
+                        if (subRecordNodeMapping.getPrefix().equals(readPrefix())) {
+                            Object fieldValue = readValue(subRecordTypeMapping);
+                            if (fieldValue != null) {
+                                typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
+                                hasContent = true;
+                            }
+                            hasRecord = getLowLevelDeserializer().readNextRecord();
+                        }
+                    } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
+                        List<Object> fieldValue = new ArrayList<Object>();
+                        RbfListTypeMapping subRecordListTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
+                        String prefix = readPrefix();
+                        while (subRecordListTypeMapping.getPrefixes().contains(prefix)) {
+                            TypeMapping<?> listItemTypeMapping = getTypeMapping(subRecordListTypeMapping
+                                    .getRecordMapping(prefix).getDataTypeName());
+                            Object listItemValue = readValue(listItemTypeMapping);
+                            if (listItemValue != null) {
+                                fieldValue.add(listItemValue);
+                            }
+                            if (getLowLevelDeserializer().readNextRecord()) {
+                                prefix = readPrefix();
+                            } else {
+                                break;
+                            }
+                        }
+                        if (!fieldValue.isEmpty()) {
                             typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
                             hasContent = true;
                         }
-                        hasRecord = getLowLevelDeserializer().readNextRecord();
                     }
-                } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
-                    List<Object> fieldValue = new ArrayList<Object>();
-                    RbfListTypeMapping subRecordListTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
-                    String prefix = readPrefix();
-                    while (subRecordListTypeMapping.getPrefixes().contains(prefix)) {
-                        TypeMapping<?> listItemTypeMapping = getTypeMapping(subRecordListTypeMapping
-                                .getRecordMapping(prefix).getDataTypeName());
-                        Object listItemValue = readValue(listItemTypeMapping);
-                        if (listItemValue != null) {
-                            fieldValue.add(listItemValue);
-                        }
-                        if (getLowLevelDeserializer().readNextRecord()) {
-                            prefix = readPrefix();
-                        } else {
-                            break;
-                        }
-                    }
-                    if (!fieldValue.isEmpty()) {
-                        typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
-                        hasContent = true;
-                    }
+                } catch (Exception e) {
+                    throw createException(e, new ObjectPathElement(typeMapping.getObjectType(), fieldName));
                 }
             }
             getLowLevelDeserializer().unreadRecord();
@@ -289,6 +296,14 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
                 this.currentEntryPoint = null;
                 return false;
             }
+        }
+    }
+
+    private DeserializationException createException(Exception cause, ObjectPathElement elem) {
+        if (cause instanceof DeserializationException) {
+            return ((DeserializationException) cause).add(elem);
+        } else {
+            return new DeserializationException(cause).setInputPosition(getInputPosition()).add(elem);
         }
     }
 

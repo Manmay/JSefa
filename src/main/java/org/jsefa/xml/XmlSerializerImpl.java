@@ -100,7 +100,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
         } catch (SerializationException e) {
             throw e;
         } catch (Exception e) {
-            throw new SerializationException("Error while serializing", e);
+            throw new SerializationException(e);
         }
     }
 

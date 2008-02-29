@@ -266,7 +266,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
                 return null;
             }
         } catch (IOException e) {
-            throw new LowLevelDeserializationException("Error while deserializing", e);
+            throw new LowLevelDeserializationException(e);
         }
     }
     

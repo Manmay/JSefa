@@ -99,7 +99,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
         try {
             return this.eventPrefetched || this.streamReader.hasNext();
         } catch (XMLStreamException e) {
-            throw new LowLevelDeserializationException("Error while deserialization", e);
+            throw new LowLevelDeserializationException(e);
         }
     }
 
@@ -144,7 +144,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
             }
             this.currentItem = null;
         } catch (XMLStreamException e) {
-            throw new LowLevelDeserializationException("Error while deserialization", e);
+            throw new LowLevelDeserializationException(e);
         }
     }
 
@@ -191,7 +191,7 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
                         }
                     }
                 } catch (XMLStreamException e) {
-                    throw new LowLevelDeserializationException("Error while deserialization", e);
+                    throw new LowLevelDeserializationException(e);
                 }
 
             }

@@ -26,6 +26,8 @@ public final class LowLevelSerializationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String DEFAULT_MESSAGE = "Error while serializing";
+
     /**
      * Constructs a new <code>LowLevelSerializationException</code> with the specified detail message.
      * 
@@ -45,4 +47,12 @@ public final class LowLevelSerializationException extends RuntimeException {
         super(message, cause);
     }
 
+    /**
+     * Constructs a new <code>LowLevelSerializationException</code> with the default detail message and cause.
+     * 
+     * @param cause the cause
+     */
+    public LowLevelSerializationException(Throwable cause) {
+        super(DEFAULT_MESSAGE, cause);
+    }
 }

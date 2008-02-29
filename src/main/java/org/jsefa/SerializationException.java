@@ -25,7 +25,9 @@ package org.jsefa;
 public final class SerializationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
-
+    
+    private static final String DEFAULT_MESSAGE = "Error while serializing";
+    
     /**
      * Constructs a new <code>SerializationException</code> with the specified detail message.
      * 
@@ -45,4 +47,12 @@ public final class SerializationException extends RuntimeException {
         super(message, cause);
     }
 
+    /**
+     * Constructs a new <code>SerializationException</code> with the default detail message and cause.
+     * 
+     * @param cause the cause
+     */
+    public SerializationException(Throwable cause) {
+        super(DEFAULT_MESSAGE, cause);
+    }
 }

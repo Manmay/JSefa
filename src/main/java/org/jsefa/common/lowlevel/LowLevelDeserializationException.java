@@ -26,6 +26,8 @@ public final class LowLevelDeserializationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String DEFAULT_MESSAGE = "Error while deserializing";
+
     /**
      * Constructs a new <code>LowLevelDeserializationException</code> with the specified detail message.
      * 
@@ -46,4 +48,13 @@ public final class LowLevelDeserializationException extends RuntimeException {
         super(message, cause);
     }
 
+    /**
+     * Constructs a new <code>LowLevelDeserializationException</code> with the default detail message and
+     * cause.
+     * 
+     * @param cause the cause
+     */
+    public LowLevelDeserializationException(Throwable cause) {
+        super(DEFAULT_MESSAGE, cause);
+    }
 }

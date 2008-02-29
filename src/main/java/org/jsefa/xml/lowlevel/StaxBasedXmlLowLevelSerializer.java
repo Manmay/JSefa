@@ -81,7 +81,7 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
             this.streamWriter.writeStartDocument(encoding, version);
             writeLineBreak();
         } catch (XMLStreamException e) {
-            throw new LowLevelSerializationException("Error while serializing", e);
+            throw new LowLevelSerializationException(e);
         }
     }
 

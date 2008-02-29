@@ -19,7 +19,6 @@ package org.jsefa.rbf.lowlevel;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.common.lowlevel.LowLevelSerializationException;
 import org.jsefa.rbf.lowlevel.config.RbfLowLevelConfiguration;
 
@@ -113,7 +112,7 @@ public class RbfLowLevelSerializerImpl<C extends RbfLowLevelConfiguration> imple
         try {
             this.writer.write(character);
         } catch (IOException e) {
-            throw new LowLevelDeserializationException("Error while serializing", e);
+            throw new LowLevelSerializationException(e);
         }
     }
 
@@ -126,7 +125,7 @@ public class RbfLowLevelSerializerImpl<C extends RbfLowLevelConfiguration> imple
         try {
             this.writer.write(value);
         } catch (IOException e) {
-            throw new LowLevelSerializationException("Error while serializing", e);
+            throw new LowLevelSerializationException(e);
         }
     }
 
@@ -134,7 +133,7 @@ public class RbfLowLevelSerializerImpl<C extends RbfLowLevelConfiguration> imple
         try {
             this.writer.write(this.config.getLineBreak());
         } catch (IOException e) {
-            throw new LowLevelSerializationException("Error while serializing", e);
+            throw new LowLevelSerializationException(e);
         }
     }
 
