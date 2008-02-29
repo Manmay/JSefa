@@ -15,9 +15,12 @@
  */
 package org.jsefa.test.csv;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.jsefa.DeserializationException;
+import org.jsefa.ObjectPathElement;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
 import org.jsefa.test.common.AbstractTestDTO;
@@ -31,45 +34,69 @@ import org.jsefa.test.common.JSefaTestUtil.FormatType;
  * 
  */
 public class DeserializationExceptionTest extends TestCase {
-    
+
     /**
      * Tests the correctness of the input position for a low level error (document is not well formed).
      */
     @SuppressWarnings("unchecked")
     public void testInputPositionForLowLevelError() {
-        String inputString = "a;3\nb;3\nerror\n";
+        String inputString = "ok;1" + "\n" + "error";
         try {
             JSefaTestUtil.deserialize(FormatType.CSV, inputString, SimpleTestDTO.class);
             fail();
         } catch (DeserializationException e) {
             assertNotNull(e.getInputPosition());
-            assertEquals(3, e.getInputPosition().getLineNumber());
+            assertEquals(2, e.getInputPosition().getLineNumber());
         }
     }
-    
+
     /**
      * Tests the correctness of the input position for a conversion error.
      */
     @SuppressWarnings("unchecked")
     public void testInputPositionForConversionException() {
-        String inputString = "a;3\nb;3\nc;error\n";
+        String inputString = "ok;1" + "\n" + "ok;error";
         try {
             JSefaTestUtil.deserialize(FormatType.CSV, inputString, SimpleTestDTO.class);
             fail();
         } catch (DeserializationException e) {
             assertNotNull(e.getInputPosition());
-            assertEquals(e.getInputPosition().getLineNumber(), 3);
+            assertEquals(e.getInputPosition().getLineNumber(), 2);
+        }
+    }
+
+    /**
+     * Tests the correctness of the object path for a conversion error.
+     */
+    @SuppressWarnings("unchecked")
+    public void testObjectPathForConversionException() {
+        String inputString = "ok;error";
+        try {
+            JSefaTestUtil.deserialize(FormatType.CSV, inputString, ComplexTestDTO.class);
+            fail();
+        } catch (DeserializationException e) {
+            List<ObjectPathElement> path = e.getObjectPath();
+            assertEquals(2, path.size());
+            assertEquals(ComplexTestDTO.class, path.get(0).getObjectType());
+            assertEquals("complexField", path.get(0).getFieldName());
+            assertEquals(SimpleTestDTO.class, path.get(1).getObjectType());
+            assertEquals("intField", path.get(1).getFieldName());
         }
     }
 
     @CsvDataType()
     static final class SimpleTestDTO extends AbstractTestDTO {
         @CsvField(pos = 0)
-        String b;
+        String stringField;
 
         @CsvField(pos = 1)
-        int c;
+        int intField;
     }
-    
+
+    @CsvDataType()
+    static final class ComplexTestDTO extends AbstractTestDTO {
+        @CsvField(pos = 0)
+        SimpleTestDTO complexField;
+    }
 
 }
