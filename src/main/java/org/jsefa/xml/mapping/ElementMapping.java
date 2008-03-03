@@ -23,10 +23,7 @@ import org.jsefa.xml.namespace.QName;
  * A mapping between an XML element node and a java object. This mapping is used for serialization and
  * deserialization.
  * <p>
- * Note:<br>
- * 1. Each client must call {@link #finish()} when finishing the construction of an <code>ElementMapping</code>.<br>
- * 2. The construction must be performed by one thread only. <br>
- * 3. After the construction step an instance of this class is immutable and thread-safe.<br>
+ * Instances of this class are immutable and thread safe.
  * 
  * @author Norman Lahme-Huetig
  * 
