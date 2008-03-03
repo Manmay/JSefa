@@ -28,6 +28,7 @@ import org.jsefa.common.lowlevel.filter.Line;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
+import org.jsefa.rbf.mapping.NodeMapping;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
@@ -203,7 +204,8 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         boolean hasContent = false;
         for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
             try {
-                String fieldDataTypeName = typeMapping.getNodeMapping(fieldName).getDataTypeName();
+                NodeMapping nodeMapping = typeMapping.getNodeMapping(fieldName);
+                String fieldDataTypeName = nodeMapping.getDataTypeName();
                 Object fieldValue = readValue(getTypeMapping(fieldDataTypeName));
                 if (fieldValue != null) {
                     typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);

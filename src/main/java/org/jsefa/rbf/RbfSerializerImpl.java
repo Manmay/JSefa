@@ -26,6 +26,7 @@ import org.jsefa.Serializer;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
+import org.jsefa.rbf.mapping.NodeMapping;
 import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
@@ -112,7 +113,9 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a low level serializer.
+     * 
+     * @return a low level serializer.
      */
     public L getLowLevelSerializer() {
         return this.lowLevelSerializer;
@@ -162,7 +165,8 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
             if (object != null) {
                 fieldValue = typeMapping.getObjectAccessor().getValue(object, fieldName);
             }
-            String fieldDataTypeName = typeMapping.getNodeMapping(fieldName).getDataTypeName();
+            NodeMapping nodeMapping = typeMapping.getNodeMapping(fieldName);
+            String fieldDataTypeName = nodeMapping.getDataTypeName();
             writeValue(fieldValue, getTypeMapping(fieldDataTypeName));
         }
     }
