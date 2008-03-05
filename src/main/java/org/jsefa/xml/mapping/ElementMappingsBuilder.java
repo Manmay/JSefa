@@ -17,10 +17,7 @@
 package org.jsefa.xml.mapping;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jsefa.common.mapping.FieldDescriptor;
 import org.jsefa.xml.namespace.QName;
@@ -75,28 +72,27 @@ public final class ElementMappingsBuilder {
      */
     public List<ElementMapping> getResult() {
         List<ElementMapping> elementMappings = new ArrayList<ElementMapping>();
-        Collection<QName> ambiguousElementNames = findAmbiguousElementNames();
         for (DataHolder dataHolder : this.dataHolders) {
-            boolean elementNameIsAmbiguous = ambiguousElementNames
-                    .contains(dataHolder.elementDescriptor.getName());
             elementMappings.add(new ElementMapping(dataHolder.dataTypeName, dataHolder.elementDescriptor,
-                    dataHolder.objectType, dataHolder.fieldDescriptor, elementNameIsAmbiguous));
+                    dataHolder.objectType, dataHolder.fieldDescriptor, isAmbiguous(dataHolder)));
         }
         return elementMappings;
     }
-
-    private Collection<QName> findAmbiguousElementNames() {
-        Set<QName> elementNames = new HashSet<QName>();
-        Set<QName> ambiguousElementNames = new HashSet<QName>();
-        for (DataHolder dataHolder : this.dataHolders) {
-            QName elementName = dataHolder.elementDescriptor.getName();
-            if (elementNames.contains(elementName)) {
-                ambiguousElementNames.add(elementName);
-            } else {
-                elementNames.add(elementName);
+    
+    private boolean isAmbiguous(DataHolder dataHolder) {
+        for (DataHolder otherDataHolder : this.dataHolders) {
+            if (otherDataHolder == dataHolder) {
+                continue;
+            }
+            if (otherDataHolder.elementDescriptor.getName().equals(dataHolder.elementDescriptor.getName())) {
+                if (otherDataHolder.objectType.isAssignableFrom(dataHolder.objectType)) {
+                    return true;
+                } else if (!dataHolder.objectType.isAssignableFrom(otherDataHolder.objectType)) {
+                    return true;
+                }
             }
         }
-        return ambiguousElementNames;
+        return false;
     }
 
     private static final class DataHolder {

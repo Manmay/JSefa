@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jsefa.IOFactoryException;
+
 /**
  * Utility class providing methods used in different type mapping contexts.
  * <p>
@@ -31,12 +33,11 @@ import java.util.Map;
 public final class XmlTypeMappingUtil {
 
     /**
-     * Creates a map of node mappings with node descriptors as keys. For each
-     * element mapping contained in the given collection of node mappings an
-     * additional simplified descriptor is created if the element name is not
+     * Creates a map of node mappings with node descriptors as keys. For each element mapping contained in the
+     * given collection of node mappings an additional simplified descriptor is created if the element name is not
      * ambiguous so that the element mapping has two keys.
      * 
-     * @param <D> the expected type of the node descriptor 
+     * @param <D> the expected type of the node descriptor
      * @param <M> the expected type of the node mappings
      * @param nodeMappings the node mappings
      * @return a map of node mappings with node descriptors as keys
@@ -46,13 +47,19 @@ public final class XmlTypeMappingUtil {
             Collection<M> nodeMappings) {
         Map<D, M> result = new HashMap<D, M>();
         for (M nodeMapping : nodeMappings) {
-            result.put((D) nodeMapping.getNodeDescriptor(), nodeMapping);
+            if (result.put((D) nodeMapping.getNodeDescriptor(), nodeMapping) != null) {
+                throw new IOFactoryException("The node descriptor is ambiguous: "
+                        + nodeMapping.getNodeDescriptor());
+            }
             if (nodeMapping instanceof ElementMapping) {
                 ElementMapping elementMapping = (ElementMapping) nodeMapping;
                 if (!elementMapping.elementNameIsAmbiguous()) {
                     ElementDescriptor simplifiedElementDescriptor = new ElementDescriptor(elementMapping
                             .getNodeDescriptor().getName(), null);
-                    result.put((D) simplifiedElementDescriptor, nodeMapping);
+                    if (result.put((D) simplifiedElementDescriptor, nodeMapping) != null) {
+                        throw new IOFactoryException("The simplified node descriptor is ambiguous: "
+                                + simplifiedElementDescriptor);
+                    }
                 }
             }
         }
