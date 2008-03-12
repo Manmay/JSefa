@@ -65,11 +65,7 @@ public final class QName {
         }
         this.uri = uri;
         this.localName = localName;
-        if (this.uri == null) {
-            this.hashCode = this.localName.hashCode();
-        } else {
-            this.hashCode = 37 * (17 + this.uri.hashCode()) + this.localName.hashCode();
-        }
+        this.hashCode = 37 * (17 + this.uri.hashCode()) + this.localName.hashCode();
     }
 
     /**

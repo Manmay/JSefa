@@ -102,7 +102,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
 
     private String createSimpleTypeMappingIfAbsent(Class<?> objectType, Field field, Annotation fieldAnnotation) {
         String dataTypeName = createSimpleDataTypeName(field);
-        if (prepareToCreate(dataTypeName)) {
+        if (prepareToCreate(objectType, dataTypeName)) {
             String[] format = null;
             SimpleTypeConverter converter = null;
             if (fieldAnnotation != null) {
@@ -127,7 +127,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
 
     private String createComplexTypeMappingIfAbsent(Class<?> objectType, boolean subRecordsAllowed) {
         String dataTypeName = createComplexDataTypeName(objectType);
-        if (prepareToCreate(dataTypeName)) {
+        if (prepareToCreate(objectType, dataTypeName)) {
             Collection<NodeMapping> nodeMappings = new ArrayList<NodeMapping>();
             nodeMappings.addAll(createFieldMappings(objectType));
             if (subRecordsAllowed) {
@@ -219,7 +219,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         Annotation subRecordListAnnotation = field.getAnnotation(this.annotations
                 .getSubRecordListAnnotationClass());
         String dataTypeName = createListDataTypeName(field);
-        if (prepareToCreate(dataTypeName)) {
+        if (prepareToCreate(List.class, dataTypeName)) {
             if (subRecordListAnnotation == null || getRecords(subRecordListAnnotation).length == 0) {
                 throw new AnnotationException("No FlrSubRecordList annotation with proper content found");
             }

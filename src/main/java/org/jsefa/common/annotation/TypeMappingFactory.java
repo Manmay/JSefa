@@ -17,8 +17,6 @@
 package org.jsefa.common.annotation;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
@@ -44,8 +42,6 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
 
     private final R typeMappingRegistry;
 
-    private final ConcurrentMap<D, D> newDataTypeNames;
-
     /**
      * Constructs a new <code>TypeMappingFactory</code>.
      * 
@@ -58,7 +54,6 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
         this.typeMappingRegistry = typeMappingRegistry;
         this.simpleTypeConverterProvider = simpleTypeConverterProvider;
         this.objectAccessorProvider = objectAccessorProvider;
-        this.newDataTypeNames = new ConcurrentHashMap<D, D>();
     }
 
     /**
@@ -81,21 +76,27 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
     }
 
     /**
-     * Called before creating a new type mapping with the given data type name. Returns true, if the type mapping
-     * registry has no entry for the data type name and if it is the first time this method is called with the
-     * given argument; otherwise false.
+     * Called before creating a new type mapping with the given data type name for the given object type. Returns
+     * true, if the type mapping registry has no entry for the data type name and if it is the first time this
+     * method is called with the given argument; otherwise false.
      * <p>
      * The purpose of this method is to prevent from creating duplicates and from falling in an endless loop in
      * case of a cycle in the type mapping graph.
+     * <p>
+     * In case the method returns true, a {@link TypeMappingPlaceholder} is registered so that object type
+     * information can be retrieved during the construction of a type mapping. That type mapping is replaced by the
+     * real type mapping after finishing its construction.
      * 
+     * @param objectType the object type
      * @param dataTypeName the data type name
+     * 
      * @return true, if no type mapping with the given name already exists or is already under construction.
      */
-    protected final boolean prepareToCreate(D dataTypeName) {
-        if (this.typeMappingRegistry.get(dataTypeName) != null || this.newDataTypeNames.containsKey(dataTypeName)) {
+    protected final boolean prepareToCreate(Class<?> objectType, D dataTypeName) {
+        if (this.typeMappingRegistry.get(dataTypeName) != null) {
             return false;
         }
-        this.newDataTypeNames.put(dataTypeName, dataTypeName);
+        this.typeMappingRegistry.register(new TypeMappingPlaceholder(objectType, dataTypeName));
         return true;
     }
 
@@ -147,6 +148,29 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
             throw new AnnotationException("No type mapping registered for data type name " + dataTypeName);
         }
+    }
+
+    /**
+     * A placeholder for a type mapping used during the construction of a type mapping, i. e. between calling
+     * {@link TypeMappingFactory#prepareToCreate(Class, Object)} and the registration of the type mapping.
+     * <p>
+     * This is used to obtain the object type for a given data type name during the construction phase.
+     * 
+     * @author Norman Lahme-Huetig
+     * 
+     */
+    protected final class TypeMappingPlaceholder extends TypeMapping<D> {
+
+        /**
+         * Constructs a new <code>TypeMappingPlaceholder</code>.
+         * 
+         * @param objectType the object type
+         * @param dataTypeName the data type name
+         */
+        protected TypeMappingPlaceholder(Class<?> objectType, D dataTypeName) {
+            super(objectType, dataTypeName);
+        }
+
     }
 
 }
