@@ -40,6 +40,11 @@ public interface Serializer {
      * @throws SerializationException
      */
     void write(Object obj);
+    
+    /**
+     * Flushes the stream.
+     */
+    void flush();    
 
     /**
      * Closes the serialization stream. The underlying writer will be closed only if <code>closeWriter</code> is

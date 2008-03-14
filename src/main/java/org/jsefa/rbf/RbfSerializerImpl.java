@@ -99,6 +99,17 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
             throw new SerializationException(e);
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void flush() {
+        try {
+            this.lowLevelSerializer.flush();
+        } catch (Exception e) {
+            throw new SerializationException("Error while flushing the serialization stream");
+        }
+    }
 
     /**
      * {@inheritDoc}

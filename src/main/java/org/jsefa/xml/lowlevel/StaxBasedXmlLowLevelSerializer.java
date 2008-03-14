@@ -193,6 +193,19 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
         this.namespaceManager = this.namespaceManager.getParent();
         this.depth--;
     }
+    
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public void flush() {
+        try {
+            this.streamWriter.flush();
+        } catch (Exception e) {
+            throw new LowLevelSerializationException("Error while flushing the serialization stream", e);
+        }
+    }
 
     /**
      * {@inheritDoc}

@@ -107,6 +107,17 @@ public final class XmlSerializerImpl implements XmlSerializer {
     /**
      * {@inheritDoc}
      */
+    public void flush() {
+        try {
+            this.lowLevelSerializer.flush();
+        } catch (Exception e) {
+            throw new SerializationException("Error while flushing the serialization stream");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void close(boolean closeWriter) {
         try {
             this.lowLevelSerializer.close(closeWriter);
