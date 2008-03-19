@@ -61,6 +61,22 @@ public class SubRecordTest extends TestCase {
     }
 
     /**
+     * Tests a DTO with multiple sub records (CSV).
+     */
+    public void testMultipleSubRecordsCSV() {
+        MultipleSubRecordDTO dto = createMultipleSubRecordDTO();
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, dto);
+    }
+
+    /**
+     * Tests a DTO with multiple sub records (FLR).
+     */
+    public void testMultipleSubRecordsFLR() {
+        MultipleSubRecordDTO dto = createMultipleSubRecordDTO();
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(FLR, dto);
+    }
+
+    /**
      * Tests a DTO with a single sub record list (CSV).
      */
     public void testSingleSubRecordListCSV() {
@@ -69,10 +85,26 @@ public class SubRecordTest extends TestCase {
     }
 
     /**
+     * Tests a DTO with multiple sub record lists (CSV).
+     */
+    public void testMultipleSubRecordListCSV() {
+        MultipleSubRecordListDTO dto = createMultipleSubRecordListDTO();
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, dto);
+    }
+
+    /**
      * Tests a DTO with a single sub record list using the short annotation syntax (FLR).
      */
     public void testSingleSubRecordListFLR() {
         SingleSubRecordListDTO dto = createSingleSubRecordListDTO();
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(FLR, dto);
+    }
+    
+    /**
+     * Tests a DTO with multiple sub record lists (FLR).
+     */
+    public void testMultipleSubRecordListFLR() {
+        MultipleSubRecordListDTO dto = createMultipleSubRecordListDTO();
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(FLR, dto);
     }
 
@@ -132,12 +164,29 @@ public class SubRecordTest extends TestCase {
         obj.subRecordField = createSimpleDTO("contentB");
         return obj;
     }
+    
+    private MultipleSubRecordDTO createMultipleSubRecordDTO() {
+        MultipleSubRecordDTO dto = new MultipleSubRecordDTO();
+        dto.subRecordField1 = createSimpleDTO("content1");
+        dto.subRecordField1 = createSimpleDTO("content2");
+        return dto;
+    }
 
     private SingleSubRecordListDTO createSingleSubRecordListDTO() {
         SingleSubRecordListDTO dto = new SingleSubRecordListDTO();
         dto.fieldA = "fieldA content";
         dto.subRecordListField.add(createSimpleDTO("simpleField content1"));
         dto.subRecordListField.add(createSimpleDTO("simpleField content2"));
+        return dto;
+    }
+
+    private MultipleSubRecordListDTO createMultipleSubRecordListDTO() {
+        MultipleSubRecordListDTO dto = new MultipleSubRecordListDTO();
+        dto.fieldA = "fieldA content";
+        dto.subRecordListField1.add(createSimpleDTO("simpleField content1.1"));
+        dto.subRecordListField1.add(createSimpleDTO("simpleField content1.2"));
+        dto.subRecordListField2.add(createSimpleDTO("simpleField content2.1"));
+        dto.subRecordListField2.add(createSimpleDTO("simpleField content2.2"));
         return dto;
     }
 
@@ -168,6 +217,22 @@ public class SubRecordTest extends TestCase {
 
     }
 
+    @CsvDataType(defaultPrefix = "LT")
+    @FlrDataType(defaultPrefix = "LT")
+    static class MultipleSubRecordListDTO extends AbstractTestDTO {
+        @CsvField(pos = 1)
+        @FlrField(pos = 1, length = 25)
+        String fieldA;
+
+        @CsvSubRecordList(pos = 2, records = {@Record(prefix = "S1", objectType = SimpleDTO.class)})
+        @FlrSubRecordList(pos = 2, records = {@Record(prefix = "S1")})
+        List<SimpleDTO> subRecordListField1 = new ArrayList<SimpleDTO>();
+
+        @CsvSubRecordList(pos = 3, records = {@Record(prefix = "S2", objectType = SimpleDTO.class)})
+        @FlrSubRecordList(pos = 3, records = {@Record(prefix = "S2")})
+        List<SimpleDTO> subRecordListField2 = new ArrayList<SimpleDTO>();
+    }
+
     @CsvDataType(defaultPrefix = "RT")
     @FlrDataType(defaultPrefix = "RT")
     static class SingleSubRecordDTO extends AbstractTestDTO {
@@ -178,6 +243,19 @@ public class SubRecordTest extends TestCase {
         @CsvSubRecord(pos = 2, prefix = "ST")
         @FlrSubRecord(pos = 2, prefix = "ST")
         SimpleDTO subRecordField;
+
+    }
+
+    @CsvDataType(defaultPrefix = "RT")
+    @FlrDataType(defaultPrefix = "RT")
+    static class MultipleSubRecordDTO extends AbstractTestDTO {
+        @CsvSubRecord(pos = 1, prefix = "S1")
+        @FlrSubRecord(pos = 1, prefix = "S1")
+        SimpleDTO subRecordField1;
+
+        @CsvSubRecord(pos = 2, prefix = "S2")
+        @FlrSubRecord(pos = 2, prefix = "S2")
+        SimpleDTO subRecordField2;
 
     }
 

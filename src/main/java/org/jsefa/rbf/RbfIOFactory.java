@@ -184,52 +184,52 @@ public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistr
      * 1. the root is an artificial prefix which is always unique <br>
      * 2. the ordered children of the root are the prefixes of the entry points in their respective order <br>
      * 3. the ordered children of a prefix n which is not covered by 1. or 2. is the ordered list of prefixes
-     * associated with the sub records or sub record lists of the complex type associated with the prefix n.
+     * associated with the sub records or sub record list items of the complex type associated with the prefix n.
+     * Note that there is no prefix associated with a sub record list but with the list items.
      * <p>
-     * For a given prefix n the set S(n) is defined as the set of prefixes containing exactly <br>
-     * 1. the sibling prefixes "to the left" of n as well as their descendants, and<br>
-     * 2. n itself if n is associated to a list type mapping.
+     * For a given prefix n the set S(n) is defined as the sibling prefixes "to the left" of n as well as their
+     * descendants. Let further p(n) denote the parent of n.
      * <p>
-     * Then a prefix n is called "contextual unique" if it is not contained in S(n).
+     * Then a prefix n is called "contextual unique" if n != p(n) and n is not contained in S(n).
      * 
      * @param entryPoints the entry points.
      */
     private void assertPrefixContentualUniqueness(Collection<RbfEntryPoint> entryPoints) {
         Set<String> usedPrefixes = new HashSet<String>();
         for (RbfEntryPoint entryPoint : entryPoints) {
-            assertPrefixContextualUniqueness(entryPoint.getDesignator(), entryPoint.getDataTypeName(),
+            assertPrefixContextualUniqueness(entryPoint.getDesignator(), entryPoint.getDataTypeName(), null,
                     usedPrefixes);
         }
     }
 
-    private void assertPrefixContextualUniqueness(String prefix, String dataTypeName,
+    private void assertPrefixContextualUniqueness(String prefix, String dataTypeName, String parentPrefix,
             Set<String> siblingUsedPrefixes) {
-        if (siblingUsedPrefixes.contains(prefix)) {
+        if (siblingUsedPrefixes.contains(prefix) || (parentPrefix != null && parentPrefix.equals(prefix))) {
             throw new IOFactoryException("The prefix " + prefix
                     + " is not contextual unique. The context is defined by the following list: "
                     + siblingUsedPrefixes);
         }
-        Set<String> usedPrefixes = new HashSet<String>();
+        Set<String> childrenUsedPrefixes = new HashSet<String>();
         TypeMapping<?> typeMapping = this.config.getTypeMappingRegistry().get(dataTypeName);
         if (typeMapping instanceof RbfComplexTypeMapping) {
             RbfComplexTypeMapping complexTypeMapping = (RbfComplexTypeMapping) typeMapping;
             for (String fieldName : complexTypeMapping.getFieldNames(NodeType.RECORD)) {
                 RecordMapping recordMapping = complexTypeMapping.getNodeMapping(fieldName);
                 assertPrefixContextualUniqueness(recordMapping.getPrefix(), recordMapping.getDataTypeName(),
-                        usedPrefixes);
+                        prefix, childrenUsedPrefixes);
             }
+            childrenUsedPrefixes.add(prefix);
         }
         if (typeMapping instanceof RbfListTypeMapping) {
-            usedPrefixes.add(prefix);
             RbfListTypeMapping listTypeMapping = (RbfListTypeMapping) typeMapping;
             for (String itemPrefix : listTypeMapping.getPrefixes()) {
                 RecordMapping recordMapping = listTypeMapping.getRecordMapping(itemPrefix);
                 assertPrefixContextualUniqueness(recordMapping.getPrefix(), recordMapping.getDataTypeName(),
-                        usedPrefixes);
+                        parentPrefix, childrenUsedPrefixes);
             }
+            // note: the prefix for a record mapping for a list type mapping is always null
         }
-        usedPrefixes.add(prefix);
-        siblingUsedPrefixes.addAll(usedPrefixes);
+        siblingUsedPrefixes.addAll(childrenUsedPrefixes);
     }
 
 }

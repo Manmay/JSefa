@@ -219,53 +219,56 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
     }
 
     private boolean readSubRecords(Object object, RbfComplexTypeMapping typeMapping) {
+        if (typeMapping.getFieldNames(NodeType.RECORD).isEmpty() || !getLowLevelDeserializer().readNextRecord()) {
+            return false;
+        }
         boolean hasContent = false;
-        if (!typeMapping.getFieldNames(NodeType.RECORD).isEmpty()) {
-            boolean hasRecord = getLowLevelDeserializer().readNextRecord();
-            for (String fieldName : typeMapping.getFieldNames(NodeType.RECORD)) {
-                try {
-                    if (!hasRecord) {
-                        break;
-                    }
-                    RecordMapping subRecordNodeMapping = typeMapping.getNodeMapping(fieldName);
-                    TypeMapping<?> subRecordTypeMapping = getTypeMapping(subRecordNodeMapping.getDataTypeName());
-                    if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
-                        if (subRecordNodeMapping.getPrefix().equals(readPrefix())) {
-                            Object fieldValue = readValue(subRecordTypeMapping);
-                            if (fieldValue != null) {
-                                typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
-                                hasContent = true;
-                            }
-                            hasRecord = getLowLevelDeserializer().readNextRecord();
-                        }
-                    } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
-                        List<Object> fieldValue = new ArrayList<Object>();
-                        RbfListTypeMapping subRecordListTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
-                        String prefix = readPrefix();
-                        while (subRecordListTypeMapping.getPrefixes().contains(prefix)) {
-                            TypeMapping<?> listItemTypeMapping = getTypeMapping(subRecordListTypeMapping
-                                    .getRecordMapping(prefix).getDataTypeName());
-                            Object listItemValue = readValue(listItemTypeMapping);
-                            if (listItemValue != null) {
-                                fieldValue.add(listItemValue);
-                            }
-                            if (getLowLevelDeserializer().readNextRecord()) {
-                                prefix = readPrefix();
-                            } else {
-                                break;
-                            }
-                        }
-                        if (!fieldValue.isEmpty()) {
+        String prefix = readPrefix();
+        for (String fieldName : typeMapping.getFieldNames(NodeType.RECORD)) {
+            try {
+                RecordMapping subRecordNodeMapping = typeMapping.getNodeMapping(fieldName);
+                TypeMapping<?> subRecordTypeMapping = getTypeMapping(subRecordNodeMapping.getDataTypeName());
+                if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
+                    if (subRecordNodeMapping.getPrefix().equals(prefix)) {
+                        Object fieldValue = readValue(subRecordTypeMapping);
+                        if (fieldValue != null) {
                             typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
                             hasContent = true;
                         }
+                        if (!getLowLevelDeserializer().readNextRecord()) {
+                            return hasContent;
+                        }
+                        prefix = readPrefix();
                     }
-                } catch (Exception e) {
-                    throw createException(e, typeMapping, fieldName);
+                } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
+                    List<Object> fieldValue = new ArrayList<Object>();
+                    RbfListTypeMapping subRecordListTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
+                    boolean hasRecord = true;
+                    while (hasRecord && subRecordListTypeMapping.getPrefixes().contains(prefix)) {
+                        TypeMapping<?> listItemTypeMapping = getTypeMapping(subRecordListTypeMapping
+                                .getRecordMapping(prefix).getDataTypeName());
+                        Object listItemValue = readValue(listItemTypeMapping);
+                        if (listItemValue != null) {
+                            fieldValue.add(listItemValue);
+                        }
+                        hasRecord = getLowLevelDeserializer().readNextRecord(); 
+                        if (hasRecord) {
+                            prefix = readPrefix();
+                        }
+                    }
+                    if (!fieldValue.isEmpty()) {
+                        typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
+                        hasContent = true;
+                    }
+                    if (!hasRecord) {
+                        return hasContent;
+                    }
                 }
+            } catch (Exception e) {
+                throw createException(e, typeMapping, fieldName);
             }
-            getLowLevelDeserializer().unreadRecord();
         }
+        getLowLevelDeserializer().unreadRecord();
         return hasContent;
     }
 

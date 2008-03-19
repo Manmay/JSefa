@@ -232,7 +232,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                     if (listItemObjectType == null && records.length == 1) {
                         listItemObjectType = ReflectionUtil.getListEntryObjectType(field);
                     }
-                    assertHasSimpleType(listItemObjectType, field);
+                    assertHasComplexType(listItemObjectType, field);
                     listItemDataTypeName = createComplexTypeMappingIfAbsent(listItemObjectType, true);
                 } else {
                     assertTypeMappingExists(listItemDataTypeName);
@@ -252,7 +252,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         return dataTypeName;
     }
 
-    private void assertHasSimpleType(Class<?> listItemObjectType, Field field) {
+    private void assertHasComplexType(Class<?> listItemObjectType, Field field) {
         if (listItemObjectType == null) {
             throw new AnnotationException("Neither dataTypeName nor objectType is given for list item of field: "
                     + field.getName() + " of class " + field.getDeclaringClass().getName());
