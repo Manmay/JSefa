@@ -178,7 +178,8 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             }
             AttributeDescriptor attributeDescriptor = createAttributeDescriptor(field, namespaceManager);
             AttributeMapping attributeMapping = new AttributeMapping(fieldDataTypeName, attributeDescriptor,
-                    new FieldDescriptor(field.getName(), field.getType()));
+                    new FieldDescriptor(field.getName(), getTypeMappingRegistry().get(fieldDataTypeName)
+                            .getObjectType()));
             result.add(attributeMapping);
         }
         return result;
@@ -199,7 +200,8 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                     textContentField, xmlTextContent);
             TextContentDescriptor textContentDescriptor = TextContentDescriptor.getInstance();
             textContentMapping = new TextContentMapping(fieldDataTypeName, textContentDescriptor,
-                    new FieldDescriptor(textContentField.getName(), textContentField.getType()));
+                    new FieldDescriptor(textContentField.getName(), getTypeMappingRegistry()
+                            .get(fieldDataTypeName).getObjectType()));
         }
         return textContentMapping;
     }
