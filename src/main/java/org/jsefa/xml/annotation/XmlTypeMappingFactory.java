@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.annotation.AnnotatedFieldsProvider;
+import org.jsefa.common.annotation.AnnotationDataNames;
 import org.jsefa.common.annotation.AnnotationDataProvider;
 import org.jsefa.common.annotation.AnnotationException;
 import org.jsefa.common.annotation.TypeMappingFactory;
@@ -43,6 +44,7 @@ import org.jsefa.common.mapping.FieldDescriptor;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingException;
 import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.xml.lowlevel.TextMode;
 import org.jsefa.xml.mapping.AttributeDescriptor;
 import org.jsefa.xml.mapping.AttributeMapping;
 import org.jsefa.xml.mapping.ElementDescriptor;
@@ -66,6 +68,7 @@ import org.jsefa.xml.namespace.QNameParser;
  * It is thread safe.
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTypeMappingRegistry> {
@@ -199,9 +202,10 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             QName fieldDataTypeName = createSimpleTypeMappingIfAbsent(textContentField.getType(),
                     textContentField, xmlTextContent);
             TextContentDescriptor textContentDescriptor = TextContentDescriptor.getInstance();
+            TextMode textMode = getTextModeFromField(textContentField);
             textContentMapping = new TextContentMapping(fieldDataTypeName, textContentDescriptor,
                     new FieldDescriptor(textContentField.getName(), getTypeMappingRegistry()
-                            .get(fieldDataTypeName).getObjectType()));
+                            .get(fieldDataTypeName).getObjectType()), textMode);
         }
         return textContentMapping;
     }
@@ -243,9 +247,17 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             NamespaceManager namespaceManager, ElementMappingsBuilder elementMappingsBuilder) {
         for (QName subDataTypeName : getTypeMappingRegistry().getDataTypeNameTreeElements(fieldDataTypeName)) {
             ElementDescriptor elementDescriptor = createElementDescriptor(field, subDataTypeName, namespaceManager);
+
             elementMappingsBuilder.addMapping(subDataTypeName, elementDescriptor, new FieldDescriptor(field
-                    .getName(), getTypeMappingRegistry().get(subDataTypeName).getObjectType()));
+                    .getName(), getTypeMappingRegistry().get(subDataTypeName).getObjectType()),
+                    getTextModeFromField(field));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private TextMode getTextModeFromField(Field field) {
+        return (TextMode) AnnotationDataProvider.get(field, AnnotationDataNames.TEXT_MODE, XmlElement.class,
+                XmlTextContent.class, ListItem.class);
     }
 
     private void addElementMappingsForElementList(Field field, QName fieldDataTypeName,
@@ -261,14 +273,14 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                             namespaceManager);
                     elementMappingsBuilder.addMapping(fieldDataTypeName, elementDescriptor,
                             getTypeMappingRegistry().get(subDataTypeName).getObjectType(), new FieldDescriptor(
-                                    field.getName(), List.class));
+                                    field.getName(), List.class), listItem.textMode());
                 }
             }
         } else {
             ElementDescriptor elementDescriptor = createElementDescriptor(field, fieldDataTypeName,
                     namespaceManager);
             elementMappingsBuilder.addMapping(fieldDataTypeName, elementDescriptor, new FieldDescriptor(field
-                    .getName(), List.class));
+                    .getName(), List.class), getTextModeFromField(field));
         }
     }
 
@@ -292,7 +304,8 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                         ElementDescriptor listItemElementDescriptor = createElementDescriptor(listItem,
                                 subDataTypeName, namespaceManager);
                         elementMappingsBuilder.addMapping(subDataTypeName, listItemElementDescriptor,
-                                subObjectType, new FieldDescriptor(field.getName(), List.class));
+                                subObjectType, new FieldDescriptor(field.getName(), List.class), listItem
+                                        .textMode());
                     }
                 }
             }

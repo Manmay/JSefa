@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.xml.lowlevel.TextMode;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -29,6 +30,7 @@ import org.jsefa.xml.namespace.QName;
  * It is not intended to be thread safe.
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 public final class ElementMappingsBuilder {
@@ -47,9 +49,11 @@ public final class ElementMappingsBuilder {
      * @param dataTypeName the data type name
      * @param elementDescriptor the element descriptor
      * @param fieldDescriptor the field descriptor
+     * @param textMode the text mode
      */
-    public void addMapping(QName dataTypeName, ElementDescriptor elementDescriptor, FieldDescriptor fieldDescriptor) {
-        addMapping(dataTypeName, elementDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor);
+    public void addMapping(QName dataTypeName, ElementDescriptor elementDescriptor,
+            FieldDescriptor fieldDescriptor, TextMode textMode) {
+        addMapping(dataTypeName, elementDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor, textMode);
     }
 
     /**
@@ -59,10 +63,13 @@ public final class ElementMappingsBuilder {
      * @param elementDescriptor the element descriptor
      * @param objectType the objectType
      * @param fieldDescriptor the field descriptor
+     * @param textMode the text mode
      */
+    @SuppressWarnings("unchecked")
     public void addMapping(QName dataTypeName, ElementDescriptor elementDescriptor, Class<?> objectType,
-            FieldDescriptor fieldDescriptor) {
-        this.dataHolders.add(new DataHolder(dataTypeName, elementDescriptor, objectType, fieldDescriptor));
+            FieldDescriptor fieldDescriptor, TextMode textMode) {
+        this.dataHolders
+                .add(new DataHolder(dataTypeName, elementDescriptor, objectType, fieldDescriptor, textMode));
     }
 
     /**
@@ -74,11 +81,12 @@ public final class ElementMappingsBuilder {
         List<ElementMapping> elementMappings = new ArrayList<ElementMapping>();
         for (DataHolder dataHolder : this.dataHolders) {
             elementMappings.add(new ElementMapping(dataHolder.dataTypeName, dataHolder.elementDescriptor,
-                    dataHolder.objectType, dataHolder.fieldDescriptor, isAmbiguous(dataHolder)));
+                    dataHolder.objectType, dataHolder.fieldDescriptor, isAmbiguous(dataHolder),
+                    dataHolder.textMode));
         }
         return elementMappings;
     }
-    
+
     private boolean isAmbiguous(DataHolder dataHolder) {
         for (DataHolder otherDataHolder : this.dataHolders) {
             if (otherDataHolder == dataHolder) {
@@ -104,12 +112,15 @@ public final class ElementMappingsBuilder {
 
         private Class<?> objectType;
 
+        private TextMode textMode;
+
         private DataHolder(QName dataTypeName, ElementDescriptor elementDescriptor, Class<?> objectType,
-                FieldDescriptor fieldDescriptor) {
+                FieldDescriptor fieldDescriptor, TextMode textMode) {
             this.dataTypeName = dataTypeName;
             this.elementDescriptor = elementDescriptor;
             this.objectType = objectType;
             this.fieldDescriptor = fieldDescriptor;
+            this.textMode = textMode;
         }
     }
 }

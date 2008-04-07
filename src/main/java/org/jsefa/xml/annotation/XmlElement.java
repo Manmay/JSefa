@@ -24,12 +24,14 @@ import java.lang.annotation.Target;
 
 import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.xml.lowlevel.TextMode;
 
 /**
  * An annotation stating that the annotated java field should be mapped to a xml element during XML serialization
  * and deserialization.
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 @Retention(RUNTIME)
@@ -61,6 +63,11 @@ public @interface XmlElement {
      * positions.
      */
     int pos() default -1;
+
+    /**
+     * The text mode. Used to define the method for serializing the text content.
+     */
+    TextMode textMode() default TextMode.IMPLICIT;
 
     /**
      * The format to be used to construct a <code>SimpleTypeConverter</code> for the xml element which must have

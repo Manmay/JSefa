@@ -91,7 +91,7 @@ public class XmlIOFactoryImpl extends XmlIOFactory {
             ElementDescriptor elementDescriptor = new ElementDescriptor(entryPoint.getDesignator(), entryPoint
                     .getDataTypeName());
             elementMappingsBuilder.addMapping(entryPoint.getDataTypeName(), elementDescriptor, typeMapping
-                    .getObjectType(), null);
+                    .getObjectType(), null, null);
         }
         return XmlTypeMappingUtil.createNodeMappingsByNodeDescriptorMap(elementMappingsBuilder.getResult());
     }

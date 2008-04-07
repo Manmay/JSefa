@@ -17,6 +17,7 @@
 package org.jsefa.xml.mapping;
 
 import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.xml.lowlevel.TextMode;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -26,9 +27,12 @@ import org.jsefa.xml.namespace.QName;
  * Instances of this class are immutable and thread safe.
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 public final class TextContentMapping extends NodeMapping<TextContentDescriptor> {
+
+    private final TextMode textMode;
 
     /**
      * Constructs a new <code>TextContentMapping</code> for the given data type name, text content descriptor and
@@ -37,10 +41,21 @@ public final class TextContentMapping extends NodeMapping<TextContentDescriptor>
      * @param dataTypeName the name of the data type.
      * @param textContentDescriptor the descriptor of the attribute node
      * @param fieldDescriptor the descriptor of the field
+     * @param textMode the text mode
      */
     public TextContentMapping(QName dataTypeName, TextContentDescriptor textContentDescriptor,
-            FieldDescriptor fieldDescriptor) {
+            FieldDescriptor fieldDescriptor, TextMode textMode) {
         super(dataTypeName, textContentDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor);
+        this.textMode = textMode;
     }
+    
+    /**
+     * Returns the text mode.
+     * 
+     * @return the text mode.
+     */
+    public TextMode getTextMode() {
+        return textMode;
+    }    
 
 }

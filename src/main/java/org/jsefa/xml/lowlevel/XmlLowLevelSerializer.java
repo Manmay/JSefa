@@ -24,6 +24,7 @@ import org.jsefa.xml.namespace.QName;
  * Low level XML Serializer.
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 public interface XmlLowLevelSerializer extends LowLevelSerializer {
@@ -69,9 +70,10 @@ public interface XmlLowLevelSerializer extends LowLevelSerializer {
      * happens.
      * 
      * @param text the text.
+     * @param textMode the text mode (IMPLICIT/CDATA).
      * @throws LowLevelSerializationException
      */
-    void writeText(String text);
+    void writeText(String text, TextMode textMode);
 
     /**
      * Writes the end tag of the current element.

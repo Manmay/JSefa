@@ -19,12 +19,14 @@ package org.jsefa.xml.annotation;
 import org.jsefa.common.annotation.NoClass;
 import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.xml.lowlevel.TextMode;
 
 /**
  * Annotation describing the object type and element name of a list item.
  * 
  * @see XmlElementList
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 public @interface ListItem {
@@ -60,6 +62,11 @@ public @interface ListItem {
      * will be determined using the type of the java field with this annotation.
      */
     String[] format() default {};
+    
+    /**
+     * The text mode. Used to define the method for serializing the text content.
+     */
+    TextMode textMode() default TextMode.IMPLICIT;
 
     /**
      * Specifies the converter type to be used for the xml element which must have a simple data type (no children,

@@ -20,6 +20,7 @@ package org.jsefa.common.annotation;
  * Collection of names for annotation data (data given via annotations).
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 public interface AnnotationDataNames {
@@ -52,4 +53,9 @@ public interface AnnotationDataNames {
      * Name of the annotation data used to denote a converter type.
      */
     String CONVERTER_TYPE = "converterType";
+
+    /**
+     * Name of the annotation data used to denote a text mode.
+     */
+    String TEXT_MODE = "textMode";
 }

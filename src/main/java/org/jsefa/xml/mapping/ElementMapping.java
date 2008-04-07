@@ -17,6 +17,7 @@
 package org.jsefa.xml.mapping;
 
 import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.xml.lowlevel.TextMode;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -26,11 +27,14 @@ import org.jsefa.xml.namespace.QName;
  * Instances of this class are immutable and thread safe.
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 public final class ElementMapping extends NodeMapping<ElementDescriptor> {
 
     private final boolean elementNameIsAmbiguous;
+
+    private final TextMode textMode;
 
     /**
      * Constructs a new <code>ElementMapping</code>.
@@ -43,11 +47,14 @@ public final class ElementMapping extends NodeMapping<ElementDescriptor> {
      * @param fieldDescriptor the descriptor of the field
      * @param elementNameIsAmbiguous true, if the name of the element in its given context (position in the xml
      *                document) is ambiguous, i. e. there is sibling element with the same name; false otherwise.
+     * @param textMode defines the text mode in case of an element with text content (simple or not); may be
+     *                <code>null</code>.
      */
     public ElementMapping(QName dataTypeName, ElementDescriptor elementDescriptor, Class<?> objectType,
-            FieldDescriptor fieldDescriptor, boolean elementNameIsAmbiguous) {
+            FieldDescriptor fieldDescriptor, boolean elementNameIsAmbiguous, TextMode textMode) {
         super(dataTypeName, elementDescriptor, objectType, fieldDescriptor);
         this.elementNameIsAmbiguous = elementNameIsAmbiguous;
+        this.textMode = textMode;
     }
 
     /**
@@ -58,6 +65,15 @@ public final class ElementMapping extends NodeMapping<ElementDescriptor> {
      */
     public boolean elementNameIsAmbiguous() {
         return elementNameIsAmbiguous;
+    }
+
+    /**
+     * Returns the text mode if this element allows for text content.
+     * 
+     * @return the text mode or null.
+     */
+    public TextMode getTextMode() {
+        return textMode;
     }
 
 }

@@ -34,6 +34,7 @@ import org.jsefa.xml.namespace.QName;
  * Stax based implementation of {@link XmlLowLevelSerializer}.
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializer {
@@ -166,10 +167,14 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
     /**
      * {@inheritDoc}
      */
-    public void writeText(String text) {
+    public void writeText(String text, TextMode textMode) {
         if (text != null && text.length() != 0) {
             try {
-                this.streamWriter.writeCharacters(text);
+                if (TextMode.CDATA.equals(textMode)) {
+                    this.streamWriter.writeCData(text);
+                } else {
+                    this.streamWriter.writeCharacters(text);
+                }
             } catch (XMLStreamException e) {
                 throw new LowLevelSerializationException("Unable to write text", e);
             }

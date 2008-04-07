@@ -24,6 +24,7 @@ import java.lang.annotation.Target;
 
 import org.jsefa.common.annotation.NoConverterType;
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.xml.lowlevel.TextMode;
 
 /**
  * An annotation stating that the annotated java field should be mapped to the content of the xml node with the
@@ -31,6 +32,7 @@ import org.jsefa.common.converter.SimpleTypeConverter;
  * <p>
  * 
  * @author Norman Lahme-Huetig
+ * @author Matthias Derer
  * 
  */
 @Retention(RUNTIME)
@@ -42,6 +44,11 @@ public @interface XmlTextContent {
      * annotation.
      */
     String[] format() default {};
+    
+    /**
+     * The text mode. Used to define the method for serializing the text content.
+     */
+    TextMode textMode() default TextMode.IMPLICIT;
 
     /**
      * Specifies the converter type to be used for the xml attribute. In the default case the converter type is

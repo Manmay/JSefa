@@ -163,7 +163,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
         }
         String elementValue = simpleTypeMapping.getSimpleTypeConverter().toString(object);
         writeStartElement(elementMapping);
-        this.lowLevelSerializer.writeText(elementValue);
+        this.lowLevelSerializer.writeText(elementValue, elementMapping.getTextMode());
         this.lowLevelSerializer.writeEndElement();
     }
 
@@ -195,7 +195,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
                         fieldValue.getClass()));
                 String value = getSimpleTypeMapping(textContentMapping).getSimpleTypeConverter().toString(
                         fieldValue);
-                this.lowLevelSerializer.writeText(value);
+                this.lowLevelSerializer.writeText(value, textContentMapping.getTextMode());
             }
 
         }
