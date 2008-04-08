@@ -43,6 +43,7 @@ import org.jsefa.common.mapping.TypeMappingException;
 import org.jsefa.common.util.ReflectionUtil;
 import org.jsefa.rbf.mapping.FieldMapping;
 import org.jsefa.rbf.mapping.NodeMapping;
+import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
@@ -85,7 +86,9 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         if (!hasComplexType(objectType)) {
             throw new AnnotationException("The class " + objectType + " has no data type annotation");
         }
-        return createComplexTypeMappingIfAbsent(objectType, true);
+        String dataTypeName = createComplexTypeMappingIfAbsent(objectType, true);
+        assertIsCycleFree(dataTypeName);
+        return dataTypeName;
     }
 
     /**
@@ -156,14 +159,14 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                 } else {
                     assertTypeMappingExists(fieldDataTypeName);
                 }
-                fieldMappings.add(new FieldMapping(fieldDataTypeName, field.getClass(), field.getName()));
+                fieldMappings.add(new FieldMapping(fieldDataTypeName, field.getType(), field.getName()));
             } else if (hasComplexType(field.getType())) {
                 if (fieldDataTypeName == null) {
                     fieldDataTypeName = createComplexTypeMappingIfAbsent(field.getType(), false);
                 } else {
                     assertTypeMappingExists(fieldDataTypeName);
                 }
-                fieldMappings.add(new FieldMapping(fieldDataTypeName, field.getClass(), field.getName()));
+                fieldMappings.add(new FieldMapping(fieldDataTypeName, field.getType(), field.getName()));
             } else {
                 throw new TypeMappingException("Can not create a type mapping for field " + field.getName()
                         + " of class " + objectType.getName());
@@ -192,8 +195,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                     throw new AnnotationException("The object type " + field.getType()
                             + " must have a prefix with length " + requiredPrefixLength);
                 }
-                recordMappings
-                        .add(new RecordMapping(fieldDataTypeName, field.getClass(), field.getName(), prefix));
+                recordMappings.add(new RecordMapping(fieldDataTypeName, field.getType(), field.getName(), prefix));
             } else if (hasListType(field.getType())) {
                 String listDataTypeName = createListTypeMappingIfAbsent(field, requiredPrefixLength);
                 recordMappings.add(new RecordMapping(listDataTypeName, List.class, field.getName(), null));
@@ -308,4 +310,29 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         }
     }
 
+    private void assertIsCycleFree(String dataTypeName) {
+        assertIsCycleFree(dataTypeName, new ArrayList<Class<?>>());
+    }
+
+    private void assertIsCycleFree(String dataTypeName, List<Class<?>> objectTypePath) {
+        TypeMapping<String> typeMapping = getTypeMappingRegistry().get(dataTypeName);
+        for (Class<?> objectTypeOnPath : objectTypePath) {
+            if (objectTypeOnPath.isAssignableFrom(typeMapping.getObjectType())
+                    || typeMapping.getObjectType().isAssignableFrom(objectTypeOnPath)) {
+                objectTypePath.add(typeMapping.getObjectType());
+                throw new TypeMappingException("Cycle in type graph detected. Path: " + objectTypePath);
+            }
+        }
+        objectTypePath.add(typeMapping.getObjectType());
+        if (typeMapping instanceof RbfComplexTypeMapping) {
+            RbfComplexTypeMapping complexTypeMapping = (RbfComplexTypeMapping) typeMapping;
+            for (String fieldName : complexTypeMapping.getFieldNames(NodeType.FIELD)) {
+                assertIsCycleFree(complexTypeMapping.getNodeMapping(fieldName).getDataTypeName(), objectTypePath);
+            }
+            for (String fieldName : complexTypeMapping.getFieldNames(NodeType.RECORD)) {
+                assertIsCycleFree(complexTypeMapping.getNodeMapping(fieldName).getDataTypeName());
+            }
+        }
+        objectTypePath.remove(typeMapping.getObjectType());
+    }
 }
