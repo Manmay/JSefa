@@ -171,7 +171,14 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
         if (text != null && text.length() != 0) {
             try {
                 if (TextMode.CDATA.equals(textMode)) {
-                    this.streamWriter.writeCData(text);
+                    int index = text.indexOf("]]>");
+                    int lastIndex = 0;
+                    while (index > -1) {
+                        this.streamWriter.writeCData(text.substring(lastIndex, index + 2));
+                        lastIndex = index + 2;
+                        index = text.indexOf("]]>", index + 1);
+                    }
+                    this.streamWriter.writeCData(text.substring(lastIndex));
                 } else {
                     this.streamWriter.writeCharacters(text);
                 }
@@ -198,8 +205,6 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
         this.namespaceManager = this.namespaceManager.getParent();
         this.depth--;
     }
-    
-    
 
     /**
      * {@inheritDoc}

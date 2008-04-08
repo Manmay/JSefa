@@ -93,6 +93,39 @@ public class TextModeTest extends TestCase {
         assertTrue(serializationResult.indexOf("<![CDATA[551212]]>") != -1);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
     }
+    
+    /**
+     * Tests the correct serialization of a text node including the string ']]>' .
+     */
+    public void testCDATASequence() {
+        TextContentElementTestDTO dtoMiddle = new TextContentElementTestDTO();
+        dtoMiddle.content = "1234]]>5678";
+        String dtoMiddleExpected = "<![CDATA[1234]]]]><![CDATA[>5678]]>";
+        String dtoMiddleResult = JSefaTestUtil.serialize(XML, dtoMiddle);
+        assertTrue(dtoMiddleResult.indexOf(dtoMiddleExpected) > -1);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dtoMiddle);
+        
+        TextContentElementTestDTO dtoBeginning = new TextContentElementTestDTO();
+        dtoBeginning.content = "]]>12345678";
+        String dtoBeginningExpected = "<![CDATA[]]]]><![CDATA[>12345678]]>";
+        String dtoBeginningResult = JSefaTestUtil.serialize(XML, dtoBeginning);
+        assertTrue(dtoBeginningResult.indexOf(dtoBeginningExpected) > -1);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dtoBeginning);
+        
+        TextContentElementTestDTO dtoEnd = new TextContentElementTestDTO();
+        dtoEnd.content = "12345678]]>";
+        String dtoEndExpected = "<![CDATA[12345678]]]]><![CDATA[>]]>";
+        String dtoEndResult = JSefaTestUtil.serialize(XML, dtoEnd);
+        assertTrue(dtoEndResult.indexOf(dtoEndExpected) > -1);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dtoEnd);
+        
+        TextContentElementTestDTO dtoAll = new TextContentElementTestDTO();
+        dtoAll.content = "]]>1234]]>5678]]>";
+        String dtoAllExpected = "<![CDATA[]]]]><![CDATA[>1234]]]]><![CDATA[>5678]]]]><![CDATA[>]]>";
+        String dtoAllResult = JSefaTestUtil.serialize(XML, dtoAll);
+        assertTrue(dtoAllResult.indexOf(dtoAllExpected) > -1);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dtoAll);
+    }
 
     private void assertEmptyElementWritten(String serializationResult, String elementName) {
         boolean shortVersionFound = serializationResult.replaceAll("\n", " ").matches(
