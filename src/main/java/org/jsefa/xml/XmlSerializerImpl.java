@@ -183,7 +183,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
                 AttributeMapping attributeMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
-                        fieldValue.getClass()));
+                        getNormalizedObjectType(fieldValue)));
                 serializeAttribute(fieldValue, attributeMapping);
             }
         }
@@ -192,7 +192,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
                 TextContentMapping textContentMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
-                        fieldValue.getClass()));
+                        getNormalizedObjectType(fieldValue)));
                 String value = getSimpleTypeMapping(textContentMapping).getSimpleTypeConverter().toString(
                         fieldValue);
                 this.lowLevelSerializer.writeText(value, textContentMapping.getTextMode());
@@ -202,15 +202,12 @@ public final class XmlSerializerImpl implements XmlSerializer {
         for (String fieldName : typeMapping.getFieldNames(NodeType.ELEMENT)) {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
-                Class<?> fieldClass = fieldValue.getClass();
-                if (List.class.isAssignableFrom(fieldClass)) {
-                    fieldClass = List.class;
-                }
                 ElementMapping childElementMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
-                        fieldClass));
+                        getNormalizedObjectType(fieldValue)));
                 if (childElementMapping == null) {
-                    throw new SerializationException("Unable to serialize field class " + fieldClass.getName()
-                            + " for field " + fieldName + " within object type " + typeMapping.getObjectType());
+                    throw new SerializationException("Unable to serialize field class "
+                            + getNormalizedObjectType(fieldValue).getName() + " for field " + fieldName
+                            + " within object type " + typeMapping.getObjectType());
                 }
                 serializeElement(fieldValue, childElementMapping);
             }
@@ -243,6 +240,14 @@ public final class XmlSerializerImpl implements XmlSerializer {
 
     private XmlSimpleTypeMapping getSimpleTypeMapping(NodeMapping<?> nodeMapping) {
         return (XmlSimpleTypeMapping) this.typeMappingRegistry.get(nodeMapping.getDataTypeName());
+    }
+
+    private Class<?> getNormalizedObjectType(Object value) {
+        Class<?> objectType = value.getClass();
+        if (List.class.isAssignableFrom(objectType)) {
+            objectType = List.class;
+        }
+        return objectType;
     }
 
     private void writeStartElement(ElementMapping elementMapping) {

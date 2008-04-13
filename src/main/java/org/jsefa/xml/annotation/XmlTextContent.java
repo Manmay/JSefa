@@ -23,6 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.jsefa.common.annotation.NoConverterType;
+import org.jsefa.common.annotation.SimpleListItem;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.xml.lowlevel.TextMode;
 
@@ -56,4 +57,8 @@ public @interface XmlTextContent {
      */
     Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;
 
+    /**
+     * In case of a simple type list this annotation parameter provides details about the list items.
+     */
+    SimpleListItem listItem() default @SimpleListItem(); 
 }

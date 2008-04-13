@@ -16,12 +16,23 @@
 
 package org.jsefa.common.annotation;
 
+import static org.jsefa.common.annotation.AnnotationDataNames.CONVERTER_TYPE;
+import static org.jsefa.common.annotation.AnnotationDataNames.FORMAT;
+import static org.jsefa.common.annotation.AnnotationDataNames.LIST_ITEM;
+import static org.jsefa.common.annotation.AnnotationDataNames.OBJECT_TYPE;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
+import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
+import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.mapping.TypeMappingException;
 import org.jsefa.common.mapping.TypeMappingRegistry;
+import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Abstract super class for factories which can create {@link TypeMapping}s from annotated classes.
@@ -119,6 +130,74 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
     }
 
     /**
+     * Creates a simple type converter.
+     * 
+     * @param objectType the object type to create a converter for
+     * @param field the field to create a converter for. May be null.
+     * @param annotation the annotation providing parameters for constructing the converter. May be null.
+     * @return a simple type converter
+     */
+    @SuppressWarnings("unchecked")
+    protected SimpleTypeConverter createSimpleTypeConverter(Class<?> objectType, Field field, Annotation annotation) {
+        String[] format = null;
+        SimpleTypeConverter itemTypeConverter = null;
+        if (annotation != null) {
+            format = AnnotationDataProvider.get(annotation, FORMAT);
+            if (hasListType(objectType)) {
+                Annotation itemAnnotation = AnnotationDataProvider.get(annotation, LIST_ITEM);
+                D itemDataTypeName = getAnnotatedDataTypeName(itemAnnotation, field.getDeclaringClass());
+                if (itemDataTypeName != null) {
+                    assertTypeMappingIsSimple(itemDataTypeName);
+                    assertNoNestedList(getTypeMappingRegistry().get(itemDataTypeName).getObjectType());
+                    itemTypeConverter = ((SimpleTypeMapping) getTypeMappingRegistry().get(itemDataTypeName))
+                            .getSimpleTypeConverter();
+                } else {
+                    Class<?> itemObjectType = getListItemObjectType(itemAnnotation, field, true);
+                    assertNoNestedList(itemObjectType);
+                    itemTypeConverter = createSimpleTypeConverter(itemObjectType, null, itemAnnotation);
+                }
+            }
+            if (AnnotationDataProvider.get(annotation, CONVERTER_TYPE) != null) {
+                Class<? extends SimpleTypeConverter> converterType = AnnotationDataProvider.get(annotation,
+                        CONVERTER_TYPE);
+                return getSimpleTypeConverterProvider().getForConverterType(converterType, objectType, format,
+                        itemTypeConverter);
+            }
+        }
+        if (getSimpleTypeConverterProvider().hasConverterFor(objectType)) {
+            return getSimpleTypeConverterProvider().getForObjectType(objectType, format, itemTypeConverter);
+        }
+        throw new TypeMappingException("Could not create a simple type converter for " + objectType);
+    }
+
+    /**
+     * Returns the type of the items of a list.
+     * 
+     * @param annotation the annotation of the field
+     * @param field the field
+     * @param fromListDeclarationAllowed true, if the field is a list which contains only items of one type so
+     *                that the type may be deduced from the generic parameter argument of the field; false otherwise.
+     * @return an object type
+     */
+    protected Class<?> getListItemObjectType(Annotation annotation, Field field, boolean fromListDeclarationAllowed) {
+        Class<?> objectType = AnnotationDataProvider.get(annotation, OBJECT_TYPE);
+        if (objectType == null && fromListDeclarationAllowed) {
+            objectType = ReflectionUtil.getListEntryObjectType(field);
+        }
+        return objectType;
+    }
+
+    /**
+     * Returns the data type name as declared through the given annotation.
+     * 
+     * @param annotation the annotation
+     * @param annotationContextClass the context class of the annotation. This class may be needed to interpret the
+     *                annotation data.
+     * @return a data type name
+     */
+    protected abstract D getAnnotatedDataTypeName(Annotation annotation, Class<?> annotationContextClass);
+
+    /**
      * Returns true if and only if the given object type is a simple type.
      * 
      * @param objectType the object type
@@ -147,6 +226,32 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
     protected final void assertTypeMappingExists(D dataTypeName) {
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
             throw new AnnotationException("No type mapping registered for data type name " + dataTypeName);
+        }
+    }
+
+    /**
+     * Asserts that a type mapping exists for the given data type name and is simple.
+     * 
+     * @param dataTypeName the data type name.
+     * @throws AnnotationException if the assertion fails.
+     */
+    protected final void assertTypeMappingIsSimple(D dataTypeName) {
+        assertTypeMappingExists(dataTypeName);
+        if (!(getTypeMappingRegistry().get(dataTypeName) instanceof SimpleTypeMapping)) {
+            throw new AnnotationException("The dataTypeName " + dataTypeName
+                    + " does not denote a simple type mapping");
+        }
+    }
+
+    /**
+     * Asserts that a list item is not itself a list.
+     * 
+     * @param listItemObjectType the object type of the list item.
+     * @throws AnnotationException if the assertion fails.
+     */
+    protected final void assertNoNestedList(Class<?> listItemObjectType) {
+        if (hasListType(listItemObjectType)) {
+            throw new AnnotationException("No lists inside lists allowed!");
         }
     }
 

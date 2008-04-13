@@ -27,11 +27,14 @@ public final class SimpleTypeConverterConfiguration {
 
     private String[] format;
 
+    private SimpleTypeConverter itemTypeConverter;
+
     /**
      * The empty configuration. This indicates that the default configuration values should be used for the
      * respective simple type converter.
      */
-    public static final SimpleTypeConverterConfiguration EMPTY = new SimpleTypeConverterConfiguration(null, null);
+    public static final SimpleTypeConverterConfiguration EMPTY = new SimpleTypeConverterConfiguration(null, null,
+            null);
 
     /**
      * Constructs a new <code>SimpleTypeConverterConfiguration</code>.
@@ -41,12 +44,27 @@ public final class SimpleTypeConverterConfiguration {
      * @return a simple type converter configuration
      */
     public static SimpleTypeConverterConfiguration create(Class<?> objectType, String[] format) {
-        return new SimpleTypeConverterConfiguration(objectType, format);
+        return new SimpleTypeConverterConfiguration(objectType, format, null);
     }
 
-    private SimpleTypeConverterConfiguration(Class<?> objectType, String[] format) {
+    /**
+     * Constructs a new <code>SimpleTypeConverterConfiguration</code>.
+     * 
+     * @param objectType the object type the converter is intended for
+     * @param format the format the converter shall be initialized with
+     * @param itemTypeConverter the item type converter
+     * @return a simple type converter configuration
+     */
+    public static SimpleTypeConverterConfiguration create(Class<?> objectType, String[] format,
+            SimpleTypeConverter itemTypeConverter) {
+        return new SimpleTypeConverterConfiguration(objectType, format, itemTypeConverter);
+    }
+
+    private SimpleTypeConverterConfiguration(Class<?> objectType, String[] format,
+            SimpleTypeConverter itemTypeConverter) {
         this.objectType = objectType;
         this.format = format;
+        this.itemTypeConverter = itemTypeConverter;
     }
 
     /**
@@ -67,6 +85,15 @@ public final class SimpleTypeConverterConfiguration {
      */
     public String[] getFormat() {
         return this.format;
+    }
+
+    /**
+     * Returns the item type converter.
+     * 
+     * @return the item type converter
+     */
+    public SimpleTypeConverter getItemTypeConverter() {
+        return this.itemTypeConverter;
     }
 
 }

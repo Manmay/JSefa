@@ -58,4 +58,9 @@ public interface AnnotationDataNames {
      * Name of the annotation data used to denote a text mode.
      */
     String TEXT_MODE = "textMode";
+    
+    /**
+     * Name of the annotation data used to denote a list item.
+     */
+    String LIST_ITEM = "listItem";
 }

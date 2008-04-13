@@ -16,14 +16,15 @@
 
 package org.jsefa.common.config;
 
+import static org.jsefa.common.config.Configuration.Defaults.DEFAULT_SIMPLE_TYPE_CONVERTER_PROVIDER_PROVIDER;
 import static org.jsefa.common.config.InitialConfigurationParameters.OBJECT_ACCESSOR_PROVIDER_CLASS;
 import static org.jsefa.common.config.InitialConfigurationParameters.SIMPLE_TYPE_CONVERTER_PROVIDER;
-import static org.jsefa.common.config.Configuration.Defaults.DEFAULT_SIMPLE_TYPE_CONVERTER_PROVIDER_PROVIDER;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -38,6 +39,7 @@ import org.jsefa.common.converter.DateConverter;
 import org.jsefa.common.converter.EnumConverter;
 import org.jsefa.common.converter.IntegerConverter;
 import org.jsefa.common.converter.LongConverter;
+import org.jsefa.common.converter.SimpleListConverter;
 import org.jsefa.common.converter.StringConverter;
 import org.jsefa.common.converter.XMLGregorianCalendarConverter;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
@@ -220,6 +222,7 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
                 provider.registerConverterType(Date.class, DateConverter.class);
                 provider.registerConverterType(XMLGregorianCalendar.class, XMLGregorianCalendarConverter.class);
                 provider.registerConverterType(Enum.class, EnumConverter.class);
+                provider.registerConverterType(List.class, SimpleListConverter.class);
                 return provider;
             }
         };

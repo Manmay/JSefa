@@ -78,12 +78,29 @@ public final class SimpleTypeConverterProvider {
      * @param format the format the converter must be initialized with
      * @return the converter.
      */
-    public SimpleTypeConverter getForObjectType(Class<?> objectType, String... format) {
+    public SimpleTypeConverter getForObjectType(Class<?> objectType, String[] format) {
         if (!hasConverterFor(objectType)) {
             return null;
         }
         Class<? extends SimpleTypeConverter> converterType = getConverterType(objectType);
         return getForConverterType(converterType, objectType, format);
+    }
+
+    /**
+     * Returns a <code>SimpleTypeConverter</code> for the given object type and format.
+     * 
+     * @param objectType the type of the object a converter is needed for
+     * @param format the format the converter must be initialized with
+     * @param itemTypeConverter the item type converter
+     * @return the converter.
+     */
+    public SimpleTypeConverter getForObjectType(Class<?> objectType, String[] format,
+            SimpleTypeConverter itemTypeConverter) {
+        if (!hasConverterFor(objectType)) {
+            return null;
+        }
+        Class<? extends SimpleTypeConverter> converterType = getConverterType(objectType);
+        return getForConverterType(converterType, objectType, format, itemTypeConverter);
     }
 
     /**
@@ -95,17 +112,33 @@ public final class SimpleTypeConverterProvider {
      * @return the converter
      */
     public SimpleTypeConverter getForConverterType(Class<? extends SimpleTypeConverter> converterType,
-            Class<?> objectType, String... format) {
+            Class<?> objectType, String[] format) {
+        return getForConverterType(converterType, objectType, format, null);
+    }
+
+    /**
+     * Returns an instance of the given <code>SimpleTypeConverter</code> type initialized with the given format.
+     * 
+     * @param converterType the <code>SimpleTypeConverter</code> type
+     * @param objectType the type of the object a converter is needed for
+     * @param format the format to initialize the converter with
+     * @param itemTypeConverter the item type converter
+     * @return the converter
+     */
+    public SimpleTypeConverter getForConverterType(Class<? extends SimpleTypeConverter> converterType,
+            Class<?> objectType, String[] format, SimpleTypeConverter itemTypeConverter) {
         try {
             Method factoryMethod = ReflectionUtil.getMethod(converterType, "create",
                     SimpleTypeConverterConfiguration.class);
             if (factoryMethod != null) {
                 return (SimpleTypeConverter) factoryMethod.invoke(null, SimpleTypeConverterConfiguration.create(
-                        objectType, format));
+                        objectType, format, itemTypeConverter));
             }
-            factoryMethod = ReflectionUtil.getMethod(converterType, "create");
-            if (factoryMethod != null) {
-                return (SimpleTypeConverter) factoryMethod.invoke(null, (Object[]) null);
+            if (itemTypeConverter == null) {
+                factoryMethod = ReflectionUtil.getMethod(converterType, "create");
+                if (factoryMethod != null) {
+                    return (SimpleTypeConverter) factoryMethod.invoke(null, (Object[]) null);
+                }
             }
             throw new ConversionException("No static create method found for class " + converterType);
         } catch (Exception e) {
