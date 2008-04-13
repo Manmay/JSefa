@@ -309,10 +309,12 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         if (typeMapping instanceof RbfComplexTypeMapping) {
             RbfComplexTypeMapping complexTypeMapping = (RbfComplexTypeMapping) typeMapping;
             for (String fieldName : complexTypeMapping.getFieldNames(NodeType.FIELD)) {
-                assertIsCycleFree(complexTypeMapping.getNodeMapping(fieldName).getDataTypeName(), objectTypePath);
+                NodeMapping nodeMapping = complexTypeMapping.getNodeMapping(fieldName);
+                assertIsCycleFree(nodeMapping.getDataTypeName(), objectTypePath);
             }
             for (String fieldName : complexTypeMapping.getFieldNames(NodeType.RECORD)) {
-                assertIsCycleFree(complexTypeMapping.getNodeMapping(fieldName).getDataTypeName());
+                NodeMapping nodeMapping = complexTypeMapping.getNodeMapping(fieldName);
+                assertIsCycleFree(nodeMapping.getDataTypeName());
             }
         }
         objectTypePath.remove(typeMapping.getObjectType());
