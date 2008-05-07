@@ -16,6 +16,9 @@
 
 package org.jsefa.rbf.mapping;
 
+import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.common.validator.Validator;
+
 /**
  * A mapping between an rbf record node and a java object. This mapping is used for serialization and
  * deserialization.
@@ -25,37 +28,35 @@ package org.jsefa.rbf.mapping;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class RecordMapping extends NodeMapping {
+public final class RecordMapping extends RbfNodeMapping<RecordDescriptor> {
 
-    private final String prefix;
+    private final boolean indirectMapping;
 
     /**
      * Constructs a new <code>RecordMapping</code>.
      * 
      * @param dataTypeName the data type name
+     * @param nodeDescriptor the node descriptor
      * @param objectType the object type
-     * @param fieldName the name of the field
-     * @param prefix the prefix; may be null
+     * @param fieldDescriptor the field descriptor
+     * @param indirectMapping true, if this is an indirect mapping; false otherwise
+     * @param validator the validator; may be null
      */
-    public RecordMapping(String dataTypeName, Class<?> objectType, String fieldName, String prefix) {
-        super(dataTypeName, objectType, fieldName);
-        this.prefix = prefix;
+    public RecordMapping(String dataTypeName, RecordDescriptor nodeDescriptor, Class<?> objectType,
+            FieldDescriptor fieldDescriptor, boolean indirectMapping, Validator validator) {
+        super(dataTypeName, nodeDescriptor, objectType, fieldDescriptor, validator);
+        this.indirectMapping = indirectMapping;
     }
 
     /**
      * {@inheritDoc}
      */
-    public NodeType getNodeType() {
-        return NodeType.RECORD;
+    
+    @Override
+    public boolean isIndirectMapping() {
+        return this.indirectMapping;
     }
-
-    /**
-     * Returns the prefix or null if none exists.
-     * 
-     * @return the prefix
-     */
-    public String getPrefix() {
-        return this.prefix;
-    }
+    
+    
 
 }

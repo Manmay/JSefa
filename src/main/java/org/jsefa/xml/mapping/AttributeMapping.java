@@ -17,6 +17,7 @@
 package org.jsefa.xml.mapping;
 
 import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.common.validator.Validator;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -28,7 +29,7 @@ import org.jsefa.xml.namespace.QName;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class AttributeMapping extends NodeMapping<AttributeDescriptor> {
+public final class AttributeMapping extends XmlNodeMapping<AttributeDescriptor> {
 
     /**
      * Constructs a new <code>AttributeMapping</code> for the given data type name, attribute descriptor and
@@ -37,10 +38,12 @@ public final class AttributeMapping extends NodeMapping<AttributeDescriptor> {
      * @param dataTypeName the name of the data type.
      * @param attributeDescriptor the descriptor of the attribute node
      * @param fieldDescriptor the descriptor of the field
+     * @param validator the validator; may be null
      */
     public AttributeMapping(QName dataTypeName, AttributeDescriptor attributeDescriptor,
-            FieldDescriptor fieldDescriptor) {
-        super(dataTypeName, attributeDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor);
+            FieldDescriptor fieldDescriptor, Validator validator) {
+        super(dataTypeName, attributeDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor,
+                validator);
     }
 
 }

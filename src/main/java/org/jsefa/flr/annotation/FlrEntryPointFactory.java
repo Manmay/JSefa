@@ -41,7 +41,7 @@ public final class FlrEntryPointFactory {
         for (Class<?> objectType : objectTypes) {
             String dataTypeName = typeMappingFactory.createIfAbsent(objectType);
             String prefix = getAnnotatedPrefix(objectType, objectType.getSimpleName());
-            entryPoints.add(new RbfEntryPoint(dataTypeName, prefix));
+            entryPoints.add(new RbfEntryPoint(dataTypeName, prefix, null));
         }
         return entryPoints;
     }

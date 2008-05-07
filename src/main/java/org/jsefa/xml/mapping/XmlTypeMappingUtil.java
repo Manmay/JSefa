@@ -43,8 +43,9 @@ public final class XmlTypeMappingUtil {
      * @return a map of node mappings with node descriptors as keys
      */
     @SuppressWarnings("unchecked")
-    public static <D extends NodeDescriptor, M extends NodeMapping<?>> Map<D, M> createNodeMappingsByNodeDescriptorMap(
-            Collection<M> nodeMappings) {
+    public static <D extends XmlNodeDescriptor, M extends XmlNodeMapping<?>> Map<D, M>
+        createNodeMappingsByNodeDescriptorMap(Collection<M> nodeMappings) {
+        
         Map<D, M> result = new HashMap<D, M>();
         for (M nodeMapping : nodeMappings) {
             if (result.put((D) nodeMapping.getNodeDescriptor(), nodeMapping) != null) {

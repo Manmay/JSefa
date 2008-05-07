@@ -16,6 +16,9 @@
 
 package org.jsefa.rbf.mapping;
 
+import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.common.validator.Validator;
+
 /**
  * A mapping between an rbf field node and a java object. This mapping is used for serialization and
  * deserialization.
@@ -25,24 +28,20 @@ package org.jsefa.rbf.mapping;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class FieldMapping extends NodeMapping {
+public final class FieldMapping extends RbfNodeMapping<RbfFieldDescriptor> {
 
     /**
      * Constructs a new <code>FieldMapping</code>.
      * 
      * @param dataTypename the data type name
+     * @param nodeDescriptor the node descriptor
      * @param objectType the object type
-     * @param fieldName the name of the field
+     * @param fieldDescriptor the field descriptor
+     * @param validator the validator; may be null
      */
-    public FieldMapping(String dataTypename, Class<?> objectType, String fieldName) {
-        super(dataTypename, objectType, fieldName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public NodeType getNodeType() {
-        return NodeType.FIELD;
+    public FieldMapping(String dataTypename, RbfFieldDescriptor nodeDescriptor, Class<?> objectType,
+            FieldDescriptor fieldDescriptor, Validator validator) {
+        super(dataTypename, nodeDescriptor, objectType, fieldDescriptor, validator);
     }
 
 }

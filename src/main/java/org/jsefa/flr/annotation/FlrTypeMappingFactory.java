@@ -24,6 +24,7 @@ import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.util.GeneralConstants;
+import org.jsefa.common.validator.provider.ValidatorProvider;
 import org.jsefa.flr.mapping.FlrSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
 import org.jsefa.rbf.annotation.RbfTypeMappingFactory;
@@ -50,12 +51,15 @@ public final class FlrTypeMappingFactory extends RbfTypeMappingFactory {
      * @param typeMappingRegistry the type mapping registry. New types will be registered using that registry.
      * @param objectAccessorProvider the object accessor provider to use
      * @param simpleTypeConverterProvider the simple type converter provider to use
+     * @param validatorProvider the validator provider to use
      * @param defaultPadCharacter the default pad character to be used
      */
     public FlrTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
             SimpleTypeConverterProvider simpleTypeConverterProvider,
-            ObjectAccessorProvider objectAccessorProvider, char defaultPadCharacter) {
-        super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider, ANNOTATIONS);
+            ValidatorProvider validatorProvider, ObjectAccessorProvider objectAccessorProvider,
+            char defaultPadCharacter) {
+        super(typeMappingRegistry, simpleTypeConverterProvider, validatorProvider, objectAccessorProvider,
+                ANNOTATIONS);
         this.defaultPadCharacter = defaultPadCharacter;
     }
 

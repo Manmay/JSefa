@@ -20,8 +20,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.jsefa.common.util.ReflectionUtil;
 
@@ -33,29 +31,14 @@ import org.jsefa.common.util.ReflectionUtil;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class ReflectionBasedObjectAccessorProvider implements ObjectAccessorProvider {
-    private final ConcurrentMap<Class<?>, ObjectAccessor> objectAccessors;
-
-    /**
-     * Constructs a new <code>ReflectionBasedObjectAccessorProvider</code>.
-     */
-    public ReflectionBasedObjectAccessorProvider() {
-        this.objectAccessors = new ConcurrentHashMap<Class<?>, ObjectAccessor>();
-    }
+public final class ReflectionBasedObjectAccessorProvider extends AbstractObjectAccessorProvider {
 
     /**
      * {@inheritDoc}
      */
-    public ObjectAccessor get(Class<?> objectType) {
-        if (objectType.isInterface()) {
-            return null;
-        }
-        ObjectAccessor converter = this.objectAccessors.get(objectType);
-        if (converter == null) {
-            converter = new ReflectionBasedObjectAccessor(objectType);
-            this.objectAccessors.put(objectType, converter);
-        }
-        return converter;
+    @Override
+    protected ObjectAccessor create(Class<?> objectType) {
+        return new ReflectionBasedObjectAccessor(objectType);
     }
 
     private static final class ReflectionBasedObjectAccessor implements ObjectAccessor {

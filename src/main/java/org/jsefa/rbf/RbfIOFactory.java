@@ -29,7 +29,9 @@ import org.jsefa.IOFactoryException;
 import org.jsefa.Serializer;
 import org.jsefa.common.config.Configuration;
 import org.jsefa.common.mapping.TypeMapping;
-import org.jsefa.rbf.mapping.NodeType;
+import org.jsefa.common.validator.Validator;
+import org.jsefa.common.validator.traversal.TraversingValidatorFactory;
+import org.jsefa.rbf.mapping.RbfNodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
@@ -74,18 +76,28 @@ public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistr
         this.config = (C) config.createCopy();
         this.entryPointsByObjectType = new ConcurrentHashMap<Class<?>, RbfEntryPoint>();
 
+        TraversingValidatorFactory<String> traversingValidatorFactory = new TraversingValidatorFactory<String>(
+                config.getTypeMappingRegistry(), config.getObjectAccessorProvider());
         if (this.withPrefix) {
             this.entryPointsByPrefix = new ConcurrentHashMap<String, RbfEntryPoint>();
             for (RbfEntryPoint entryPoint : config.getEntryPoints()) {
+                Validator validator = traversingValidatorFactory.create(entryPoint.getDataTypeName(), entryPoint
+                        .getValidator());
+                RbfEntryPoint validationEntryPoint = new RbfEntryPoint(entryPoint.getDataTypeName(), entryPoint
+                        .getDesignator(), validator);
                 Class objectType = getObjectType(entryPoint.getDataTypeName());
-                assertPrefixDeclared(entryPoint, objectType);
-                this.entryPointsByObjectType.put(objectType, entryPoint);
-                this.entryPointsByPrefix.put(entryPoint.getDesignator(), entryPoint);
+                assertPrefixDeclared(validationEntryPoint, objectType);
+                this.entryPointsByObjectType.put(objectType, validationEntryPoint);
+                this.entryPointsByPrefix.put(entryPoint.getDesignator(), validationEntryPoint);
             }
             assertPrefixContentualUniqueness(config.getEntryPoints());
             this.entryPoint = null;
         } else {
-            this.entryPoint = config.getEntryPoints().iterator().next();
+            RbfEntryPoint configuredEntryPoint = config.getEntryPoints().iterator().next();
+            Validator validator = traversingValidatorFactory.create(configuredEntryPoint.getDataTypeName(),
+                    configuredEntryPoint.getValidator());
+            this.entryPoint = new RbfEntryPoint(configuredEntryPoint.getDataTypeName(), configuredEntryPoint
+                    .getDesignator(), validator);
             Class objectType = getObjectType(entryPoint.getDataTypeName());
             this.entryPointsByObjectType.put(objectType, entryPoint);
             this.entryPointsByPrefix = null;
@@ -213,19 +225,18 @@ public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistr
         TypeMapping<?> typeMapping = this.config.getTypeMappingRegistry().get(dataTypeName);
         if (typeMapping instanceof RbfComplexTypeMapping) {
             RbfComplexTypeMapping complexTypeMapping = (RbfComplexTypeMapping) typeMapping;
-            for (String fieldName : complexTypeMapping.getFieldNames(NodeType.RECORD)) {
-                RecordMapping recordMapping = complexTypeMapping.getNodeMapping(fieldName);
-                assertPrefixContextualUniqueness(recordMapping.getPrefix(), recordMapping.getDataTypeName(),
-                        prefix, childrenUsedPrefixes);
+            for (String fieldName : complexTypeMapping.getFieldNames(RbfNodeType.RECORD)) {
+                RecordMapping recordMapping = complexTypeMapping.getNodeMapping(fieldName, Object.class);
+                assertPrefixContextualUniqueness(recordMapping.getNodeDescriptor().getPrefix(), recordMapping
+                        .getDataTypeName(), prefix, childrenUsedPrefixes);
             }
             childrenUsedPrefixes.add(prefix);
         }
         if (typeMapping instanceof RbfListTypeMapping) {
             RbfListTypeMapping listTypeMapping = (RbfListTypeMapping) typeMapping;
-            for (String itemPrefix : listTypeMapping.getPrefixes()) {
-                RecordMapping recordMapping = listTypeMapping.getRecordMapping(itemPrefix);
-                assertPrefixContextualUniqueness(recordMapping.getPrefix(), recordMapping.getDataTypeName(),
-                        parentPrefix, childrenUsedPrefixes);
+            for (RecordMapping recordMapping : listTypeMapping.getNodeMappings()) {
+                assertPrefixContextualUniqueness(recordMapping.getNodeDescriptor().getPrefix(), recordMapping
+                        .getDataTypeName(), parentPrefix, childrenUsedPrefixes);
             }
             // note: the prefix for a record mapping for a list type mapping is always null
         }

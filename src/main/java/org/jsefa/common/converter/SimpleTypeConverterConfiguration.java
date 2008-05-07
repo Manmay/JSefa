@@ -23,11 +23,11 @@ package org.jsefa.common.converter;
  * 
  */
 public final class SimpleTypeConverterConfiguration {
-    private Class<?> objectType;
+    private final Class<?> objectType;
 
-    private String[] format;
+    private final String[] format;
 
-    private SimpleTypeConverter itemTypeConverter;
+    private final SimpleTypeConverter itemTypeConverter;
 
     /**
      * The empty configuration. This indicates that the default configuration values should be used for the

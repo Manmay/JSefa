@@ -14,36 +14,38 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.mapping;
+package org.jsefa.common.mapping;
 
-import org.jsefa.common.mapping.FieldDescriptor;
-import org.jsefa.xml.namespace.QName;
+import org.jsefa.common.validator.Validator;
 
 /**
- * A mapping between an XML attribute node and a java object. This mapping is used for serialization and
+ * A mapping between a node of the specific format and a java object. This mapping is used for serialization and
  * deserialization.
  * <p>
  * A node mapping consists of<br>
- * 1. a data type name:<br>
- * a) the name of the implicit parent node of the node this mapping is for - if this node is an element of an
- * implicit list<br>
- * b) the name of the node this mapping is for - in all other cases<br>
+ * 1. a data type name: the name of the data type of this node or - if {@link #isIndirectMapping()} - of its
+ * virtual parent node<br>
  * 2. an object type: the type of the java object this mapping is for<br>
  * 3. a field descriptor: describes the java object field the node maps to<br>
  * 4. a node descriptor: describes the node the java object maps to<br>
+ * 5. a validator: optional
  * 
  * @author Norman Lahme-Huetig
  * 
- * @param <T> the type of the node descriptor
+ * @param <D> the type of the data type name
+ * @param <N> the type of the node descriptor
+ * 
  */
-public abstract class NodeMapping<T extends NodeDescriptor> {
-    private final QName dataTypeName;
+public abstract class NodeMapping<D, N extends NodeDescriptor<?>> {
+    private final D dataTypeName;
 
     private final Class<?> objectType;
 
     private final FieldDescriptor fieldDescriptor;
 
-    private final T nodeDescriptor;
+    private final N nodeDescriptor;
+
+    private final Validator validator;
 
     /**
      * Constructs a new <code>NodeMapping</code>.
@@ -52,49 +54,60 @@ public abstract class NodeMapping<T extends NodeDescriptor> {
      * @param nodeDescriptor the node descriptor
      * @param objectType the object type
      * @param fieldDescriptor the field descriptor
+     * @param validator the validator; may be null
      */
-    protected NodeMapping(QName dataTypeName, T nodeDescriptor, Class<?> objectType,
-            FieldDescriptor fieldDescriptor) {
+    public NodeMapping(D dataTypeName, N nodeDescriptor, Class<?> objectType, FieldDescriptor fieldDescriptor,
+            Validator validator) {
+        this.dataTypeName = dataTypeName;
         this.nodeDescriptor = nodeDescriptor;
         this.objectType = objectType;
-        this.dataTypeName = dataTypeName;
         this.fieldDescriptor = fieldDescriptor;
+        this.validator = validator;
     }
 
     /**
-     * Returns the node descriptor.
-     * 
-     * @return the node descriptor
-     */
-    public T getNodeDescriptor() {
-        return this.nodeDescriptor;
-    }
-
-    /**
-     * Returns the object type.
-     * 
-     * @return the object type
-     */
-    public Class<?> getObjectType() {
-        return this.objectType;
-    }
-
-    /**
-     * Returns the data type name of the node.
-     * 
      * @return the data type name
      */
-    public QName getDataTypeName() {
+    public final D getDataTypeName() {
         return this.dataTypeName;
     }
 
     /**
-     * Returns the descriptor of the java object field the node maps to.
-     * 
-     * @return a field descriptor or null
+     * @return the node descriptor
      */
-    public FieldDescriptor getFieldDescriptor() {
+    public final N getNodeDescriptor() {
+        return this.nodeDescriptor;
+    }
+
+    /**
+     * @return the object type
+     */
+    public final Class<?> getObjectType() {
+        return this.objectType;
+    }
+
+    /**
+     * @return the field descriptor
+     */
+    public final FieldDescriptor getFieldDescriptor() {
         return this.fieldDescriptor;
+    }
+
+    /**
+     * @return the validator
+     */
+    public final Validator getValidator() {
+        return this.validator;
+    }
+
+    /**
+     * Signals if this is an indirect mapping. This is the case if the data type name is not the one of this node
+     * but of its virtual parent node instead.
+     * 
+     * @return true, if this is an indirect mapping; false otherwise.
+     */
+    public boolean isIndirectMapping() {
+        return false;
     }
 
 }

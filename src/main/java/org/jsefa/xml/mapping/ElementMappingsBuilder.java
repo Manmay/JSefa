@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.common.validator.Validator;
 import org.jsefa.xml.lowlevel.TextMode;
 import org.jsefa.xml.namespace.QName;
 
@@ -49,11 +50,13 @@ public final class ElementMappingsBuilder {
      * @param dataTypeName the data type name
      * @param elementDescriptor the element descriptor
      * @param fieldDescriptor the field descriptor
+     * @param validator the validator; may be null
      * @param textMode the text mode
      */
     public void addMapping(QName dataTypeName, ElementDescriptor elementDescriptor,
-            FieldDescriptor fieldDescriptor, TextMode textMode) {
-        addMapping(dataTypeName, elementDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor, textMode);
+            FieldDescriptor fieldDescriptor, Validator validator, TextMode textMode) {
+        addMapping(dataTypeName, elementDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor,
+                validator, textMode);
     }
 
     /**
@@ -63,13 +66,14 @@ public final class ElementMappingsBuilder {
      * @param elementDescriptor the element descriptor
      * @param objectType the objectType
      * @param fieldDescriptor the field descriptor
+     * @param validator the validator; may be null
      * @param textMode the text mode
      */
     @SuppressWarnings("unchecked")
     public void addMapping(QName dataTypeName, ElementDescriptor elementDescriptor, Class<?> objectType,
-            FieldDescriptor fieldDescriptor, TextMode textMode) {
-        this.dataHolders
-                .add(new DataHolder(dataTypeName, elementDescriptor, objectType, fieldDescriptor, textMode));
+            FieldDescriptor fieldDescriptor, Validator validator, TextMode textMode) {
+        this.dataHolders.add(new DataHolder(dataTypeName, elementDescriptor, objectType, fieldDescriptor,
+                validator, textMode));
     }
 
     /**
@@ -81,15 +85,18 @@ public final class ElementMappingsBuilder {
         List<ElementMapping> elementMappings = new ArrayList<ElementMapping>();
         for (DataHolder dataHolder : this.dataHolders) {
             elementMappings.add(new ElementMapping(dataHolder.dataTypeName, dataHolder.elementDescriptor,
-                    dataHolder.objectType, dataHolder.fieldDescriptor, isAmbiguous(dataHolder),
-                    dataHolder.textMode));
+                    dataHolder.objectType, dataHolder.fieldDescriptor, dataHolder.validator,
+                    isAmbiguous(dataHolder), dataHolder.textMode));
         }
         return elementMappings;
     }
 
     private boolean isAmbiguous(DataHolder dataHolder) {
+        if (dataHolder.elementDescriptor.getName() == null) {
+            return false;
+        }
         for (DataHolder otherDataHolder : this.dataHolders) {
-            if (otherDataHolder == dataHolder) {
+            if (otherDataHolder == dataHolder || otherDataHolder.elementDescriptor.getName() == null) {
                 continue;
             }
             if (otherDataHolder.elementDescriptor.getName().equals(dataHolder.elementDescriptor.getName())) {
@@ -110,16 +117,19 @@ public final class ElementMappingsBuilder {
 
         private FieldDescriptor fieldDescriptor;
 
+        private Validator validator;
+
         private Class<?> objectType;
 
         private TextMode textMode;
 
         private DataHolder(QName dataTypeName, ElementDescriptor elementDescriptor, Class<?> objectType,
-                FieldDescriptor fieldDescriptor, TextMode textMode) {
+                FieldDescriptor fieldDescriptor, Validator validator, TextMode textMode) {
             this.dataTypeName = dataTypeName;
             this.elementDescriptor = elementDescriptor;
             this.objectType = objectType;
             this.fieldDescriptor = fieldDescriptor;
+            this.validator = validator;
             this.textMode = textMode;
         }
     }

@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import org.jsefa.IOFactory;
 import org.jsefa.IOFactoryException;
+import org.jsefa.common.annotation.ValidatorFactory;
 import org.jsefa.common.config.InitialConfiguration;
 import org.jsefa.common.util.ReflectionUtil;
 import org.jsefa.xml.annotation.XmlEntryPointFactory;
@@ -102,9 +103,12 @@ public abstract class XmlIOFactory implements IOFactory {
         try {
             XmlTypeMappingFactory typeMappingFactory = new XmlTypeMappingFactory(newConfig
                     .getTypeMappingRegistry(), newConfig.getSimpleTypeConverterProvider(), newConfig
-                    .getObjectAccessorProvider(), newConfig.getDataTypeDefaultNameRegistry());
-            newConfig.getEntryPoints().addAll(
-                    XmlEntryPointFactory.createEntryPoints(typeMappingFactory, objectTypes));
+                    .getValidatorProvider(), newConfig.getObjectAccessorProvider(), newConfig
+                    .getDataTypeDefaultNameRegistry());
+            ValidatorFactory validatorFactory = new ValidatorFactory(newConfig.getValidatorProvider(), newConfig
+                    .getObjectAccessorProvider());
+            XmlEntryPointFactory entryPointFactory = new XmlEntryPointFactory(typeMappingFactory, validatorFactory);
+            newConfig.getEntryPoints().addAll(entryPointFactory.createEntryPoints(objectTypes));
             return createFactory(newConfig);
         } catch (IOFactoryException e) {
             throw e;

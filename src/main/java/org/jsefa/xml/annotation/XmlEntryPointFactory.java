@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jsefa.common.annotation.ValidatorFactory;
+import org.jsefa.common.validator.Validator;
 import org.jsefa.xml.mapping.XmlEntryPoint;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
 import org.jsefa.xml.namespace.NamespaceManager;
@@ -33,6 +35,22 @@ import org.jsefa.xml.namespace.QNameParser;
  * 
  */
 public final class XmlEntryPointFactory {
+
+    private final XmlTypeMappingFactory typeMappingFactory;
+
+    private final ValidatorFactory validatorFactory;
+
+    /**
+     * Constructs a new <code>XmlEntryPointFactory</code>.
+     * 
+     * @param typeMappingFactory the type mapping factory.
+     * @param validatorFactory the validator factory.
+     */
+    public XmlEntryPointFactory(XmlTypeMappingFactory typeMappingFactory, ValidatorFactory validatorFactory) {
+        this.typeMappingFactory = typeMappingFactory;
+        this.validatorFactory = validatorFactory;
+    }
+
     /**
      * Creates entry points for the given object types and their descendants using their annotations.
      * <p>
@@ -46,11 +64,9 @@ public final class XmlEntryPointFactory {
      * entry point with an element name taken from A and not from B as long as rule 1 does not apply.
      * 
      * @param objectTypes the object types
-     * @param typeMappingFactory the type mapping factory
      * @return a <code>Collection</code> of entry points.
      */
-    public static Collection<XmlEntryPoint> createEntryPoints(XmlTypeMappingFactory typeMappingFactory,
-            Class<?>... objectTypes) {
+    public Collection<XmlEntryPoint> createEntryPoints(Class<?>... objectTypes) {
         Map<Class<?>, XmlEntryPoint> entryPoints = new HashMap<Class<?>, XmlEntryPoint>();
         XmlTypeMappingRegistry registry = typeMappingFactory.getTypeMappingRegistry();
         for (Class<?> rootObjectType : objectTypes) {
@@ -58,13 +74,15 @@ public final class XmlEntryPointFactory {
             QName elementName = getAnnotatedElementName(rootObjectType, rootObjectType.getSimpleName());
             for (QName dataTypeName : registry.getDataTypeNameTreeElements(rootDataTypeName)) {
                 Class<?> objectType = registry.get(dataTypeName).getObjectType();
-                entryPoints.put(objectType, new XmlEntryPoint(dataTypeName, elementName));
+                Validator validator = this.validatorFactory.createContextualValidator(objectType, null, null, 
+                        XmlDataType.class);
+                entryPoints.put(objectType, new XmlEntryPoint(dataTypeName, elementName, validator));
             }
         }
         return entryPoints.values();
     }
 
-    private static QName getAnnotatedElementName(Class<?> objectType, String defaultName) {
+    private QName getAnnotatedElementName(Class<?> objectType, String defaultName) {
         NamespaceManager namespaceManager = NamespaceManagerFactory.create(objectType);
         String name = null;
         if (objectType.isAnnotationPresent(XmlDataType.class)) {
@@ -75,10 +93,6 @@ public final class XmlEntryPointFactory {
         } else {
             return QNameParser.parse(defaultName, true, namespaceManager);
         }
-    }
-
-    private XmlEntryPointFactory() {
-
     }
 
 }

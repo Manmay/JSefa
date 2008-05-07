@@ -37,7 +37,7 @@ public final class FlrSerializerImpl extends RbfSerializerImpl<FlrLowLevelSerial
 
     FlrSerializerImpl(FlrConfiguration config, Map<Class<?>, RbfEntryPoint> entryPoints,
             FlrLowLevelSerializer lowLevelSerializer) {
-        super(config.getTypeMappingRegistry(), entryPoints, lowLevelSerializer);
+        super(config, entryPoints, lowLevelSerializer);
     }
 
     /**

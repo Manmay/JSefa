@@ -40,14 +40,14 @@ public final class FlrDeserializerImpl extends RbfDeserializerImpl implements Fl
 
     FlrDeserializerImpl(FlrConfiguration config, Map<String, RbfEntryPoint> entryPointsByPrefixes,
             FlrLowLevelDeserializer lowLevelDeserializer) {
-        super(config.getTypeMappingRegistry(), entryPointsByPrefixes);
+        super(config, entryPointsByPrefixes);
         this.prefixLength = entryPointsByPrefixes.keySet().iterator().next().length();
         this.lowLevelDeserializer = lowLevelDeserializer;
     }
 
     FlrDeserializerImpl(FlrConfiguration config, RbfEntryPoint entryPoint,
             FlrLowLevelDeserializer lowLevelDeserializer) {
-        super(config.getTypeMappingRegistry(), entryPoint);
+        super(config, entryPoint);
         this.prefixLength = 0;
         this.lowLevelDeserializer = lowLevelDeserializer;
     }

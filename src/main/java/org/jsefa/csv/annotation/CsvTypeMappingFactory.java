@@ -23,6 +23,7 @@ import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.util.GeneralConstants;
+import org.jsefa.common.validator.provider.ValidatorProvider;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.csv.mapping.CsvSimpleTypeMapping;
 import org.jsefa.rbf.annotation.RbfAnnotations;
@@ -44,7 +45,7 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
             CsvSubRecord.class, CsvSubRecordList.class);
 
     private QuoteMode defaultQuoteMode;
-    
+
     private String defaultNoValueString;
 
     /**
@@ -52,14 +53,17 @@ public final class CsvTypeMappingFactory extends RbfTypeMappingFactory {
      * 
      * @param typeMappingRegistry the type mapping registry. New types will be registered using that registry.
      * @param simpleTypeConverterProvider the simple type converter provider to use
+     * @param validatorProvider the validator provider to use
      * @param objectAccessorProvider the object accessor provider to use
      * @param defaultQuoteMode the default quote mode to use
      * @param defaultNoValueString the default no value string to use
      */
     public CsvTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
             SimpleTypeConverterProvider simpleTypeConverterProvider,
-            ObjectAccessorProvider objectAccessorProvider, QuoteMode defaultQuoteMode, String defaultNoValueString) {
-        super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider, ANNOTATIONS);
+            ValidatorProvider validatorProvider, ObjectAccessorProvider objectAccessorProvider,
+            QuoteMode defaultQuoteMode, String defaultNoValueString) {
+        super(typeMappingRegistry, simpleTypeConverterProvider, validatorProvider, objectAccessorProvider,
+                ANNOTATIONS);
         this.defaultQuoteMode = defaultQuoteMode;
         this.defaultNoValueString = defaultNoValueString;
     }

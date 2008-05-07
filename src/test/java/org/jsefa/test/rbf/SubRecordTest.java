@@ -168,7 +168,7 @@ public class SubRecordTest extends TestCase {
     private MultipleSubRecordDTO createMultipleSubRecordDTO() {
         MultipleSubRecordDTO dto = new MultipleSubRecordDTO();
         dto.subRecordField1 = createSimpleDTO("content1");
-        dto.subRecordField1 = createSimpleDTO("content2");
+        dto.subRecordField2 = createSimpleDTO("content2");
         return dto;
     }
 

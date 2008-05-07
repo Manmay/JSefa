@@ -17,14 +17,17 @@
 package org.jsefa.common.config;
 
 import static org.jsefa.common.config.Configuration.Defaults.DEFAULT_SIMPLE_TYPE_CONVERTER_PROVIDER_PROVIDER;
+import static org.jsefa.common.config.Configuration.Defaults.DEFAULT_VALIDATION_MODE;
+import static org.jsefa.common.config.Configuration.Defaults.DEFAULT_VALIDATOR_PROVIDER_PROVIDER;
 import static org.jsefa.common.config.InitialConfigurationParameters.OBJECT_ACCESSOR_PROVIDER_CLASS;
 import static org.jsefa.common.config.InitialConfigurationParameters.SIMPLE_TYPE_CONVERTER_PROVIDER;
+import static org.jsefa.common.config.InitialConfigurationParameters.VALIDATION_MODE;
+import static org.jsefa.common.config.InitialConfigurationParameters.VALIDATOR_PROVIDER;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -47,6 +50,9 @@ import org.jsefa.common.mapping.EntryPoint;
 import org.jsefa.common.mapping.TypeMappingRegistry;
 import org.jsefa.common.util.OnDemandObjectProvider;
 import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.common.validator.CollectionValidator;
+import org.jsefa.common.validator.StringValidator;
+import org.jsefa.common.validator.provider.ValidatorProvider;
 
 /**
  * The abstract superclass for configuration object classes. It uses lazy initialization.
@@ -56,20 +62,24 @@ import org.jsefa.common.util.ReflectionUtil;
  * configuration object can be changed after creating a factory with it without affecting the configuration of the
  * factory.
  * 
- * @param <T> the type of the TypeMappingRegistry
+ * @param <R> the type of the TypeMappingRegistry
  * @param <E> the type of the EntryPoint
  * 
  * @author Norman Lahme-Huetig
  */
-public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends EntryPoint<?, ?>> {
+public abstract class Configuration<R extends TypeMappingRegistry<?>, E extends EntryPoint<?, ?>> {
 
     private ObjectAccessorProvider objectAccessorProvider;
 
     private SimpleTypeConverterProvider simpleTypeConverterProvider;
+    
+    private ValidatorProvider validatorProvider;
 
-    private T typeMappingRegistry;
+    private R typeMappingRegistry;
 
     private Collection<E> entryPoints;
+    
+    private ValidationMode validationMode;
 
     /**
      * Constructs a new <code>Configuration</code>.
@@ -83,11 +93,13 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
      * @param other the other config
      */
     @SuppressWarnings("unchecked")
-    protected Configuration(Configuration<T, E> other) {
+    protected Configuration(Configuration<R, E> other) {
         setObjectAccessorProvider(other.getObjectAccessorProvider());
         setSimpleTypeConverterProvider(other.getSimpleTypeConverterProvider().createCopy());
-        setTypeMappingRegistry((T) other.getTypeMappingRegistry().createCopy());
+        setValidatorProvider(other.getValidatorProvider().createCopy());
+        setTypeMappingRegistry((R) other.getTypeMappingRegistry().createCopy());
         setEntryPoints(new ArrayList<E>(other.getEntryPoints()));
+        setValidationMode(other.getValidationMode());
     }
 
     /**
@@ -95,7 +107,7 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
      * 
      * @return the type mapping registry
      */
-    public final T getTypeMappingRegistry() {
+    public final R getTypeMappingRegistry() {
         if (this.typeMappingRegistry == null) {
             this.typeMappingRegistry = createDefaultTypeMappingRegistry();
         }
@@ -107,7 +119,7 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
      * 
      * @param typeMappingRegistry a type mapping registry
      */
-    public final void setTypeMappingRegistry(T typeMappingRegistry) {
+    public final void setTypeMappingRegistry(R typeMappingRegistry) {
         this.typeMappingRegistry = typeMappingRegistry;
     }
 
@@ -165,6 +177,31 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
         }
         return this.simpleTypeConverterProvider;
     }
+    
+    /**
+     * Returns the validator provider.
+     * 
+     * @return the validator provider
+     */
+    public final ValidatorProvider getValidatorProvider() {
+        if (this.validatorProvider == null) {
+            ValidatorProvider initialProvider = InitialConfiguration.get(VALIDATOR_PROVIDER,
+                    DEFAULT_VALIDATOR_PROVIDER_PROVIDER);
+            this.validatorProvider = initialProvider.createCopy();
+        }
+        return this.validatorProvider;
+    }
+
+    /**
+     * Returns the validation mode.
+     * @return the validation mode
+     */
+    public final ValidationMode getValidationMode() {
+        if (this.validationMode == null) {
+            this.validationMode = InitialConfiguration.get(VALIDATION_MODE, DEFAULT_VALIDATION_MODE);
+        }
+        return this.validationMode;
+    }
 
     /**
      * Sets the <code>ObjectAccessorProvider</code>.
@@ -183,20 +220,37 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
     public final void setSimpleTypeConverterProvider(SimpleTypeConverterProvider simpleTypeConverterProvider) {
         this.simpleTypeConverterProvider = simpleTypeConverterProvider;
     }
+    
+    /**
+     * Sets the <code>ValidatorProvider</code>.
+     * 
+     * @param validatorProvider the <code>ValidatorProvider</code>
+     */
+    public final void setValidatorProvider(ValidatorProvider validatorProvider) {
+        this.validatorProvider = validatorProvider;
+    }
+
+    /**
+     * Sets the validation mode.
+     * @param validationMode the validation mode
+     */
+    public final void setValidationMode(ValidationMode validationMode) {
+        this.validationMode = validationMode;
+    }
 
     /**
      * Creates a copy of this <code>Configuration</code>.
      * 
      * @return a copy of this <code>Configuration</code>
      */
-    public abstract Configuration<T, E> createCopy();
+    public abstract Configuration<R, E> createCopy();
 
     /**
      * Creates the default type mapping registry to be used if none is explicitly given.
      * 
      * @return the default type mapping registry
      */
-    protected abstract T createDefaultTypeMappingRegistry();
+    protected abstract R createDefaultTypeMappingRegistry();
 
     /**
      * Set of default configuration values.
@@ -222,10 +276,28 @@ public abstract class Configuration<T extends TypeMappingRegistry<?>, E extends 
                 provider.registerConverterType(Date.class, DateConverter.class);
                 provider.registerConverterType(XMLGregorianCalendar.class, XMLGregorianCalendarConverter.class);
                 provider.registerConverterType(Enum.class, EnumConverter.class);
-                provider.registerConverterType(List.class, SimpleListConverter.class);
+                provider.registerConverterType(Collection.class, SimpleListConverter.class);
                 return provider;
             }
         };
+        
+        /**
+         * The default validator provider provider.
+         */
+        OnDemandObjectProvider DEFAULT_VALIDATOR_PROVIDER_PROVIDER = new OnDemandObjectProvider() {
+            @SuppressWarnings("unchecked")
+            public ValidatorProvider get() {
+                ValidatorProvider provider = new ValidatorProvider();
+                provider.registerValidatorType(String.class, StringValidator.class);
+                provider.registerValidatorType(Collection.class, CollectionValidator.class);
+                return provider;
+            }
+        };
+
+        /**
+         * The default validation mode.
+         */
+        ValidationMode DEFAULT_VALIDATION_MODE = ValidationMode.BOTH; 
     }
 
 }

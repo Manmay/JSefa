@@ -25,7 +25,7 @@ package org.jsefa.xml.mapping;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class TextContentDescriptor implements NodeDescriptor {
+public final class TextContentDescriptor implements XmlNodeDescriptor {
 
     private static final TextContentDescriptor INSTANCE = new TextContentDescriptor();
 
@@ -45,8 +45,8 @@ public final class TextContentDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
-    public NodeType getType() {
-        return NodeType.TEXT_CONTENT;
+    public XmlNodeType getType() {
+        return XmlNodeType.TEXT_CONTENT;
     }
 
 }

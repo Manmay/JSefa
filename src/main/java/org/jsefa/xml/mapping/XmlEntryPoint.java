@@ -17,6 +17,7 @@
 package org.jsefa.xml.mapping;
 
 import org.jsefa.common.mapping.EntryPoint;
+import org.jsefa.common.validator.Validator;
 import org.jsefa.xml.namespace.QName;
 
 /**
@@ -33,9 +34,10 @@ public final class XmlEntryPoint extends EntryPoint<QName, QName> {
      * 
      * @param dataTypeName the data type name
      * @param elementName the element name as the designator
+     * @param validator the validator; may be null
      */
-    public XmlEntryPoint(QName dataTypeName, QName elementName) {
-        super(dataTypeName, elementName);
+    public XmlEntryPoint(QName dataTypeName, QName elementName, Validator validator) {
+        super(dataTypeName, elementName, validator);
     }
 
 }

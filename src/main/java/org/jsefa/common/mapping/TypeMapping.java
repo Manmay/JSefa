@@ -22,12 +22,12 @@ package org.jsefa.common.mapping;
  * 
  * @author Norman Lahme-Huetig
  * 
- * @param <T> the type of the data type name
+ * @param <N> the type of the data type name
  */
-public abstract class TypeMapping<T> {
+public abstract class TypeMapping<N> {
     private final Class<?> objectType;
 
-    private final T dataTypeName;
+    private final N dataTypeName;
 
     /**
      * Constructs a new <code>TypeMapping</code>.
@@ -35,7 +35,7 @@ public abstract class TypeMapping<T> {
      * @param objectType the object type.
      * @param dataTypeName the data type name.
      */
-    public TypeMapping(Class<?> objectType, T dataTypeName) {
+    public TypeMapping(Class<?> objectType, N dataTypeName) {
         this.objectType = objectType;
         this.dataTypeName = dataTypeName;
     }
@@ -54,7 +54,7 @@ public abstract class TypeMapping<T> {
      * 
      * @return the data type name
      */
-    public final T getDataTypeName() {
+    public final N getDataTypeName() {
         return this.dataTypeName;
     }
 

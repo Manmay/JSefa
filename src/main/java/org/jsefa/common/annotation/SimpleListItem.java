@@ -17,6 +17,7 @@
 package org.jsefa.common.annotation;
 
 import org.jsefa.common.converter.SimpleTypeConverter;
+import org.jsefa.common.validator.Validator;
 
 /**
  * Annotation describing the items of a simple list type.
@@ -55,5 +56,23 @@ public @interface SimpleListItem {
      * of the list item.
      */
     Class<? extends SimpleTypeConverter> converterType() default NoConverterType.class;
+    
+
+    /**
+     * True, if a value is required; false otherwise.
+     */
+    boolean required() default false;
+
+    /**
+     * Specifies the validator type to be used. In the default case the validator type is determined using the type
+     * of the java field with this annotation.
+     */
+    Class<? extends Validator> validatorType() default NoValidatorType.class;
+
+    /**
+     * The constraints to validate. Each constraint is a String of the form 'name=value' where name is the name of
+     * the constraint and value is its value. The allowed set of constraints depend on the validator type. 
+     */
+    String[] constraints() default {};    
 
 }

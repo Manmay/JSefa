@@ -17,6 +17,7 @@
 package org.jsefa.xml.mapping;
 
 import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.common.validator.Validator;
 import org.jsefa.xml.lowlevel.TextMode;
 import org.jsefa.xml.namespace.QName;
 
@@ -30,7 +31,7 @@ import org.jsefa.xml.namespace.QName;
  * @author Matthias Derer
  * 
  */
-public final class ElementMapping extends NodeMapping<ElementDescriptor> {
+public final class ElementMapping extends XmlNodeMapping<ElementDescriptor> {
 
     private final boolean elementNameIsAmbiguous;
 
@@ -45,35 +46,40 @@ public final class ElementMapping extends NodeMapping<ElementDescriptor> {
      * @param objectType the type of the object. May be different from the object type contained in the field
      *                descriptor.
      * @param fieldDescriptor the descriptor of the field
+     * @param validator the validator; may be null
      * @param elementNameIsAmbiguous true, if the name of the element in its given context (position in the xml
      *                document) is ambiguous, i. e. there is sibling element with the same name; false otherwise.
      * @param textMode defines the text mode in case of an element with text content (simple or not); may be
      *                <code>null</code>.
      */
     public ElementMapping(QName dataTypeName, ElementDescriptor elementDescriptor, Class<?> objectType,
-            FieldDescriptor fieldDescriptor, boolean elementNameIsAmbiguous, TextMode textMode) {
-        super(dataTypeName, elementDescriptor, objectType, fieldDescriptor);
+            FieldDescriptor fieldDescriptor, Validator validator, boolean elementNameIsAmbiguous, TextMode textMode) {
+        super(dataTypeName, elementDescriptor, objectType, fieldDescriptor, validator);
         this.elementNameIsAmbiguous = elementNameIsAmbiguous;
         this.textMode = textMode;
     }
 
     /**
-     * Returns true if and only if the name of the element in its given context (position in the xml document) is
-     * ambiguous, i. e. there is sibling element with the same name.
-     * 
-     * @return true, if the name of the element in its given context is ambiguous; false otherwise.
+     * @return true, if the name of the element in its given context (position in the xml document) is ambiguous,
+     *         i. e. there is sibling element with the same name; false otherwise.
      */
     public boolean elementNameIsAmbiguous() {
         return elementNameIsAmbiguous;
     }
 
     /**
-     * Returns the text mode if this element allows for text content.
-     * 
-     * @return the text mode or null.
+     * @return the text mode if this element allows for text content or null.
      */
     public TextMode getTextMode() {
         return textMode;
+    }
+
+    /**
+     * @return true, if the data type name is not the same as the one of the element descriptor; false otherwise.
+     */
+    @Override
+    public boolean isIndirectMapping() {
+        return !getDataTypeName().equals(getNodeDescriptor().getDataTypeName());
     }
 
 }

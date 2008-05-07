@@ -29,7 +29,7 @@ import org.jsefa.common.util.ReflectionUtil;
  * Provider for {@link SimpleTypeConverter}.
  * <p>
  * Each <code>SimpleTypeConverter</code> must have a static factory method <code>create</code>, which is
- * either parameterless or with exactly one parameter of type {@link SimpleTypeConverterConfiguration}.
+ * either parameterless or has exactly one parameter of type {@link SimpleTypeConverterConfiguration}.
  * <p>
  * It is thread-safe.
  * 
@@ -131,13 +131,13 @@ public final class SimpleTypeConverterProvider {
             Method factoryMethod = ReflectionUtil.getMethod(converterType, "create",
                     SimpleTypeConverterConfiguration.class);
             if (factoryMethod != null) {
-                return (SimpleTypeConverter) factoryMethod.invoke(null, SimpleTypeConverterConfiguration.create(
-                        objectType, format, itemTypeConverter));
+                return (SimpleTypeConverter) ReflectionUtil.callMethod(null, factoryMethod,
+                        SimpleTypeConverterConfiguration.create(objectType, format, itemTypeConverter));
             }
             if (itemTypeConverter == null) {
                 factoryMethod = ReflectionUtil.getMethod(converterType, "create");
                 if (factoryMethod != null) {
-                    return (SimpleTypeConverter) factoryMethod.invoke(null, (Object[]) null);
+                    return (SimpleTypeConverter) ReflectionUtil.callMethod(null, factoryMethod, (Object[]) null);
                 }
             }
             throw new ConversionException("No static create method found for class " + converterType);
@@ -158,15 +158,7 @@ public final class SimpleTypeConverterProvider {
     }
 
     private Class<? extends SimpleTypeConverter> getConverterType(Class<?> objectType) {
-        Class<?> type = objectType;
-        while (type != null) {
-            Class<? extends SimpleTypeConverter> converterType = this.converterTypeMap.get(type);
-            if (converterType != null) {
-                return converterType;
-            }
-            type = type.getSuperclass();
-        }
-        return null;
+        return ReflectionUtil.getNearest(objectType, this.converterTypeMap);
     }
 
 }

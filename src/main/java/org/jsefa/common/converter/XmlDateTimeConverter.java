@@ -81,7 +81,7 @@ public class XmlDateTimeConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
-    public Date fromString(String value) {
+    public final Date fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }
@@ -95,7 +95,7 @@ public class XmlDateTimeConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
-    public String toString(Object value) {
+    public final String toString(Object value) {
         if (value == null) {
             return null;
         }

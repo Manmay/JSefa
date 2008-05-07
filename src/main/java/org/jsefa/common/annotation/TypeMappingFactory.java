@@ -16,14 +16,14 @@
 
 package org.jsefa.common.annotation;
 
-import static org.jsefa.common.annotation.AnnotationDataNames.CONVERTER_TYPE;
-import static org.jsefa.common.annotation.AnnotationDataNames.FORMAT;
-import static org.jsefa.common.annotation.AnnotationDataNames.LIST_ITEM;
-import static org.jsefa.common.annotation.AnnotationDataNames.OBJECT_TYPE;
+import static org.jsefa.common.annotation.AnnotationParameterNames.CONVERTER_TYPE;
+import static org.jsefa.common.annotation.AnnotationParameterNames.FORMAT;
+import static org.jsefa.common.annotation.AnnotationParameterNames.LIST_ITEM;
+import static org.jsefa.common.annotation.AnnotationParameterNames.OBJECT_TYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.Collection;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.SimpleTypeConverter;
@@ -33,6 +33,7 @@ import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingException;
 import org.jsefa.common.mapping.TypeMappingRegistry;
 import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.common.validator.provider.ValidatorProvider;
 
 /**
  * Abstract super class for factories which can create {@link TypeMapping}s from annotated classes.
@@ -41,30 +42,37 @@ import org.jsefa.common.util.ReflectionUtil;
  * 
  * @author Norman Lahme-Huetig
  * 
- * @param <D> the type of the data type name
+ * @param <N> the type of the data type name
  * @param <R> the type of the type mapping registry
  * 
  */
-public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
+public abstract class TypeMappingFactory<N, R extends TypeMappingRegistry<N>> {
 
     private final SimpleTypeConverterProvider simpleTypeConverterProvider;
+
+    private final ValidatorProvider validatorProvider;
 
     private final ObjectAccessorProvider objectAccessorProvider;
 
     private final R typeMappingRegistry;
+
+    private final ValidatorFactory validatorFactory;
 
     /**
      * Constructs a new <code>TypeMappingFactory</code>.
      * 
      * @param typeMappingRegistry the type mapping registry. New types will be registered using that registry.
      * @param simpleTypeConverterProvider the simple type converter provider to use
+     * @param validatorProvider the validator provider to use
      * @param objectAccessorProvider the object accessor provider to use
      */
     public TypeMappingFactory(R typeMappingRegistry, SimpleTypeConverterProvider simpleTypeConverterProvider,
-            ObjectAccessorProvider objectAccessorProvider) {
+            ValidatorProvider validatorProvider, ObjectAccessorProvider objectAccessorProvider) {
         this.typeMappingRegistry = typeMappingRegistry;
         this.simpleTypeConverterProvider = simpleTypeConverterProvider;
+        this.validatorProvider = validatorProvider;
         this.objectAccessorProvider = objectAccessorProvider;
+        this.validatorFactory = new ValidatorFactory(validatorProvider, objectAccessorProvider);
     }
 
     /**
@@ -75,7 +83,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * @param objectType the object type to create a type mapping for.
      * @return the name of the created or found data type.
      */
-    public abstract D createIfAbsent(Class<?> objectType);
+    public abstract N createIfAbsent(Class<?> objectType);
 
     /**
      * Returns the type mapping registry.
@@ -103,7 +111,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * 
      * @return true, if no type mapping with the given name already exists or is already under construction.
      */
-    protected final boolean prepareToCreate(Class<?> objectType, D dataTypeName) {
+    protected final boolean prepareToCreate(Class<?> objectType, N dataTypeName) {
         if (this.typeMappingRegistry.get(dataTypeName) != null) {
             return false;
         }
@@ -130,6 +138,15 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
     }
 
     /**
+     * Returns the validator provider.
+     * 
+     * @return the validator provider
+     */
+    protected final ValidatorProvider getValidatorProvider() {
+        return validatorProvider;
+    }
+
+    /**
      * Creates a simple type converter.
      * 
      * @param objectType the object type to create a converter for
@@ -138,14 +155,15 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * @return a simple type converter
      */
     @SuppressWarnings("unchecked")
-    protected SimpleTypeConverter createSimpleTypeConverter(Class<?> objectType, Field field, Annotation annotation) {
+    protected final SimpleTypeConverter createSimpleTypeConverter(Class<?> objectType, Field field,
+            Annotation annotation) {
         String[] format = null;
         SimpleTypeConverter itemTypeConverter = null;
         if (annotation != null) {
             format = AnnotationDataProvider.get(annotation, FORMAT);
-            if (hasListType(objectType)) {
+            if (hasCollectionType(objectType)) {
                 Annotation itemAnnotation = AnnotationDataProvider.get(annotation, LIST_ITEM);
-                D itemDataTypeName = getAnnotatedDataTypeName(itemAnnotation, field.getDeclaringClass());
+                N itemDataTypeName = getAnnotatedDataTypeName(itemAnnotation, field.getDeclaringClass());
                 if (itemDataTypeName != null) {
                     assertTypeMappingIsSimple(itemDataTypeName);
                     assertNoNestedList(getTypeMappingRegistry().get(itemDataTypeName).getObjectType());
@@ -175,11 +193,12 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * 
      * @param annotation the annotation of the field
      * @param field the field
-     * @param fromListDeclarationAllowed true, if the field is a list which contains only items of one type so
-     *                that the type may be deduced from the generic parameter argument of the field; false otherwise.
+     * @param fromListDeclarationAllowed true, if the field is a list which contains only items of one type so that
+     *                the type may be deduced from the generic parameter argument of the field; false otherwise.
      * @return an object type
      */
-    protected Class<?> getListItemObjectType(Annotation annotation, Field field, boolean fromListDeclarationAllowed) {
+    protected final Class<?> getListItemObjectType(Annotation annotation, Field field,
+            boolean fromListDeclarationAllowed) {
         Class<?> objectType = AnnotationDataProvider.get(annotation, OBJECT_TYPE);
         if (objectType == null && fromListDeclarationAllowed) {
             objectType = ReflectionUtil.getListEntryObjectType(field);
@@ -195,7 +214,16 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      *                annotation data.
      * @return a data type name
      */
-    protected abstract D getAnnotatedDataTypeName(Annotation annotation, Class<?> annotationContextClass);
+    protected abstract N getAnnotatedDataTypeName(Annotation annotation, Class<?> annotationContextClass);
+
+    /**
+     * Returns the validator factory.
+     * 
+     * @return the validator factory
+     */
+    protected final ValidatorFactory getValidatorFactory() {
+        return this.validatorFactory;
+    }
 
     /**
      * Returns true if and only if the given object type is a simple type.
@@ -208,13 +236,13 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
     }
 
     /**
-     * Returns true if and only if the given object type is a list type.
+     * Returns true if and only if the given object type is a collection type.
      * 
      * @param objectType the object type
-     * @return true, if the given object type is a list type; false otherwise.
+     * @return true, if the given object type is a collection type; false otherwise.
      */
-    protected final boolean hasListType(Class<?> objectType) {
-        return List.class.isAssignableFrom(objectType);
+    protected final boolean hasCollectionType(Class<?> objectType) {
+        return Collection.class.isAssignableFrom(objectType);
     }
 
     /**
@@ -223,7 +251,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * @param dataTypeName the data type name.
      * @throws AnnotationException if the assertion fails.
      */
-    protected final void assertTypeMappingExists(D dataTypeName) {
+    protected final void assertTypeMappingExists(N dataTypeName) {
         if (getTypeMappingRegistry().get(dataTypeName) == null) {
             throw new AnnotationException("No type mapping registered for data type name " + dataTypeName);
         }
@@ -235,7 +263,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * @param dataTypeName the data type name.
      * @throws AnnotationException if the assertion fails.
      */
-    protected final void assertTypeMappingIsSimple(D dataTypeName) {
+    protected final void assertTypeMappingIsSimple(N dataTypeName) {
         assertTypeMappingExists(dataTypeName);
         if (!(getTypeMappingRegistry().get(dataTypeName) instanceof SimpleTypeMapping)) {
             throw new AnnotationException("The dataTypeName " + dataTypeName
@@ -250,7 +278,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * @throws AnnotationException if the assertion fails.
      */
     protected final void assertNoNestedList(Class<?> listItemObjectType) {
-        if (hasListType(listItemObjectType)) {
+        if (hasCollectionType(listItemObjectType)) {
             throw new AnnotationException("No lists inside lists allowed!");
         }
     }
@@ -264,7 +292,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
      * @author Norman Lahme-Huetig
      * 
      */
-    protected final class TypeMappingPlaceholder extends TypeMapping<D> {
+    protected final class TypeMappingPlaceholder extends TypeMapping<N> {
 
         /**
          * Constructs a new <code>TypeMappingPlaceholder</code>.
@@ -272,7 +300,7 @@ public abstract class TypeMappingFactory<D, R extends TypeMappingRegistry<D>> {
          * @param objectType the object type
          * @param dataTypeName the data type name
          */
-        protected TypeMappingPlaceholder(Class<?> objectType, D dataTypeName) {
+        protected TypeMappingPlaceholder(Class<?> objectType, N dataTypeName) {
             super(objectType, dataTypeName);
         }
 

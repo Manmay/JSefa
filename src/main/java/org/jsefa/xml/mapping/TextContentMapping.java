@@ -17,6 +17,7 @@
 package org.jsefa.xml.mapping;
 
 import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.common.validator.Validator;
 import org.jsefa.xml.lowlevel.TextMode;
 import org.jsefa.xml.namespace.QName;
 
@@ -30,7 +31,7 @@ import org.jsefa.xml.namespace.QName;
  * @author Matthias Derer
  * 
  */
-public final class TextContentMapping extends NodeMapping<TextContentDescriptor> {
+public final class TextContentMapping extends XmlNodeMapping<TextContentDescriptor> {
 
     private final TextMode textMode;
 
@@ -41,14 +42,16 @@ public final class TextContentMapping extends NodeMapping<TextContentDescriptor>
      * @param dataTypeName the name of the data type.
      * @param textContentDescriptor the descriptor of the attribute node
      * @param fieldDescriptor the descriptor of the field
+     * @param validator the validator; may be null
      * @param textMode the text mode
      */
     public TextContentMapping(QName dataTypeName, TextContentDescriptor textContentDescriptor,
-            FieldDescriptor fieldDescriptor, TextMode textMode) {
-        super(dataTypeName, textContentDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor);
+            FieldDescriptor fieldDescriptor, Validator validator, TextMode textMode) {
+        super(dataTypeName, textContentDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor,
+                validator);
         this.textMode = textMode;
     }
-    
+
     /**
      * Returns the text mode.
      * 
@@ -56,6 +59,6 @@ public final class TextContentMapping extends NodeMapping<TextContentDescriptor>
      */
     public TextMode getTextMode() {
         return textMode;
-    }    
+    }
 
 }

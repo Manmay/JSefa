@@ -26,7 +26,7 @@ import org.jsefa.xml.namespace.QName;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class ElementDescriptor implements NodeDescriptor {
+public final class ElementDescriptor implements XmlNodeDescriptor {
 
     private final QName name;
 
@@ -37,7 +37,8 @@ public final class ElementDescriptor implements NodeDescriptor {
     /**
      * Constructs a new <code>ElementDescriptor</code>.
      * 
-     * @param name the name of the element
+     * @param name the name of the element - may be null if the node is virtual, i. e. if the node groups other
+     *                nodes without having an own representation, e. g. an implicit list.
      * @param dataTypeName the name of its data type
      */
     public ElementDescriptor(QName name, QName dataTypeName) {
@@ -49,12 +50,15 @@ public final class ElementDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
-    public NodeType getType() {
-        return NodeType.ELEMENT;
+    public XmlNodeType getType() {
+        return XmlNodeType.ELEMENT;
     }
 
     /**
      * Returns the name of the element.
+     * <p>
+     * May be null if the node is virtual, i. e. if the node groups other nodes without having an own
+     * representation, e. g. an implicit list.
      * 
      * @return the element name
      */
@@ -74,6 +78,7 @@ public final class ElementDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return this.hashCode;
     }
@@ -81,6 +86,7 @@ public final class ElementDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -105,6 +111,7 @@ public final class ElementDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         if (this.dataTypeName != null) {
             return getName().toString() + ":" + getDataTypeName();
@@ -115,7 +122,9 @@ public final class ElementDescriptor implements NodeDescriptor {
 
     private int calculateHashCode() {
         int hashCode = 1;
-        hashCode = 31 * hashCode + name.hashCode();
+        if (this.name != null) {
+            hashCode = 31 * hashCode + name.hashCode();
+        }
         if (dataTypeName != null) {
             hashCode = 31 * hashCode + dataTypeName.hashCode();
         }

@@ -134,7 +134,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      * {@inheritDoc}
      */
     public final InputPosition getInputPosition() {
-        if (this.reader != null) {
+        if (this.reader != null && this.currentLine != null) {
             return new InputPosition(this.currentLine.lineNumber, this.currentColumnIndex + 1);
         } else {
             return null;

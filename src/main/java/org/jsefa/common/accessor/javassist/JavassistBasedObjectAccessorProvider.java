@@ -18,8 +18,6 @@ package org.jsefa.common.accessor.javassist;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -28,6 +26,7 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
 
+import org.jsefa.common.accessor.AbstractObjectAccessorProvider;
 import org.jsefa.common.accessor.ObjectAccessException;
 import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.accessor.ObjectAccessorProvider;
@@ -44,8 +43,7 @@ import org.jsefa.common.util.ReflectionUtil;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class JavassistBasedObjectAccessorProvider implements ObjectAccessorProvider {
-    private final ConcurrentMap<Class<?>, ObjectAccessor> objectAccessors;
+public final class JavassistBasedObjectAccessorProvider extends AbstractObjectAccessorProvider {
 
     private static JavassistBasedObjectAccessorProvider instance;
 
@@ -62,27 +60,13 @@ public final class JavassistBasedObjectAccessorProvider implements ObjectAccesso
     }
 
     private JavassistBasedObjectAccessorProvider() {
-        this.objectAccessors = new ConcurrentHashMap<Class<?>, ObjectAccessor>();
     }
 
     /**
      * {@inheritDoc}
      */
-    public ObjectAccessor get(Class<?> objectType) {
-        if (objectType.isInterface()) {
-            return null;
-        }
-        ObjectAccessor objectAccessor = this.objectAccessors.get(objectType);
-        if (objectAccessor == null) {
-            synchronized (this) {
-                objectAccessor = create(objectType);
-                this.objectAccessors.put(objectType, objectAccessor);
-            }
-        }
-        return objectAccessor;
-    }
-
-    private ObjectAccessor create(Class<?> objectType) {
+    @Override
+    protected ObjectAccessor create(Class<?> objectType) {
         try {
             ClassPool pool = ClassPool.getDefault();
 

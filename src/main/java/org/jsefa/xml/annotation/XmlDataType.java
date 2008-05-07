@@ -22,6 +22,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.jsefa.common.annotation.NoValidatorType;
+import org.jsefa.common.validator.Validator;
+
 /**
  * An annotation declaring a complex data type with its relevant sub object types. Each object type which should
  * map to a complex element and for which a type mapping should be constructed from annotations must be annotated
@@ -50,4 +53,10 @@ public @interface XmlDataType {
      * The default name for elements with this data type.
      */
     String defaultElementName() default "";
+
+    /**
+     * Specifies the validator type to be used for the default case.
+     */
+    Class<? extends Validator> defaultValidatorType() default NoValidatorType.class;
+
 }

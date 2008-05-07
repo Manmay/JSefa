@@ -77,7 +77,7 @@ public class BigDecimalConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
-    public BigDecimal fromString(String value) {
+    public final BigDecimal fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }
@@ -97,7 +97,7 @@ public class BigDecimalConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
-    public String toString(Object value) {
+    public final String toString(Object value) {
         if (value == null) {
             return null;
         }

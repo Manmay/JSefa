@@ -22,7 +22,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.jsefa.common.annotation.NoValidatorType;
 import org.jsefa.common.mapping.EntryPoint;
+import org.jsefa.common.validator.Validator;
 
 /**
  * An annotation declaring a FLR data type.
@@ -46,4 +48,8 @@ public @interface FlrDataType {
      */
     String defaultPrefix() default "";
 
+    /**
+     * Specifies the validator type to be used for the default case.
+     */
+    Class<? extends Validator> defaultValidatorType() default NoValidatorType.class;
 }

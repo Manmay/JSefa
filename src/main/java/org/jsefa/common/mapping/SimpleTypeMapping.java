@@ -24,9 +24,9 @@ import org.jsefa.common.converter.SimpleTypeConverter;
  * @see TypeMapping
  * @author Norman Lahme-Huetig
  * 
- * @param <T> the type of the data type name
+ * @param <N> the type of the data type name
  */
-public abstract class SimpleTypeMapping<T> extends TypeMapping<T> {
+public abstract class SimpleTypeMapping<N> extends TypeMapping<N> {
 
     private final SimpleTypeConverter simpleTypeConverter;
 
@@ -37,7 +37,7 @@ public abstract class SimpleTypeMapping<T> extends TypeMapping<T> {
      * @param dataTypeName the data type name
      * @param simpleTypeConverter the simple type converter
      */
-    public SimpleTypeMapping(Class<?> objectType, T dataTypeName, SimpleTypeConverter simpleTypeConverter) {
+    public SimpleTypeMapping(Class<?> objectType, N dataTypeName, SimpleTypeConverter simpleTypeConverter) {
         super(objectType, dataTypeName);
         this.simpleTypeConverter = simpleTypeConverter;
     }

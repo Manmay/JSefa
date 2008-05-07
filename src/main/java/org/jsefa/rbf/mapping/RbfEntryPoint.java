@@ -17,6 +17,7 @@
 package org.jsefa.rbf.mapping;
 
 import org.jsefa.common.mapping.EntryPoint;
+import org.jsefa.common.validator.Validator;
 
 /**
  * An entry point for RBF serialization and deserialization.
@@ -33,9 +34,10 @@ public final class RbfEntryPoint extends EntryPoint<String, String> {
      * 
      * @param dataTypeName the data type name
      * @param prefix the prefix as the designator
+     * @param validator the validator; may be null
      */
-    public RbfEntryPoint(String dataTypeName, String prefix) {
-        super(dataTypeName, prefix);
+    public RbfEntryPoint(String dataTypeName, String prefix, Validator validator) {
+        super(dataTypeName, prefix, validator);
     }
 
 }

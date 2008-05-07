@@ -37,7 +37,7 @@ public final class CsvSerializerImpl extends RbfSerializerImpl<CsvLowLevelSerial
 
     CsvSerializerImpl(CsvConfiguration config, Map<Class<?>, RbfEntryPoint> entryPoints,
             CsvLowLevelSerializer lowLevelSerializer) {
-        super(config.getTypeMappingRegistry(), entryPoints, lowLevelSerializer);
+        super(config, entryPoints, lowLevelSerializer);
     }
 
     /**

@@ -18,17 +18,18 @@ package org.jsefa.common.annotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
 import org.jsefa.common.util.ReflectionUtil;
 
 /**
- * Provider for annotation data (data given via annotations). It provides a simple solution to the following
- * drawbacks of annotations: <br>
+ * Provider for values of annotation parameters. It provides a simple solution to the following drawbacks of
+ * annotations: <br>
  * 1) Annotations can not extend an interface so that it is not possible to express that several annotations do
  * provide the same kind of data.<br>
- * 2) Annotated data can not be set to null.
+ * 2) Annotated parameter values can not be set to null.
  * <p>
  * 
  * @author Norman Lahme-Huetig
@@ -37,20 +38,20 @@ import org.jsefa.common.util.ReflectionUtil;
 public final class AnnotationDataProvider {
 
     private static final List<?> NULL_OBJECTS = Arrays.asList(new Object[]{"", NoConverterType.class,
-            NoClass.class});
+            NoValidatorType.class, NoClass.class});
 
     /**
-     * Returns the data with the given <code>annotationDataName</code> of the given annotation or null if it is
+     * Returns the value of the annotation parameter with the given name of the given annotation or null if it is
      * to be interpreted as null (as the empty <code>String</code>, an empty array or special classes used as
-     * defaults for the annotation data).
+     * defaults for the annotation parameter value).
      * 
      * @param <T> the expected type of the data to return
      * @param annotation the annotation
-     * @param annotationDataName the annotation data name
-     * @return the annotation data.
+     * @param annotationParameterName the annotation parameter name
+     * @return the annotation parameter value.
      */
-    public static <T> T get(Annotation annotation, String annotationDataName) {
-        T result = ReflectionUtil.<T> callMethod(annotation, annotationDataName);
+    public static <T> T get(Annotation annotation, String annotationParameterName) {
+        T result = ReflectionUtil.<T> callMethod(annotation, annotationParameterName);
         if (NULL_OBJECTS.contains(result)) {
             return null;
         }
@@ -64,26 +65,40 @@ public final class AnnotationDataProvider {
     }
 
     /**
-     * Returns the data with the given <code>annotationDataName</code> of the annotation the given
+     * Returns the value of the annotation parameter with the given name of the annotation the given
      * annotatedElement is annotated with and which class is one of the given annotation classes. Returns null, if
-     * the data is to be interpreted as null (as the empty <code>String</code> or special classes used as
-     * defaults for the annotation data).
+     * the annotation parameter value is to be interpreted as null (as the empty <code>String</code> or special
+     * classes used as defaults for the annotation parameter value).
      * 
      * @param <T> the expected type of the returned data
      * @param annotatedElement the annotated element
-     * @param annotationDataName the name of the annotation data
+     * @param annotationParameterName the name of the annotation parameter
      * @param annotationClasses the annotation classes
-     * @return the annotation data
+     * @return the annotation parameter value
      */
-    public static <T> T get(AnnotatedElement annotatedElement, String annotationDataName,
+    public static <T> T get(AnnotatedElement annotatedElement, String annotationParameterName,
             Class<? extends Annotation>... annotationClasses) {
         for (Class<? extends Annotation> annotationClass : annotationClasses) {
-            if (annotatedElement.isAnnotationPresent(annotationClass)) {
-                return AnnotationDataProvider.<T> get(annotatedElement.getAnnotation(annotationClass),
-                        annotationDataName);
+            if (hasParameter(annotationClass, annotationParameterName)) {
+                if (annotatedElement.isAnnotationPresent(annotationClass)) {
+                    return AnnotationDataProvider.<T> get(annotatedElement.getAnnotation(annotationClass),
+                            annotationParameterName);
+                }
             }
         }
         return null;
+    }
+
+    /**
+     * Returns true if the annotation class has an annotation parameter with the given name; false otherwise.
+     * 
+     * @param annotationClass the annotation class
+     * @param annotationParameterName the annotation parameter name
+     * @return true if the annotation class has an annotation parameter with the given name; false otherwise.
+     */
+    public static boolean hasParameter(Class<? extends Annotation> annotationClass, String annotationParameterName) {
+        Method method = ReflectionUtil.getMethod(annotationClass, annotationParameterName);
+        return method != null;
     }
 
     private AnnotationDataProvider() {

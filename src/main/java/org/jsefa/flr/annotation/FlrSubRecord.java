@@ -22,6 +22,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.jsefa.common.annotation.NoValidatorType;
+import org.jsefa.common.validator.Validator;
+
 /**
  * An annotation declaring a FLR sub record.
  * 
@@ -56,4 +59,22 @@ public @interface FlrSubRecord {
      * based type mapping creation.
      */
     String dataTypeName() default "";
+
+    /**
+     * True, if a value is required; false otherwise.
+     */
+    boolean required() default false;
+
+    /**
+     * Specifies the validator type to be used. In the default case the validator type is determined using the type
+     * of the java field with this annotation.
+     */
+    Class<? extends Validator> validatorType() default NoValidatorType.class;
+
+    /**
+     * The constraints to validate. Each constraint is a String of the form 'name=value' where name is the name of
+     * the constraint and value is its value. The allowed set of constraints depend on the validator type. 
+     */
+    String[] constraints() default {};    
+    
 }

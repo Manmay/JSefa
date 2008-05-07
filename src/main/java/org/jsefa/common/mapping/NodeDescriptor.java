@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.jsefa.rbf.mapping;
+package org.jsefa.common.mapping;
 
 /**
- * Enum class declaring the different node types.
+ * A descriptor of a node of the target format.
  * 
  * @author Norman Lahme-Huetig
  * 
+ * @param <T> the type of the node type
+ * 
  */
-public enum NodeType {
+public interface NodeDescriptor<T extends NodeType> {
+    
     /**
-     * node type for fields.
+     * @return the node type
      */
-    FIELD,
-    /**
-     * node type for records.
-     */
-    RECORD
+    T getType();
+
 }

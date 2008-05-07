@@ -53,7 +53,7 @@ public final class AnnotatedFieldsProvider {
             List<Field> flrFields = getDeclaredFields(theClass, annotationClasses);
             SortedMap<Integer, Field> fieldMap = new TreeMap<Integer, Field>();
             for (Field field : flrFields) {
-                Integer pos = AnnotationDataProvider.get(field, AnnotationDataNames.POS, annotationClasses);
+                Integer pos = AnnotationDataProvider.get(field, AnnotationParameterNames.POS, annotationClasses);
                 if (pos != null && pos >= 0) {
                     if (fieldMap.get(pos) != null) {
                         throw new AnnotationException("There are more than one field in " + objectType.getName()

@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package org.jsefa.xml.mapping;
+package org.jsefa.common.annotation;
+
+import org.jsefa.common.validator.Validator;
 
 /**
- * Enum class declaring the different node types.
+ * Class used to denote within annotations that no validator type is given.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public enum NodeType {
-    /**
-     * node type for xml elements.
-     */
-    ELEMENT,
-    /**
-     * node type for xml attributes.
-     */
-    ATTRIBUTE,
-    /**
-     * node type for the content of non-simple xml elements without child elements.
-     */
-    TEXT_CONTENT
+public abstract class NoValidatorType implements Validator {
+
 }

@@ -16,8 +16,8 @@
 
 package org.jsefa.rbf.annotation;
 
-import static org.jsefa.common.annotation.AnnotationDataNames.DATA_TYPE_NAME;
-import static org.jsefa.common.annotation.AnnotationDataNames.NAME;
+import static org.jsefa.common.annotation.AnnotationParameterNames.DATA_TYPE_NAME;
+import static org.jsefa.common.annotation.AnnotationParameterNames.NAME;
 import static org.jsefa.rbf.annotation.RbfAnnotationDataNames.DEFAULT_PREFIX;
 import static org.jsefa.rbf.annotation.RbfAnnotationDataNames.PREFIX;
 import static org.jsefa.rbf.annotation.RbfAnnotationDataNames.RECORDS;
@@ -35,13 +35,18 @@ import org.jsefa.common.annotation.AnnotationException;
 import org.jsefa.common.annotation.TypeMappingFactory;
 import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
+import org.jsefa.common.mapping.FieldDescriptor;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingException;
+import org.jsefa.common.validator.Validator;
+import org.jsefa.common.validator.provider.ValidatorProvider;
 import org.jsefa.rbf.mapping.FieldMapping;
-import org.jsefa.rbf.mapping.NodeMapping;
-import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
+import org.jsefa.rbf.mapping.RbfFieldDescriptor;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
+import org.jsefa.rbf.mapping.RbfNodeMapping;
+import org.jsefa.rbf.mapping.RbfNodeType;
+import org.jsefa.rbf.mapping.RecordDescriptor;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 import org.jsefa.rbf.mapping.RecordMapping;
 
@@ -62,13 +67,14 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
      * 
      * @param typeMappingRegistry the type mapping registry. New types will be registered using that registry.
      * @param simpleTypeConverterProvider the simple type converter provider to use
+     * @param validatorProvider the validator provider to use
      * @param objectAccessorProvider the object accessor provider to use
      * @param annotations the parameter objects providing the annotation classes to use.
      */
     public RbfTypeMappingFactory(RbfTypeMappingRegistry typeMappingRegistry,
-            SimpleTypeConverterProvider simpleTypeConverterProvider,
+            SimpleTypeConverterProvider simpleTypeConverterProvider, ValidatorProvider validatorProvider,
             ObjectAccessorProvider objectAccessorProvider, RbfAnnotations annotations) {
-        super(typeMappingRegistry, simpleTypeConverterProvider, objectAccessorProvider);
+        super(typeMappingRegistry, simpleTypeConverterProvider, validatorProvider, objectAccessorProvider);
         this.annotations = annotations;
     }
 
@@ -98,7 +104,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
      */
     protected abstract TypeMapping<String> createSimpleTypeMapping(Class<?> objectType, String dataTypeName,
             SimpleTypeConverter converter, Field field);
-    
+
     /**
      * {@inheritDoc}
      */
@@ -114,19 +120,23 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         }
         return dataTypeName;
     }
-    
+
+    @SuppressWarnings("unchecked")
     private String createComplexTypeMappingIfAbsent(Class<?> objectType, boolean subRecordsAllowed) {
         String dataTypeName = createComplexDataTypeName(objectType);
         if (prepareToCreate(objectType, dataTypeName)) {
-            Collection<NodeMapping> nodeMappings = new ArrayList<NodeMapping>();
+            Collection<RbfNodeMapping<?>> nodeMappings = new ArrayList<RbfNodeMapping<?>>();
             nodeMappings.addAll(createFieldMappings(objectType));
             if (subRecordsAllowed) {
                 nodeMappings.addAll(createRecordMappings(objectType));
             } else {
                 assertNoSubRecordsDeclared(objectType);
             }
+            Validator validator = getValidatorFactory().createValidator(objectType,
+                    this.annotations.getFieldAnnotationClass(), this.annotations.getSubRecordAnnotationClass(),
+                    this.annotations.getSubRecordListAnnotationClass());
             RbfComplexTypeMapping complexTypeMapping = new RbfComplexTypeMapping(objectType, dataTypeName,
-                    getObjectAccessorProvider().get(objectType), nodeMappings);
+                    getObjectAccessorProvider().get(objectType), nodeMappings, validator);
             getTypeMappingRegistry().register(complexTypeMapping);
         }
         return dataTypeName;
@@ -135,6 +145,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
     @SuppressWarnings("unchecked")
     private Collection<FieldMapping> createFieldMappings(Class<?> objectType) {
         Collection<FieldMapping> fieldMappings = new ArrayList<FieldMapping>();
+        int relativeFieldIndex = 0;
         for (Field field : AnnotatedFieldsProvider.getSortedAnnotatedFields(objectType, this.annotations
                 .getFieldAnnotationClass())) {
             String fieldDataTypeName = AnnotationDataProvider.get(field, DATA_TYPE_NAME, this.annotations
@@ -146,14 +157,26 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                 } else {
                     assertTypeMappingExists(fieldDataTypeName);
                 }
-                fieldMappings.add(new FieldMapping(fieldDataTypeName, field.getType(), field.getName()));
+                Class<?> normalizedFieldObjectType = getTypeMappingRegistry().get(fieldDataTypeName)
+                        .getObjectType();
+                Validator validator = getValidatorFactory().createContextualValidator(normalizedFieldObjectType,
+                        field, fieldAnnotation, this.annotations.getDataTypeAnnotationClass());
+                fieldMappings.add(new FieldMapping(fieldDataTypeName,
+                        new RbfFieldDescriptor(relativeFieldIndex++), normalizedFieldObjectType,
+                        new FieldDescriptor(field.getName(), normalizedFieldObjectType), validator));
             } else if (hasComplexType(field.getType())) {
                 if (fieldDataTypeName == null) {
                     fieldDataTypeName = createComplexTypeMappingIfAbsent(field.getType(), false);
                 } else {
                     assertTypeMappingExists(fieldDataTypeName);
                 }
-                fieldMappings.add(new FieldMapping(fieldDataTypeName, field.getType(), field.getName()));
+                Class<?> normalizedFieldObjectType = getTypeMappingRegistry().get(fieldDataTypeName)
+                        .getObjectType();
+                Validator validator = getValidatorFactory().createContextualValidator(normalizedFieldObjectType,
+                        field, fieldAnnotation, this.annotations.getDataTypeAnnotationClass());
+                fieldMappings.add(new FieldMapping(fieldDataTypeName,
+                        new RbfFieldDescriptor(relativeFieldIndex++), normalizedFieldObjectType,
+                        new FieldDescriptor(field.getName(), normalizedFieldObjectType), validator));
             } else {
                 throw new TypeMappingException("Can not create a type mapping for field " + field.getName()
                         + " of class " + objectType.getName());
@@ -168,10 +191,32 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         int requiredPrefixLength = getRequiredPrefixLength(objectType);
         for (Field field : AnnotatedFieldsProvider.getSortedAnnotatedFields(objectType, this.annotations
                 .getSubRecordAnnotationClass(), this.annotations.getSubRecordListAnnotationClass())) {
-            if (hasListType(field.getType()) && field.getAnnotation(this.annotations
-                    .getSubRecordListAnnotationClass()) != null) {
+            if (hasCollectionType(field.getType())
+                    && field.getAnnotation(this.annotations.getSubRecordListAnnotationClass()) != null) {
                 String listDataTypeName = createListTypeMappingIfAbsent(field, requiredPrefixLength);
-                recordMappings.add(new RecordMapping(listDataTypeName, List.class, field.getName(), null));
+                Annotation fieldAnnotation = field.getAnnotation(this.annotations
+                        .getSubRecordListAnnotationClass());
+
+                Record[] records = getRecords(fieldAnnotation);
+                for (Record record : records) {
+                    String listItemDataTypeName = createIfAbsent(field, record, records);
+                    String prefix = record.prefix();
+                    assertPrefixHasRequiredLength(field, prefix, requiredPrefixLength);
+                    Class<?> normalizedListItemObjectType = getTypeMappingRegistry().get(listItemDataTypeName)
+                            .getObjectType();
+                    Validator validator = getValidatorFactory().createContextualValidator(
+                            normalizedListItemObjectType, field, record,
+                            this.annotations.getDataTypeAnnotationClass());
+                    recordMappings.add(new RecordMapping(listDataTypeName, new RecordDescriptor(prefix),
+                            normalizedListItemObjectType, new FieldDescriptor(field.getName(), Collection.class),
+                            true, validator));
+                }
+
+                Validator validator = getValidatorFactory().createContextualValidator(Collection.class, field,
+                        fieldAnnotation, this.annotations.getDataTypeAnnotationClass());
+                recordMappings
+                        .add(new RecordMapping(listDataTypeName, new RecordDescriptor(null), Collection.class,
+                                new FieldDescriptor(field.getName(), Collection.class), false, validator));
             } else if (hasComplexType(field.getType())) {
                 String fieldDataTypeName = AnnotationDataProvider.get(field, DATA_TYPE_NAME, this.annotations
                         .getSubRecordAnnotationClass());
@@ -186,7 +231,15 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
                     throw new AnnotationException("The object type " + field.getType()
                             + " must have a prefix with length " + requiredPrefixLength);
                 }
-                recordMappings.add(new RecordMapping(fieldDataTypeName, field.getType(), field.getName(), prefix));
+                Class<?> normalizedFieldObjectType = getTypeMappingRegistry().get(fieldDataTypeName)
+                        .getObjectType();
+                Annotation fieldAnnotation = field.getAnnotation(this.annotations.getSubRecordAnnotationClass());
+                Validator validator = getValidatorFactory().createContextualValidator(normalizedFieldObjectType,
+                        field, fieldAnnotation, this.annotations.getDataTypeAnnotationClass());
+
+                recordMappings.add(new RecordMapping(fieldDataTypeName, new RecordDescriptor(prefix),
+                        normalizedFieldObjectType,
+                        new FieldDescriptor(field.getName(), normalizedFieldObjectType), false, validator));
             }
         }
         return recordMappings;
@@ -207,35 +260,51 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         Annotation subRecordListAnnotation = field.getAnnotation(this.annotations
                 .getSubRecordListAnnotationClass());
         String dataTypeName = createListDataTypeName(field);
-        if (prepareToCreate(List.class, dataTypeName)) {
+        if (prepareToCreate(Collection.class, dataTypeName)) {
             if (subRecordListAnnotation == null || getRecords(subRecordListAnnotation).length == 0) {
                 throw new AnnotationException("No FlrSubRecordList annotation with proper content found");
             }
             Collection<RecordMapping> recordMappings = new ArrayList<RecordMapping>();
             Record[] records = getRecords(subRecordListAnnotation);
             for (Record record : records) {
-                String listItemDataTypeName = AnnotationDataProvider.get(record, DATA_TYPE_NAME);
-                Class<?> listItemObjectType = null;
-                if (listItemDataTypeName == null) {
-                    listItemObjectType = getListItemObjectType(record, field, records.length == 1);
-                    assertHasComplexType(listItemObjectType, field);
-                    listItemDataTypeName = createComplexTypeMappingIfAbsent(listItemObjectType, true);
-                } else {
-                    assertTypeMappingExists(listItemDataTypeName);
-                    listItemObjectType = getTypeMappingRegistry().get(listItemDataTypeName).getObjectType();
-                }
+                String listItemDataTypeName = createIfAbsent(field, record, records);
                 String prefix = record.prefix();
-                if (prefix.length() != requiredPrefixLength) {
-                    throw new AnnotationException("All record annotations of the list field " + field.getName()
-                            + " of class " + field.getDeclaringClass().getName()
-                            + " must have a prefix with length " + requiredPrefixLength);
-                }
-                recordMappings.add(new RecordMapping(listItemDataTypeName, listItemObjectType, field.getName(),
-                        prefix));
+                assertPrefixHasRequiredLength(field, prefix, requiredPrefixLength);
+                Class<?> normalizedListItemObjectType = getTypeMappingRegistry().get(listItemDataTypeName)
+                        .getObjectType();
+                Validator validator = getValidatorFactory()
+                        .createContextualValidator(normalizedListItemObjectType, field, record,
+                                this.annotations.getDataTypeAnnotationClass());
+
+                recordMappings.add(new RecordMapping(listItemDataTypeName, new RecordDescriptor(prefix),
+                        normalizedListItemObjectType, new FieldDescriptor(field.getName(), Collection.class),
+                        false, validator));
             }
-            getTypeMappingRegistry().register(new RbfListTypeMapping(dataTypeName, recordMappings));
+            getTypeMappingRegistry().register(
+                    new RbfListTypeMapping(dataTypeName, recordMappings, getObjectAccessorProvider().get(
+                            field.getType())));
         }
         return dataTypeName;
+    }
+
+    private void assertPrefixHasRequiredLength(Field field, String prefix, int requiredPrefixLength) {
+        if (prefix.length() != requiredPrefixLength) {
+            throw new AnnotationException("All record annotations of the list field " + field.getName()
+                    + " of class " + field.getDeclaringClass().getName() + " must have a prefix with length "
+                    + requiredPrefixLength);
+        }
+    }
+
+    private String createIfAbsent(Field field, Record record, Record[] records) {
+        String listItemDataTypeName = AnnotationDataProvider.get(record, DATA_TYPE_NAME);
+        if (listItemDataTypeName == null) {
+            Class<?> listItemObjectType = getListItemObjectType(record, field, records.length == 1);
+            assertHasComplexType(listItemObjectType, field);
+            listItemDataTypeName = createComplexTypeMappingIfAbsent(listItemObjectType, true);
+        } else {
+            assertTypeMappingExists(listItemDataTypeName);
+        }
+        return listItemDataTypeName;
     }
 
     private void assertHasComplexType(Class<?> listItemObjectType, Field field) {
@@ -308,12 +377,12 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
         objectTypePath.add(typeMapping.getObjectType());
         if (typeMapping instanceof RbfComplexTypeMapping) {
             RbfComplexTypeMapping complexTypeMapping = (RbfComplexTypeMapping) typeMapping;
-            for (String fieldName : complexTypeMapping.getFieldNames(NodeType.FIELD)) {
-                NodeMapping nodeMapping = complexTypeMapping.getNodeMapping(fieldName);
+            for (String fieldName : complexTypeMapping.getFieldNames(RbfNodeType.FIELD)) {
+                RbfNodeMapping<?> nodeMapping = complexTypeMapping.getNodeMapping(fieldName, Object.class);
                 assertIsCycleFree(nodeMapping.getDataTypeName(), objectTypePath);
             }
-            for (String fieldName : complexTypeMapping.getFieldNames(NodeType.RECORD)) {
-                NodeMapping nodeMapping = complexTypeMapping.getNodeMapping(fieldName);
+            for (String fieldName : complexTypeMapping.getFieldNames(RbfNodeType.RECORD)) {
+                RbfNodeMapping<?> nodeMapping = complexTypeMapping.getNodeMapping(fieldName, Object.class);
                 assertIsCycleFree(nodeMapping.getDataTypeName());
             }
         }

@@ -102,7 +102,8 @@ public abstract class CsvIOFactory implements IOFactory {
         try {
             CsvTypeMappingFactory typeMappingFactory = new CsvTypeMappingFactory(newConfig
                     .getTypeMappingRegistry(), newConfig.getSimpleTypeConverterProvider(), newConfig
-                    .getObjectAccessorProvider(), newConfig.getDefaultQuoteMode(), newConfig.getDefaultNoValueString());
+                    .getValidatorProvider(), newConfig.getObjectAccessorProvider(), newConfig
+                    .getDefaultQuoteMode(), newConfig.getDefaultNoValueString());
             newConfig.getEntryPoints().addAll(
                     CsvEntryPointFactory.createEntryPoints(typeMappingFactory, objectTypes));
             return createFactory(newConfig);

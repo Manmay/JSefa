@@ -17,23 +17,27 @@
 package org.jsefa.xml;
 
 import java.io.Writer;
+import java.util.Collection;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jsefa.SerializationException;
 import org.jsefa.common.accessor.ObjectAccessor;
-import org.jsefa.common.mapping.FieldDescriptor;
+import org.jsefa.common.config.ValidationMode;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.common.validator.ValidationException;
+import org.jsefa.common.validator.ValidationResult;
+import org.jsefa.common.validator.Validator;
 import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelSerializer;
 import org.jsefa.xml.mapping.AttributeMapping;
 import org.jsefa.xml.mapping.ElementMapping;
-import org.jsefa.xml.mapping.NodeMapping;
-import org.jsefa.xml.mapping.NodeType;
 import org.jsefa.xml.mapping.TextContentMapping;
 import org.jsefa.xml.mapping.XmlComplexTypeMapping;
 import org.jsefa.xml.mapping.XmlListTypeMapping;
+import org.jsefa.xml.mapping.XmlNodeMapping;
+import org.jsefa.xml.mapping.XmlNodeType;
 import org.jsefa.xml.mapping.XmlSimpleTypeMapping;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
 
@@ -52,12 +56,16 @@ public final class XmlSerializerImpl implements XmlSerializer {
 
     private IdentityHashMap<Object, Object> complexObjectsOnPath;
 
+    private boolean validate;
+
     XmlSerializerImpl(XmlConfiguration config, Map<Class<?>, ElementMapping> entryElementMappings,
             XmlLowLevelSerializer lowLevelSerializer) {
         this.typeMappingRegistry = config.getTypeMappingRegistry();
         this.entryElementMappings = entryElementMappings;
         this.lowLevelSerializer = lowLevelSerializer;
         this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
+        this.validate = config.getValidationMode().equals(ValidationMode.SERIALIZATION)
+                || config.getValidationMode().equals(ValidationMode.BOTH);
     }
 
     /**
@@ -81,20 +89,13 @@ public final class XmlSerializerImpl implements XmlSerializer {
             return;
         }
         try {
-            ElementMapping nodeMapping = this.entryElementMappings.get(object.getClass());
-            if (nodeMapping == null) {
-                Class<?> objectType = object.getClass().getSuperclass();
-                while (objectType != null) {
-                    nodeMapping = this.entryElementMappings.get(objectType);
-                    if (nodeMapping != null) {
-                        break;
-                    }
-                    objectType = objectType.getSuperclass();
-                }
-            }
+            ElementMapping nodeMapping = ReflectionUtil.getNearest(object.getClass(), this.entryElementMappings);
             if (nodeMapping == null) {
                 throw new SerializationException("The following class was not registered for serialization: "
                         + object.getClass());
+            }
+            if (this.validate) {
+                assertValueIsValid(object, nodeMapping);
             }
             serializeElement(object, nodeMapping);
         } catch (SerializationException e) {
@@ -152,7 +153,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
         } else if (typeMapping instanceof XmlComplexTypeMapping) {
             serializeComplexElement(object, elementMapping, (XmlComplexTypeMapping) typeMapping);
         } else if (typeMapping instanceof XmlListTypeMapping) {
-            serializeListElement((List<?>) object, elementMapping, (XmlListTypeMapping) typeMapping);
+            serializeListElement((Collection<?>) object, elementMapping, (XmlListTypeMapping) typeMapping);
         }
     }
 
@@ -179,31 +180,31 @@ public final class XmlSerializerImpl implements XmlSerializer {
         }
         ObjectAccessor objectAccessor = typeMapping.getObjectAccessor();
         writeStartElement(elementMapping);
-        for (String fieldName : typeMapping.getFieldNames(NodeType.ATTRIBUTE)) {
+        for (String fieldName : typeMapping.getFieldNames(XmlNodeType.ATTRIBUTE)) {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
-                AttributeMapping attributeMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
-                        getNormalizedObjectType(fieldValue)));
+                AttributeMapping attributeMapping = typeMapping.getNodeMapping(fieldName,
+                        getNormalizedObjectType(fieldValue));
                 serializeAttribute(fieldValue, attributeMapping);
             }
         }
 
-        for (String fieldName : typeMapping.getFieldNames(NodeType.TEXT_CONTENT)) {
+        for (String fieldName : typeMapping.getFieldNames(XmlNodeType.TEXT_CONTENT)) {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
-                TextContentMapping textContentMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
-                        getNormalizedObjectType(fieldValue)));
+                TextContentMapping textContentMapping = typeMapping.getNodeMapping(fieldName,
+                        getNormalizedObjectType(fieldValue));
                 String value = getSimpleTypeMapping(textContentMapping).getSimpleTypeConverter().toString(
                         fieldValue);
                 this.lowLevelSerializer.writeText(value, textContentMapping.getTextMode());
             }
 
         }
-        for (String fieldName : typeMapping.getFieldNames(NodeType.ELEMENT)) {
+        for (String fieldName : typeMapping.getFieldNames(XmlNodeType.ELEMENT)) {
             Object fieldValue = objectAccessor.getValue(object, fieldName);
             if (fieldValue != null) {
-                ElementMapping childElementMapping = typeMapping.getNodeMapping(new FieldDescriptor(fieldName,
-                        getNormalizedObjectType(fieldValue)));
+                ElementMapping childElementMapping = typeMapping.getNodeMapping(fieldName,
+                        getNormalizedObjectType(fieldValue));
                 if (childElementMapping == null) {
                     throw new SerializationException("Unable to serialize field class "
                             + getNormalizedObjectType(fieldValue).getName() + " for field " + fieldName
@@ -216,7 +217,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
         this.complexObjectsOnPath.remove(object);
     }
 
-    private void serializeListElement(List<?> listObject, ElementMapping elementMapping,
+    private void serializeListElement(Collection<?> listObject, ElementMapping elementMapping,
             XmlListTypeMapping typeMapping) {
         if (listObject == null) {
             return;
@@ -225,7 +226,7 @@ public final class XmlSerializerImpl implements XmlSerializer {
             writeStartElement(elementMapping);
         }
         for (Object listItemValue : listObject) {
-            ElementMapping listItemMapping = typeMapping.getElementMapping(listItemValue.getClass());
+            ElementMapping listItemMapping = typeMapping.getNodeMapping(listItemValue.getClass());
             if (listItemMapping == null) {
                 throw new SerializationException("No element mapping found for list item with class "
                         + listItemValue.getClass());
@@ -238,14 +239,14 @@ public final class XmlSerializerImpl implements XmlSerializer {
 
     }
 
-    private XmlSimpleTypeMapping getSimpleTypeMapping(NodeMapping<?> nodeMapping) {
+    private XmlSimpleTypeMapping getSimpleTypeMapping(XmlNodeMapping<?> nodeMapping) {
         return (XmlSimpleTypeMapping) this.typeMappingRegistry.get(nodeMapping.getDataTypeName());
     }
 
     private Class<?> getNormalizedObjectType(Object value) {
         Class<?> objectType = value.getClass();
-        if (List.class.isAssignableFrom(objectType)) {
-            objectType = List.class;
+        if (Collection.class.isAssignableFrom(objectType)) {
+            objectType = Collection.class;
         }
         return objectType;
     }
@@ -259,4 +260,14 @@ public final class XmlSerializerImpl implements XmlSerializer {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void assertValueIsValid(Object object, XmlNodeMapping nodeMapping) {
+        Validator validator = nodeMapping.getValidator();
+        if (validator != null) {
+            ValidationResult result = validator.validate(object);
+            if (!result.isValid()) {
+                throw new ValidationException(result);
+            }
+        }
+    }
 }

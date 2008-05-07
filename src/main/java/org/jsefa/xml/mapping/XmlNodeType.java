@@ -16,19 +16,25 @@
 
 package org.jsefa.xml.mapping;
 
+import org.jsefa.common.mapping.NodeType;
+
 /**
- * Descriptor for an xml node (e. g. attribute or element).
+ * Enum class declaring the different xml node types.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public interface NodeDescriptor {
-
+public enum XmlNodeType implements NodeType {
     /**
-     * Returns the type of the node.
-     * 
-     * @return the node type
+     * node type for xml elements.
      */
-    NodeType getType();
-
+    ELEMENT,
+    /**
+     * node type for xml attributes.
+     */
+    ATTRIBUTE,
+    /**
+     * node type for the content of non-simple xml elements without child elements.
+     */
+    TEXT_CONTENT
 }

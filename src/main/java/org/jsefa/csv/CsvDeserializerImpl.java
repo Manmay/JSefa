@@ -39,13 +39,13 @@ public final class CsvDeserializerImpl extends RbfDeserializerImpl implements Cs
 
     CsvDeserializerImpl(CsvConfiguration config, Map<String, RbfEntryPoint> entryPointsByPrefixes,
             CsvLowLevelDeserializer lowLevelDeserializer) {
-        super(config.getTypeMappingRegistry(), entryPointsByPrefixes);
+        super(config, entryPointsByPrefixes);
         this.lowLevelDeserializer = lowLevelDeserializer;
     }
 
     CsvDeserializerImpl(CsvConfiguration config, RbfEntryPoint entryPoint,
             CsvLowLevelDeserializer lowLevelDeserializer) {
-        super(config.getTypeMappingRegistry(), entryPoint);
+        super(config, entryPoint);
         this.lowLevelDeserializer = lowLevelDeserializer;
     }
 

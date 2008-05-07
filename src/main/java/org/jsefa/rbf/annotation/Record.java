@@ -17,6 +17,8 @@
 package org.jsefa.rbf.annotation;
 
 import org.jsefa.common.annotation.NoClass;
+import org.jsefa.common.annotation.NoValidatorType;
+import org.jsefa.common.validator.Validator;
 
 /**
  * Annotation describing the prefix and data type name or object type of a sub record as part of a sub record list.
@@ -49,4 +51,16 @@ public @interface Record {
      * The object type will be ignored if the data type name is given explicitly.
      */
     Class<?> objectType() default NoClass.class;
+
+    /**
+     * Specifies the validator type to be used. In the default case the validator type is determined using the type
+     * of the java field with this annotation.
+     */
+    Class<? extends Validator> validatorType() default NoValidatorType.class;
+
+    /**
+     * The constraints to validate. Each constraint is a String of the form 'name=value' where name is the name of
+     * the constraint and value is its value. The allowed set of constraints depend on the validator type. 
+     */
+    String[] constraints() default {};    
 }

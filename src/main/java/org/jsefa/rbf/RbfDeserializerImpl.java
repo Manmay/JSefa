@@ -17,22 +17,29 @@
 package org.jsefa.rbf;
 
 import java.io.Reader;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.jsefa.DeserializationException;
 import org.jsefa.ObjectPathElement;
+import org.jsefa.common.config.ValidationMode;
 import org.jsefa.common.lowlevel.InputPosition;
 import org.jsefa.common.lowlevel.filter.Line;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.validator.ValidationException;
+import org.jsefa.common.validator.ValidationResult;
+import org.jsefa.common.validator.Validator;
+import org.jsefa.rbf.config.RbfConfiguration;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializer;
-import org.jsefa.rbf.mapping.NodeMapping;
-import org.jsefa.rbf.mapping.NodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
+import org.jsefa.rbf.mapping.RbfFieldDescriptor;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
+import org.jsefa.rbf.mapping.RbfNodeMapping;
+import org.jsefa.rbf.mapping.RbfNodeType;
+import org.jsefa.rbf.mapping.RecordDescriptor;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 import org.jsefa.rbf.mapping.RecordMapping;
 
@@ -53,31 +60,36 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
 
     private RbfEntryPoint currentEntryPoint;
 
+    private boolean validate;
+
     /**
      * Constructs a new <code>AbstractRbfDeserializer</code>.
      * 
-     * @param typeMappingRegistry the type mapping registry.
+     * @param config the configuration
      * @param entryPointsByPrefixes a map which maps prefixes to entry points
      */
-    protected RbfDeserializerImpl(RbfTypeMappingRegistry typeMappingRegistry,
-            Map<String, RbfEntryPoint> entryPointsByPrefixes) {
-        this.typeMappingRegistry = typeMappingRegistry;
+    protected RbfDeserializerImpl(RbfConfiguration<?> config, Map<String, RbfEntryPoint> entryPointsByPrefixes) {
+        this.typeMappingRegistry = config.getTypeMappingRegistry();
         this.entryPointsByPrefix = entryPointsByPrefixes;
         this.withPrefix = true;
         this.entryPoint = null;
+        this.validate = config.getValidationMode().equals(ValidationMode.DESERIALIZATION)
+                || config.getValidationMode().equals(ValidationMode.BOTH);
     }
 
     /**
      * Constructs a new <code>AbstractRbfDeserializer</code>.
      * 
-     * @param typeMappingRegistry the type mapping registry
+     * @param config the configuration
      * @param entryPoint the entry point
      */
-    protected RbfDeserializerImpl(RbfTypeMappingRegistry typeMappingRegistry, RbfEntryPoint entryPoint) {
-        this.typeMappingRegistry = typeMappingRegistry;
+    protected RbfDeserializerImpl(RbfConfiguration<?> config, RbfEntryPoint entryPoint) {
+        this.typeMappingRegistry = config.getTypeMappingRegistry();
         this.entryPoint = entryPoint;
         this.withPrefix = false;
         this.entryPointsByPrefix = null;
+        this.validate = config.getValidationMode().equals(ValidationMode.DESERIALIZATION)
+                || config.getValidationMode().equals(ValidationMode.BOTH);
     }
 
     /**
@@ -120,7 +132,11 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
                 return null;
             }
             try {
-                return (T) readValue(getTypeMapping(this.currentEntryPoint.getDataTypeName()));
+                T result = (T) readValue(getTypeMapping(this.currentEntryPoint.getDataTypeName()));
+                if (this.validate && result != null) {
+                    assertValueIsValid(result, this.currentEntryPoint);
+                }
+                return result;
             } finally {
                 this.currentEntryPoint = null;
             }
@@ -202,11 +218,16 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
 
     private boolean readFields(Object object, RbfComplexTypeMapping typeMapping) {
         boolean hasContent = false;
-        for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
+        int relativeIndex = 0;
+        while (true) {
+            String fieldName = null;
             try {
-                NodeMapping nodeMapping = typeMapping.getNodeMapping(fieldName);
-                String fieldDataTypeName = nodeMapping.getDataTypeName();
-                Object fieldValue = readValue(getTypeMapping(fieldDataTypeName));
+                RbfNodeMapping<?> nodeMapping = typeMapping.getNodeMapping(new RbfFieldDescriptor(relativeIndex++));
+                if (nodeMapping == null) {
+                    break;
+                }
+                fieldName = nodeMapping.getFieldDescriptor().getName();
+                Object fieldValue = readValue(getTypeMapping(nodeMapping.getDataTypeName()));
                 if (fieldValue != null) {
                     typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
                     hasContent = true;
@@ -218,42 +239,51 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         return hasContent;
     }
 
+    @SuppressWarnings("unchecked")
     private boolean readSubRecords(Object object, RbfComplexTypeMapping typeMapping) {
-        if (typeMapping.getFieldNames(NodeType.RECORD).isEmpty() || !getLowLevelDeserializer().readNextRecord()) {
+        if (typeMapping.getFieldNames(RbfNodeType.RECORD).isEmpty() || !getLowLevelDeserializer().readNextRecord()) {
             return false;
         }
         boolean hasContent = false;
-        String prefix = readPrefix();
-        for (String fieldName : typeMapping.getFieldNames(NodeType.RECORD)) {
+        RecordDescriptor recordDescriptor = new RecordDescriptor(readPrefix());
+        do {
+            RecordMapping subRecordNodeMapping = typeMapping.getNodeMapping(recordDescriptor);
+            if (subRecordNodeMapping == null) {
+                break;
+            }
+            TypeMapping<?> subRecordTypeMapping = getTypeMapping(subRecordNodeMapping.getDataTypeName());
+            String fieldName = subRecordNodeMapping.getFieldDescriptor().getName();
             try {
-                RecordMapping subRecordNodeMapping = typeMapping.getNodeMapping(fieldName);
-                TypeMapping<?> subRecordTypeMapping = getTypeMapping(subRecordNodeMapping.getDataTypeName());
                 if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
-                    if (subRecordNodeMapping.getPrefix().equals(prefix)) {
-                        Object fieldValue = readValue(subRecordTypeMapping);
-                        if (fieldValue != null) {
-                            typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
-                            hasContent = true;
-                        }
-                        if (!getLowLevelDeserializer().readNextRecord()) {
-                            return hasContent;
-                        }
-                        prefix = readPrefix();
+                    Object fieldValue = readValue(subRecordTypeMapping);
+                    if (fieldValue != null) {
+                        typeMapping.getObjectAccessor().setValue(object, fieldName, fieldValue);
+                        hasContent = true;
                     }
+                    if (!getLowLevelDeserializer().readNextRecord()) {
+                        return hasContent;
+                    }
+                    recordDescriptor = new RecordDescriptor(readPrefix());
                 } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
-                    List<Object> fieldValue = new ArrayList<Object>();
                     RbfListTypeMapping subRecordListTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
+                    Collection<Object> fieldValue = (Collection<Object>) subRecordListTypeMapping
+                            .getObjectAccessor().createObject();
                     boolean hasRecord = true;
-                    while (hasRecord && subRecordListTypeMapping.getPrefixes().contains(prefix)) {
+                    while (hasRecord) {
+                        RecordMapping listItemRecordMapping = subRecordListTypeMapping
+                                .getNodeMapping(recordDescriptor);
+                        if (listItemRecordMapping == null) {
+                            break;
+                        }
                         TypeMapping<?> listItemTypeMapping = getTypeMapping(subRecordListTypeMapping
-                                .getRecordMapping(prefix).getDataTypeName());
+                                .getNodeMapping(recordDescriptor).getDataTypeName());
                         Object listItemValue = readValue(listItemTypeMapping);
                         if (listItemValue != null) {
                             fieldValue.add(listItemValue);
                         }
-                        hasRecord = getLowLevelDeserializer().readNextRecord(); 
+                        hasRecord = getLowLevelDeserializer().readNextRecord();
                         if (hasRecord) {
-                            prefix = readPrefix();
+                            recordDescriptor = new RecordDescriptor(readPrefix());
                         }
                     }
                     if (!fieldValue.isEmpty()) {
@@ -267,7 +297,8 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
             } catch (Exception e) {
                 throw createException(e, typeMapping, fieldName);
             }
-        }
+        } while (hasContent);
+        
         getLowLevelDeserializer().unreadRecord();
         return hasContent;
     }
@@ -313,4 +344,14 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void assertValueIsValid(Object object, RbfEntryPoint entryPoint) {
+        Validator validator = entryPoint.getValidator();
+        if (validator != null) {
+            ValidationResult result = validator.validate(object);
+            if (!result.isValid()) {
+                throw new ValidationException(result);
+            }
+        }
+    }
 }

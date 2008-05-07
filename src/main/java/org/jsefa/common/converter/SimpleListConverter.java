@@ -17,7 +17,14 @@
 package org.jsefa.common.converter;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+
+import org.jsefa.common.util.ReflectionUtil;
 
 /**
  * Converter for <code>List</code> objects.<br>
@@ -34,9 +41,12 @@ public class SimpleListConverter implements SimpleTypeConverter {
      */
     private static final String[] DEFAULT_FORMAT = {","};
 
-    private String delimiter;
+    private final String delimiter;
 
-    private SimpleTypeConverter itemTypeConverter;
+    private final SimpleTypeConverter itemTypeConverter;
+
+    @SuppressWarnings("unchecked")
+    private final Class<? extends Collection> collectionClass;
 
     /**
      * Creates a <code>SimpleListConverter</code>.<br>
@@ -60,22 +70,36 @@ public class SimpleListConverter implements SimpleTypeConverter {
     protected SimpleListConverter(SimpleTypeConverterConfiguration configuration) {
         this.delimiter = getFormat(configuration)[0];
         this.itemTypeConverter = configuration.getItemTypeConverter();
+        if (configuration.getObjectType().isInterface()) {
+            this.collectionClass = getImplementor(configuration.getObjectType());
+            if (this.collectionClass == null) {
+                throw new ConversionException("Could not create a " + this.getClass().getName()
+                        + " for collection type " + configuration.getObjectType().getName());
+            }
+        } else {
+            this.collectionClass = configuration.getObjectType();
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public Object fromString(String value) {
-        List result = new ArrayList();
-        int lastIndex = 0;
-        int index = value.indexOf(this.delimiter);
-        while (index != -1) {
-            result.add(this.itemTypeConverter.fromString(value.substring(lastIndex, index)));
-            lastIndex = index + this.delimiter.length();
-            index = value.indexOf(this.delimiter, lastIndex);
+    public final Object fromString(String value) {
+        if (value == null) {
+            return null;
         }
-        result.add(this.itemTypeConverter.fromString(value.substring(lastIndex)));
+        Collection result = ReflectionUtil.createInstance(this.collectionClass);
+        if (value.length() > 0) {
+            int lastIndex = 0;
+            int index = value.indexOf(this.delimiter);
+            while (index != -1) {
+                result.add(this.itemTypeConverter.fromString(value.substring(lastIndex, index)));
+                lastIndex = index + this.delimiter.length();
+                index = value.indexOf(this.delimiter, lastIndex);
+            }
+            result.add(this.itemTypeConverter.fromString(value.substring(lastIndex)));
+        }
         return result;
     }
 
@@ -83,12 +107,14 @@ public class SimpleListConverter implements SimpleTypeConverter {
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public String toString(Object value) {
+    public final String toString(Object value) {
         StringBuilder result = new StringBuilder();
-        List list = (List) value;
-        for (int i = 0; i < list.size(); i++) {
-            result.append(this.itemTypeConverter.toString(list.get(i)));
-            if (i < list.size() - 1) {
+        Collection list = (Collection) value;
+        int listSize = list.size();
+        int itemIndex = 0;
+        for (Object item : list) {
+            result.append(this.itemTypeConverter.toString(item));
+            if (++itemIndex < listSize) {
                 result.append(this.delimiter);
             }
         }
@@ -102,6 +128,26 @@ public class SimpleListConverter implements SimpleTypeConverter {
      */
     protected String[] getDefaultFormat() {
         return SimpleListConverter.DEFAULT_FORMAT;
+    }
+
+    /**
+     * Returns a class implementing the given interface.
+     * 
+     * @param aCollectionInterface a {@link Collection}.
+     * @return a class implementing the given interface or null.
+     */
+    @SuppressWarnings("unchecked")
+    protected Class<? extends Collection> getImplementor(Class<?> aCollectionInterface) {
+        if (List.class.isAssignableFrom(aCollectionInterface)) {
+            return ArrayList.class;
+        }
+        if (Set.class.isAssignableFrom(aCollectionInterface)) {
+            return HashSet.class;
+        }
+        if (Queue.class.isAssignableFrom(aCollectionInterface)) {
+            return LinkedList.class;
+        }
+        return null;
     }
 
     private String[] getFormat(SimpleTypeConverterConfiguration configuration) {

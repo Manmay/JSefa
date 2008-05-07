@@ -17,11 +17,9 @@
 package org.jsefa.rbf.mapping;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import org.jsefa.common.accessor.ObjectAccessor;
+import org.jsefa.common.mapping.ListTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 
 /**
@@ -34,67 +32,18 @@ import org.jsefa.common.mapping.TypeMapping;
  * 
  */
 
-public final class RbfListTypeMapping extends TypeMapping<String> {
-
-    private final Map<String, RecordMapping> recordMappingsByPrefix;
-
-    private final Map<Class<?>, RecordMapping> recordMappingsByObjectType;
+public final class RbfListTypeMapping extends ListTypeMapping<String, RecordDescriptor, RecordMapping> {
 
     /**
      * Constructs a new <code>RbfListTypeMapping</code>.
      * 
      * @param dataTypeName the data type name
      * @param recordMappings the record mappings
+     * @param objectAccessor the object accessor
      */
-    public RbfListTypeMapping(String dataTypeName, Collection<RecordMapping> recordMappings) {
-        super(List.class, dataTypeName);
-        this.recordMappingsByPrefix = createRecordMappingsByPrefixMap(recordMappings);
-        this.recordMappingsByObjectType = createRecordMappingsByObjectTypeMap(recordMappings);
+    public RbfListTypeMapping(String dataTypeName, Collection<RecordMapping> recordMappings,
+            ObjectAccessor objectAccessor) {
+        super(Collection.class, dataTypeName, recordMappings, objectAccessor);
     }
 
-    /**
-     * Returns the record mapping for the given object type.
-     * 
-     * @param objectType the object type
-     * @return a record mapping
-     */
-    public RecordMapping getRecordMapping(Class<?> objectType) {
-        return this.recordMappingsByObjectType.get(objectType);
-    }
-
-    /**
-     * Returns the record mapping for the given prefix.
-     * 
-     * @param prefix the prefix
-     * @return a record mapping
-     */
-    public RecordMapping getRecordMapping(String prefix) {
-        return this.recordMappingsByPrefix.get(prefix);
-    }
-
-    /**
-     * Returns the set of prefixes.
-     * 
-     * @return the set of prefixes.
-     */
-    public Set<String> getPrefixes() {
-        return this.recordMappingsByPrefix.keySet();
-    }
-
-    private Map<String, RecordMapping> createRecordMappingsByPrefixMap(Collection<RecordMapping> recordMappings) {
-        Map<String, RecordMapping> result = new HashMap<String, RecordMapping>();
-        for (RecordMapping recordMapping : recordMappings) {
-            result.put(recordMapping.getPrefix(), recordMapping);
-        }
-        return result;
-    }
-
-    private Map<Class<?>, RecordMapping> createRecordMappingsByObjectTypeMap(
-            Collection<RecordMapping> recordMappings) {
-        Map<Class<?>, RecordMapping> result = new HashMap<Class<?>, RecordMapping>();
-        for (RecordMapping recordMapping : recordMappings) {
-            result.put(recordMapping.getObjectType(), recordMapping);
-        }
-        return result;
-    }
 }

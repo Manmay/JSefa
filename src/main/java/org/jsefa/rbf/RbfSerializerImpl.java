@@ -17,20 +17,26 @@
 package org.jsefa.rbf;
 
 import java.io.Writer;
+import java.util.Collection;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jsefa.SerializationException;
 import org.jsefa.Serializer;
+import org.jsefa.common.config.ValidationMode;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.common.validator.ValidationException;
+import org.jsefa.common.validator.ValidationResult;
+import org.jsefa.common.validator.Validator;
+import org.jsefa.rbf.config.RbfConfiguration;
 import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
-import org.jsefa.rbf.mapping.NodeMapping;
-import org.jsefa.rbf.mapping.NodeType;
+import org.jsefa.rbf.mapping.RbfNodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
+import org.jsefa.rbf.mapping.RbfNodeMapping;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 import org.jsefa.rbf.mapping.RecordMapping;
 
@@ -51,20 +57,24 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
 
     private L lowLevelSerializer;
 
+    private boolean validate;
+    
     /**
      * Constructs a new <code>RbfSerializerImpl</code>.
      * 
-     * @param typeMappingRegistry the type mapping registry
+     * @param config the configuration
      * @param entryPoints a map which maps object types to entry points.
      * @param lowLevelSerializer the low level serializer
      */
-    protected RbfSerializerImpl(RbfTypeMappingRegistry typeMappingRegistry, Map<Class<?>, RbfEntryPoint> entryPoints,
+    protected RbfSerializerImpl(RbfConfiguration<?> config, Map<Class<?>, RbfEntryPoint> entryPoints,
             L lowLevelSerializer) {
-        this.typeMappingRegistry = typeMappingRegistry;
+        this.typeMappingRegistry = config.getTypeMappingRegistry();
         this.entryPoints = entryPoints;
         this.withPrefix = (entryPoints.values().iterator().next().getDesignator().length() > 0);
         this.complexObjectsOnPath = new IdentityHashMap<Object, Object>();
         this.lowLevelSerializer = lowLevelSerializer;
+        this.validate = config.getValidationMode().equals(ValidationMode.SERIALIZATION)
+        || config.getValidationMode().equals(ValidationMode.BOTH);
     }
 
     /**
@@ -88,6 +98,9 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
         }
         try {
             RbfEntryPoint entryPoint = getEntryPoint(object.getClass());
+            if (this.validate) {
+                assertValueIsValid(object, entryPoint);
+            }
             if (this.withPrefix) {
                 writePrefix(entryPoint.getDesignator());
             }
@@ -171,35 +184,35 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
     }
 
     private void writeFields(Object object, RbfComplexTypeMapping typeMapping) {
-        for (String fieldName : typeMapping.getFieldNames(NodeType.FIELD)) {
+        for (String fieldName : typeMapping.getFieldNames(RbfNodeType.FIELD)) {
             Object fieldValue = null;
             if (object != null) {
                 fieldValue = typeMapping.getObjectAccessor().getValue(object, fieldName);
             }
-            NodeMapping nodeMapping = typeMapping.getNodeMapping(fieldName);
+            RbfNodeMapping<?> nodeMapping = typeMapping.getNodeMapping(fieldName, Object.class);
             String fieldDataTypeName = nodeMapping.getDataTypeName();
             writeValue(fieldValue, getTypeMapping(fieldDataTypeName));
         }
     }
 
     private void writeSubRecords(Object object, RbfComplexTypeMapping typeMapping) {
-        for (String fieldName : typeMapping.getFieldNames(NodeType.RECORD)) {
+        for (String fieldName : typeMapping.getFieldNames(RbfNodeType.RECORD)) {
             Object fieldValue = typeMapping.getObjectAccessor().getValue(object, fieldName);
             if (fieldValue == null) {
                 continue;
             }
-            RecordMapping recordMapping = typeMapping.getNodeMapping(fieldName);
+            RecordMapping recordMapping = typeMapping.getNodeMapping(fieldName, Object.class);
             TypeMapping<?> subRecordTypeMapping = getTypeMapping(recordMapping.getDataTypeName());
             if (subRecordTypeMapping instanceof RbfComplexTypeMapping) {
                 getLowLevelSerializer().finishRecord();
-                writePrefix(recordMapping.getPrefix());
+                writePrefix(recordMapping.getNodeDescriptor().getPrefix());
                 writeValue(fieldValue, subRecordTypeMapping);
             } else if (subRecordTypeMapping instanceof RbfListTypeMapping) {
                 RbfListTypeMapping listTypeMapping = (RbfListTypeMapping) subRecordTypeMapping;
-                for (Object listItem : (List<?>) fieldValue) {
+                for (Object listItem : (Collection<?>) fieldValue) {
                     getLowLevelSerializer().finishRecord();
-                    RecordMapping itemRecordMapping = listTypeMapping.getRecordMapping(listItem.getClass());
-                    writePrefix(itemRecordMapping.getPrefix());
+                    RecordMapping itemRecordMapping = listTypeMapping.getNodeMapping(listItem.getClass());
+                    writePrefix(itemRecordMapping.getNodeDescriptor().getPrefix());
                     writeValue(listItem, getTypeMapping(itemRecordMapping.getDataTypeName()));
                 }
             }
@@ -215,17 +228,7 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
     }
 
     private RbfEntryPoint getEntryPoint(Class<?> originalObjectType) {
-        RbfEntryPoint entryPoint = this.entryPoints.get(originalObjectType);
-        if (entryPoint == null) {
-            Class<?> objectType = originalObjectType.getSuperclass();
-            while (objectType != null) {
-                entryPoint = this.entryPoints.get(objectType);
-                if (entryPoint != null) {
-                    break;
-                }
-                objectType = objectType.getSuperclass();
-            }
-        }
+        RbfEntryPoint entryPoint = ReflectionUtil.getNearest(originalObjectType, this.entryPoints);
         if (entryPoint == null) {
             throw new SerializationException("The following class was not registered for serialization: "
                     + originalObjectType);
@@ -233,4 +236,14 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
         return entryPoint;
     }
 
+    @SuppressWarnings("unchecked")
+    private void assertValueIsValid(Object object, RbfEntryPoint entryPoint) {
+        Validator validator = entryPoint.getValidator();
+        if (validator != null) {
+            ValidationResult result = validator.validate(object);
+            if (!result.isValid()) {
+                throw new ValidationException(result);
+            }
+        }
+    }
 }

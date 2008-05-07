@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.jsefa.IOFactoryException;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.validator.Validator;
+import org.jsefa.common.validator.traversal.TraversingValidatorFactory;
 import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelIOFactory;
 import org.jsefa.xml.mapping.ElementDescriptor;
@@ -28,6 +30,7 @@ import org.jsefa.xml.mapping.ElementMapping;
 import org.jsefa.xml.mapping.ElementMappingsBuilder;
 import org.jsefa.xml.mapping.XmlEntryPoint;
 import org.jsefa.xml.mapping.XmlTypeMappingUtil;
+import org.jsefa.xml.namespace.QName;
 
 /**
  * Default implementation of {@link XmlIOFactory}.
@@ -83,6 +86,8 @@ public class XmlIOFactoryImpl extends XmlIOFactory {
 
     private Map<ElementDescriptor, ElementMapping> createEntryElementMappingsByElementDescriptor() {
         ElementMappingsBuilder elementMappingsBuilder = new ElementMappingsBuilder();
+        TraversingValidatorFactory<QName> deepValidatorFactory = new TraversingValidatorFactory<QName>(config
+                .getTypeMappingRegistry(), config.getObjectAccessorProvider());
         for (XmlEntryPoint entryPoint : config.getEntryPoints()) {
             TypeMapping<?> typeMapping = config.getTypeMappingRegistry().get(entryPoint.getDataTypeName());
             if (typeMapping == null) {
@@ -90,8 +95,10 @@ public class XmlIOFactoryImpl extends XmlIOFactory {
             }
             ElementDescriptor elementDescriptor = new ElementDescriptor(entryPoint.getDesignator(), entryPoint
                     .getDataTypeName());
+            Validator validator = deepValidatorFactory.create(entryPoint.getDataTypeName(), entryPoint
+                    .getValidator());
             elementMappingsBuilder.addMapping(entryPoint.getDataTypeName(), elementDescriptor, typeMapping
-                    .getObjectType(), null, null);
+                    .getObjectType(), null, validator, null);
         }
         return XmlTypeMappingUtil.createNodeMappingsByNodeDescriptorMap(elementMappingsBuilder.getResult());
     }

@@ -17,15 +17,19 @@
 package org.jsefa.xml;
 
 import java.io.Reader;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.jsefa.DeserializationException;
 import org.jsefa.ObjectPathElement;
 import org.jsefa.common.accessor.ObjectAccessor;
+import org.jsefa.common.config.ValidationMode;
 import org.jsefa.common.lowlevel.InputPosition;
 import org.jsefa.common.mapping.TypeMapping;
+import org.jsefa.common.validator.ValidationException;
+import org.jsefa.common.validator.ValidationResult;
+import org.jsefa.common.validator.Validator;
 import org.jsefa.xml.config.XmlConfiguration;
 import org.jsefa.xml.lowlevel.XmlLowLevelDeserializer;
 import org.jsefa.xml.lowlevel.model.Attribute;
@@ -38,11 +42,11 @@ import org.jsefa.xml.mapping.AttributeDescriptor;
 import org.jsefa.xml.mapping.AttributeMapping;
 import org.jsefa.xml.mapping.ElementDescriptor;
 import org.jsefa.xml.mapping.ElementMapping;
-import org.jsefa.xml.mapping.NodeMapping;
 import org.jsefa.xml.mapping.TextContentDescriptor;
 import org.jsefa.xml.mapping.TextContentMapping;
 import org.jsefa.xml.mapping.XmlComplexTypeMapping;
 import org.jsefa.xml.mapping.XmlListTypeMapping;
+import org.jsefa.xml.mapping.XmlNodeMapping;
 import org.jsefa.xml.mapping.XmlSimpleTypeMapping;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
 import org.jsefa.xml.namespace.QName;
@@ -62,11 +66,15 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
 
     private ElementMapping currentEntryElementMapping;
 
+    private boolean validate;
+
     XmlDeserializerImpl(XmlConfiguration config, Map<ElementDescriptor, ElementMapping> entryElementMappings,
             XmlLowLevelDeserializer lowLevelDeserializer) {
         this.typeMappingRegistry = config.getTypeMappingRegistry();
         this.entryElementMappings = entryElementMappings;
         this.lowLevelDeserializer = lowLevelDeserializer;
+        this.validate = config.getValidationMode().equals(ValidationMode.DESERIALIZATION)
+                || config.getValidationMode().equals(ValidationMode.BOTH);
     }
 
     /**
@@ -110,7 +118,11 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
             if (!hasNext()) {
                 return null;
             }
-            return (T) deserializeElement(this.currentEntryElementMapping.getDataTypeName());
+            T result = (T) deserializeElement(this.currentEntryElementMapping.getDataTypeName());
+            if (this.validate && result != null) {
+                assertValueIsValid(result, this.currentEntryElementMapping);
+            }
+            return result;
         } catch (DeserializationException e) {
             throw e;
         } catch (Exception e) {
@@ -221,15 +233,16 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
         return object;
     }
 
-    private List<Object> deserializeListElement(XmlListTypeMapping typeMapping) {
-        List<Object> listValue = new ArrayList<Object>();
+    @SuppressWarnings("unchecked")
+    private Collection<Object> deserializeListElement(XmlListTypeMapping typeMapping) {
+        Collection<Object> listValue = (Collection<Object>) typeMapping.getObjectAccessor().createObject();
         if (typeMapping.isImplicit()) {
-            listValue.add(deserializeElement(typeMapping.getElementMapping(getCurrentElementDescriptor())
+            listValue.add(deserializeElement(typeMapping.getNodeMapping(getCurrentElementDescriptor())
                     .getDataTypeName()));
         } else {
             int childDepth = getCurrentDepth() + 1;
             while (moveToNextElement(childDepth)) {
-                NodeMapping<?> listItemNodeMapping = typeMapping.getElementMapping(getCurrentElementDescriptor());
+                XmlNodeMapping<?> listItemNodeMapping = typeMapping.getNodeMapping(getCurrentElementDescriptor());
                 if (listItemNodeMapping != null) {
                     listValue.add(deserializeElement(listItemNodeMapping.getDataTypeName()));
                 }
@@ -291,6 +304,17 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
             }
         }
         return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertValueIsValid(Object object, XmlNodeMapping nodeMapping) {
+        Validator validator = nodeMapping.getValidator();
+        if (validator != null) {
+            ValidationResult result = validator.validate(object);
+            if (!result.isValid()) {
+                throw new ValidationException(result);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

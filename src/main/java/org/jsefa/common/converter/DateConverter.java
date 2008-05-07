@@ -70,7 +70,7 @@ public class DateConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
-    public synchronized Date fromString(String value) {
+    public final synchronized Date fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }
@@ -84,7 +84,7 @@ public class DateConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
-    public synchronized String toString(Object value) {
+    public final synchronized String toString(Object value) {
         if (value == null) {
             return null;
         }

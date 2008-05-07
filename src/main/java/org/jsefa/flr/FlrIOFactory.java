@@ -102,7 +102,8 @@ public abstract class FlrIOFactory implements IOFactory {
         try {
             FlrTypeMappingFactory typeMappingFactory = new FlrTypeMappingFactory(newConfig
                     .getTypeMappingRegistry(), newConfig.getSimpleTypeConverterProvider(), newConfig
-                    .getObjectAccessorProvider(), newConfig.getDefaultPadCharacter());
+                    .getValidatorProvider(), newConfig.getObjectAccessorProvider(), newConfig
+                    .getDefaultPadCharacter());
             newConfig.getEntryPoints().addAll(
                     FlrEntryPointFactory.createEntryPoints(typeMappingFactory, objectTypes));
             return createFactory(newConfig);

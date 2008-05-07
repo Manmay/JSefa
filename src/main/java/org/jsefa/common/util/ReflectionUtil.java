@@ -19,12 +19,14 @@ package org.jsefa.common.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class for reflection.
@@ -83,15 +85,20 @@ public final class ReflectionUtil {
 
     /**
      * Returns the path of classes to the given object type in reverse order. The first element is the given object
-     * type, the second its superclass etc.
+     * type, the second its superclass etc. Returns an empty collection if the given object type is an interface or
+     * is primitive. The class {@link Object.class} is not included.
      * 
      * @param objectType the object type
      * @return a list of classes
      */
+    @SuppressWarnings("unchecked")
     public static List<Class<?>> getTypesInReverseOrder(Class<?> objectType) {
+        if (objectType.isInterface() || objectType.isPrimitive()) {
+            return Collections.EMPTY_LIST;
+        }
         List<Class<?>> result = new ArrayList<Class<?>>();
         Class<?> type = objectType;
-        while (!type.equals(Object.class) && !type.isInterface() && !type.isPrimitive()) {
+        while (!type.equals(Object.class)) {
             result.add(type);
             type = type.getSuperclass();
         }
@@ -110,7 +117,10 @@ public final class ReflectionUtil {
     @SuppressWarnings("unchecked")
     public static Method getMethod(Class<?> objectType, String methodName, Class<?>... parameterTypes) {
         try {
-            Method method = objectType.getMethod(methodName, parameterTypes);
+            Method method = objectType.getDeclaredMethod(methodName, parameterTypes);
+            if (method == null) {
+                method = objectType.getMethod(methodName, parameterTypes);
+            }
             return method;
         } catch (Exception e) {
             return null;
@@ -128,8 +138,8 @@ public final class ReflectionUtil {
     @SuppressWarnings("unchecked")
     public static <T> T callMethod(Object object, String methodName) {
         try {
-            Method method = object.getClass().getMethod(methodName, new Class[]{});
-            return (T) method.invoke(object, new Object[]{});
+            Method method = getMethod(object.getClass(), methodName, new Class[]{});
+            return callMethod(object, method, new Object[]{});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -147,6 +157,7 @@ public final class ReflectionUtil {
     @SuppressWarnings("unchecked")
     public static <T> T callMethod(Object object, Method method, Object... parameters) {
         try {
+            method.setAccessible(true);
             return (T) method.invoke(object, parameters);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -169,6 +180,46 @@ public final class ReflectionUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the value mapped to the given object type or one of its supertypes (classes or interfaces) using a
+     * nearest match algorithm. I. e. it returns the value mapped to the object type nearest to the given one.
+     * <p>
+     * The used "nearest" relation has the following properties:<br>
+     * 1. An object type is the nearest object type to itself.<br>
+     * 2. Any direct super type (class or interface) is nearer to a given type then any indirect super type.
+     * 3. A direct super class of a class A is nearer than any interface implemented by A.<br>
+     * 4. For two interfaces I1 and I2 directly implemented by a given class A, I1 is nearer to A than I2 if I1 is
+     * mentioned before I2 in the the <code>implements</code> clause of the declaration of the class.<br>
+     * 
+     * @param <T> the expected type of the return value
+     * @param objectType the object type
+     * @param map the map
+     * @return an instance of T or null
+     */
+    public static <T> T getNearest(Class<?> objectType, Map<Class<?>, T> map) {
+        T value = map.get(objectType);
+        if (value == null) {
+            LinkedList<Class<?>> types = new LinkedList<Class<?>>();
+            Class<?> type = objectType;
+            while (value == null) {
+                Class<?> superType = type.getSuperclass();
+                if (superType != null && superType != Object.class) {
+                    types.add(superType);
+                }
+                for (Class<?> anInterface : type.getInterfaces()) {
+                    types.add(anInterface);
+                }
+                if (!types.isEmpty()) {
+                    type = types.removeFirst();
+                    value = map.get(type);
+                } else {
+                    break;
+                }
+            }
+        }
+        return value;
     }
 
     private ReflectionUtil() {

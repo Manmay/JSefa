@@ -26,7 +26,7 @@ import org.jsefa.xml.namespace.QName;
  * @author Norman Lahme-Huetig
  * 
  */
-public final class AttributeDescriptor implements NodeDescriptor {
+public final class AttributeDescriptor implements XmlNodeDescriptor {
 
     private final QName name;
 
@@ -45,8 +45,8 @@ public final class AttributeDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
-    public NodeType getType() {
-        return NodeType.ATTRIBUTE;
+    public XmlNodeType getType() {
+        return XmlNodeType.ATTRIBUTE;
     }
 
     /**
@@ -61,6 +61,7 @@ public final class AttributeDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return this.hashCode;
     }
@@ -68,6 +69,7 @@ public final class AttributeDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -82,6 +84,7 @@ public final class AttributeDescriptor implements NodeDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return getName().toString();
     }

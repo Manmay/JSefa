@@ -18,15 +18,17 @@ package org.jsefa.common.mapping;
 
 import org.jsefa.Deserializer;
 import org.jsefa.Serializer;
+import org.jsefa.common.validator.Validator;
 
 /**
  * An entry point describes an item of the respective format that should be serialized or deserialized. An entry
  * point is required for every type of object which will be passed to {@link Serializer#write} or which should be
  * returned from {@link Deserializer#next} and only for these objects (not for the objects related to these ones).
  * <p>
- * Each entry point consists of two non empty and non null parts:<br>
+ * Each entry point consists of the following parts:<br>
  * 1) A data type name which unambiguously maps to a {@link TypeMapping}.<br>
  * 2) A designator that designates the item of the respective format (e. g. the name of the xml element).
+ * 3) An optional {@link Validator}.
  * <p>
  * 
  * Instances of this class are immutable and thread-safe. This must be true for all subclasses, too.
@@ -42,16 +44,20 @@ public class EntryPoint<T, D> {
     private final T dataTypeName;
 
     private final D designator;
+    
+    private final Validator validator;
 
     /**
      * Constructs a entry point given data type name and a designator.
      * 
      * @param dataTypeName the data type name
      * @param designator the designator
+     * @param validator the validator; may be null
      */
-    public EntryPoint(T dataTypeName, D designator) {
+    public EntryPoint(T dataTypeName, D designator, Validator validator) {
         this.dataTypeName = dataTypeName;
         this.designator = designator;
+        this.validator = validator;
     }
 
     /**
@@ -70,5 +76,13 @@ public class EntryPoint<T, D> {
      */
     public final T getDataTypeName() {
         return this.dataTypeName;
+    }
+    
+    /**
+     * Returns the validator.
+     * @return the validator or null if none exists.
+     */
+    public final Validator getValidator() {
+        return this.validator;
     }
 }

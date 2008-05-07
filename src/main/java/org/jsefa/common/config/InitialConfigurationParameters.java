@@ -16,7 +16,6 @@
 
 package org.jsefa.common.config;
 
-import org.jsefa.common.lowlevel.config.LowLevelInitialConfigurationParameters;
 
 /**
  * Declares initial configuration parameters common to all format types.
@@ -33,13 +32,18 @@ public interface InitialConfigurationParameters {
     String SIMPLE_TYPE_CONVERTER_PROVIDER = "jsefa:common:simpleTypeConverterProvider";
 
     /**
+     * Configuration parameter for the validator provider to use.
+     */
+    String VALIDATOR_PROVIDER = "jsefa:common:validatorProvider";
+
+    /**
      * Configuration parameter for the object accessor provider class to use.
      */
     String OBJECT_ACCESSOR_PROVIDER_CLASS = "jsefa:common:objectAccessorProviderClass";
 
     /**
-     * Configuration parameter for the line break to use.
+     * Configuration parameter for the validation mode.
      */
-    String LINE_BREAK = LowLevelInitialConfigurationParameters.LINE_BREAK;
+    String VALIDATION_MODE = "jsefa:common:validationMode";
 
 }
