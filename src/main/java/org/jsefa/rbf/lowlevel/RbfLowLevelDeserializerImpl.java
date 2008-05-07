@@ -200,12 +200,15 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      */
     protected final String nextString(int length) {
         try {
-            String value = this.currentLine.content.substring(this.currentColumnIndex,
-                    this.currentColumnIndex + length);
+            String value = this.currentLine.content.substring(this.currentColumnIndex, this.currentColumnIndex
+                    + length);
             this.currentColumnIndex += length;
             return value;
         } catch (IndexOutOfBoundsException e) {
-            throw new LowLevelDeserializationException("Unexpected end of line reached");
+            if (this.currentColumnIndex < this.currentLine.content.length()) {
+                throw new LowLevelDeserializationException("Unexpected end of line reached");
+            }
+            return null;
         }
     }
 

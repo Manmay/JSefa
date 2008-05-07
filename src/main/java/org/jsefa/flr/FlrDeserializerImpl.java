@@ -59,10 +59,11 @@ public final class FlrDeserializerImpl extends RbfDeserializerImpl implements Fl
         FlrSimpleTypeMapping flrTypeMapping = (FlrSimpleTypeMapping) typeMapping;
         String stringValue = this.lowLevelDeserializer.nextField(flrTypeMapping.getLength(), flrTypeMapping
                 .getAlign(), flrTypeMapping.getPadCharacter());
-        if (stringValue.length() != 0) {
-            return typeMapping.getSimpleTypeConverter().fromString(stringValue);
-        } else {
+        if (stringValue == null || stringValue.length() == 0) {
+            // the field does not exist (null) or is empty
             return null;
+        } else {
+            return typeMapping.getSimpleTypeConverter().fromString(stringValue);
         }
     }
 

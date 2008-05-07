@@ -44,6 +44,9 @@ public class FlrLowLevelDeserializerImpl extends RbfLowLevelDeserializerImpl<Flr
     }
 
     private String trim(String stringValue, Align align, char padCharacter) {
+        if (stringValue == null) {
+            return null;
+        }
         if (align == Align.LEFT) {
             int endIndex = stringValue.length() - 1;
             while ((endIndex >= 0) && (stringValue.charAt(endIndex) == padCharacter)) {

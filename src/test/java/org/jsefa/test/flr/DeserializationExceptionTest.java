@@ -37,21 +37,6 @@ import org.jsefa.test.common.JSefaTestUtil.FormatType;
 public class DeserializationExceptionTest extends TestCase {
 
     /**
-     * Tests the correctness of the input position for a low level error (document is not well formed).
-     */
-    @SuppressWarnings("unchecked")
-    public void testInputPositionForLowLevelError() {
-        String inputString = "ok       1" + "\n" + "error";
-        try {
-            JSefaTestUtil.deserialize(FormatType.FLR, inputString, SimpleTestDTO.class);
-            fail();
-        } catch (DeserializationException e) {
-            assertNotNull(e.getInputPosition());
-            assertEquals(2, e.getInputPosition().getLineNumber());
-        }
-    }
-
-    /**
      * Tests the correctness of the input position for a conversion error.
      */
     @SuppressWarnings("unchecked")
