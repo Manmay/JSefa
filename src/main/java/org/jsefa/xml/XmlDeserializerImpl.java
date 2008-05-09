@@ -237,8 +237,8 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
     private Collection<Object> deserializeListElement(XmlListTypeMapping typeMapping) {
         Collection<Object> listValue = (Collection<Object>) typeMapping.getObjectAccessor().createObject();
         if (typeMapping.isImplicit()) {
-            listValue.add(deserializeElement(typeMapping.getNodeMapping(getCurrentElementDescriptor())
-                    .getDataTypeName()));
+            XmlNodeMapping<?> listItemNodeMapping = typeMapping.getNodeMapping(getCurrentElementDescriptor());
+            listValue.add(deserializeElement(listItemNodeMapping.getDataTypeName()));
         } else {
             int childDepth = getCurrentDepth() + 1;
             while (moveToNextElement(childDepth)) {

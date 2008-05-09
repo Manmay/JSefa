@@ -139,7 +139,7 @@ public final class ReflectionUtil {
     public static <T> T callMethod(Object object, String methodName) {
         try {
             Method method = getMethod(object.getClass(), methodName, new Class[]{});
-            return callMethod(object, method, new Object[]{});
+            return (T) callMethod(object, method, new Object[]{});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

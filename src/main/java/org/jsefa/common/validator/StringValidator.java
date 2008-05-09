@@ -49,7 +49,7 @@ public final class StringValidator implements Validator {
 
     private Pattern getPattern(ValidatorConfiguration configuration) {
         String patternString = configuration.getConstraints().get(PATTERN);
-        if (patternString == null || patternString.isEmpty()) {
+        if (patternString == null || patternString.length() == 0) {
             throw new ValidatorCreationException("No value for string constraint parameter 'pattern' given");
         }
         try {

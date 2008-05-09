@@ -275,8 +275,7 @@ public abstract class RbfDeserializerImpl implements RbfDeserializer {
                         if (listItemRecordMapping == null) {
                             break;
                         }
-                        TypeMapping<?> listItemTypeMapping = getTypeMapping(subRecordListTypeMapping
-                                .getNodeMapping(recordDescriptor).getDataTypeName());
+                        TypeMapping<?> listItemTypeMapping = getTypeMapping(listItemRecordMapping.getDataTypeName());
                         Object listItemValue = readValue(listItemTypeMapping);
                         if (listItemValue != null) {
                             fieldValue.add(listItemValue);
