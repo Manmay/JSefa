@@ -28,7 +28,7 @@ import java.util.Locale;
  * The format consists of two <code>String</code>s. The first denotes the {@link Locale} and the second is a
  * pattern as used by {@link DecimalFormat}.<br>
  * <p>
- * It is thread-safe.
+ * It is thread-safe (the access to the non-thread-safe {@link DecimalFormat} is synchronized).
  * 
  * @author Norman Lahme-Huetig
  */
@@ -77,7 +77,7 @@ public class BigDecimalConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
-    public final BigDecimal fromString(String value) {
+    public final synchronized BigDecimal fromString(String value) {
         if (value == null || value.length() == 0) {
             return null;
         }
@@ -97,7 +97,7 @@ public class BigDecimalConverter implements SimpleTypeConverter {
     /**
      * {@inheritDoc}
      */
-    public final String toString(Object value) {
+    public final synchronized String toString(Object value) {
         if (value == null) {
             return null;
         }
