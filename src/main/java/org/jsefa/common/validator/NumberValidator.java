@@ -43,10 +43,11 @@ public abstract class NumberValidator<T extends Number> implements Validator {
      * Constructs a new <code>NumberValidator</code>.
      * @param constraintsAccessor the accessor to the configured constraints
      */
+    @SuppressWarnings("unchecked")
     protected NumberValidator(ConstraintsAccessor constraintsAccessor) {
         this.constraintsAccessor = constraintsAccessor;
-        this.min = constraintsAccessor.get(MIN, false);
-        this.max = constraintsAccessor.get(MAX, false);
+        this.min = (T) constraintsAccessor.get(MIN, false);
+        this.max = (T) constraintsAccessor.get(MAX, false);
     }
     
     /**
