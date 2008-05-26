@@ -18,7 +18,6 @@ package org.jsefa.csv;
 
 import java.util.Map;
 
-import org.jsefa.DeserializationException;
 import org.jsefa.common.mapping.SimpleTypeMapping;
 import org.jsefa.csv.config.CsvConfiguration;
 import org.jsefa.csv.lowlevel.CsvLowLevelDeserializer;

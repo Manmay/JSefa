@@ -39,5 +39,16 @@ public interface ValidationErrorCodes {
      * A collection does have more or less items than allowed. 
      */
     String WRONG_QUANTITY = "WRONG_QUANTITY";
+    
+    /**
+     * A numeric value is out of range. 
+     */
+    String OUT_OF_RANGE = "OUT_OF_RANGE";
+    
+    /**
+     * The length of a value is smaller or bigger then allowed.
+     */
+    String WRONG_LENGTH = "WRONG_LENGTH";
+    
 
 }

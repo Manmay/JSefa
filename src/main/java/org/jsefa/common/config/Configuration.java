@@ -50,7 +50,10 @@ import org.jsefa.common.mapping.EntryPoint;
 import org.jsefa.common.mapping.TypeMappingRegistry;
 import org.jsefa.common.util.OnDemandObjectProvider;
 import org.jsefa.common.util.ReflectionUtil;
+import org.jsefa.common.validator.BigDecimalValidator;
 import org.jsefa.common.validator.CollectionValidator;
+import org.jsefa.common.validator.IntegerValidator;
+import org.jsefa.common.validator.LongValidator;
 import org.jsefa.common.validator.StringValidator;
 import org.jsefa.common.validator.provider.ValidatorProvider;
 
@@ -289,6 +292,11 @@ public abstract class Configuration<R extends TypeMappingRegistry<?>, E extends 
             public ValidatorProvider get() {
                 ValidatorProvider provider = new ValidatorProvider();
                 provider.registerValidatorType(String.class, StringValidator.class);
+                provider.registerValidatorType(Integer.class, IntegerValidator.class);
+                provider.registerValidatorType(int.class, IntegerValidator.class);
+                provider.registerValidatorType(Long.class, LongValidator.class);
+                provider.registerValidatorType(long.class, LongValidator.class);
+                provider.registerValidatorType(BigDecimal.class, BigDecimalValidator.class);
                 provider.registerValidatorType(Collection.class, CollectionValidator.class);
                 return provider;
             }

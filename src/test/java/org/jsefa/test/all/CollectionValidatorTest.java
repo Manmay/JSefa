@@ -16,13 +16,17 @@
 
 package org.jsefa.test.all;
 
+import static org.jsefa.test.all.ValidatorTestUtil.Mode.INVALID;
+import static org.jsefa.test.all.ValidatorTestUtil.Mode.VALID;
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.CSV;
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.FLR;
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.jsefa.SerializationException;
-import org.jsefa.common.config.Configuration;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
 import org.jsefa.csv.annotation.CsvSubRecordList;
@@ -31,17 +35,11 @@ import org.jsefa.flr.annotation.FlrField;
 import org.jsefa.flr.annotation.FlrSubRecordList;
 import org.jsefa.rbf.annotation.Record;
 import org.jsefa.test.common.AbstractTestDTO;
-import org.jsefa.test.common.JSefaTestUtil;
 import org.jsefa.test.common.JSefaTestUtil.FormatType;
 import org.jsefa.xml.annotation.ListItem;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
-
-import static org.jsefa.test.all.ValidatorTest.Mode.*;
-import static org.jsefa.test.common.JSefaTestUtil.FormatType.CSV;
-import static org.jsefa.test.common.JSefaTestUtil.FormatType.FLR;
-import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
 
 /**
  * Tests for testing the validators.
@@ -49,54 +47,39 @@ import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
  * @author Norman Lahme-Huetig
  * 
  */
-public class ValidatorTest extends TestCase {
+public class CollectionValidatorTest extends TestCase {
 
-    enum Mode {
-        VALID, INVALID,
+    /**
+     * Tests for collections (CSV).
+     */
+    public void testCollectionCSV() {
+        checkForCollection(CSV);
     }
 
     /**
-     * Tests the collection validator (CSV).
+     * Tests for collections (FLR).
      */
-    public void testCollectionValidatorCSV() {
-        checkCollectionValidator(CSV);
+    public void testCollectionFLR() {
+        checkForCollection(FLR);
     }
 
     /**
-     * Tests the collection validator (FLR).
+     * Tests for collections (XML).
      */
-    public void testCollectionValidatorFLR() {
-        checkCollectionValidator(FLR);
+    public void testCollectionXML() {
+        checkForCollection(XML);
     }
 
-    /**
-     * Tests the collection validator (XML).
-     */
-    public void testCollectionValidatorXML() {
-        checkCollectionValidator(XML);
-    }
-
-    private void checkCollectionValidator(FormatType formatType) {
+    private void checkForCollection(FormatType formatType) {
         ListValidatorTestDTO dto = new ListValidatorTestDTO();
         dto.listField = new ArrayList<ComplexElementDTO>();
-        check(formatType, dto, INVALID);
+        ValidatorTestUtil.check(formatType, dto, INVALID);
         dto.listField.add(new ComplexElementDTO());
-        check(formatType, dto, VALID);
+        ValidatorTestUtil.check(formatType, dto, VALID);
         dto.listField.add(new ComplexElementDTO());
-        check(formatType, dto, VALID);
+        ValidatorTestUtil.check(formatType, dto, VALID);
         dto.listField.add(new ComplexElementDTO());
-        check(formatType, dto, INVALID);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void check(FormatType formatType, Object value, Mode mode) {
-        Configuration config = JSefaTestUtil.createConfiguration(formatType);
-        try {
-            JSefaTestUtil.serialize(formatType, config, value);
-            assertFalse(mode == INVALID);
-        } catch (SerializationException e) {
-            assertTrue(mode == INVALID);
-        }
+        ValidatorTestUtil.check(formatType, dto, INVALID);
     }
 
     @CsvDataType(defaultPrefix = "MR")

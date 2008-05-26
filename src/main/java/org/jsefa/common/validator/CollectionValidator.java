@@ -18,6 +18,7 @@ package org.jsefa.common.validator;
 
 import static org.jsefa.common.validator.ValidationErrorCodes.WRONG_QUANTITY;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -49,45 +50,37 @@ public final class CollectionValidator implements Validator {
     }
 
     private CollectionValidator(ValidatorConfiguration configuration) {
-        this.minItems = getParameter(configuration, MIN);
-        this.maxItems = getParameter(configuration, MAX);
-    }
-
-    private Integer getParameter(ValidatorConfiguration configuration, String name) {
-        String value = configuration.getConstraints().get(name);
-        if (value != null) {
-            try {
-                return Integer.parseInt(value);
-            } catch (Exception e) {
-                throw new ValidatorCreationException("Wrong value for constraint parameter '" + name
-                        + "' given: " + value);
-            }
-        }
-        return null;
+        ConstraintsAccessor constraints = ConstraintsAccessor.create(configuration);
+        this.minItems = constraints.getInteger(MIN, false);
+        this.maxItems = constraints.getInteger(MAX, false);
     }
 
     /**
      * {@inheritDoc}
      */
     public ValidationResult validate(Object value) {
-        int itemCount = ((Collection<?>) value).size();
-        if ((this.minItems != null && this.minItems > itemCount)
-                || (this.maxItems != null && this.maxItems < itemCount)) {
-            String errorText = null;
-            if (this.minItems == null) {
-                errorText = "The collection must have at least " + this.minItems + " items, but has " + itemCount
-                        + " items only";
-            } else if (this.maxItems == null) {
-                errorText = "The collection must not have more than " + this.maxItems + " items, but has " + itemCount
-                        + " items";
-            } else {
-                errorText = "The number of collection items must be between " + this.minItems + " and " + this.maxItems
-                        + ", but is " + itemCount;
-            }
-            return ValidationResult.create(ValidationError.create(WRONG_QUANTITY, errorText));
-        } else {
-            return ValidationResult.VALID;
+        Collection<?> collection = (Collection<?>) value;
+        Collection<ValidationError> errors = new ArrayList<ValidationError>();
+        validateMinItems(collection, errors);
+        validateMaxItems(collection, errors);
+        return ValidationResult.create(errors);
+    }
+
+    private void validateMinItems(Collection<?> collection, Collection<ValidationError> errors) {
+        int itemCount = collection.size();
+        if (this.minItems != null && itemCount < this.minItems) {
+            String errorText = "The collection must have at least " + this.minItems + " items, but has "
+                    + itemCount + " items only";
+            errors.add(ValidationError.create(WRONG_QUANTITY, errorText));
         }
     }
 
+    private void validateMaxItems(Collection<?> collection, Collection<ValidationError> errors) {
+        int itemCount = collection.size();
+        if (this.maxItems != null && itemCount > this.maxItems) {
+            String errorText = "The number of collection items must not exceed " + this.maxItems + ", but is "
+                    + itemCount;
+            errors.add(ValidationError.create(WRONG_QUANTITY, errorText));
+        }
+    }
 }
