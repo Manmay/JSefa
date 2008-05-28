@@ -95,7 +95,11 @@ public final class ElementDescriptor implements XmlNodeDescriptor {
             return false;
         }
         final ElementDescriptor other = (ElementDescriptor) obj;
-        if (!name.equals(other.name)) {
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
             return false;
         }
         if (dataTypeName == null) {
