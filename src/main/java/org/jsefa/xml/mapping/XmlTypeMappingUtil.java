@@ -34,8 +34,8 @@ public final class XmlTypeMappingUtil {
 
     /**
      * Creates a map of node mappings with node descriptors as keys. For each element mapping contained in the
-     * given collection of node mappings an additional simplified descriptor is created if the element name is not
-     * ambiguous so that the element mapping has two keys.
+     * given collection of node mappings an additional simplified descriptor is created if an element name exists
+     * and is not ambiguous so that the element mapping has two keys.
      * 
      * @param <D> the expected type of the node descriptor
      * @param <M> the expected type of the node mappings
@@ -43,9 +43,9 @@ public final class XmlTypeMappingUtil {
      * @return a map of node mappings with node descriptors as keys
      */
     @SuppressWarnings("unchecked")
-    public static <D extends XmlNodeDescriptor, M extends XmlNodeMapping<?>> Map<D, M>
-        createNodeMappingsByNodeDescriptorMap(Collection<M> nodeMappings) {
-        
+    public static <D extends XmlNodeDescriptor, M extends XmlNodeMapping<?>> Map<D, M> createNodeMappingsByNodeDescriptorMap(
+            Collection<M> nodeMappings) {
+
         Map<D, M> result = new HashMap<D, M>();
         for (M nodeMapping : nodeMappings) {
             if (result.put((D) nodeMapping.getNodeDescriptor(), nodeMapping) != null) {
@@ -54,7 +54,8 @@ public final class XmlTypeMappingUtil {
             }
             if (nodeMapping instanceof ElementMapping) {
                 ElementMapping elementMapping = (ElementMapping) nodeMapping;
-                if (!elementMapping.elementNameIsAmbiguous()) {
+                if (elementMapping.getNodeDescriptor().getName() != null
+                        && !elementMapping.elementNameIsAmbiguous()) {
                     ElementDescriptor simplifiedElementDescriptor = new ElementDescriptor(elementMapping
                             .getNodeDescriptor().getName(), null);
                     if (result.put((D) simplifiedElementDescriptor, nodeMapping) != null) {

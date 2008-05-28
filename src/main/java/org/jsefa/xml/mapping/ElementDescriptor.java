@@ -39,9 +39,14 @@ public final class ElementDescriptor implements XmlNodeDescriptor {
      * 
      * @param name the name of the element - may be null if the node is virtual, i. e. if the node groups other
      *                nodes without having an own representation, e. g. an implicit list.
-     * @param dataTypeName the name of its data type
+     * @param dataTypeName the name of its data type - may be null for simplified element descriptors. If null the
+     *                name must not be null.
      */
     public ElementDescriptor(QName name, QName dataTypeName) {
+        if (name == null && dataTypeName == null) {
+            throw new IllegalArgumentException(
+                    "Both parameters (name, dataTypeName) are null but one of them must not be null!");
+        }
         this.name = name;
         this.dataTypeName = dataTypeName;
         this.hashCode = calculateHashCode();
@@ -117,10 +122,12 @@ public final class ElementDescriptor implements XmlNodeDescriptor {
      */
     @Override
     public String toString() {
-        if (this.dataTypeName != null) {
-            return getName().toString() + ":" + getDataTypeName();
+        if (this.name == null) {
+            return this.dataTypeName.toString();
+        } else if (this.dataTypeName == null) {
+            return this.name.toString();
         } else {
-            return getName().toString();
+            return getName().toString() + ":" + getDataTypeName();
         }
     }
 
