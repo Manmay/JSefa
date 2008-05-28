@@ -52,6 +52,22 @@ public class ImplicitListTypeTest extends TestCase {
     }
 
     /**
+     * Tests two lists with <code>String</code> elements.
+     */
+    public void testTwoListsWithStringElements() {
+        TwoListsWithStringElements list = new TwoListsWithStringElements();
+        list.listA = new ArrayList<String>();
+        for (int i = 0; i < 10; i++) {
+            list.listA.add("stringValueA" + i);
+        }
+        list.listB = new ArrayList<String>();
+        for (int i = 0; i < 10; i++) {
+            list.listB.add("stringValueB" + i);
+        }
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, list);
+    }
+
+    /**
      * Tests a list with <code>Depth0DTO</code> elements.
      */
     public void testWithDepth0Elements() {
@@ -112,6 +128,15 @@ public class ImplicitListTypeTest extends TestCase {
     static final class ListWithStringElements extends AbstractTestDTO {
         @XmlElementList(implicit = true, items = {@ListItem(name = "item")})
         List<String> list;
+    }
+
+    @XmlDataType()
+    static final class TwoListsWithStringElements extends AbstractTestDTO {
+        @XmlElementList(implicit = true, items = {@ListItem(name = "itemA")})
+        List<String> listA;
+
+        @XmlElementList(implicit = true, items = {@ListItem(name = "itemB")})
+        List<String> listB;
     }
 
     @XmlDataType()
