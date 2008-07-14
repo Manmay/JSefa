@@ -154,14 +154,15 @@ public final class ValidatorFactory {
         }
 
         public ValidationResult validate(Object value) {
+            List<ValidationError> errors = new ArrayList<ValidationError>();
             for (String fieldName : this.requiredFieldNames) {
                 if (this.objectAccessor.getValue(value, fieldName) == null) {
                     String errorText = "The field " + fieldName + " is required but no value is present";
-                    return ValidationResult.create(ValidationError.create(MISSING_VALUE, errorText,
+                    errors.add(ValidationError.create(MISSING_VALUE, errorText,
                             new ObjectPathElement(value.getClass(), fieldName)));
                 }
             }
-            return ValidationResult.VALID;
+            return ValidationResult.create(errors);
         }
 
     }
