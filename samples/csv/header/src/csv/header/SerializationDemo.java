@@ -16,12 +16,9 @@
 
 package csv.header;
 
-import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Date;
 
-import org.jsefa.Serializer;
 import org.jsefa.common.converter.DateConverter;
 import org.jsefa.common.converter.SimpleTypeConverterConfiguration;
 import org.jsefa.csv.CsvIOFactory;
@@ -29,9 +26,6 @@ import org.jsefa.csv.CsvSerializer;
 
 /**
  * Demo for demonstrating the serialization of a {@link Person} with a header.
- * <p>
- * There is no need for a special support for writing headers as one can use the Writer given to
- * {@link Serializer#open(Writer)} to write the header first. This example shows this idiom.
  * <p>
  * The code should be self explaining
  * 
@@ -42,22 +36,13 @@ public class SerializationDemo {
     private void start() {
         CsvSerializer serializer = (CsvSerializer) CsvIOFactory.createFactory(Person.class).createSerializer();
         StringWriter writer = new StringWriter();
-        writeHeader(writer);
         serializer.open(writer);
+        serializer.getLowLevelSerializer().writeLine("NAME;BIRTHDATE"); // the header
         serializer.write(createPerson("Erwin Schmidt", "23.5.1964"));
         serializer.write(createPerson("Betty Meier", "1.1.1984"));
         serializer.close(true);
         System.out.println("Result:");
         System.out.println(writer.toString());
-    }
-
-    private void writeHeader(Writer writer) {
-        try {
-            writer.write("NAME;BIRTHDATE");
-            writer.write("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private Person createPerson(String name, String birthdDate) {
