@@ -36,6 +36,7 @@ public class DeserializationDemo {
 
     private void start() {
         CsvConfiguration config = new CsvConfiguration();
+        // header of size 1, no footer, store the filtered lines
         config.setLineFilter(new HeaderAndFooterFilter(1, false, true));
         CsvDeserializer deserializer = CsvIOFactory.createFactory(config, Person.class).createDeserializer();
         deserializer.open(createFileReader());
