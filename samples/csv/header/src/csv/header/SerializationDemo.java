@@ -30,7 +30,7 @@ import org.jsefa.csv.CsvSerializer;
 /**
  * Demo for demonstrating the serialization of a {@link Person} with a header.
  * <p>
- * There is no need for a special support for headers as one can use the Writer given to
+ * There is no need for a special support for writing headers as one can use the Writer given to
  * {@link Serializer#open(Writer)} to write the header first. This example shows this idiom.
  * <p>
  * The code should be self explaining

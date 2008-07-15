@@ -16,19 +16,16 @@
 
 package csv.header;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.jsefa.Deserializer;
+import org.jsefa.common.lowlevel.filter.HeaderAndFooterFilter;
+import org.jsefa.csv.CsvDeserializer;
 import org.jsefa.csv.CsvIOFactory;
+import org.jsefa.csv.config.CsvConfiguration;
 
 /**
  * Demo for demonstrating the deserialization of the document "person.csv" which contains a header.
- * <p>
- * There is no need for a special support for headers as one can use the Reader given to
- * {@link Deserializer#open(Reader)} to read the header first. This example shows this idiom.
  * <p>
  * The code should be self explaining.
  * 
@@ -38,24 +35,17 @@ import org.jsefa.csv.CsvIOFactory;
 public class DeserializationDemo {
 
     private void start() {
-        Deserializer deserializer = CsvIOFactory.createFactory(Person.class).createDeserializer();
-        BufferedReader reader = new BufferedReader(createFileReader());
-        String header = readHeader(reader);
-        printHeader(header);
-        deserializer.open(reader);
+        CsvConfiguration config = new CsvConfiguration();
+        config.setLineFilter(new HeaderAndFooterFilter(1, false, true));
+        CsvDeserializer deserializer = CsvIOFactory.createFactory(config, Person.class).createDeserializer();
+        deserializer.open(createFileReader());
         while (deserializer.hasNext()) {
             Person person = deserializer.next();
             print(person);
         }
+        String header = deserializer.getStoredLines().get(0).getContent();
+        printHeader(header);
         deserializer.close(true);
-    }
-
-    private String readHeader(BufferedReader reader) {
-        try {
-            return reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void printHeader(String header) {
