@@ -21,7 +21,7 @@ import static org.jsefa.test.all.ValidatorTestUtil.Mode.VALID;
 import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
 import junit.framework.TestCase;
 
-import org.jsefa.common.validator.IntegerValidator;
+import org.jsefa.common.validator.StringValidator;
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;

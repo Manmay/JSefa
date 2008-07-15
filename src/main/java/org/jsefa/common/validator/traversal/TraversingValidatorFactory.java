@@ -69,6 +69,7 @@ public class TraversingValidatorFactory<N> {
         return combine(create(this.typeMappingRegistry.get(dataTypeName)), rootValidator);
     }
 
+    @SuppressWarnings("unchecked")
     private Validator create(TypeMapping<N> mapping) {
         if (mapping instanceof ComplexTypeMapping) {
             return createForComplexType((ComplexTypeMapping<N, ?, ?>) mapping);
@@ -78,7 +79,6 @@ public class TraversingValidatorFactory<N> {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private Validator createForComplexType(ComplexTypeMapping<N, ?, ?> mapping) {
         Validator validator = this.traversingComplexValueValidators.get(mapping.getDataTypeName());
         if (validator != null) {

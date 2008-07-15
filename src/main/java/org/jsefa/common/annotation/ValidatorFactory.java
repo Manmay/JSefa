@@ -122,7 +122,6 @@ public final class ValidatorFactory {
      *                parameters for constructing the validator
      * @return a validator
      */
-    @SuppressWarnings("unchecked")
     public Validator createValidator(Class<?> objectType, Class<? extends Annotation>... fieldAnnotationTypes) {
         List<String> requiredFieldNames = new ArrayList<String>();
         for (Field field : AnnotatedFieldsProvider.getAnnotatedFields(objectType, fieldAnnotationTypes)) {

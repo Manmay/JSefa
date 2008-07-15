@@ -42,7 +42,6 @@ final class TraversingComplexValueValidator extends TraversingValidator {
 
     private static final ThreadLocal<List<Object>> OBJECT_PATH = new ThreadLocal<List<Object>>();
 
-    @SuppressWarnings("unchecked")
     void init(Validator rootValidator, Map<FieldDescriptor, Validator> fieldValidators, ObjectAccessor objectAccessor) {
         if (checkTriviality(rootValidator, fieldValidators)) {
             return;

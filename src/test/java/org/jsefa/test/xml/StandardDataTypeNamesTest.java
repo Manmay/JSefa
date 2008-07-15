@@ -96,7 +96,6 @@ public class StandardDataTypeNamesTest extends TestCase {
     /**
      * Tests the standard data type <code>boolean</code>.
      */
-    @SuppressWarnings("unchecked")
     public void testBoolean() {
         BooleanTestDTO dto = new BooleanTestDTO();
         dto.element1 = true;

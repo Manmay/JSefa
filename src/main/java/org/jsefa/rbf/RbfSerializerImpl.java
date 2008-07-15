@@ -236,7 +236,6 @@ public abstract class RbfSerializerImpl<L extends RbfLowLevelSerializer> impleme
         return entryPoint;
     }
 
-    @SuppressWarnings("unchecked")
     private void assertValueIsValid(Object object, RbfEntryPoint entryPoint) {
         Validator validator = entryPoint.getValidator();
         if (validator != null) {

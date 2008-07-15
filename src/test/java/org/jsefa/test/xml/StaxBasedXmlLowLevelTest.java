@@ -34,9 +34,9 @@ import org.jsefa.xml.lowlevel.model.XmlItemType;
 public class StaxBasedXmlLowLevelTest extends TestCase {
 
     /**
-     * Tests the handling of subsequent character events.
+     * Tests the handling of consecutive character events.
      */
-    public void testSubsequentCharacters() {
+    public void testConsecutiveCharacters() {
         final String testXml = "<test>http://www.yahoo.com?a=1&amp;b=2&amp;c=3&amp;d=4</test>";
         final String testContent = "http://www.yahoo.com?a=1&b=2&c=3&d=4";
 

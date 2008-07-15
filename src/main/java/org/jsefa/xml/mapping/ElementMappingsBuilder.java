@@ -69,7 +69,6 @@ public final class ElementMappingsBuilder {
      * @param validator the validator; may be null
      * @param textMode the text mode
      */
-    @SuppressWarnings("unchecked")
     public void addMapping(QName dataTypeName, ElementDescriptor elementDescriptor, Class<?> objectType,
             FieldDescriptor fieldDescriptor, Validator validator, TextMode textMode) {
         this.dataHolders.add(new DataHolder(dataTypeName, elementDescriptor, objectType, fieldDescriptor,

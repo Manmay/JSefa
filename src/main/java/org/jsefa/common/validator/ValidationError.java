@@ -42,7 +42,6 @@ public final class ValidationError {
      * @param relativeObjectPathElements the relative path to the field this error refers to
      * @return a <code>ValidationError</code>
      */
-    @SuppressWarnings("unchecked")
     public static ValidationError create(String errorCode, String errorText,
             ObjectPathElement... relativeObjectPathElements) {
         List<ObjectPathElement> relativeObjectPath = new ArrayList<ObjectPathElement>();

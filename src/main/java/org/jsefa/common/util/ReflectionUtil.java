@@ -114,7 +114,6 @@ public final class ReflectionUtil {
      * @param parameterTypes the parameter types
      * @return a method or null if it does not exist.
      */
-    @SuppressWarnings("unchecked")
     public static Method getMethod(Class<?> objectType, String methodName, Class<?>... parameterTypes) {
         try {
             Method method = objectType.getDeclaredMethod(methodName, parameterTypes);
