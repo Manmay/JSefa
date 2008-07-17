@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package xml.yellowpages;
+package csv.yellowpages;
 
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.jsefa.Deserializer;
-import org.jsefa.xml.XmlIOFactory;
-import org.jsefa.xml.XmlReaderFactory;
+import org.jsefa.csv.CsvIOFactory;
 
 /**
- * Demo for demonstrating the deserialization of the document "yellow-pages.xml".
+ * Demo for demonstrating the deserialization of the document "yellow-pages.csv".
  * <p>
  * The code should be self explaining.
  * 
@@ -32,7 +32,7 @@ import org.jsefa.xml.XmlReaderFactory;
  */
 public final class DeserializationDemo {
     private void start() {
-        Deserializer deserializer = XmlIOFactory.createFactory(Department.class).createDeserializer();
+        Deserializer deserializer = CsvIOFactory.createFactory(Department.class).createDeserializer();
         deserializer.open(createFileReader());
         while (deserializer.hasNext()) {
             Department department = deserializer.next();
@@ -58,7 +58,7 @@ public final class DeserializationDemo {
     }
 
     private Reader createFileReader() {
-        return XmlReaderFactory.create(this.getClass().getResourceAsStream("yellow-pages.xml"));
+        return new InputStreamReader(this.getClass().getResourceAsStream("yellow-pages.csv"));
     }
 
     /**
