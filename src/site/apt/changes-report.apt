@@ -1,0 +1,103 @@
+   ------------------
+   Changes
+   ------------------
+   Norman Lahme-Hütig
+   ------------------
+   17.07.2008
+   ------------------
+   
+Changes in version 0.9.1
+
+* Bugfixes
+
+  * Handling of consecutive events of type CHARACTERS fixed (low level XML deserialization)
+  
+    The bug appeared using the sun implementation of Stax but not using Woodstox
+as the latter seems to combine the characters to one CHARACTER event.
+
+  * Handling of multiple subrecord lists fixed (high level CSV/FLR)
+  
+  * Usage of primitive simple types (int, boolean etc. in contrast to Integer, Boolean etc.) for XML attributes and XML text contents fixed
+  
+* Changed behavior
+
+  * CsvLowLevelDeserializer.nextField now returns null if no next field exists (was the empty string before), the empty string if the next field is empty and a non empty field value in all other cases.
+  
+  * xsi:type attribute default behavior
+    
+    Say you have a class Customer with the two subclasses BusinessCustomer and PrivateCustomer and another class Order with a field customer of type Customer.
+    Further this field shall map to an xml element called \<customer>.
+    Then the deserialization of such a \<customer> element without a xsi:type attribute will result in creating an instance of class Customer.     
+  
+* New Features
+  
+  * Validation (XML/CSV/FLR)
+  
+    You can now define that values are required or not using the annotation parameter "required".
+    
+    Furthermore you can impose constraints on the values using the annotation parameter "constraints", e. g. constraints = {"minLength=1", "maxLength=3"} for constraining the length of a String.
+    
+    Finally it is possible to define Validators on your own. See the interface Validator as the starting point for further investigations and the ValueValidationOnDeserializationTest, especially the inner class ComplexElementDTOValidator for an example of a user defined validator.
+    
+    Of course it is possible to define whether validation should be performed or not.
+
+  * LineFilter (CSV/FLR deserialization)
+  
+    A line filter allows for filtering out lines during deserialization. These lines can also be stored for later retrieval.
+    The typical use case of a line filter is to filter out and retrieve headers and footers of CSV/FLR files.
+    See LineFilter, RbfConfiguration.setLineFilter, RbfDeserializer.getStoredLines, HeaderAndFooterFilterTest etc.
+    
+  * SimpleListConverter (XML/CSV/FLR)
+  
+    You can now map a list of simple types (e. g. list of integers) to a simple type of the target format (called simple list type).
+    E. g. the serialization of a List\<Integer> field containing the values 1,2 and 3 may result in "\<element>1,2,3\</element>".
+    
+    Of course you can change the delimiter with the annotation parameter "format", e. g. @XmlElement(..., format=" ") for space as the delimiter.
+    
+    This feature is especially useful when handling CSV files with a list type field whereas the delimiter for the list items differs from the field delimiter (e. g. "a;b1,b2,b3;c" has 3 fields whereas the second is a list with three elements). 
+    
+    See the inner annotation SimpleListItem used for the annotation parameter listItem of several annotations (e. g. XmlElement, CsvField) and the SimpleListTypeTest.
+    
+  * CDATA (XML serialization)
+  
+    You can now define that the content of an element should be a CDATA section. The default is to use entity references like &lt; to escape characters.
+    See the enumeration TextMode and its use for several annotation paramters (e. g. XmlElement.textMode) as well as the TextModeTest.
+    
+    Note: The XmlLowLevelSerializer.writeText method now has a second parameter of type TextMode. In the rare case you use this method just add TextMode.IMPLICIT as the second argument to every call of this method. 
+
+  * InputPosition (XML/CSV/FLR deserialization)
+  
+    Each LowLevelDeserializer provides information about the current position within the input stream. This consists of the line number and column number.
+    Each high level Deserializer provides a convenient method to retrieve this information from the underlying LowLevelDeserializer.
+    
+    Additionally a DeserializationException provides the method getInputPosition as well thus providing information about the error location.    
+  
+  * Support for special "no value" string (CSV)
+  
+    By default the empty string is used to denote that a CSV field has no value. Now one can configure that a special string (e. g. "NULL") should be used instead.
+    See the annotation parameter CsvField.noValue as well as CsvConfiguration.getDefaultNoValueString, CsvConfiguration.setDefaultNoValueString and CsvInitialConfigurationParameters.DEFAULT_NO_VALUE_STRING.  
+
+  * Support for Set and Queue (XML/CSV/FLR)
+  
+    JSefa now supports fields of type Set and Queue. They will be handled exactly like fields of type List.
+    
+  * Accessor to LowLevelSerializer (CSV/FLR serialization)
+ 
+    CsvSerializer and FlrSerializer now have a method getLowLevelSerializer to access the underlying low level serializer.
+    Such a method existed for XmlSerializer already.      
+
+* New Samples
+  
+  * samples/csv/header
+    
+    Demonstrates how to create a CSV file with a header and how to read in such a file using a LineFilter.
+    
+  * samples/csv/yellow_pages
+  
+    Demonstrates the use of sub records and sub record lists (for CSV).
+      
+  * samples/flr/yellow_pages
+  
+    Demonstrates the use of sub records and sub record lists (for FLR).
+  
+    

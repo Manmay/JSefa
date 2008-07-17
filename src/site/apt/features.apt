@@ -3,7 +3,7 @@
    ------------------
    Norman Lahme-Hütig
    ------------------
-   15.05.2007
+   17.07.2008
    ------------------
    
 Feature Highlights
@@ -62,6 +62,10 @@ Feature Highlights
     Note: JSefa supports also polymorphism as an alternative to type reduction, but only for XML (see below).
     
   * Detection of cycles in the object graph during serialization
+  
+  * Validation
+  
+    Validation support ranges from simple "value is required" to user defined validators. 
     
 * XML
 
@@ -117,7 +121,11 @@ Feature Highlights
     This is achieved by prefixing the records.
     
     In contrast to field embedding this technique allows for serialization/deserialization of lists of objects.
+    
+  * Line filter
   
+    A line filter allows for filtering out lines during deserialization. These lines can also be stored for later retrieval.
+    The typical use case of a line filter is to filter out and retrieve headers and footers of CSV/FLR files.  
         
     
   
