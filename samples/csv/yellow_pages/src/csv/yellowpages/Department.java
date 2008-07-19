@@ -29,12 +29,12 @@ import org.jsefa.rbf.annotation.Record;
  * @author Norman Lahme-Huetig
  * 
  */
-@CsvDataType(defaultPrefix="DEP")
+@CsvDataType(defaultPrefix = "DEP")
 public class Department {
-    @CsvField(pos=0)
+    @CsvField(pos = 0)
     String name;
 
-    @CsvSubRecordList(pos=1, records = @Record(prefix="EMP"))
+    @CsvSubRecordList(pos = 1, records = @Record(prefix = "EMP"))
     List<Employee> employees;
 
 }

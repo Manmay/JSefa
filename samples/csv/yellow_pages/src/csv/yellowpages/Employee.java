@@ -28,7 +28,7 @@ import org.jsefa.csv.annotation.CsvSubRecord;
  * @author Norman Lahme-Huetig
  * 
  */
-@CsvDataType(defaultPrefix="EMP")
+@CsvDataType(defaultPrefix = "EMP")
 public class Employee {
     @CsvField(pos = 1)
     String name;

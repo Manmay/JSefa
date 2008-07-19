@@ -31,7 +31,7 @@ import org.jsefa.csv.CsvIOFactory;
  * 
  */
 public final class DeserializationDemo {
-    private void start() {
+    void start() {
         Deserializer deserializer = CsvIOFactory.createFactory(Department.class).createDeserializer();
         deserializer.open(createFileReader());
         while (deserializer.hasNext()) {

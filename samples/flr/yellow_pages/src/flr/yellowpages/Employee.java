@@ -28,7 +28,7 @@ import org.jsefa.flr.annotation.FlrSubRecord;
  * @author Norman Lahme-Huetig
  * 
  */
-@FlrDataType(defaultPrefix="EMP")
+@FlrDataType(defaultPrefix = "EMP")
 public class Employee {
     @FlrField(pos = 1, length = 20)
     String name;

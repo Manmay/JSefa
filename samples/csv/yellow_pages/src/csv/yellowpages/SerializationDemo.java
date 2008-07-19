@@ -35,7 +35,7 @@ import org.jsefa.csv.CsvIOFactory;
  * 
  */
 public final class SerializationDemo {
-    private void start() {
+    void start() {
         Serializer serializer = CsvIOFactory.createFactory(Department.class).createSerializer();
 
         StringWriter writer = new StringWriter();

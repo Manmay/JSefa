@@ -27,12 +27,12 @@ import org.jsefa.csv.annotation.CsvField;
  * @author Norman Lahme-Huetig
  * 
  */
-@CsvDataType(defaultPrefix="SCO")
+@CsvDataType(defaultPrefix = "SCO")
 public class Score {
-    @CsvField(pos=1)
+    @CsvField(pos = 1)
     String type;
 
-    @CsvField(pos=2)
+    @CsvField(pos = 2)
     BigDecimal value;
 
 }

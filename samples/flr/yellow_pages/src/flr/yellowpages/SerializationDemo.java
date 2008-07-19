@@ -35,7 +35,7 @@ import org.jsefa.flr.FlrIOFactory;
  * 
  */
 public final class SerializationDemo {
-    private void start() {
+    void start() {
         Serializer serializer = FlrIOFactory.createFactory(Department.class).createSerializer();
 
         StringWriter writer = new StringWriter();

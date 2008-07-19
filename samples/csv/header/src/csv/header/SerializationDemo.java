@@ -33,7 +33,7 @@ import org.jsefa.csv.CsvSerializer;
  */
 public class SerializationDemo {
 
-    private void start() {
+    void start() {
         CsvSerializer serializer = (CsvSerializer) CsvIOFactory.createFactory(Person.class).createSerializer();
         StringWriter writer = new StringWriter();
         serializer.open(writer);

@@ -31,7 +31,7 @@ import org.jsefa.xml.XmlReaderFactory;
  * 
  */
 public final class DeserializationDemo {
-    private void start() {
+    void start() {
         Deserializer deserializer = XmlIOFactory.createFactory(Department.class).createDeserializer();
         deserializer.open(createFileReader());
         while (deserializer.hasNext()) {

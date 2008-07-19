@@ -27,12 +27,12 @@ import org.jsefa.flr.annotation.FlrField;
  * @author Norman Lahme-Huetig
  * 
  */
-@FlrDataType(defaultPrefix="SCO")
+@FlrDataType(defaultPrefix = "SCO")
 public class Score {
-    @FlrField(pos=1, length = 12)
+    @FlrField(pos = 1, length = 12)
     String type;
 
-    @FlrField(pos=2, length = 4)
+    @FlrField(pos = 2, length = 4)
     BigDecimal value;
 
 }

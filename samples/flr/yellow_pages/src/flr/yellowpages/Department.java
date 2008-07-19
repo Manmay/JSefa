@@ -29,12 +29,12 @@ import org.jsefa.rbf.annotation.Record;
  * @author Norman Lahme-Huetig
  * 
  */
-@FlrDataType(defaultPrefix="DEP")
+@FlrDataType(defaultPrefix = "DEP")
 public class Department {
-    @FlrField(pos=0, length = 15)
+    @FlrField(pos = 0, length = 15)
     String name;
 
-    @FlrSubRecordList(pos=1, records = @Record(prefix="EMP"))
+    @FlrSubRecordList(pos = 1, records = @Record(prefix = "EMP"))
     List<Employee> employees;
 
 }

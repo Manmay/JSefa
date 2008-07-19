@@ -38,7 +38,7 @@ import xml.yellowpages.Department;
  */
 public class SerializationDemo {
 
-    private void start() {
+    void start() {
         FlrSerializer serializer = (FlrSerializer) FlrIOFactory.createFactory(Employee.class).createSerializer();
 
         StringWriter writer = new StringWriter();

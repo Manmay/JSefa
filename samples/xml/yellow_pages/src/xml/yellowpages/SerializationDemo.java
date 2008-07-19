@@ -36,7 +36,7 @@ import org.jsefa.xml.namespace.QName;
  * 
  */
 public final class SerializationDemo {
-    private void start() {
+    void start() {
         XmlSerializer serializer = XmlIOFactory.createFactory(Department.class).createSerializer();
 
         StringWriter writer = new StringWriter();

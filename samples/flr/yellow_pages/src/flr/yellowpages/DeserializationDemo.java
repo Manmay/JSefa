@@ -31,7 +31,7 @@ import org.jsefa.flr.FlrIOFactory;
  * 
  */
 public final class DeserializationDemo {
-    private void start() {
+    void start() {
         Deserializer deserializer = FlrIOFactory.createFactory(Department.class).createDeserializer();
         deserializer.open(createFileReader());
         while (deserializer.hasNext()) {

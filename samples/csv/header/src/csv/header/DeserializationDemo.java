@@ -34,7 +34,7 @@ import org.jsefa.csv.config.CsvConfiguration;
  */
 public class DeserializationDemo {
 
-    private void start() {
+    void start() {
         CsvConfiguration config = new CsvConfiguration();
         // header of size 1, no footer, store the filtered lines
         config.setLineFilter(new HeaderAndFooterFilter(1, false, true));
