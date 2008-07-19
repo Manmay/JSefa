@@ -16,13 +16,16 @@
 
 package org.jsefa.common.lowlevel;
 
+import java.io.Serializable;
+
 /**
  * Encapsulates information about the current position within the input stream.
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public final class InputPosition {
+public final class InputPosition implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int lineNumber;
     private int columnNumber;
     

@@ -16,6 +16,7 @@
 
 package org.jsefa.common.validator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,8 +27,10 @@ import java.util.Collections;
  * 
  * @author Norman Lahme-Huetig
  */
-public final class ValidationResult {
+public final class ValidationResult implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+
     private final Collection<ValidationError> errors;
     
     /**

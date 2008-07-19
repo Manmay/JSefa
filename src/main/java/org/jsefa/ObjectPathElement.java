@@ -16,13 +16,16 @@
 
 package org.jsefa;
 
+import java.io.Serializable;
+
 /**
  * An element of a path to an object.
  * 
  * @author Norman Lahme-Huetig
  */
 
-public final class ObjectPathElement {
+public final class ObjectPathElement implements Serializable {
+    private static final long serialVersionUID = 1L;
     
     private final Class<?> objectType;
     
