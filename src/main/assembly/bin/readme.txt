@@ -7,7 +7,7 @@ jsr173_1.0_api.jar
 - required for running applications using JSefa for XML serialization/deserialization
 - not required if using Java 6 or above
 
-wstx-asl-3.2.1.jar
+wstx-asl-3.2.6.jar
 - woodstox implementation of JSR 173
 - required for running applications using JSefa for XML serialization/deserialization
   if no other implementation of JSR 173 is provided
