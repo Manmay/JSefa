@@ -89,6 +89,6 @@ public abstract class LowLevelConfiguration {
         /**
          * The default line break used if none is explicitly given.
          */
-        String DEFAULT_LINE_BREAK = "\n";
+        String DEFAULT_LINE_BREAK = System.getProperty("line.separator");
     }
 }
