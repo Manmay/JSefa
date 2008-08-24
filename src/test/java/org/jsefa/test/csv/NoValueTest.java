@@ -32,6 +32,7 @@ import org.jsefa.test.common.JSefaTestUtil;
  * 
  */
 public class NoValueTest extends TestCase {
+    private static final String LINE_BREAK = System.getProperty("line.separator");
     /**
      * Test with default no value string which is configured to be the empty string.
      */
@@ -42,7 +43,7 @@ public class NoValueTest extends TestCase {
 
         CsvConfiguration config = createConfig();
         String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
-        assertEquals("not null;\n", serializationResult);
+        assertEquals("not null;" + LINE_BREAK, serializationResult);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
 
@@ -56,7 +57,7 @@ public class NoValueTest extends TestCase {
 
         CsvConfiguration config = createConfig("NULL");
         String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
-        assertEquals("not null;NULL\n", serializationResult);
+        assertEquals("not null;NULL" + LINE_BREAK, serializationResult);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
 
@@ -70,7 +71,7 @@ public class NoValueTest extends TestCase {
 
         CsvConfiguration config = createConfig();
         String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
-        assertEquals("not null;\n", serializationResult);
+        assertEquals("not null;" + LINE_BREAK, serializationResult);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
 
@@ -84,7 +85,7 @@ public class NoValueTest extends TestCase {
 
         CsvConfiguration config = createConfig();
         String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
-        assertEquals("not null;NULL\n", serializationResult);
+        assertEquals("not null;NULL" + LINE_BREAK, serializationResult);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
 

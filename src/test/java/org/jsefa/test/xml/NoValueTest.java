@@ -37,6 +37,8 @@ import org.jsefa.xml.annotation.XmlTextContent;
  */
 public class NoValueTest extends TestCase {
 
+    private static final String LINE_BREAK = System.getProperty("line.separator");
+
     /**
      * Tests serialization/deserialization with a null value for an element list.
      */
@@ -64,7 +66,7 @@ public class NoValueTest extends TestCase {
     }
 
     private void assertEmptyElementWritten(String serializationResult, String elementName) {
-        boolean shortVersionFound = serializationResult.replaceAll("\n", " ").matches(
+        boolean shortVersionFound = serializationResult.replaceAll(LINE_BREAK, " ").matches(
                 ".*<" + elementName + "\\s*/>.*");
         boolean longVersionFound = serializationResult.indexOf("<" + elementName + "></" + elementName + ">") > 0;
         assertTrue(shortVersionFound || longVersionFound);

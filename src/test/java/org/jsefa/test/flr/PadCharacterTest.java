@@ -32,13 +32,15 @@ import org.jsefa.test.common.JSefaTestUtil;
  * 
  */
 public class PadCharacterTest extends TestCase {
+    
+    private static final String LINE_BREAK = System.getProperty("line.separator");
 
     /**
      * Test to test the FLR serialization/deserialization with focus on the pad character.
      */
     public void testPadCharacterDTO() {
         TestDTO dto = createPadCharacterDTO("value", "value2");
-        assertTrue(JSefaTestUtil.serialize(FLR, dto).toString().equals("value##########$$value2\n"));
+        assertTrue(JSefaTestUtil.serialize(FLR, dto).toString().equals("value##########$$value2" + LINE_BREAK));
     }
 
     private TestDTO createPadCharacterDTO(String fieldAValue, String fieldBValue) {

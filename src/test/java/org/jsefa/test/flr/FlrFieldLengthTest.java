@@ -31,6 +31,8 @@ import org.jsefa.test.common.JSefaTestUtil;
  * 
  */
 public class FlrFieldLengthTest extends TestCase {
+    
+    private static final String LINE_BREAK = System.getProperty("line.separator");
 
     /**
      * Tests the case that the value has the same length as the FLR field.
@@ -56,7 +58,7 @@ public class FlrFieldLengthTest extends TestCase {
     private void check(String valueToSerialize, String expectedSerializedValue) {
         TestDTO dto = new TestDTO();
         dto.field = expectedSerializedValue;
-        assertTrue(JSefaTestUtil.serialize(FLR, dto).equals(expectedSerializedValue + "\n"));
+        assertTrue(JSefaTestUtil.serialize(FLR, dto).equals(expectedSerializedValue + LINE_BREAK));
     }
 
     @FlrDataType()
