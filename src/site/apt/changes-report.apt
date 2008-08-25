@@ -21,13 +21,19 @@ as the latter seems to combine the characters to one CHARACTER event.
   
 * Changed behavior
 
+  * The default line break is now the system property line.property - was line feed (\n) before 
+  
   * CsvLowLevelDeserializer.nextField now returns null if no next field exists (was the empty string before), the empty string if the next field is empty and a non empty field value in all other cases.
+  
+  * FlrLowLevelDeserializer no longer throws an exception if a record contains less fields than expected. Instead the missing fields are set to null.
   
   * xsi:type attribute default behavior
     
     Say you have a class Customer with the two subclasses BusinessCustomer and PrivateCustomer and another class Order with a field customer of type Customer.
     Further this field shall map to an xml element called \<customer>.
-    Then the deserialization of such a \<customer> element without a xsi:type attribute will result in creating an instance of class Customer.     
+    Then the deserialization of such a \<customer> element <without> a xsi:type attribute will result in creating an instance of class Customer.
+    
+    It was not possible to deserialize a \<customer> element without a xsi:type attribute before - one was forced to supply the xsi:type attribute as no default was assumed.    
   
 * New Features
   
@@ -63,7 +69,7 @@ as the latter seems to combine the characters to one CHARACTER event.
     You can now define that the content of an element should be a CDATA section. The default is to use entity references like &lt; to escape characters.
     See the enumeration TextMode and its use for several annotation paramters (e. g. XmlElement.textMode) as well as the TextModeTest.
     
-    Note: The XmlLowLevelSerializer.writeText method now has a second parameter of type TextMode. In the rare case you use this method just add TextMode.IMPLICIT as the second argument to every call of this method. 
+    <Note>: The XmlLowLevelSerializer.writeText method now has a second parameter of type TextMode. In the rare case you use this method just add TextMode.IMPLICIT as the second argument to every call of this method. 
 
   * InputPosition (XML/CSV/FLR deserialization)
   
