@@ -42,7 +42,7 @@ public class LineBreakTest extends TestCase {
         TestDTO dto = new TestDTO();
         dto.field="content";
         String serializationResult = JSefaTestUtil.serialize(XML, config, dto);
-        assertTrue(serializationResult.indexOf(">\n") > 0);
+        assertTrue(serializationResult.indexOf("TestDTO>\n") > 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, config, dto);
     }
 
@@ -55,7 +55,7 @@ public class LineBreakTest extends TestCase {
         TestDTO dto = new TestDTO();
         dto.field="content";
         String serializationResult = JSefaTestUtil.serialize(XML, config, dto);
-        assertTrue(serializationResult.indexOf(">\r\n") > 0);
+        assertTrue(serializationResult.indexOf("TestDTO>\r\n") > 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, config, dto);
     }
 
