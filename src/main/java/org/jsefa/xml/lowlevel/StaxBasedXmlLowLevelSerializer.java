@@ -35,7 +35,6 @@ import org.jsefa.xml.namespace.QName;
  * 
  * @author Norman Lahme-Huetig
  * @author Matthias Derer
- * 
  */
 public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializer {
     private final XmlLowLevelConfiguration config;
@@ -65,6 +64,9 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
     public void open(Writer writer) {
         this.writer = writer;
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
+        if (factory.isPropertySupported("com.ctc.wstx.outputEscapeCr")) {
+            factory.setProperty("com.ctc.wstx.outputEscapeCr", Boolean.FALSE);
+        }
         try {
             this.streamWriter = factory.createXMLStreamWriter(writer);
         } catch (XMLStreamException e) {
@@ -114,18 +116,17 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
                 }
             } else {
                 boolean createNamespace = (this.namespaceManager.getPrefix(name.getUri(), true) == null);
-                this.streamWriter.writeStartElement(this.namespaceManager.getOrCreatePrefix(name.getUri(), true),
-                        name.getLocalName(), name.getUri());
+                this.streamWriter.writeStartElement(this.namespaceManager.getOrCreatePrefix(name.getUri(), true), name
+                        .getLocalName(), name.getUri());
                 if (createNamespace) {
-                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(name.getUri(), true),
-                            name.getUri());
+                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(name.getUri(), true), name
+                            .getUri());
                 }
             }
             if (dataTypeName != null) {
-                if (hasNamespace(dataTypeName)
-                        && this.namespaceManager.getPrefix(dataTypeName.getUri(), true) == null) {
-                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(
-                            dataTypeName.getUri(), true), dataTypeName.getUri());
+                if (hasNamespace(dataTypeName) && this.namespaceManager.getPrefix(dataTypeName.getUri(), true) == null) {
+                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(dataTypeName.getUri(),
+                            true), dataTypeName.getUri());
                 }
                 String value = dataTypeName.getLocalName();
                 if (hasNamespace(dataTypeName)) {
@@ -153,11 +154,11 @@ public final class StaxBasedXmlLowLevelSerializer implements XmlLowLevelSerializ
                 this.streamWriter.writeAttribute(name.getLocalName(), value);
             } else {
                 if (this.namespaceManager.getPrefix(name.getUri(), false) == null) {
-                    this.streamWriter.writeNamespace(
-                            this.namespaceManager.getOrCreatePrefix(name.getUri(), false), name.getUri());
+                    this.streamWriter.writeNamespace(this.namespaceManager.getOrCreatePrefix(name.getUri(), false),
+                            name.getUri());
                 }
-                this.streamWriter.writeAttribute(this.namespaceManager.getOrCreatePrefix(name.getUri(), false),
-                        name.getUri(), name.getLocalName(), value);
+                this.streamWriter.writeAttribute(this.namespaceManager.getOrCreatePrefix(name.getUri(), false), name
+                        .getUri(), name.getLocalName(), value);
             }
         } catch (XMLStreamException e) {
             throw new LowLevelSerializationException("Unable to write attribute " + name, e);
