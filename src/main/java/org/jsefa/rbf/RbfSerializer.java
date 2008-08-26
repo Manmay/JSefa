@@ -17,6 +17,7 @@
 package org.jsefa.rbf;
 
 import org.jsefa.Serializer;
+import org.jsefa.rbf.lowlevel.RbfLowLevelSerializer;
 
 /**
  * Iterator-style interface for stream based RBF serializer.
@@ -26,5 +27,11 @@ import org.jsefa.Serializer;
  * 
  */
 public interface RbfSerializer extends Serializer {
+    /**
+     * Returns a low level rbf serializer.
+     * 
+     * @return a low level rbf serializer.
+     */
+    RbfLowLevelSerializer getLowLevelSerializer();
 
 }

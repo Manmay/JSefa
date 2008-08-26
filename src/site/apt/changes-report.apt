@@ -69,7 +69,11 @@ as the latter seems to combine the characters to one CHARACTER event.
     You can now define that the content of an element should be a CDATA section. The default is to use entity references like &lt; to escape characters.
     See the enumeration TextMode and its use for several annotation paramters (e. g. XmlElement.textMode) as well as the TextModeTest.
     
-    <Note>: The XmlLowLevelSerializer.writeText method now has a second parameter of type TextMode. In the rare case you use this method just add TextMode.IMPLICIT as the second argument to every call of this method. 
+    <Note>: The XmlLowLevelSerializer.writeText method now has a second parameter of type TextMode. In the rare case you use this method just add TextMode.IMPLICIT as the second argument to every call of this method.
+    
+  * DOCTYPE declaration (XML serialization)
+  
+    Using the low level serializer you can now write out a DOCTYPE declaration.        
 
   * InputPosition (XML/CSV/FLR deserialization)
   
@@ -90,8 +94,8 @@ as the latter seems to combine the characters to one CHARACTER event.
   * Accessor to LowLevelSerializer (CSV/FLR serialization)
  
     CsvSerializer and FlrSerializer now have a method getLowLevelSerializer to access the underlying low level serializer.
-    Such a method existed for XmlSerializer already.      
-
+    Such a method existed for XmlSerializer already.
+  
 * New Samples
   
   * samples/csv/header

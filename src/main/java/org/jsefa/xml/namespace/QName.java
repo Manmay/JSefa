@@ -115,7 +115,7 @@ public final class QName {
      */
     @Override
     public String toString() {
-        if (this.uri == null) {
+        if (NamespaceConstants.NO_NAMESPACE_URI.equals(this.uri)) {
             return this.localName;
         } else {
             return this.uri + "#" + this.localName;

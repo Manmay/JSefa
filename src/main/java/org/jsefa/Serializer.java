@@ -18,6 +18,8 @@ package org.jsefa;
 
 import java.io.Writer;
 
+import org.jsefa.common.lowlevel.LowLevelSerializer;
+
 /**
  * Iterator-style interface for stream based serializers.
  * 
@@ -54,4 +56,11 @@ public interface Serializer {
      * @throws SerializationException
      */
     void close(boolean closeWriter);
+    
+    /**
+     * Returns the underlying low level serializer.
+     * 
+     * @return a low level serializer.
+     */
+    LowLevelSerializer getLowLevelSerializer();    
 }

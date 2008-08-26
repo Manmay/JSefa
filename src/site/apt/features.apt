@@ -3,7 +3,7 @@
    ------------------
    Norman Lahme-Hütig
    ------------------
-   17.07.2008
+   26.08.2008
    ------------------
    
 Feature Highlights
@@ -67,6 +67,22 @@ Feature Highlights
   
     Validation support ranges from simple "value is required" to user defined validators. 
     
+  * Exchangeable low level serializer/deserializer
+  
+    E. g. the JSefa XML serializer/deserializer is based on a low level serializer/deserializer, which operates directly on elements, attributes and text content.
+    JSefa provides an abstraction of the low level task of serialization/deserialization and thus allows for different implementations.
+    The current default implementation is based on JSR 173 (Stax) for which in turn different implementations exist.
+    
+    Similar is true for CSV and FLR.
+
+  * Support for direct usage of low level serializer/deserializer
+  
+    If you do not need high level serialization/deserialization and want to use the low level serializer/deserializer directly, you are free to use an implementation of <<<LowLevelIOFactory>>> directly (e. g. the <<<StaxBasedXmlLowLevelIOFactory>>>).
+
+  * Access to low level serializer during high level serialization
+  
+    Each high level serializer gives you access to the underlying low level XML serializer. In the case of XML you can use the low level serializer to write an xml declaration, DTD declaration, start tags, attributes, text content and end tags.    
+  
 * XML
 
   * Namespaces
@@ -88,20 +104,6 @@ Feature Highlights
     JSefa provides a <<<XmlReaderFactory>>> which creates a <<<Reader>>> for several alternative input sources (e. g. <<<InputStream>>>) with automatic encoding detection.
     The encoding detection takes into account the BOM (Byte Order Mark), the first 4 bytes of the input source and the <<<encoding>>> pseudo attribute of the xml declaration.
     
-  * Exchangeable low level serializer/deserializer
-  
-    The JSefa XML serializer/deserializer is based on a low level serializer/deserializer, which operates directly on elements, attributes and text content.
-    JSefa provides an abstraction of the low level task of serialization/deserialization and thus allows for different implementations.
-    The current default implementation is based on JSR 173 (Stax) for which in turn different implementations exist.
-
-  * Support for direct usage of low level serializer/deserializer
-  
-    If you do not need high level serialization/deserialization and want to use the low level serializer/deserializer directly, you are free to use an implementation of <<<XmlLowLevelDriver>>> directly (e. g. the <<<StaxDriver>>>).
-
-  * Access to low level serializer during high level serialization
-  
-    The high level JSefa XML serializer gives you access to the underlying low level XML serializer. The latter allows for explicitly writing an xml declaration, start tags, attributes, text content and end tags.    
-  
 * CSV and FLR
   
   * Multi type serialization/deserialization
@@ -125,7 +127,11 @@ Feature Highlights
   * Line filter
   
     A line filter allows for filtering out lines during deserialization. These lines can also be stored for later retrieval.
-    The typical use case of a line filter is to filter out and retrieve headers and footers of CSV/FLR files.  
+    The typical use case of a line filter is to filter out and retrieve headers and footers of CSV/FLR files.
+    
+  * Deserializer accepts records with more ore less fields than declared
+  
+    Say your format (CSV or FLR) evolves and gets a new field at the end of the field list. Then an old implementation can still read the new format as well as the new implementation can read the old one.  
         
     
   

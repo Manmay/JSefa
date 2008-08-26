@@ -146,7 +146,7 @@ public final class NamespaceManager {
      */
     public void registerPrefix(String prefix, String uri) {
         if (prefix == null || uri == null) {
-            throw new NullPointerException("Prefix and uri must not be null");
+            throw new NullPointerException("The parameters prefix and uri must not be null");
         }
         if (hasOwnRegistries) {
             if (isDefault(prefix)) {
@@ -190,9 +190,6 @@ public final class NamespaceManager {
      * @return the prefix or null if none is registered for the given uri.
      */
     public String getPrefix(String uri, boolean defaultAllowed) {
-        if (uri == null) {
-            return null;
-        }
         if (!this.hasOwnRegistries) {
             return this.parent.getPrefix(uri, defaultAllowed);
         }
@@ -214,38 +211,33 @@ public final class NamespaceManager {
     }
 
     /**
-     * Returns the registered prefix for the given namespace uri or creates a new one and registers it. For the
-     * latter case a preferred prefix is returned if it exists for the given URI and if the prefix is not already
-     * bound to another URI.
+     * Creates a new prefix for the given URI. A preferred prefix is returned if it exists for the given URI and if the
+     * prefix is not already bound to another URI.
      * 
-     * @param uri the uri to get a prefix for
+     * @param uri the uri to get a prefix for (not null)
      * @param defaultAllowed true, if the prefix may be the default one.
      * @return the prefix
      */
-    public String getOrCreatePrefix(String uri, boolean defaultAllowed) {
+    public String createPrefix(String uri, boolean defaultAllowed) {
         if (uri == null) {
-            return null;
+            throw new NullPointerException("The parameter uri must not be null");
+        }        
+        String prefix = this.preferredPrefixes.get(uri);
+        if (prefix != null && getUri(prefix) != null) {
+            prefix = null;
         }
-        String prefix = getPrefix(uri, defaultAllowed);
         if (prefix == null) {
-            prefix = this.preferredPrefixes.get(uri);
-            if (prefix != null && getUri(prefix) != null) {
-                prefix = null;
+            prefix = DEFAULT_NAMESPACE_PREFIX;
+            if (!defaultAllowed || getUri(prefix) != null) {
+                int no = 1;
+                do {
+                    prefix = "ns" + no++;
+                } while (getUri(prefix) != null);
             }
-            if (prefix == null) {
-                prefix = DEFAULT_NAMESPACE_PREFIX;
-                if (!defaultAllowed || getUri(prefix) != null) {
-                    int no = 1;
-                    do {
-                        prefix = "ns" + no++;
-                    } while (getUri(prefix) != null);
-                }
-            }
-            registerPrefix(prefix, uri);
         }
         return prefix;
     }
-
+    
     /**
      * Returns the namespace uri the given prefix is registered for. If this namespace manager has no registration
      * for the given prefix, than its parent namespace manager is asked for it (in the case a parent exists).

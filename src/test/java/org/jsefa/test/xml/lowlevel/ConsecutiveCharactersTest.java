@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jsefa.test.xml;
+package org.jsefa.test.xml.lowlevel;
 
 import java.io.StringReader;
 
@@ -26,12 +26,12 @@ import org.jsefa.xml.lowlevel.model.TextContent;
 import org.jsefa.xml.lowlevel.model.XmlItemType;
 
 /**
- * Tests to test the correct behaviour of the stax based low level implementation.
+ * Tests to test the handling of consecutive character events ({@link StaxBasedXmlLowLevelDeserializer}).
  * 
  * @author Norman Lahme-Huetig
  * 
  */
-public class StaxBasedXmlLowLevelTest extends TestCase {
+public class ConsecutiveCharactersTest extends TestCase {
 
     /**
      * Tests the handling of consecutive character events.
