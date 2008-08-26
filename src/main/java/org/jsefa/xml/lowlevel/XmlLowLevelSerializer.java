@@ -38,6 +38,14 @@ public interface XmlLowLevelSerializer extends LowLevelSerializer {
      * @throws LowLevelSerializationException
      */
     void writeXmlDeclaration(String version, String encoding);
+    
+    /**
+     * Writes the DOCTYPE declaration.
+     * @param rootElementName the name of the root element.
+     * @param publicId the public id - may be null
+     * @param systemId the system id
+     */
+    void writeDocTypeDeclaration(QName rootElementName, String publicId, String systemId);
 
     /**
      * Writes the start tag of an element.
