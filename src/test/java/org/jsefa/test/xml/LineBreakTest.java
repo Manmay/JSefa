@@ -26,34 +26,33 @@ import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.config.XmlConfiguration;
 
 /**
- * Tests to test correct serialization of line breaks
+ * Tests to test correct serialization of line breaks.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
 public class LineBreakTest extends TestCase {
-    
+
     /**
-     * Tests serialization/deserialization with "\n" as a line break
+     * Tests serialization/deserialization with "\n" as a line break.
      */
     public static void testLineFeed() {
         XmlConfiguration config = new XmlConfiguration();
         config.setLineBreak("\n");
         TestDTO dto = new TestDTO();
-        dto.field="content";
+        dto.field = "content";
         String serializationResult = JSefaTestUtil.serialize(XML, config, dto);
         assertTrue(serializationResult.indexOf("TestDTO>\n") > 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, config, dto);
     }
 
     /**
-     * Tests serialization/deserialization with "\r\n" as a line break
+     * Tests serialization/deserialization with "\r\n" as a line break.
      */
     public static void testCarriageReturnLineFeed() {
         XmlConfiguration config = new XmlConfiguration();
         config.setLineBreak("\r\n");
         TestDTO dto = new TestDTO();
-        dto.field="content";
+        dto.field = "content";
         String serializationResult = JSefaTestUtil.serialize(XML, config, dto);
         assertTrue(serializationResult.indexOf("TestDTO>\r\n") > 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, config, dto);
@@ -63,5 +62,5 @@ public class LineBreakTest extends TestCase {
     static class TestDTO extends AbstractTestDTO {
         @XmlElement()
         String field;
-    }    
+    }
 }

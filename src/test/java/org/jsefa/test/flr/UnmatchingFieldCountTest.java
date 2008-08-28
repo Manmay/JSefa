@@ -33,6 +33,9 @@ import org.jsefa.test.common.JSefaTestUtil;
  */
 public class UnmatchingFieldCountTest extends TestCase {
     
+    /**
+     * Tests it with less fields than declard.
+     */
     public void testWithLessFields() {
         check("a b c ", "a", "b", "c");
         check("a b c", "a", "b", "c");
@@ -42,12 +45,18 @@ public class UnmatchingFieldCountTest extends TestCase {
         check("a", "a", null, null);
     }
     
+    /**
+     * Tests it with more fields than declard.
+     */
     public void testWithMoreFields() {
         check("a b c ", "a", "b", "c");
         check("a b c d ", "a", "b", "c");
         check("a b c d e ", "a", "b", "c");
     }
 
+    /**
+     * Tests it with an empty record.
+     */
     @SuppressWarnings("unchecked")
     public void testEmptyRecord() {
         assertNull(JSefaTestUtil.deserialize(FLR, "", TestDTO.class));

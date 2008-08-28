@@ -31,12 +31,10 @@ import org.jsefa.flr.annotation.FlrField;
 import org.jsefa.test.common.AbstractTestDTO;
 
 /**
- * Tests the fault tolerance when deserializing a list of DTOs where some of
- * them cause an Exception as they are not valid. I. e. after an Exception
- * caused by invalid elements one should be able to read in the next DTO.
+ * Tests the fault tolerance when deserializing a list of DTOs where some of them cause an Exception as they are not
+ * valid. I. e. after an Exception caused by invalid elements one should be able to read in the next DTO.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
 
 public class DeserializationFaultToleranceTest extends TestCase {
@@ -44,6 +42,9 @@ public class DeserializationFaultToleranceTest extends TestCase {
         VALID, INVALID
     }
 
+    /**
+     * Tests it with different positions of invalid elements.
+     */
     public void testWithInvalidElements() {
         assertEquals(countDTO(TestDTO.class, createFLR(INVALID, VALID)), 1);
         assertEquals(countDTO(TestDTO.class, createFLR(VALID, INVALID)), 1);
@@ -61,7 +62,7 @@ public class DeserializationFaultToleranceTest extends TestCase {
                 deserializer.next();
                 count++;
             } catch (DeserializationException e) {
-                // not valid
+                continue; // not valid
             }
         }
         return count;
@@ -77,6 +78,8 @@ public class DeserializationFaultToleranceTest extends TestCase {
             case INVALID:
                 result.append("text text \n");
                 break;
+            default:
+                break;
             }
         }
         return result.toString();
@@ -84,7 +87,7 @@ public class DeserializationFaultToleranceTest extends TestCase {
 
     @FlrDataType()
     static final class TestDTO extends AbstractTestDTO {
-        @FlrField(pos = 1, length=5)
+        @FlrField(pos = 1, length = 5)
         int intField;
 
         @FlrField(pos = 2, length = 5)

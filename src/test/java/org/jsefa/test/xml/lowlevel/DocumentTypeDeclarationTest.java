@@ -12,42 +12,44 @@ import org.jsefa.xml.namespace.QName;
  * Tests to test the correct serialization of DOCTYPE declarations ({@link StaxBasedXmlLowLevelSerializer}).
  * 
  * @author Norman Lahme-Huetig
- * 
  */
 public class DocumentTypeDeclarationTest extends TestCase {
-    
+
     /**
-     * Tests it with no namespace and no public id
+     * Tests it with no namespace and no public id.
      */
     public void testWithoutNamespacesAndWithoutPublicId() {
         String xml = createXML(QName.create("test"), null, "http://www.jsefa.org/xml/dtd/test");
         assertTrue(xml.indexOf("<!DOCTYPE test SYSTEM \"http://www.jsefa.org/xml/dtd/test\">") > -1);
     }
-    
+
     /**
-     * Tests it with no namespace but with a public id
+     * Tests it with no namespace but with a public id.
      */
     public void testWithoutNamespacesAndWithPublicId() {
         String xml = createXML(QName.create("test"), "-//JSEFA//DTD//test//EN", "http://www.jsefa.org/xml/dtd/test");
-        assertTrue(xml.indexOf("<!DOCTYPE test PUBLIC \"-//JSEFA//DTD//test//EN\" \"http://www.jsefa.org/xml/dtd/test\">") > -1);
+        assertTrue(xml.indexOf(
+                "<!DOCTYPE test PUBLIC \"-//JSEFA//DTD//test//EN\" \"http://www.jsefa.org/xml/dtd/test\">") > -1);
     }
 
     /**
-     * Tests it with the default namespace prefix (no public id)
+     * Tests it with the default namespace prefix (no public id).
      */
     public void testWithDefaultNamespacePrefix() {
-        String xml = createXML(QName.create("http://jsefa.org/xml/test", "test"), null, "http://www.jsefa.org/xml/dtd/test");
+        String xml = createXML(QName.create("http://jsefa.org/xml/test", "test"), null,
+                "http://www.jsefa.org/xml/dtd/test");
         assertTrue(xml.indexOf("<!DOCTYPE test SYSTEM \"http://www.jsefa.org/xml/dtd/test\">") > -1);
         assertTrue(xml.indexOf("xmlns=") > -1);
     }
 
     /**
-     * Tests it with an explicit namespace prefix (no public id)
+     * Tests it with an explicit namespace prefix (no public id).
      */
     public void testWithExplicitNamespacePrefix() {
         XmlLowLevelConfiguration config = new XmlLowLevelConfiguration();
         config.getNamespaceManager().registerPreferredPrefix("p", "http://jsefa.org/xml/test");
-        String xml = createXML(QName.create("http://jsefa.org/xml/test", "test"), null, "http://www.jsefa.org/xml/dtd/test", config);
+        String xml = createXML(QName.create("http://jsefa.org/xml/test", "test"), null,
+                "http://www.jsefa.org/xml/dtd/test", config);
         assertTrue(xml.indexOf("<!DOCTYPE p:test SYSTEM \"http://www.jsefa.org/xml/dtd/test\">") > -1);
         assertTrue(xml.indexOf("xmlns:p=") > -1);
     }

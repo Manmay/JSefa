@@ -17,7 +17,7 @@
 package org.jsefa.common.lowlevel.filter;
 
 /**
- * A line of a stream.
+ * A non-empty line from a stream.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -30,7 +30,7 @@ public final class Line {
     private boolean isLastLine;
 
     /**
-     * Constructs a new <code>Line</code>.
+     * Constructs a new non-empty <code>Line</code>.
      * @param content the content of the line
      * @param lineNumber the line number (starting with 1)
      * @param isLastLine true if it is the last line of the stream; false otherwise
@@ -58,8 +58,8 @@ public final class Line {
     }
 
     /**
-     * Returns true if this is the last line of the stream; false otherwise.
-     * @return true if this is the last line of the stream; false otherwise
+     * Returns true if this is the last non-empty line of the stream; false otherwise.
+     * @return true if this is the last non-empty line of the stream; false otherwise
      */
     public boolean isLastLine() {
         return this.isLastLine;

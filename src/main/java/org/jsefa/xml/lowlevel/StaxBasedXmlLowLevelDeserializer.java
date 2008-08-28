@@ -21,6 +21,7 @@ import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.io.BufferedReader;
 import java.io.Reader;
 
 import javax.xml.stream.Location;
@@ -78,10 +79,14 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
      * {@inheritDoc}
      */
     public void open(Reader reader) {
-        this.reader = reader;
+        if (reader instanceof BufferedReader) {
+            this.reader = (BufferedReader) reader;
+        } else {
+            this.reader = new BufferedReader(reader);
+        }
         XMLInputFactory factory = XMLInputFactory.newInstance();
         try {
-            this.streamReader = factory.createXMLStreamReader(reader);
+            this.streamReader = factory.createXMLStreamReader(this.reader);
         } catch (XMLStreamException e) {
             throw new LowLevelDeserializationException("Error while opening the deserialization stream", e);
         }

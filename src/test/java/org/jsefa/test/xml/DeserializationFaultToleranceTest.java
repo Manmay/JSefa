@@ -17,8 +17,8 @@
 package org.jsefa.test.xml;
 
 import static org.jsefa.test.xml.DeserializationFaultToleranceTest.Mode.INVALID;
-import static org.jsefa.test.xml.DeserializationFaultToleranceTest.Mode.VALID;
 import static org.jsefa.test.xml.DeserializationFaultToleranceTest.Mode.NOT_WELLFORMED;
+import static org.jsefa.test.xml.DeserializationFaultToleranceTest.Mode.VALID;
 
 import java.io.StringReader;
 
@@ -32,15 +32,13 @@ import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 
 /**
- * Tests the fault tolerance when deserializing a list of DTOs where some of
- * them cause an Exception as they are not valid (but well formed). I. e. after
- * an Exception caused by invalid elements one should be able to read in the
- * next DTO. <p>
- * Note: It is not possible to resume after encountering a not
- * wellformed part of the document.
+ * Tests the fault tolerance when deserializing a list of DTOs where some of them cause an Exception as they are not
+ * valid (but well formed). I. e. after an Exception caused by invalid elements one should be able to read in the next
+ * DTO.
+ * <p>
+ * Note: It is not possible to resume after encountering a not wellformed part of the document.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
 
 public class DeserializationFaultToleranceTest extends TestCase {
@@ -48,6 +46,9 @@ public class DeserializationFaultToleranceTest extends TestCase {
         VALID, INVALID, NOT_WELLFORMED
     }
 
+    /**
+     * Tests it with different positions of invalid elements.
+     */
     public void testWithInvalidElements() {
         assertEquals(countDTO(TestDTO.class, createXML(INVALID, VALID)), 1);
         assertEquals(countDTO(TestDTO.class, createXML(VALID, INVALID)), 1);
@@ -55,6 +56,9 @@ public class DeserializationFaultToleranceTest extends TestCase {
         assertEquals(countDTO(TestDTO.class, createXML(VALID, VALID, INVALID, VALID, VALID, INVALID, VALID)), 5);
     }
 
+    /**
+     * Tests it with different positions of illformed elements.
+     */
     public void testWithIllformedElements() {
         assertEquals(countDTO(TestDTO.class, createXML(NOT_WELLFORMED, VALID)), 0);
         assertEquals(countDTO(TestDTO.class, createXML(VALID, NOT_WELLFORMED)), 1);
@@ -71,11 +75,11 @@ public class DeserializationFaultToleranceTest extends TestCase {
                     deserializer.next();
                     count++;
                 } catch (DeserializationException e) {
-                    // not valid
+                    continue;   // not valid
                 }
             }
         } catch (DeserializationException e) {
-            // not wellformed
+            return count;   // not wellformed
         }
         return count;
     }
@@ -96,6 +100,8 @@ public class DeserializationFaultToleranceTest extends TestCase {
                 break;
             case NOT_WELLFORMED:
                 result.append("<int-field>text</text-field>\n");
+                break;
+            default:
                 break;
             }
             result.append("</element>\n");

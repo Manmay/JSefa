@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.jsefa.test.csv;
 
 import static org.jsefa.test.common.JSefaTestUtil.FormatType.CSV;
@@ -29,27 +28,35 @@ import org.jsefa.test.common.JSefaTestUtil;
  * Tests to test the CSV deserialization of records with less or more fields than declared.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
 public class UnmatchingFieldCountTest extends TestCase {
-    
+
+    /**
+     * Tests it with less fields than declard.
+     */
     public void testWithLessFields() {
         check("a;b;c", "a", "b", "c");
         check("a;b", "a", "b", null);
         check("a", "a", null, null);
     }
-    
+
+    /**
+     * Tests it with more fields than declard.
+     */
     public void testWithMoreFields() {
         check("a;b;c", "a", "b", "c");
         check("a;b;c;d", "a", "b", "c");
         check("a;b;c;d;e", "a", "b", "c");
     }
 
+    /**
+     * Tests it with an empty record.
+     */
     @SuppressWarnings("unchecked")
     public void testEmptyRecord() {
         assertNull(JSefaTestUtil.deserialize(CSV, "", TestDTO.class));
     }
-    
+
     @SuppressWarnings("unchecked")
     private void check(String input, String fieldA, String fieldB, String fieldC) {
         TestDTO dto = JSefaTestUtil.deserialize(CSV, input, TestDTO.class);
@@ -69,7 +76,7 @@ public class UnmatchingFieldCountTest extends TestCase {
             assertTrue(fieldC.equals(dto.fieldC));
         }
     }
-    
+
     @CsvDataType()
     private static final class TestDTO extends AbstractTestDTO {
         @CsvField(pos = 1)
@@ -81,5 +88,5 @@ public class UnmatchingFieldCountTest extends TestCase {
         @CsvField(pos = 3)
         String fieldC;
 
-    }    
+    }
 }

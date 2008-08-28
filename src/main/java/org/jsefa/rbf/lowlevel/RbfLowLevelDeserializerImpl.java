@@ -16,18 +16,12 @@
 
 package org.jsefa.rbf.lowlevel;
 
-import static org.jsefa.common.lowlevel.filter.FilterResult.FAILED_BUT_STORE;
-import static org.jsefa.common.lowlevel.filter.FilterResult.PASSED;
-
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jsefa.common.lowlevel.InputPosition;
 import org.jsefa.common.lowlevel.LowLevelDeserializationException;
-import org.jsefa.common.lowlevel.filter.FilterResult;
 import org.jsefa.common.lowlevel.filter.Line;
 import org.jsefa.rbf.lowlevel.config.RbfLowLevelConfiguration;
 
@@ -41,17 +35,11 @@ import org.jsefa.rbf.lowlevel.config.RbfLowLevelConfiguration;
 public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfiguration>
     implements RbfLowLevelDeserializer {
 
-    private BufferedReader reader;
+    private LineReader reader;
     
-    private boolean linePrefetched;
-
-    private InputLine currentLine;
-    
-    private InputLine nextLine;
+    private String currentLine;
     
     private int currentColumnIndex;
-    
-    private List<Line> storedLines;
     
     private C config;
     
@@ -68,44 +56,24 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      * {@inheritDoc}
      */
     public final void open(Reader reader) {
-        this.currentLine = new InputLine();
-        this.nextLine = new InputLine();
-        this.linePrefetched = false;
-        if (reader instanceof BufferedReader) {
-            this.reader = (BufferedReader) reader;
+        if (this.config.getLineFilter() != null) {
+            this.reader = new FilteringLineReader(reader, this.config.getLineFilter());
         } else {
-            this.reader = new BufferedReader(reader);
+            this.reader = new LineReader(reader);
         }
-        this.storedLines = new ArrayList<Line>();
     }
 
     /**
      * {@inheritDoc}
      */
     public final boolean readNextRecord() {
+        this.currentLine = this.reader.readLine();
         if (this.currentLine == null) {
             return false;
-        }
-
-        this.currentColumnIndex = 0;
-        if (this.linePrefetched) {
-            this.linePrefetched = false;
+        } else {
+            this.currentColumnIndex = 0;
             return true;
         }
-        
-        if (this.config.getLineFilter() == null) {
-            return moveForward(false);
-        }
-
-        while (moveForward(true)) {
-            FilterResult filterResult = filterCurrentLine();
-            if (filterResult == PASSED) {
-                return true;
-            } else if (filterResult == FAILED_BUT_STORE) {
-                storeCurrentLine();
-            }
-        }
-        return false;
     }
 
     /**
@@ -113,7 +81,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      */
     public final void unreadRecord() {
         this.currentColumnIndex = 0;
-        this.linePrefetched = true;
+        this.reader.unreadRecord();
     }
 
     /**
@@ -121,21 +89,16 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      */
     public final void close(boolean closeReader) {
         if (closeReader) {
-            try {
-                this.reader.close();
-            } catch (IOException e) {
-                throw new LowLevelDeserializationException("Error while closing the deserialization stream", e);
-            }
+            this.reader.close();
         }
-        this.reader = null;
     }
     
     /**
      * {@inheritDoc}
      */
     public final InputPosition getInputPosition() {
-        if (this.reader != null && this.currentLine != null) {
-            return new InputPosition(this.currentLine.lineNumber, this.currentColumnIndex + 1);
+        if (this.currentLine != null) {
+            return new InputPosition(this.reader.getLineNumber(), this.currentColumnIndex + 1);
         } else {
             return null;
         }
@@ -144,8 +107,13 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public List<Line> getStoredLines() {
-        return this.storedLines;
+        try {
+            return ((FilteringLineReader) this.reader).getStoredLines();
+        } catch (ClassCastException e) {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     /**
@@ -162,7 +130,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      * @return true, if there is another character on the current line to read; false otherwise.
      */
     protected final boolean hasNextChar() {
-        return this.currentColumnIndex < this.currentLine.content.length();
+        return this.currentColumnIndex < this.currentLine.length();
     }
 
     /**
@@ -172,7 +140,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      */
     protected final char peekChar() {
         try {
-            return this.currentLine.content.charAt(this.currentColumnIndex);
+            return this.currentLine.charAt(this.currentColumnIndex);
         } catch (IndexOutOfBoundsException e) {
             throw new LowLevelDeserializationException("Unexpected end of line reached");
         }
@@ -185,7 +153,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      */
     protected final char nextChar() {
         try {
-            return this.currentLine.content.charAt(this.currentColumnIndex++);
+            return this.currentLine.charAt(this.currentColumnIndex++);
         } catch (IndexOutOfBoundsException e) {
             throw new LowLevelDeserializationException("Unexpected end of line reached");
         }
@@ -200,13 +168,13 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      */
     protected final String nextString(int length) {
         try {
-            String value = this.currentLine.content.substring(this.currentColumnIndex, this.currentColumnIndex
+            String value = this.currentLine.substring(this.currentColumnIndex, this.currentColumnIndex
                     + length);
             this.currentColumnIndex += length;
             return value;
         } catch (IndexOutOfBoundsException e) {
-            if (this.currentColumnIndex < this.currentLine.content.length()) {
-                String value = this.currentLine.content.substring(this.currentColumnIndex);
+            if (this.currentColumnIndex < this.currentLine.length()) {
+                String value = this.currentLine.substring(this.currentColumnIndex);
                 this.currentColumnIndex += value.length();
                 return value;
             }
@@ -220,73 +188,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      * @return the number of remaining characters in the current line.
      */
     protected final int remainingLineLength() {
-        return this.currentLine.content.length() - this.currentColumnIndex;
+        return this.currentLine.length() - this.currentColumnIndex;
     }
     
-    private boolean moveForward(boolean readAhead) {
-        if (!readAhead) {
-            this.currentLine = readNextNonEmptyLine(this.currentLine);
-        } else {
-            if (this.nextLine == null) {
-                this.currentLine = null;
-                return false;
-            }
-    
-            if (this.nextLine.after(this.currentLine)) {
-                this.currentLine.copyFrom(this.nextLine);
-            } else {
-                this.currentLine = readNextNonEmptyLine(this.currentLine);
-            }
-    
-            if (this.currentLine != null) {
-                this.nextLine.copyFrom(this.currentLine);
-                this.nextLine = readNextNonEmptyLine(this.nextLine);
-            } else {
-                this.nextLine = null;
-            }
-        }
-        return this.currentLine != null;
-    }
-    
-    private FilterResult filterCurrentLine() {
-        return this.config.getLineFilter().filter(this.currentLine.content, this.currentLine.lineNumber,
-                this.nextLine == null);
-    }
-    
-    private void storeCurrentLine() {
-        this.storedLines.add(new Line(this.currentLine.content, this.currentLine.lineNumber, this.nextLine == null));
-    }
-    
-    private InputLine readNextNonEmptyLine(InputLine inputLine) {
-        try {
-            inputLine.content = this.reader.readLine();
-            inputLine.lineNumber++;
-            while (inputLine.content != null && inputLine.content.trim().length() == 0) {
-                inputLine.content = this.reader.readLine();
-                inputLine.lineNumber++;
-            }
-            if (inputLine.content != null) {
-                return inputLine;
-            } else {
-                return null;
-            }
-        } catch (IOException e) {
-            throw new LowLevelDeserializationException(e);
-        }
-    }
-    
-    private static final class InputLine {
-        String content;
-        int lineNumber;
-        
-        void copyFrom(InputLine other) {
-            this.content = other.content;
-            this.lineNumber = other.lineNumber;
-        }
-        
-        boolean after(InputLine other) {
-            return this.lineNumber > other.lineNumber;
-            
-        }
-    }
 }
