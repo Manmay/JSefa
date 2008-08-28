@@ -29,6 +29,7 @@ import org.jsefa.common.lowlevel.filter.LineFilter;
 
 final class FilteringLineReader extends LineReader {
 
+    private InputLine currentLine;
     private InputLine nextLine;
     private LineFilter lineFilter;
     private List<Line> storedLines;
@@ -36,6 +37,7 @@ final class FilteringLineReader extends LineReader {
     public FilteringLineReader(Reader reader, LineFilter lineFilter) {
         super(reader);
         this.lineFilter = lineFilter;
+        this.currentLine = new InputLine();
         this.nextLine = new InputLine();
         this.storedLines = new ArrayList<Line>();
     }
@@ -53,6 +55,14 @@ final class FilteringLineReader extends LineReader {
         return null;
     }
     
+    @Override
+    public int getLineNumber() {
+        if (this.currentLine != null) {
+            return this.currentLine.lineNumber;
+        }
+        return -1;
+    }
+
     public List<Line> getStoredLines() {
         return this.storedLines;
     }
@@ -65,8 +75,8 @@ final class FilteringLineReader extends LineReader {
             this.currentLine = null;
             return false;
         }
-        if (this.prefetched) {
-            this.prefetched = false;
+        if (isPrefetched()) {
+            super.readLine();
             return true;
         }
 
@@ -85,6 +95,16 @@ final class FilteringLineReader extends LineReader {
             return false;
         }
     }
+    
+    private InputLine readNextNonEmptyLine(InputLine inputLine) {
+        String line = super.readLine();
+        if (line == null) {
+            return null;
+        }
+        inputLine.content = line;
+        inputLine.lineNumber = super.getLineNumber();
+        return inputLine;
+    }
 
     private FilterResult filterCurrentLine() {
         return this.lineFilter.filter(this.currentLine.content, this.currentLine.lineNumber, this.nextLine == null);
@@ -92,6 +112,16 @@ final class FilteringLineReader extends LineReader {
 
     private void storeCurrentLine() {
         this.storedLines.add(new Line(this.currentLine.content, this.currentLine.lineNumber, this.nextLine == null));
+    }
+    
+    private static final class InputLine {
+        String content;
+        int lineNumber;
+        
+        void copyFrom(InputLine other) {
+            this.content = other.content;
+            this.lineNumber = other.lineNumber;
+        }        
     }
 
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2007 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jsefa.rbf.lowlevel;
 
 import java.io.BufferedReader;
@@ -8,8 +24,9 @@ import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 
 class LineReader {
     private BufferedReader reader;
-    protected InputLine currentLine;
-    protected boolean prefetched;
+    private String recentLine;
+    private boolean prefetched;
+    private int lineNumber;
 
     public LineReader(Reader reader) {
         if (reader instanceof BufferedReader) {
@@ -17,41 +34,34 @@ class LineReader {
         } else {
             this.reader = new BufferedReader(reader);
         }
-        this.currentLine = new InputLine();
         this.prefetched = false;
+        this.lineNumber = 0;
     }
 
     public String readLine() {
-        if (this.currentLine == null) {
+        if (this.lineNumber == -1) {
             return null;
         }
         if (this.prefetched) {
             this.prefetched = false;
         } else {
-            this.currentLine = readNextNonEmptyLine(currentLine);
-            if (currentLine == null) {
-                return null;
-            }
+            this.recentLine = readNextNonEmptyLine();
         }
-        return this.currentLine.content;
+        return this.recentLine;
+    }
+    
+    /**
+     * @return the number of the current line (starting with 1 for the first line). Returns 0 if none line is read so
+     *         far. Returns -1 if the end of the stream was reached.
+     */
+    public int getLineNumber() {
+        return this.lineNumber;
     }
     
     public final void unreadRecord() {
         this.prefetched = true;
     }
 
-    /**
-     * @return the number of the current line (starting with 1 for the first line). Returns 0 if none line is read so
-     *         far.
-     */
-    public final int getLineNumber() {
-        if (this.currentLine == null) {
-            return 0;
-        } else {
-            return this.currentLine.lineNumber;
-        }
-    }
-    
     public void close() {
         try {
             this.reader.close();
@@ -60,31 +70,25 @@ class LineReader {
         }
     }
     
-    protected final InputLine readNextNonEmptyLine(InputLine line) {
+    protected boolean isPrefetched() {
+        return this.prefetched;
+    }
+    
+    private String readNextNonEmptyLine() {
         try {
-            line.content = this.reader.readLine();
-            line.lineNumber++;
-            while (line.content != null && line.content.trim().length() == 0) {
-                line.content = this.reader.readLine();
-                line.lineNumber++;
+            String result = this.reader.readLine();
+            this.lineNumber++;
+            while (result != null && result.trim().length() == 0) {
+                result = this.reader.readLine();
+                this.lineNumber++;
             }
-            if (line.content != null) {
-                return line;
-            } else {
-                return null;
+            if (result == null) {
+                this.lineNumber = -1;
             }
+            return result;
         } catch (IOException e) {
             throw new LowLevelDeserializationException(e);
         }
     }
 
-    protected static final class InputLine {
-        String content;
-        int lineNumber;
-        
-        void copyFrom(InputLine other) {
-            this.content = other.content;
-            this.lineNumber = other.lineNumber;
-        }        
-    }
 }
