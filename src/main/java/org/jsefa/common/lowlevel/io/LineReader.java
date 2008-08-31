@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jsefa.rbf.lowlevel;
+package org.jsefa.common.lowlevel.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,46 +22,72 @@ import java.io.Reader;
 
 import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 
-class LineReader {
+/**
+ * A reader for reading complete lines only.
+ * <p>
+ * Besides providing the number of the current line it also allows for unreading a previously read line so that the next
+ * call of {@link #recentLine} will return it again. Furthermore it wraps {@link IOException}s with
+ * {@link LowLevelDeserializationException}s.
+ * <p>
+ * Note: As this class is for reading complete lines only and as it wraps <code>IOException</code>s it does not extend
+ * {@link Reader}.
+ * 
+ * @author Norman Lahme-Huetig
+ */
+public class LineReader {
     private BufferedReader reader;
     private String recentLine;
-    private boolean prefetched;
+    private boolean lineUnread;
     private int lineNumber;
 
+    /**
+     * Constructs a new <code>LineReader</code> based on a given {@link Reader}.
+     * 
+     * @param reader the underlying reader.
+     */
     public LineReader(Reader reader) {
         if (reader instanceof BufferedReader) {
             this.reader = (BufferedReader) reader;
         } else {
             this.reader = new BufferedReader(reader);
         }
-        this.prefetched = false;
+        this.lineUnread = false;
         this.lineNumber = 0;
     }
 
+    /**
+     * @return returns the next complete line or null if none exists.
+     */
     public String readLine() {
         if (this.lineNumber == -1) {
             return null;
         }
-        if (this.prefetched) {
-            this.prefetched = false;
+        if (this.lineUnread) {
+            this.lineUnread = false;
         } else {
             this.recentLine = readNextNonEmptyLine();
         }
         return this.recentLine;
     }
-    
+
     /**
-     * @return the number of the current line (starting with 1 for the first line). Returns 0 if none line is read so
-     *         far. Returns -1 if the end of the stream was reached.
+     * @return the number of the current line (starting with 1 for the first line). Returns 0 if no line is read so far.
+     *         Returns -1 if the end of the stream was reached.
      */
     public int getLineNumber() {
         return this.lineNumber;
     }
-    
-    public final void unreadRecord() {
-        this.prefetched = true;
+
+    /**
+     * Unreads the previously read line so that {@link #readLine()} will return it again.
+     */
+    public final void unreadLine() {
+        this.lineUnread = true;
     }
 
+    /**
+     * Closes the underlying reader.
+     */
     public void close() {
         try {
             this.reader.close();
@@ -69,11 +95,14 @@ class LineReader {
             throw new LowLevelDeserializationException("Error while closing the deserialization stream", e);
         }
     }
-    
-    protected boolean isPrefetched() {
-        return this.prefetched;
+
+    /**
+     * @return true, if the previously read line is unread so that {@link #readLine()} will return it again.
+     */
+    protected boolean isLineUnread() {
+        return this.lineUnread;
     }
-    
+
     private String readNextNonEmptyLine() {
         try {
             String result = this.reader.readLine();

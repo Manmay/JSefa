@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jsefa.rbf.lowlevel;
+package org.jsefa.common.lowlevel.io;
 
 import static org.jsefa.common.lowlevel.filter.FilterResult.FAILED_BUT_STORE;
 import static org.jsefa.common.lowlevel.filter.FilterResult.PASSED;
@@ -27,13 +27,24 @@ import org.jsefa.common.lowlevel.filter.FilterResult;
 import org.jsefa.common.lowlevel.filter.Line;
 import org.jsefa.common.lowlevel.filter.LineFilter;
 
-final class FilteringLineReader extends LineReader {
+/**
+ * A {@link LineReader} with additional filter support.
+ * 
+ * @author Norman Lahme-Huetig
+ *
+ */
+public final class FilteringLineReader extends LineReader {
 
     private InputLine currentLine;
     private InputLine nextLine;
     private LineFilter lineFilter;
     private List<Line> storedLines;
 
+    /**
+     * Constructs a new <code>FilteringLineReader</code>.
+     * @param reader the underlying reader
+     * @param lineFilter the line filter to use
+     */
     public FilteringLineReader(Reader reader, LineFilter lineFilter) {
         super(reader);
         this.lineFilter = lineFilter;
@@ -42,6 +53,9 @@ final class FilteringLineReader extends LineReader {
         this.storedLines = new ArrayList<Line>();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String readLine() {
         while (moveForward()) {
@@ -55,6 +69,9 @@ final class FilteringLineReader extends LineReader {
         return null;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getLineNumber() {
         if (this.currentLine != null) {
@@ -63,6 +80,9 @@ final class FilteringLineReader extends LineReader {
         return -1;
     }
 
+    /**
+     * @return the list of lines which failed the filter but were stored for later retrieval.
+     */
     public List<Line> getStoredLines() {
         return this.storedLines;
     }
@@ -75,7 +95,7 @@ final class FilteringLineReader extends LineReader {
             this.currentLine = null;
             return false;
         }
-        if (isPrefetched()) {
+        if (isLineUnread()) {
             super.readLine();
             return true;
         }

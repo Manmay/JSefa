@@ -23,6 +23,8 @@ import java.util.List;
 import org.jsefa.common.lowlevel.InputPosition;
 import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.common.lowlevel.filter.Line;
+import org.jsefa.common.lowlevel.io.FilteringLineReader;
+import org.jsefa.common.lowlevel.io.LineReader;
 import org.jsefa.rbf.lowlevel.config.RbfLowLevelConfiguration;
 
 /**
@@ -81,7 +83,7 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
      */
     public final void unreadRecord() {
         this.currentColumnIndex = 0;
-        this.reader.unreadRecord();
+        this.reader.unreadLine();
     }
 
     /**
