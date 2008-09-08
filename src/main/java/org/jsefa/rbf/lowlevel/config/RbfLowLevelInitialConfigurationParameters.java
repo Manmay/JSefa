@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package org.jsefa.common.lowlevel.filter;
+package org.jsefa.rbf.lowlevel.config;
+
+import org.jsefa.common.config.Configuration;
+import org.jsefa.common.lowlevel.config.LowLevelInitialConfigurationParameters;
+import org.jsefa.common.lowlevel.filter.LineFilter;
 
 /**
- * A filter for lines.
+ * A collection of initial configuration parameters for low level RBF.
  * 
+ * @see Configuration
  * @author Norman Lahme-Huetig
+ * 
  */
-public interface LineFilter {
+public interface RbfLowLevelInitialConfigurationParameters extends LowLevelInitialConfigurationParameters {
 
     /**
-     * Filters the given line.
-     * @param content the content of the line
-     * @param lineNumber the number of the line
-     * @param truncated true, if the given content is incomplete, i. e. truncated at the end; false otherwise.
-     * @param lastLine true, if it is the last line; false otherwise
-     * @return a Result
+     * Configuration parameter for the maximum number of characters to read from a line for passing it to a
+     * {@link LineFilter} if a special record delimiter is set.
      */
-    FilterResult filter(String content, int lineNumber, boolean truncated, boolean lastLine);
+    String LINE_FILTER_LIMIT = "jsefa:rbf:lowlevel:lineFilterLimit";
 
 }

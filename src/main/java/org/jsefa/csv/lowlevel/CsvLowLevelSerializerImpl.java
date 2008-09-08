@@ -72,6 +72,9 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<CsvLowL
     }
 
     private void encodeAndWrite(String value, QuoteMode quoteMode) {
+        if (value.length() == 0) {
+            return;
+        }
         switch (quoteMode) {
         case ALWAYS:
             encodeAndWriteUsingQuotes(value);
@@ -126,12 +129,18 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<CsvLowL
     }
 
     private boolean needsQuotes(String value) {
+        if (value.charAt(0) == getConfiguration().getQuoteCharacter()) {
+            return true;
+        }
         for (int i = 0; i < value.length(); i++) {
             char currentChar = value.charAt(i);
             if (currentChar == getConfiguration().getEscapeCharacter()
                     || currentChar == getConfiguration().getFieldDelimiter()) {
                 return true;
             }
+        }
+        if (value.contains(getConfiguration().getLineBreak())) {
+            return true;
         }
         return false;
     }

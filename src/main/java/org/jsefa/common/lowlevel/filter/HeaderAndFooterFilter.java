@@ -44,8 +44,8 @@ public final class HeaderAndFooterFilter implements LineFilter {
     /**
      * {@inheritDoc}
      */
-    public FilterResult filter(String line, int lineNumber, boolean isLastLine) {
-        if ((lineNumber > headerSize) && (!filterLastLine || !isLastLine)) {
+    public FilterResult filter(String line, int lineNumber, boolean truncated, boolean lastLine) {
+        if ((lineNumber > headerSize) && (!filterLastLine || !lastLine)) {
             return PASSED;
         } else if (this.storeFailedLines) {
             return FAILED_BUT_STORE;

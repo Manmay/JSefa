@@ -16,6 +16,10 @@
 
 package org.jsefa.rbf.lowlevel.config;
 
+import static org.jsefa.rbf.lowlevel.config.RbfLowLevelInitialConfigurationParameters.LINE_FILTER_LIMIT;
+import static org.jsefa.rbf.lowlevel.config.RbfLowLevelConfiguration.Defaults.DEFAULT_LINE_FILTER_LIMIT;
+
+import org.jsefa.common.config.InitialConfiguration;
 import org.jsefa.common.lowlevel.config.LowLevelConfiguration;
 import org.jsefa.common.lowlevel.filter.LineFilter;
 
@@ -25,7 +29,12 @@ import org.jsefa.common.lowlevel.filter.LineFilter;
  * @author Norman Lahme-Huetig
  */
 public abstract class RbfLowLevelConfiguration extends LowLevelConfiguration {
+
     private LineFilter lineFilter;
+
+    private Character specialRecordDelimiter;
+
+    private Integer lineFilterLimit;
 
     /**
      * Constructs a new <code>RbfLowLevelConfiguration</code>.
@@ -41,6 +50,8 @@ public abstract class RbfLowLevelConfiguration extends LowLevelConfiguration {
     protected RbfLowLevelConfiguration(RbfLowLevelConfiguration other) {
         super(other);
         setLineFilter(other.getLineFilter());
+        setLineFilterLimit(other.getLineFilterLimit());
+        setSpecialRecordDelimiter(other.getSpecialRecordDelimiter());
     }
 
     /**
@@ -59,6 +70,61 @@ public abstract class RbfLowLevelConfiguration extends LowLevelConfiguration {
      */
     public void setLineFilter(LineFilter lineFilter) {
         this.lineFilter = lineFilter;
+    }
+
+    /**
+     * @return the special record delimiter or null if none exists
+     */
+    public Character getSpecialRecordDelimiter() {
+        return this.specialRecordDelimiter;
+    }
+
+    /**
+     * Sets a special record delimiter.
+     * 
+     * @param delimiter the delimiter
+     */
+    public void setSpecialRecordDelimiter(Character delimiter) {
+        this.specialRecordDelimiter = delimiter;
+    }
+
+    /**
+     * Returns the maximum number of characters to read from a line for passing it to a {@link LineFilter}.
+     * <p>
+     * This limit is only used if a special record delimiter is set.
+     * 
+     * @return the maximum number of characters to read from a line for passing it to a <code>LineFilter</code>.
+     */
+    public Integer getLineFilterLimit() {
+        if (this.lineFilterLimit == null) {
+            this.lineFilterLimit = InitialConfiguration.get(LINE_FILTER_LIMIT, DEFAULT_LINE_FILTER_LIMIT);
+        }    
+        return this.lineFilterLimit;
+    }
+
+    /**
+     * Sets the maximum number of characters to read from a line for passing it to a {@link LineFilter}.
+     * <p>
+     * This limit is only used if a special record delimiter is set.
+     * 
+     * @param lineFilterLimit the maximum number of characters to read
+     */
+    public void setLineFilterLimit(Integer lineFilterLimit) {
+        this.lineFilterLimit = lineFilterLimit;
+    }
+
+    /**
+     * Set of default configuration values.
+     * 
+     * @author Norman Lahme-Huetig
+     */
+    public interface Defaults {
+
+        /**
+         * The default maximum number of characters to read from a line for passing it to a {@link LineFilter} if a
+         * special record delimiter is set.
+         */
+        Integer DEFAULT_LINE_FILTER_LIMIT = 256;
     }
 
 }

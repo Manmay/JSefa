@@ -66,6 +66,44 @@ public abstract class RbfConfiguration<C extends RbfLowLevelConfiguration>
     public void setLineFilter(LineFilter lineFilter) {
         getLowLevelConfiguration().setLineFilter(lineFilter);
     }
+    
+    /**
+     * @return the special record delimiter or null if none exists
+     */
+    public Character getSpecialRecordDelimiter() {
+        return getLowLevelConfiguration().getSpecialRecordDelimiter();
+    }
+    
+    /**
+     * Sets a special record delimiter.
+     * @param delimiter the delimiter
+     */
+    public void setSpecialRecordDelimiter(Character delimiter) {
+        getLowLevelConfiguration().setSpecialRecordDelimiter(delimiter);
+    }
+    
+    /**
+     * Returns the maximum number of characters to read from a line for passing it to a {@link LineFilter}.
+     * <p>
+     * This limit is only used if a special record delimiter is set.
+     * 
+     * @return the maximum number of characters to read from a line for passing it to a <code>LineFilter</code>.
+     */
+    public Integer getLineFilterLimit() {
+        return getLowLevelConfiguration().getLineFilterLimit();
+    }
+
+    /**
+     * Sets the maximum number of characters to read from a line for passing it to a {@link LineFilter}.
+     * <p>
+     * This limit is only used if a special record delimiter is set.
+     * 
+     * @param lineFilterLimit the maximum number of characters to read
+     */
+    public void setLineFilterLimit(Integer lineFilterLimit) {
+        getLowLevelConfiguration().setLineFilterLimit(lineFilterLimit);
+    }    
+    
 
     /**
      * Returns the low level configuration object.

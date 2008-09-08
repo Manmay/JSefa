@@ -23,18 +23,16 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jsefa.Deserializer;
 import org.jsefa.IOFactory;
 import org.jsefa.IOFactoryException;
-import org.jsefa.Serializer;
 import org.jsefa.common.config.Configuration;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.validator.Validator;
 import org.jsefa.common.validator.traversal.TraversingValidatorFactory;
-import org.jsefa.rbf.mapping.RbfNodeType;
 import org.jsefa.rbf.mapping.RbfComplexTypeMapping;
 import org.jsefa.rbf.mapping.RbfEntryPoint;
 import org.jsefa.rbf.mapping.RbfListTypeMapping;
+import org.jsefa.rbf.mapping.RbfNodeType;
 import org.jsefa.rbf.mapping.RbfTypeMappingRegistry;
 import org.jsefa.rbf.mapping.RecordMapping;
 
@@ -50,7 +48,7 @@ import org.jsefa.rbf.mapping.RecordMapping;
  * @param <D> the deserializer type
  */
 public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistry, RbfEntryPoint>,
-    S extends Serializer, D extends Deserializer> implements IOFactory {
+    S extends RbfSerializer, D extends RbfDeserializer> implements IOFactory {
 
     private final C config;
 

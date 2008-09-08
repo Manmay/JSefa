@@ -26,43 +26,51 @@ public final class Line {
     private String content;
 
     private int lineNumber;
+    
+    private boolean truncated;
 
-    private boolean isLastLine;
+    private boolean lastLine;
 
     /**
      * Constructs a new non-empty <code>Line</code>.
      * @param content the content of the line
      * @param lineNumber the line number (starting with 1)
-     * @param isLastLine true if it is the last line of the stream; false otherwise
+     * @param truncated true if the line is incomplete, i. e. truncated; false otherwise
+     * @param lastLine true if it is the last line of the stream; false otherwise
      */
-    public Line(String content, int lineNumber, boolean isLastLine) {
+    public Line(String content, int lineNumber, boolean truncated, boolean lastLine) {
         this.content = content;
         this.lineNumber = lineNumber;
-        this.isLastLine = isLastLine;
+        this.truncated = truncated;
+        this.lastLine = lastLine;
     }
 
     /**
-     * Returns the content of the line.
-     * @return the line content
+     * @return the content of the line
      */
     public String getContent() {
         return this.content;
     }
 
     /**
-     * Returns the number of the line (starting with 1).
-     * @return the line number
+     * @return the line number (starting with 1)
      */
     public int getLineNumber() {
         return this.lineNumber;
     }
 
     /**
-     * Returns true if this is the last non-empty line of the stream; false otherwise.
+     * @return true, if the line is incomplete, i. e. truncated; false otherwise.
+     */
+    public boolean isTruncated() {
+        return this.truncated;
+    }
+    
+    /**
      * @return true if this is the last non-empty line of the stream; false otherwise
      */
     public boolean isLastLine() {
-        return this.isLastLine;
+        return this.lastLine;
     }
     
 }

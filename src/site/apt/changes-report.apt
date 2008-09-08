@@ -19,6 +19,10 @@ as the latter seems to combine the characters to one CHARACTER event.
   
   * Usage of primitive simple types (int, boolean etc. in contrast to Integer, Boolean etc.) for XML attributes and XML text contents fixed
   
+  * Serialization of a CSV field with QuoteMode.ON_DEMAND whereas the field content starts with a quote char failed. This is fixed now.
+  
+  * Deserialization of a CSV field with more than one line break failed - only the first was read and the rest were skipped. This is fixed now. 
+  
 * Changed behavior
 
   * The default line break is now the system property line.property - was line feed (\n) before 
@@ -80,7 +84,12 @@ as the latter seems to combine the characters to one CHARACTER event.
     Each LowLevelDeserializer provides information about the current position within the input stream. This consists of the line number and column number.
     Each high level Deserializer provides a convenient method to retrieve this information from the underlying LowLevelDeserializer.
     
-    Additionally a DeserializationException provides the method getInputPosition as well thus providing information about the error location.    
+    Additionally a DeserializationException provides the method getInputPosition as well thus providing information about the error location.
+    
+  * Support for special record delimiters (CSV/FLR)
+  
+    Typically a record is delimited by a line break. But some formats have a special record delimiter resulting in a file with one big line separated by a special character - the special record delimiter.
+    JSefa now supports such formats (even with header and footer).
   
   * Support for special "no value" string (CSV)
   

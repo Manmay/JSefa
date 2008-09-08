@@ -34,6 +34,7 @@ import org.jsefa.test.common.JSefaTestUtil;
  * 
  */
 public class QuoteModeTest extends TestCase {
+
     /**
      * Test with mode "always" for the case the quotes are needed.
      */
@@ -100,6 +101,29 @@ public class QuoteModeTest extends TestCase {
     }
 
     /**
+     * Test with mode "on demand" for the case the quotes are needed and the field starts with a quote char.
+     */
+    public void testOnDemandNeededStartingWithQuoteChar() {
+        QuoteOnDemandDTO obj = new QuoteOnDemandDTO();
+        obj.fieldA = "\"the field value";
+        obj.fieldB = obj.fieldA;
+
+        CsvConfiguration config = createConfig(EscapeMode.DOUBLING);
+        String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertTrue(serializationResult.charAt(0) == config.getQuoteCharacter());
+        assertTrue(serializationResult.indexOf("\"\"") >= 0);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+
+        config = createConfig(EscapeMode.ESCAPE_CHARACTER);
+        obj.fieldA = "\"the field value";
+        obj.fieldB = obj.fieldA;
+        serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertTrue(serializationResult.charAt(0) == config.getQuoteCharacter());
+        assertFalse(serializationResult.indexOf("\"\"") >= 0);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+    }
+
+    /**
      * Test with mode "on demand" for the case the quotes are not needed.
      */
     public void testOnDemandNotNeeded() {
@@ -140,6 +164,31 @@ public class QuoteModeTest extends TestCase {
         assertFalse(serializationResult.indexOf("\"\"") > 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
+
+    /**
+     * Test with mode "always" and multiple line breaks within one field.
+     */
+    public void testQuoteAlwaysWithMultipleLineBreaks() {
+        QuoteAlwaysDTO obj = new QuoteAlwaysDTO();
+        obj.fieldA = "the ; field \"value \n\n\n with three line breaks";
+        obj.fieldB = obj.fieldA;
+
+        CsvConfiguration config = createConfig(EscapeMode.DOUBLING);
+        String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertTrue(serializationResult.charAt(0) == config.getQuoteCharacter());
+        assertTrue(serializationResult.indexOf("\"\"") > 0);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+
+        config = createConfig(EscapeMode.ESCAPE_CHARACTER);
+        obj.fieldA = "the ; field \"value";
+        obj.fieldB = obj.fieldA;
+        serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertTrue(serializationResult.charAt(0) == config.getQuoteCharacter());
+        assertFalse(serializationResult.indexOf("\"\"") > 0);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+    }
+    
+    
 
     private CsvConfiguration createConfig(EscapeMode escapeMode) {
         CsvConfiguration config = new CsvConfiguration();

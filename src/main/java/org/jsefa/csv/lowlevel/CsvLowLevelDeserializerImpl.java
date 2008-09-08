@@ -26,7 +26,6 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
  * Implementation of {@link CsvLowLevelDeserializer} based on {@link RbfLowLevelDeserializerImpl}.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
 
 public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerImpl<CsvLowLevelConfiguration> implements
@@ -118,9 +117,8 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
                     }
                 }
             }
-            if (readNextRecord()) {
-                result.append("\n");
-            } else {
+            result.append(getCurrentSegmentTerminatorString());
+            if (!readNextSegment()) {
                 break;
             }
         }
@@ -151,15 +149,15 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
     private String readStringValueUsingEscapeCharacter() {
         char fieldDelimiter = getConfiguration().getFieldDelimiter();
         StringBuilder result = new StringBuilder(remainingLineLength());
-        boolean encoded = false;
+        boolean escaped = false;
         while (hasNextChar()) {
             char currentChar = nextChar();
-            if (encoded) {
-                encoded = false;
+            if (escaped) {
+                escaped = false;
                 result.append(currentChar);
             } else {
                 if (currentChar == getConfiguration().getEscapeCharacter()) {
-                    encoded = true;
+                    escaped = true;
                 } else if (currentChar == fieldDelimiter) {
                     this.lastFieldTerminatedWithDelimiter = true;
                     return result.toString();

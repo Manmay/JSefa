@@ -58,7 +58,7 @@ public class RbfLowLevelSerializerImpl<C extends RbfLowLevelConfiguration> imple
      */
     public final void finishRecord() {
         beforeFinishRecord();
-        writeNewLine();
+        writeRecordDelimiter();
     }
     
     /**
@@ -66,7 +66,7 @@ public class RbfLowLevelSerializerImpl<C extends RbfLowLevelConfiguration> imple
      */
     public void writeLine(String line) {
         writeString(line);
-        writeNewLine();
+        writeLineBreak();
     }
     
     /**
@@ -144,11 +144,23 @@ public class RbfLowLevelSerializerImpl<C extends RbfLowLevelConfiguration> imple
         }
     }
 
-    private void writeNewLine() {
+    private void writeLineBreak() {
         try {
             this.writer.write(this.config.getLineBreak());
         } catch (IOException e) {
             throw new LowLevelSerializationException(e);
+        }
+    }
+    
+    private void writeRecordDelimiter() {
+        if (this.config.getSpecialRecordDelimiter() != null) {
+            try {
+                this.writer.write(this.config.getSpecialRecordDelimiter());
+            } catch (IOException e) {
+                throw new LowLevelSerializationException(e);
+            }
+        } else {
+            writeLineBreak();
         }
     }
 
