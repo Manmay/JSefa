@@ -123,8 +123,13 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<CsvLowL
             if (currentChar == getConfiguration().getEscapeCharacter()
                     || currentChar == getConfiguration().getFieldDelimiter()) {
                 writeChar(getConfiguration().getEscapeCharacter());
+                writeChar(currentChar);
+            } else if (currentChar == '\n') {
+                writeChar(getConfiguration().getEscapeCharacter());
+                writeChar('n');
+            } else {
+                writeChar(currentChar);
             }
-            writeChar(currentChar);
         }
     }
 

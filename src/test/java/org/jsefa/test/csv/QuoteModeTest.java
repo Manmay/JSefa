@@ -36,6 +36,29 @@ import org.jsefa.test.common.JSefaTestUtil;
 public class QuoteModeTest extends TestCase {
 
     /**
+     * Test with the default mode (initially set to "on demand") for the case the quotes are needed.
+     */
+    public void testDefault() {
+        QuoteDefaultDTO obj = new QuoteDefaultDTO();
+        obj.fieldA = "the ; field \"value \n with line break";
+        obj.fieldB = obj.fieldA;
+
+        CsvConfiguration config = createConfig(EscapeMode.DOUBLING);
+        String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertTrue(serializationResult.charAt(0) == config.getQuoteCharacter());
+        assertTrue(serializationResult.indexOf("\"\"") > 0);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+
+        config = createConfig(EscapeMode.ESCAPE_CHARACTER);
+        obj.fieldA = "the ; field \"value";
+        obj.fieldB = obj.fieldA;
+        serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertTrue(serializationResult.charAt(0) == config.getQuoteCharacter());
+        assertFalse(serializationResult.indexOf("\"\"") > 0);
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+    }
+
+    /**
      * Test with mode "always" for the case the quotes are needed.
      */
     public void testQuoteAlways() {
@@ -188,6 +211,19 @@ public class QuoteModeTest extends TestCase {
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
     
+    /**
+     * Test with mode "never" and multiple line breaks within one field.
+     */
+    public void testQuoteNeverWithMultipleLineBreaks() {
+        QuoteNeverDTO obj = new QuoteNeverDTO();
+        obj.fieldA = "the ; field \"value \\n\\n with three \n\n\n line breaks";
+        obj.fieldB = obj.fieldA;
+
+        CsvConfiguration config = new CsvConfiguration();
+        String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertFalse(serializationResult.charAt(0) == config.getQuoteCharacter());
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+    }
     
 
     private CsvConfiguration createConfig(EscapeMode escapeMode) {
@@ -220,6 +256,16 @@ public class QuoteModeTest extends TestCase {
         @CsvField(pos = 2, quoteMode = QuoteMode.ON_DEMAND)
         String fieldB;
     }
+    
+    @CsvDataType()
+    static final class QuoteNeverDTO extends AbstractTestDTO {
+        @CsvField(pos = 1, quoteMode = QuoteMode.NEVER)
+        String fieldA;
+
+        @CsvField(pos = 2, quoteMode = QuoteMode.NEVER)
+        String fieldB;
+    }
+    
 
     @CsvDataType()
     static final class QuoteDefaultDTO extends AbstractTestDTO {

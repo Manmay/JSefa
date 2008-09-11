@@ -154,7 +154,11 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
             char currentChar = nextChar();
             if (escaped) {
                 escaped = false;
-                result.append(currentChar);
+                if (currentChar == 'n') {
+                    result.append("\n");
+                } else {
+                    result.append(currentChar);
+                }
             } else {
                 if (currentChar == getConfiguration().getEscapeCharacter()) {
                     escaped = true;

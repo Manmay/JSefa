@@ -16,14 +16,15 @@
 
 package org.jsefa.test.all;
 
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.CSV;
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.FLR;
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
+
 import java.io.StringReader;
 
 import junit.framework.TestCase;
 
 import org.jsefa.Deserializer;
-
-import static org.jsefa.test.common.JSefaTestUtil.FormatType.*;
-
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
 import org.jsefa.flr.annotation.FlrDataType;
@@ -32,6 +33,7 @@ import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
 import org.jsefa.test.common.JSefaTestUtil.FormatType;
 import org.jsefa.xml.annotation.XmlDataType;
+import org.jsefa.xml.annotation.XmlElement;
 
 /**
  * Test full cycle (open, hasNext, next, close) of the deserializers.
@@ -103,10 +105,12 @@ public class FullCycleTest extends TestCase {
     static final class TestDTOA extends AbstractTestDTO {
         @CsvField(pos = 1)
         @FlrField(pos = 1, length = 10)
+        @XmlElement(pos = 1)
         String fieldA;
 
         @CsvField(pos = 2)
         @FlrField(pos = 2, length = 10)
+        @XmlElement(pos = 2)
         String fieldB;
     }
 
@@ -115,10 +119,12 @@ public class FullCycleTest extends TestCase {
     static final class TestDTOB extends AbstractTestDTO {
         @CsvField(pos = 1)
         @FlrField(pos = 1, length = 10)
+        @XmlElement(pos = 1)
         String fieldA;
 
         @CsvField(pos = 2)
         @FlrField(pos = 2, length = 10)
+        @XmlElement(pos = 2)
         String fieldB;
     }
 
@@ -127,10 +133,12 @@ public class FullCycleTest extends TestCase {
     static final class TestDTOC extends AbstractTestDTO {
         @CsvField(pos = 1)
         @FlrField(pos = 1, length = 10)
+        @XmlElement(pos = 1)
         String fieldA;
 
         @CsvField(pos = 2)
         @FlrField(pos = 2, length = 10)
+        @XmlElement(pos = 2)
         String fieldB;
     }
 

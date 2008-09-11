@@ -229,7 +229,7 @@ public final class CsvConfiguration extends RbfConfiguration<CsvLowLevelConfigur
         /**
          * The default quote mode used if none is explicitly given.
          */
-        QuoteMode DEFAULT_QUOTE_MODE = QuoteMode.NEVER;
+        QuoteMode DEFAULT_QUOTE_MODE = QuoteMode.ON_DEMAND;
 
         /**
          * The default no value string used if none is explicitly given.

@@ -16,7 +16,7 @@
 
 package org.jsefa.rbf.lowlevel;
 
-import java.io.BufferedWriter;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -74,7 +74,7 @@ public class RbfLowLevelSerializerImpl<C extends RbfLowLevelConfiguration> imple
      */
     public void flush() {
         try {
-            ((BufferedWriter) this.writer).flush();
+            ((Flushable) this.writer).flush();
         } catch (IOException e) {
             throw new LowLevelSerializationException("Error while flushing the serialization stream", e);
         } catch (ClassCastException e) {
