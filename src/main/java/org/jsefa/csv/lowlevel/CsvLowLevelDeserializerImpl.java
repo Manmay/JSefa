@@ -22,6 +22,9 @@ import org.jsefa.csv.lowlevel.config.EscapeMode;
 import org.jsefa.csv.lowlevel.config.QuoteMode;
 import org.jsefa.rbf.lowlevel.RbfLowLevelDeserializerImpl;
 
+import static org.jsefa.common.lowlevel.io.LineSegment.Terminator.*;
+
+
 /**
  * Implementation of {@link CsvLowLevelDeserializer} based on {@link RbfLowLevelDeserializerImpl}.
  * 
@@ -150,25 +153,35 @@ public final class CsvLowLevelDeserializerImpl extends RbfLowLevelDeserializerIm
         char fieldDelimiter = getConfiguration().getFieldDelimiter();
         StringBuilder result = new StringBuilder(remainingLineLength());
         boolean escaped = false;
-        while (hasNextChar()) {
-            char currentChar = nextChar();
-            if (escaped) {
-                escaped = false;
-                if (currentChar == 'n') {
-                    result.append("\n");
+        while (true) {
+            while (hasNextChar()) {
+                char currentChar = nextChar();
+                if (escaped) {
+                    escaped = false;
+                    if (currentChar == 'n') {
+                        result.append("\n");
+                    } else {
+                        result.append(currentChar);
+                    }
                 } else {
-                    result.append(currentChar);
-                }
-            } else {
-                if (currentChar == getConfiguration().getEscapeCharacter()) {
-                    escaped = true;
-                } else if (currentChar == fieldDelimiter) {
-                    this.lastFieldTerminatedWithDelimiter = true;
-                    return result.toString();
-                } else {
-                    result.append(currentChar);
+                    if (currentChar == getConfiguration().getEscapeCharacter()) {
+                        escaped = true;
+                    } else if (currentChar == fieldDelimiter) {
+                        this.lastFieldTerminatedWithDelimiter = true;
+                        return result.toString();
+                    } else {
+                        result.append(currentChar);
+                    }
                 }
             }
+            if (escaped && getCurrentSegmentTerminator() == SPECIAL_CHARACTER) {
+                escaped = false;
+                result.append(getCurrentSegmentTerminatorString());
+                if (readNextSegment()) {
+                    continue;
+                }
+            }
+            break;
         }
         this.lastFieldTerminatedWithDelimiter = false;
         return result.toString();

@@ -25,12 +25,13 @@ import org.jsefa.rbf.lowlevel.RbfLowLevelSerializerImpl;
  * Implementation of {@link CsvLowLevelSerializer} based on {@link RbfLowLevelSerializerImpl}.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
-public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<CsvLowLevelConfiguration>
-    implements CsvLowLevelSerializer {
+public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<CsvLowLevelConfiguration> implements
+        CsvLowLevelSerializer {
 
     private int fieldCount;
+
+    private int specialRecordDelimiter;
 
     /**
      * Constructs a new <code>CsvLowLevelSerializerImpl</code>.
@@ -39,6 +40,11 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<CsvLowL
      */
     public CsvLowLevelSerializerImpl(CsvLowLevelConfiguration config) {
         super(config);
+        if (config.getSpecialRecordDelimiter() != null) {
+            this.specialRecordDelimiter = config.getSpecialRecordDelimiter();
+        } else {
+            this.specialRecordDelimiter = -1;
+        }
     }
 
     /**
@@ -121,7 +127,8 @@ public class CsvLowLevelSerializerImpl extends RbfLowLevelSerializerImpl<CsvLowL
         while (index < value.length()) {
             char currentChar = value.charAt(index++);
             if (currentChar == getConfiguration().getEscapeCharacter()
-                    || currentChar == getConfiguration().getFieldDelimiter()) {
+                    || currentChar == getConfiguration().getFieldDelimiter()
+                    || currentChar == this.specialRecordDelimiter) {
                 writeChar(getConfiguration().getEscapeCharacter());
                 writeChar(currentChar);
             } else if (currentChar == '\n') {

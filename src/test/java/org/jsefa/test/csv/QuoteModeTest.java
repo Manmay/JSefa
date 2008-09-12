@@ -57,7 +57,7 @@ public class QuoteModeTest extends TestCase {
         assertFalse(serializationResult.indexOf("\"\"") > 0);
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
-
+    
     /**
      * Test with mode "always" for the case the quotes are needed.
      */
@@ -225,6 +225,20 @@ public class QuoteModeTest extends TestCase {
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
     }
     
+    /**
+     * Test with mode "never" and a special record delimiter.
+     */
+    public void testQuoteNeverWithSpecialRecordDelimiter() {
+        QuoteNeverDTO obj = new QuoteNeverDTO();
+        obj.fieldA = "the ; field \"value with special record delimiters??!";
+        obj.fieldB = obj.fieldA;
+
+        CsvConfiguration config = new CsvConfiguration();
+        config.setSpecialRecordDelimiter('?');
+        String serializationResult = JSefaTestUtil.serialize(CSV, config, obj);
+        assertFalse(serializationResult.charAt(0) == config.getQuoteCharacter());
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(CSV, config, obj);
+    }
 
     private CsvConfiguration createConfig(EscapeMode escapeMode) {
         CsvConfiguration config = new CsvConfiguration();

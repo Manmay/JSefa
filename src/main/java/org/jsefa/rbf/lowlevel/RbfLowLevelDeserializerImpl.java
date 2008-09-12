@@ -238,10 +238,21 @@ public abstract class RbfLowLevelDeserializerImpl<C extends RbfLowLevelConfigura
         case LINE_BREAK:
             return "\n";
         case SPECIAL_CHARACTER:
-            throw new RuntimeException("Not implemented yet");
+            return new StringBuffer().append(this.config.getSpecialRecordDelimiter().charValue()).toString();
         default:
             return "";
         }
+    }
+    
+    /**
+     * @return the terminator of the current segment.
+     */
+    protected Terminator getCurrentSegmentTerminator() {
+        if (this.currentSegment == null) {
+            return null;
+        }
+        return this.currentSegment.getTerminator();
+        
     }
 
     private boolean withLineFilter() {

@@ -3,7 +3,7 @@
    ------------------
    Norman Lahme-Hütig
    ------------------
-   08.09.2008
+   11.09.2008
    ------------------
    
 Changes in version 0.9.2
@@ -15,9 +15,9 @@ Changes in version 0.9.2
     The bug appeared using the sun implementation of Stax but not using Woodstox
 as the latter seems to combine the characters to one CHARACTER event.
 
-  * Handling of multiple subrecord lists fixed (high level CSV/FLR)
-  
   * Usage of primitive simple types (int, boolean etc. in contrast to Integer, Boolean etc.) for XML attributes and XML text contents fixed
+  
+  * Handling of multiple subrecord lists fixed (high level CSV/FLR)
   
   * Serialization of a CSV field with QuoteMode.ON_DEMAND whereas the field content starts with a quote char failed. This is fixed now.
   
@@ -27,10 +27,6 @@ as the latter seems to combine the characters to one CHARACTER event.
 
   * The default line break is now the system property line.property - was line feed (\n) before 
   
-  * CsvLowLevelDeserializer.nextField now returns null if no next field exists (was the empty string before), the empty string if the next field is empty and a non empty field value in all other cases.
-  
-  * FlrLowLevelDeserializer no longer throws an exception if a record contains less fields than expected. Instead the missing fields are set to null.
-  
   * xsi:type attribute default behavior
     
     Say you have a class Customer with the two subclasses BusinessCustomer and PrivateCustomer and another class Order with a field customer of type Customer.
@@ -39,9 +35,13 @@ as the latter seems to combine the characters to one CHARACTER event.
     
     It was not possible to deserialize a \<customer> element without a xsi:type attribute before - one was forced to supply the xsi:type attribute as no default was assumed.
     
+  * CsvLowLevelDeserializer.nextField now returns null if no next field exists (was the empty string before), the empty string if the next field is empty and a non empty field value in all other cases.
+  
   * The default quote mode for CSV fields is now QuoteMode.ON_DEMAND - was QuoteMode.NEVER before. This new default is compliant to the RFC4180 and to what most users would expect.
   
     If you need the old default, you can set this once for the JVM (before creating the first Configuration) with InitialConfiguration.set(CsvInitialConfigurationParameters.DEFAUT_QUOTE_MODE, QuoteMode.NEVER).
+  
+  * FlrLowLevelDeserializer no longer throws an exception if a record contains less fields than expected. Instead the missing fields are set to null.
   
 * New Features
   
@@ -55,12 +55,6 @@ as the latter seems to combine the characters to one CHARACTER event.
     
     Of course it is possible to define whether validation should be performed or not.
 
-  * LineFilter (CSV/FLR deserialization)
-  
-    A line filter allows for filtering out lines during deserialization. These lines can also be stored for later retrieval.
-    The typical use case of a line filter is to filter out and retrieve headers and footers of CSV/FLR files.
-    See LineFilter, RbfConfiguration.setLineFilter, RbfDeserializer.getStoredLines, HeaderAndFooterFilterTest etc.
-    
   * SimpleListConverter (XML/CSV/FLR)
   
     You can now map a list of simple types (e. g. list of integers) to a simple type of the target format (called simple list type).
@@ -72,6 +66,21 @@ as the latter seems to combine the characters to one CHARACTER event.
     
     See the inner annotation SimpleListItem used for the annotation parameter listItem of several annotations (e. g. XmlElement, CsvField) and the SimpleListTypeTest.
     
+  * InputPosition (XML/CSV/FLR deserialization)
+  
+    Each LowLevelDeserializer provides information about the current position within the input stream. This consists of the line number and column number.
+    Each high level Deserializer provides a convenient method to retrieve this information from the underlying LowLevelDeserializer.
+    
+    Additionally a DeserializationException provides the method getInputPosition as well thus providing information about the error location.
+    
+  * Support for Set and Queue (XML/CSV/FLR)
+  
+    JSefa now supports fields of type Set and Queue. They will be handled exactly like fields of type List.
+    
+  * Flush operation for Serializer (XML/CSV/FLR)
+  
+    Each Serializer now supports flushing the buffer.
+  
   * CDATA (XML serialization)
   
     You can now define that the content of an element should be a CDATA section. The default is to use entity references like &lt; to escape characters.
@@ -83,36 +92,31 @@ as the latter seems to combine the characters to one CHARACTER event.
   
     Using the low level serializer you can now write out a DOCTYPE declaration.        
 
-  * InputPosition (XML/CSV/FLR deserialization)
+  * LineFilter (CSV/FLR deserialization)
   
-    Each LowLevelDeserializer provides information about the current position within the input stream. This consists of the line number and column number.
-    Each high level Deserializer provides a convenient method to retrieve this information from the underlying LowLevelDeserializer.
-    
-    Additionally a DeserializationException provides the method getInputPosition as well thus providing information about the error location.
+    A line filter allows for filtering out lines during deserialization. These lines can also be stored for later retrieval.
+    The typical use case of a line filter is to filter out and retrieve headers and footers of CSV/FLR files.
+    See LineFilter, RbfConfiguration.setLineFilter, RbfDeserializer.getStoredLines, HeaderAndFooterFilterTest etc.
     
   * Support for special record delimiters (CSV/FLR)
   
     Typically a record is delimited by a line break. But some formats have a special record delimiter resulting in a file with one big line separated by a special character - the special record delimiter.
     JSefa now supports such formats (even with header and footer).
-  
-  * Support for special "no value" string (CSV)
-  
-    By default the empty string is used to denote that a CSV field has no value. Now one can configure that a special string (e. g. "NULL") should be used instead.
-    See the annotation parameter CsvField.noValue as well as CsvConfiguration.getDefaultNoValueString, CsvConfiguration.setDefaultNoValueString and CsvInitialConfigurationParameters.DEFAULT_NO_VALUE_STRING.  
-
-  * Support for Set and Queue (XML/CSV/FLR)
-  
-    JSefa now supports fields of type Set and Queue. They will be handled exactly like fields of type List.
     
   * Accessor to LowLevelSerializer (CSV/FLR serialization)
  
     CsvSerializer and FlrSerializer now have a method getLowLevelSerializer to access the underlying low level serializer.
     Such a method existed for XmlSerializer already.
     
-  * Flush operation for Serializer
+  * QuoteMode.NEVER now supports escaping of line breaks and record delimiters (CSV)
   
-    Each Serializer now supports flushing the buffer.
+    The content of a CSV field with QuoteMode.NEVER can now contain line breaks and record delimiters.
   
+  * Support for special "no value" string (CSV)
+  
+    By default the empty string is used to denote that a CSV field has no value. Now one can configure that a special string (e. g. "NULL") should be used instead.
+    See the annotation parameter CsvField.noValue as well as CsvConfiguration.getDefaultNoValueString, CsvConfiguration.setDefaultNoValueString and CsvInitialConfigurationParameters.DEFAULT_NO_VALUE_STRING.  
+
 * New Samples
   
   * samples/csv/header
