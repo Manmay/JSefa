@@ -29,7 +29,7 @@ import org.jsefa.common.util.ReflectionUtil;
 import org.jsefa.common.validator.Validator;
 
 /**
- * A mapping between a java object type and a complex data type of the target format.
+ * A mapping between a java object type and a complex data type of the exchange format.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig

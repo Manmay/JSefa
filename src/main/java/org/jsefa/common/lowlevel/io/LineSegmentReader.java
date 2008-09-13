@@ -232,9 +232,9 @@ public class LineSegmentReader {
     }
 
     /**
-     * Marks the current position in the stream so that calling <{@link #reset()} will return to this position.
+     * Marks the current position in the stream so that calling {@link #reset} will return to this position.
      * <p>
-     * Note: You should remove the marker with {@link removeMarker} if you do not need it any more.
+     * Note: You should remove the marker with {@link #removeMarker} if you do not need it any more.
      */
     public void mark() {
         this.marker = new Marker(this.nextCharIndex, this.skipLF, this.lineIndex, this.columnIndex);

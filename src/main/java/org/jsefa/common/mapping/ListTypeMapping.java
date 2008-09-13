@@ -27,7 +27,7 @@ import org.jsefa.common.accessor.ObjectAccessor;
 import org.jsefa.common.util.ReflectionUtil;
 
 /**
- * A mapping between a java object type and a list data type of the target format.
+ * A mapping between a java object type and a list data type of the exchange format.
  * 
  * @see TypeMapping
  * @author Norman Lahme-Huetig

@@ -114,7 +114,7 @@ public final class NamespaceManager {
 
     /**
      * Registers the given prefix to be the preferred one for the given URI. I. e. if a prefix is needed (call of
-     * {@link #getOrCreatePrefix}) for that URI the given preferred one is used and not an automatically created
+     * {@link #createPrefix}) for that URI the given preferred one is used and not an automatically created
      * one.
      * 
      * @param prefix the preferred prefix

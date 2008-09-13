@@ -15,6 +15,11 @@
       <filtered>true</filtered>
     </file>
     <file>
+      <source>changes.txt</source>
+      <outputDirectory></outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
       <source>notice.txt</source>
       <outputDirectory></outputDirectory>
       <filtered>true</filtered>

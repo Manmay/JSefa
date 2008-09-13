@@ -3,7 +3,7 @@
    ------------------
    Norman Lahme-Hütig
    ------------------
-   26.08.2008
+   13.09.2008
    ------------------
    
 Feature Highlights
@@ -21,9 +21,9 @@ Feature Highlights
     You can state this with JSefa and you get only what you want. And if the underlying xml schema evolves (new child elements),
     your deserialization code still works. Something similar to this is possible also with CSV and FLR.      
   
-  * Usage is independent of the target format
+  * Usage is independent of the exchange format
   
-    Only the code to construct an <<<IOFactory>>> depends on the target format (XML, CSV, FLR) - its usage to create a new <<<Serializer>>> or <<<Deserializer>>> as well as their usage
+    Only the code to construct an <<<IOFactory>>> depends on the exchange format (XML, CSV, FLR) - its usage to create a new <<<Serializer>>> or <<<Deserializer>>> as well as their usage
     does not depend on it.
   
   * Extensible to support other formats as well
@@ -36,7 +36,7 @@ Feature Highlights
   
   * Usage of annotations - no binding file nor design-time code generation needed
   
-    The mappings between java types and the types of the target format (XML, CSV, FLR) can be defined via annotating the java class and its fields.
+    The mappings between java types and the types of the exchange format (XML, CSV, FLR) can be defined via annotating the java class and its fields.
     JSefa also provides an API for constructing mappings, so it is amenable to alternative ways of mapping declarations (e. g. mapping creation based on an xml schema)
     
   * Easy declaration of simple types with specific format and converter
@@ -109,7 +109,7 @@ Feature Highlights
   * Multi type serialization/deserialization
   
     JSefa allows for serializing objects of different types into the same stream and deserializing them back again.
-    The different record types are denoted by a prefix which is the first field of each record (if multi type serialization/deserialization is choosen).
+    The different record types are denoted by a prefix which is the first field of each record (if multi type serialization/deserialization is chosen).
     
   * Field embedding
   
@@ -129,9 +129,13 @@ Feature Highlights
     A line filter allows for filtering out lines during deserialization. These lines can also be stored for later retrieval.
     The typical use case of a line filter is to filter out and retrieve headers and footers of CSV/FLR files.
     
-  * Deserializer accepts records with more ore less fields than declared
+  * Deserializer accepts records with more or less fields than declared
   
-    Say your format (CSV or FLR) evolves and gets a new field at the end of the field list. Then an old implementation can still read the new format as well as the new implementation can read the old one.  
+    Say your format (CSV or FLR) evolves and gets a new field at the end of the field list. Then an old implementation can still read the new format as well as the new implementation can read the old one.
+  
+  * Support for special record delimiters
+  
+    Some formats do not use a line break as a record delimiter but a special character instead. JSefa supports these formats.  
         
     
   

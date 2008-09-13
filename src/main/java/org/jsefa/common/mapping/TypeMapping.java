@@ -17,7 +17,7 @@
 package org.jsefa.common.mapping;
 
 /**
- * A mapping between a java object type and a data type of the target format. The latter type is denoted by its
+ * A mapping between a java object type and a data type of the exchange format. The latter type is denoted by its
  * name which has a generic type.
  * 
  * @author Norman Lahme-Huetig

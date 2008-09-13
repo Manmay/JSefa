@@ -17,7 +17,7 @@
 package org.jsefa.common.mapping;
 
 /**
- * A descriptor of a node of the target format.
+ * A descriptor of a node of the exchange format.
  * 
  * @author Norman Lahme-Huetig
  * 

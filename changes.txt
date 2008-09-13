@@ -1,11 +1,3 @@
-   ------------------
-   Changes
-   ------------------
-   Norman Lahme-Hütig
-   ------------------
-   13.09.2008
-   ------------------
-   
 Changes in version 0.9.2
 
 * Bugfixes
@@ -30,10 +22,10 @@ as the latter seems to combine the characters to one CHARACTER event.
   * xsi:type attribute default behavior
     
     Say you have a class Customer with the two subclasses BusinessCustomer and PrivateCustomer and another class Order with a field customer of type Customer.
-    Further this field shall map to an xml element called \<customer>.
-    Then the deserialization of such a \<customer> element <without> a xsi:type attribute will result in creating an instance of class Customer.
+    Further this field shall map to an xml element called <customer>.
+    Then the deserialization of such a <customer> element <without> an xsi:type attribute will result in creating an instance of class Customer.
     
-    It was not possible to deserialize a \<customer> element without a xsi:type attribute before - one was forced to supply the xsi:type attribute as no default was assumed.
+    It was not possible to deserialize a <customer> element without an xsi:type attribute before - one was forced to supply the xsi:type attribute as no default was assumed.
     
   * CsvLowLevelDeserializer.nextField now returns null if no next field exists (was the empty string before), the empty string if the next field is empty and a non empty field value in all other cases.
   
@@ -58,7 +50,7 @@ as the latter seems to combine the characters to one CHARACTER event.
   * SimpleListConverter (XML/CSV/FLR)
   
     You can now map a list of simple types (e. g. list of integers) to a simple type of the exchange format (called simple list type).
-    E. g. the serialization of a List\<Integer> field containing the values 1,2 and 3 may result in "\<element>1,2,3\</element>".
+    E. g. the serialization of a List<Integer> field containing the values 1,2 and 3 may result in "<element>1,2,3</element>".
     
     Of course you can change the delimiter with the annotation parameter "format", e. g. @XmlElement(..., format=" ") for space as the delimiter.
     
@@ -131,7 +123,7 @@ as the latter seems to combine the characters to one CHARACTER event.
   
     Demonstrates the use of sub records and sub record lists (for FLR).
   
-* Other changes
+* Diverse
 
   * The javassist based ObjectAccessorProvider is no longer part of the JSefa distribution.
     

@@ -86,7 +86,7 @@ public final class ReflectionUtil {
     /**
      * Returns the path of classes to the given object type in reverse order. The first element is the given object
      * type, the second its superclass etc. Returns an empty collection if the given object type is an interface or
-     * is primitive. The class {@link Object.class} is not included.
+     * is primitive. The class {@link Object} is not included.
      * 
      * @param objectType the object type
      * @return a list of classes

@@ -17,7 +17,7 @@
 package org.jsefa.common.mapping;
 
 /**
- * A node type. It is used to classify the different types of nodes of the target format.
+ * A node type. It is used to classify the different types of nodes of the exchange format.
  * 
  * @author Norman Lahme-Huetig
  * 

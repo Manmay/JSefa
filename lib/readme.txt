@@ -13,10 +13,6 @@ wstx-asl-3.2.6.jar
   if no other implementation of JSR 173 is provided
 - not required if using Java 6 or above
 
-javassist.jar
-- required only when JavassistBasedObjectAccessorProvider is used;
-  thus not needed for the default case.
-  
 junit.jar
 - required for testing only  
 

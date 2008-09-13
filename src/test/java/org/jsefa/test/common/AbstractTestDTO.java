@@ -20,7 +20,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * Abstract base class for Test-DTOs providing a reflection based {@link #hashCode()} and {@link #equals()}.
+ * Abstract base class for Test-DTOs providing a reflection based {@link #hashCode} and {@link #equals}.
  * 
  * @author Norman Lahme-Huetig
  * 

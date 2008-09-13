@@ -39,6 +39,8 @@ Contents:
   to the ${artifactId}-${version}.jar when including JSefa into your project.
 * readme.txt
   This readme file
+* changes.txt
+  The list of changes
 * notice.txt
   Contains some notes
 * license.txt
