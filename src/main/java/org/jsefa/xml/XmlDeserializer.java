@@ -36,7 +36,7 @@ public interface XmlDeserializer extends Deserializer {
      * @param reader the reader to base the stream on.
      * @param systemId the system ID of the stream as an URI string. Will be used to resolve relative URIs.
 
-     * @throws LowLevelDeserializationException
+     * @throws DeserializationException
      */
     void open(Reader reader, String systemId);
 }
