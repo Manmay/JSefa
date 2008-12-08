@@ -31,7 +31,7 @@ import org.jsefa.Deserializer;
 public interface XmlDeserializer extends Deserializer {
     
     /**
-     * Opens a new serialization stream based on the given reader and system id.
+     * Opens a new deserialization stream based on the given reader and system id.
      * 
      * @param reader the reader to base the stream on.
      * @param systemId the system ID of the stream as an URI string. Will be used to resolve relative URIs.

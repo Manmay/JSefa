@@ -28,7 +28,7 @@ import org.jsefa.common.lowlevel.InputPosition;
 public interface Deserializer {
 
     /**
-     * Opens a new serialization stream based on the given reader.
+     * Opens a new deserialization stream based on the given reader.
      * 
      * @param reader the reader to base the stream on.
      * @throws DeserializationException

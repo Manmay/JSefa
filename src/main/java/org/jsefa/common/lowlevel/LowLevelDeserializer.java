@@ -25,7 +25,7 @@ import java.io.Reader;
  */
 public interface LowLevelDeserializer {
     /**
-     * Opens a new serialization stream based on the given reader.
+     * Opens a new deserialization stream based on the given reader.
      * 
      * @param reader the reader to base the stream on.
      * @throws LowLevelDeserializationException
