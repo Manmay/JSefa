@@ -16,6 +16,8 @@
 
 package org.jsefa.xml.lowlevel;
 
+import java.io.Reader;
+
 import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 import org.jsefa.common.lowlevel.LowLevelDeserializer;
 import org.jsefa.xml.lowlevel.model.XmlItem;
@@ -28,6 +30,16 @@ import org.jsefa.xml.lowlevel.model.XmlItemType;
  * 
  */
 public interface XmlLowLevelDeserializer extends LowLevelDeserializer {
+
+    /**
+     * Opens a new serialization stream based on the given reader and system id.
+     * 
+     * @param reader the reader to base the stream on.
+     * @param systemId the system ID of the stream as an URI string. Will be used to resolve relative URIs.
+
+     * @throws LowLevelDeserializationException
+     */
+    void open(Reader reader, String systemId);
 
     /**
      * Returns true if another xml item can be deserialized from the stream.

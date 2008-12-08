@@ -16,7 +16,10 @@
 
 package org.jsefa.xml;
 
+import java.io.Reader;
+
 import org.jsefa.Deserializer;
+import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 
 /**
  * Iterator-style interface for stream based xml deserializer.
@@ -26,5 +29,14 @@ import org.jsefa.Deserializer;
  */
 
 public interface XmlDeserializer extends Deserializer {
+    
+    /**
+     * Opens a new serialization stream based on the given reader and system id.
+     * 
+     * @param reader the reader to base the stream on.
+     * @param systemId the system ID of the stream as an URI string. Will be used to resolve relative URIs.
 
+     * @throws LowLevelDeserializationException
+     */
+    void open(Reader reader, String systemId);
 }

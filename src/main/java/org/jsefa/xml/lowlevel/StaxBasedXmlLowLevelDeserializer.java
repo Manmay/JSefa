@@ -79,6 +79,13 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
      * {@inheritDoc}
      */
     public void open(Reader reader) {
+        open(reader, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void open(Reader reader, String systemId) {
         if (reader instanceof BufferedReader) {
             this.reader = (BufferedReader) reader;
         } else {
@@ -86,7 +93,11 @@ public final class StaxBasedXmlLowLevelDeserializer implements XmlLowLevelDeseri
         }
         XMLInputFactory factory = XMLInputFactory.newInstance();
         try {
-            this.streamReader = factory.createXMLStreamReader(this.reader);
+            if (systemId != null) {
+                this.streamReader = factory.createXMLStreamReader(systemId, this.reader);
+            } else {
+                this.streamReader = factory.createXMLStreamReader(this.reader);
+            }
         } catch (XMLStreamException e) {
             throw new LowLevelDeserializationException("Error while opening the deserialization stream", e);
         }

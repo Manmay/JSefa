@@ -81,9 +81,16 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
      * {@inheritDoc}
      */
     public void open(Reader reader) {
+        open(reader, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void open(Reader reader, String baseURI) {
         this.currentEntryElementMapping = null;
         try {
-            this.lowLevelDeserializer.open(reader);
+            this.lowLevelDeserializer.open(reader, baseURI);
         } catch (Exception e) {
             throw new DeserializationException("Error while opening the deserialization stream");
         }
