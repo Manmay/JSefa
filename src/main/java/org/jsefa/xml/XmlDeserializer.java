@@ -18,8 +18,8 @@ package org.jsefa.xml;
 
 import java.io.Reader;
 
+import org.jsefa.DeserializationException;
 import org.jsefa.Deserializer;
-import org.jsefa.common.lowlevel.LowLevelDeserializationException;
 
 /**
  * Iterator-style interface for stream based xml deserializer.
