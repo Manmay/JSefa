@@ -17,6 +17,8 @@
 package org.jsefa.xml.namespace;
 
 import static org.jsefa.xml.namespace.NamespaceConstants.DEFAULT_NAMESPACE_PREFIX;
+import static org.jsefa.xml.namespace.NamespaceConstants.XML_NAMESPACE_URI;
+import static org.jsefa.xml.namespace.NamespaceConstants.XML_NAMESPACE_PREFIX;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +77,7 @@ public final class NamespaceManager {
         this.parent = null;
         createOwnRegistries();
         this.preferredPrefixes = new HashMap<String, String>();
+        registerPrefix(XML_NAMESPACE_PREFIX, XML_NAMESPACE_URI);
     }
 
     private NamespaceManager(NamespaceManager other, boolean otherIsParent) {

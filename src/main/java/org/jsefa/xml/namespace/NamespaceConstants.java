@@ -43,5 +43,15 @@ public interface NamespaceConstants {
      * The xml schema URI.
      */
     String XML_SCHEMA_URI = "http://www.w3.org/2001/XMLSchema";
+    
+    /**
+     * The URI of the xml namespace bound to the prefix xml.
+     */
+    String XML_NAMESPACE_URI = "http://www.w3.org/XML/1998/namespace";
+
+    /**
+     * The prefix xml.
+     */
+    String XML_NAMESPACE_PREFIX = "xml";
 
 }
