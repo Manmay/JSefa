@@ -25,7 +25,7 @@ import org.jsefa.xml.namespace.QName;
  * A mapping between an XML node and a java object. This mapping is used for serialization and deserialization.
  * <p>
  * The data type name may be:<br>
- * a) the name of the implicit parent node of the node this mapping is for - if this node is an element or an
+ * a) the name of the implicit parent node of the node this mapping is for - if this node is an element of an
  * implicit list<br>
  * b) the name of the node this mapping is for - in all other cases<br>
  * 
