@@ -22,6 +22,7 @@ import static org.jsefa.test.xml.ValueValidationOnDeserializationTest.Mode.VALID
 import static org.jsefa.test.xml.ValueValidationOnDeserializationTest.Mode.VALIDATION_OFF;
 
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -35,17 +36,19 @@ import org.jsefa.common.validator.Validator;
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
 import org.jsefa.xml.annotation.ListItem;
+import org.jsefa.xml.annotation.MapKey;
+import org.jsefa.xml.annotation.MapValue;
 import org.jsefa.xml.annotation.XmlAttribute;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
+import org.jsefa.xml.annotation.XmlElementMap;
 import org.jsefa.xml.annotation.XmlTextContent;
 
 /**
  * Tests for testing deserialization with value validation.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
 public class ValueValidationOnDeserializationTest extends TestCase {
     enum Mode {
@@ -89,7 +92,7 @@ public class ValueValidationOnDeserializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a explicit simple list item value.
+     * Tests validation for an explicit simple list item value.
      */
     public void testExplicitSimpleListItem() {
         check("<a><b><i>valid</i></b></a>", ExplicitSimpleListItemTestDTO.class, VALID);
@@ -98,14 +101,34 @@ public class ValueValidationOnDeserializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a explicit simple list item value.
+     * Tests validation for an implicit simple list item value.
      */
     public void testImplicitSimpleListItem() {
         check("<a><i>valid</i></a>", ImplicitSimpleListItemTestDTO.class, VALID);
         check("<a><i>not valid</i></a>", ImplicitSimpleListItemTestDTO.class, INVALID);
         check("<a><i>not valid</i></a>", ImplicitSimpleListItemTestDTO.class, VALIDATION_OFF);
     }
-    
+
+    /**
+     * Tests validation for an explicit simple map.
+     */
+    public void testExplicitSimpleMap() {
+        check("<a><b><v k='3'>valid</v></b></a>", ExplicitSimpleMapTestDTO.class, VALID);
+        check("<a><b><v k='3'>not valid</v></b></a>", ExplicitSimpleMapTestDTO.class, INVALID);
+        check("<a><b><v k='2'>valid</v></b></a>", ExplicitSimpleMapTestDTO.class, INVALID);
+        check("<a><b><v k='2'>not valid</v></b></a>", ExplicitSimpleMapTestDTO.class, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an implicit simple map.
+     */
+    public void testImplicitSimpleMap() {
+        check("<a><v k='3'>valid</v></a>", ImplicitSimpleMapTestDTO.class, VALID);
+        check("<a><v k='3'>not valid</v></a>", ImplicitSimpleMapTestDTO.class, INVALID);
+        check("<a><v k='2'>valid</v></a>", ImplicitSimpleMapTestDTO.class, INVALID);
+        check("<a><v k='2'>not valid</v></a>", ImplicitSimpleMapTestDTO.class, VALIDATION_OFF);
+    }
+
     /**
      * Tests validation for a complex element value.
      */
@@ -127,7 +150,7 @@ public class ValueValidationOnDeserializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a complex element value.
+     * Tests validation for an implicit list of complex elements.
      */
     public void testImplicitComplexListItem() {
         check("<a><i><f1>valid</f1></i></a>", ImplicitComplexListItemTestDTO.class, VALID);
@@ -137,13 +160,33 @@ public class ValueValidationOnDeserializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a complex element value.
+     * Tests validation for an explicit list of complex elements.
      */
     public void testExplicitComplexListItem() {
         check("<a><b><i><f1>valid</f1></i></b></a>", ExplicitComplexListItemTestDTO.class, VALID);
         check("<a><b><i><f2>valid</f2></i></b></a>", ExplicitComplexListItemTestDTO.class, VALID);
         check("<a><b><i>not valid</i></b></a>", ExplicitComplexListItemTestDTO.class, INVALID);
         check("<a><b><i>not valid</i></b></a>", ExplicitComplexListItemTestDTO.class, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an implicit map of complex elements.
+     */
+    public void testImplicitComplexMap() {
+        check("<a><v k='1'><f1>valid</f1></v></a>", ImplicitComplexMapTestDTO.class, VALID);
+        check("<a><v k='1'><f2>valid</f2></v></a>", ImplicitComplexMapTestDTO.class, VALID);
+        check("<a><v k='1'>not valid</v></a>", ImplicitComplexMapTestDTO.class, INVALID);
+        check("<a><v k='1'>not valid</v></a>", ImplicitComplexMapTestDTO.class, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an explicit map of complex elements.
+     */
+    public void testExplicitComplexMap() {
+        check("<a><b><v k='1'><f1>valid</f1></v></b></a>", ExplicitComplexMapTestDTO.class, VALID);
+        check("<a><b><v k='1'><f2>valid</f2></v></b></a>", ExplicitComplexMapTestDTO.class, VALID);
+        check("<a><b><v k='1'>not valid</v></b></a>", ExplicitComplexMapTestDTO.class, INVALID);
+        check("<a><b><v k='1'>not valid</v></b></a>", ExplicitComplexMapTestDTO.class, VALIDATION_OFF);
     }
 
     @SuppressWarnings("unchecked")
@@ -200,6 +243,20 @@ public class ValueValidationOnDeserializationTest extends TestCase {
     }
 
     @XmlDataType(defaultElementName = "a")
+    static final class ExplicitSimpleMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(name = "b", implicit = false, key = @MapKey(name = "k", constraints = "min=3"),
+                values = @MapValue(name = "v", constraints = "pattern=\\w*"))
+        Map<Integer, String> map;
+    }
+
+    @XmlDataType(defaultElementName = "a")
+    static final class ImplicitSimpleMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(implicit = true, key = @MapKey(name = "k", constraints = "min=3"),
+                values = @MapValue(name = "v", constraints = "pattern=\\w*"))
+        Map<Integer, String> map;
+    }
+
+    @XmlDataType(defaultElementName = "a")
     static final class ComplexElementTestDTO extends AbstractTestDTO {
         @XmlElement(name = "b")
         ComplexElementDTO complexField;
@@ -224,6 +281,18 @@ public class ValueValidationOnDeserializationTest extends TestCase {
     static final class ImplicitComplexListItemTestDTO extends AbstractTestDTO {
         @XmlElementList(implicit = true, items = @ListItem(name = "i"))
         List<ComplexElementDTO> listField;
+    }
+
+    @XmlDataType(defaultElementName = "a")
+    static final class ExplicitComplexMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(name = "b", implicit = false, key = @MapKey(name = "k"), values = @MapValue(name = "v"))
+        Map<String, ComplexElementDTO> mapField;
+    }
+
+    @XmlDataType(defaultElementName = "a")
+    static final class ImplicitComplexMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(implicit = true, key = @MapKey(name = "k"), values = @MapValue(name = "v"))
+        Map<String, ComplexElementDTO> mapField;
     }
 
     private static final class ComplexElementDTOValidator implements Validator {

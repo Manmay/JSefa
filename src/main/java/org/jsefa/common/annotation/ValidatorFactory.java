@@ -98,7 +98,7 @@ public final class ValidatorFactory {
             Annotation itemAnnotation = AnnotationDataProvider.get(contextAnnotation, LIST_ITEM);
             Class<?> itemObjectType = AnnotationDataProvider.get(itemAnnotation, OBJECT_TYPE);
             if (itemObjectType == null) {
-                itemObjectType = ReflectionUtil.getListEntryObjectType(field);
+                itemObjectType = ReflectionUtil.getActualTypeParameter(field, 0);
             }
             Validator itemValidator = createContextualValidator(itemObjectType, field, itemAnnotation,
                     dataTypeAnnotationType);

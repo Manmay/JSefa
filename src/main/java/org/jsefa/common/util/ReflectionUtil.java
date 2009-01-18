@@ -164,18 +164,22 @@ public final class ReflectionUtil {
     }
 
     /**
-     * Returns the first argument of the type of the given field or null if it does not exist.
+     * Returns the actual type parameter with the given index of the given field or null if it does not exist.
      * 
      * @param field the field
+     * @param index the index of the requested actual type parameter
      * @return a class or null
      */
-    public static Class<?> getListEntryObjectType(Field field) {
+    public static Class<?> getActualTypeParameter(Field field, int index) {
         Type type = field.getGenericType();
         if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
-            Type typeArg = parameterizedType.getActualTypeArguments()[0];
-            if (typeArg instanceof Class) {
-                return (Class<?>) typeArg;
+            Type[] typeArgs = parameterizedType.getActualTypeArguments();
+            if (index < typeArgs.length) {
+                Type typeArg = typeArgs[index];
+                if (typeArg instanceof Class) {
+                    return (Class<?>) typeArg;
+                }
             }
         }
         return null;

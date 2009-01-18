@@ -37,12 +37,14 @@ public final class AttributeMapping extends XmlNodeMapping<AttributeDescriptor> 
      * 
      * @param dataTypeName the name of the data type.
      * @param attributeDescriptor the descriptor of the attribute node
+     * @param objectType the type of the object. May be different from the object type contained in the field
+     *                descriptor.
      * @param fieldDescriptor the descriptor of the field
      * @param validator the validator; may be null
      */
     public AttributeMapping(QName dataTypeName, AttributeDescriptor attributeDescriptor,
-            FieldDescriptor fieldDescriptor, Validator validator) {
-        super(dataTypeName, attributeDescriptor, fieldDescriptor.getObjectType(), fieldDescriptor,
+            Class<?> objectType, FieldDescriptor fieldDescriptor, Validator validator) {
+        super(dataTypeName, attributeDescriptor, objectType, fieldDescriptor,
                 validator);
     }
 

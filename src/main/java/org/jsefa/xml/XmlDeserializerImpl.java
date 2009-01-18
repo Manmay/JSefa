@@ -18,7 +18,6 @@ package org.jsefa.xml;
 
 import java.io.Reader;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.jsefa.DeserializationException;
@@ -46,6 +45,7 @@ import org.jsefa.xml.mapping.TextContentDescriptor;
 import org.jsefa.xml.mapping.TextContentMapping;
 import org.jsefa.xml.mapping.XmlComplexTypeMapping;
 import org.jsefa.xml.mapping.XmlListTypeMapping;
+import org.jsefa.xml.mapping.XmlMapTypeMapping;
 import org.jsefa.xml.mapping.XmlNodeMapping;
 import org.jsefa.xml.mapping.XmlSimpleTypeMapping;
 import org.jsefa.xml.mapping.XmlTypeMappingRegistry;
@@ -165,9 +165,11 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
             return deserializeComplexElement((XmlComplexTypeMapping) typeMapping);
         } else if (typeMapping instanceof XmlListTypeMapping) {
             return deserializeListElement((XmlListTypeMapping) typeMapping);
+        } else if (typeMapping instanceof XmlMapTypeMapping) {
+            return deserializeMapElement((XmlMapTypeMapping) typeMapping);
         } else {
             throw new IllegalArgumentException(
-                    "Argument dataTypeName maps to a type mapping which is neither simple nor complex: "
+                    "Argument dataTypeName maps to a type mapping with unknown type: "
                             + typeMapping.getClass());
         }
     }
@@ -219,11 +221,19 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
                     try {
                         Object value = deserializeElement(childElementMapping.getDataTypeName());
                         if (value != null) {
-                            if (value instanceof List) {
-                                List<Object> currentList = (List<Object>) objectAccessor.getValue(object,
+                            if (value instanceof Collection) {
+                                Collection<Object> currentValue = (Collection<Object>) objectAccessor.getValue(object,
                                         fieldName);
-                                if (currentList != null) {
-                                    currentList.addAll((List) value);
+                                if (currentValue != null) {
+                                    currentValue.addAll((Collection) value);
+                                } else {
+                                    objectAccessor.setValue(object, fieldName, value);
+                                }
+                            } else if (value instanceof Map) {
+                                Map<Object, Object> currentValue = (Map<Object, Object>) objectAccessor.getValue(object,
+                                        fieldName);
+                                if (currentValue != null) {
+                                    currentValue.putAll((Map) value);
                                 } else {
                                     objectAccessor.setValue(object, fieldName, value);
                                 }
@@ -256,6 +266,37 @@ public final class XmlDeserializerImpl implements XmlDeserializer {
             }
         }
         return listValue;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private Map<?, ?> deserializeMapElement(XmlMapTypeMapping typeMapping) {
+        Map<Object, Object> map = (Map<Object, Object>) typeMapping.getObjectAccessor().createObject();
+        if (typeMapping.isImplicit()) {
+            XmlNodeMapping<?> valueNodeMapping = typeMapping.getValueNodeMapping(getCurrentElementDescriptor());
+            map.put(deserializeMapKey(typeMapping), deserializeElement(valueNodeMapping.getDataTypeName()));
+        } else {
+            int childDepth = getCurrentDepth() + 1;
+            while (moveToNextElement(childDepth)) {
+                XmlNodeMapping<?> valueNodeMapping = typeMapping.getValueNodeMapping(getCurrentElementDescriptor());
+                if (valueNodeMapping != null) {
+                    map.put(deserializeMapKey(typeMapping), deserializeElement(valueNodeMapping.getDataTypeName()));
+                }
+            }
+        }
+        return map;
+    }
+    
+    private Object deserializeMapKey(XmlMapTypeMapping typeMapping) {
+        ElementStart elementStart = getCurrentXmlItem();
+        QName keyName = typeMapping.getKeyNodeMapping().getNodeDescriptor().getName();
+        for (Attribute attribute : elementStart.getAttributes()) {
+            if (keyName.equals(attribute.getName())) {
+                XmlSimpleTypeMapping attributeTypeMapping = getSimpleTypeMapping(typeMapping.getKeyNodeMapping()
+                        .getDataTypeName());
+                return attributeTypeMapping.getSimpleTypeConverter().fromString(attribute.getValue());
+            }
+        }
+        throw new DeserializationException("No attribute " + keyName + " serving as key for map entry found");
     }
 
     private ElementDescriptor getCurrentElementDescriptor() {

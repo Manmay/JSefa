@@ -22,7 +22,9 @@ import static org.jsefa.test.xml.ValueValidationOnSerializationTest.Mode.VALID;
 import static org.jsefa.test.xml.ValueValidationOnSerializationTest.Mode.VALIDATION_OFF;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -36,10 +38,13 @@ import org.jsefa.common.validator.Validator;
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
 import org.jsefa.xml.annotation.ListItem;
+import org.jsefa.xml.annotation.MapKey;
+import org.jsefa.xml.annotation.MapValue;
 import org.jsefa.xml.annotation.XmlAttribute;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
+import org.jsefa.xml.annotation.XmlElementMap;
 import org.jsefa.xml.annotation.XmlTextContent;
 
 /**
@@ -103,7 +108,7 @@ public class ValueValidationOnSerializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a explicit simple list item value.
+     * Tests validation for an explicit simple list item value.
      */
     public void testExplicitSimpleListItem() {
         ExplicitSimpleListItemTestDTO dto = new ExplicitSimpleListItemTestDTO();
@@ -116,7 +121,7 @@ public class ValueValidationOnSerializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a explicit simple list item value.
+     * Tests validation for an explicit simple list item value.
      */
     public void testImplicitSimpleListItem() {
         ImplicitSimpleListItemTestDTO dto = new ImplicitSimpleListItemTestDTO();
@@ -124,6 +129,32 @@ public class ValueValidationOnSerializationTest extends TestCase {
         dto.stringList.add("valid");
         check(dto, VALID);
         dto.stringList.add("not valid");
+        check(dto, INVALID);
+        check(dto, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an explicit simple map value.
+     */
+    public void testExplicitSimpleMapValue() {
+        ExplicitSimpleMapTestDTO dto = new ExplicitSimpleMapTestDTO();
+        dto.map = new HashMap<Integer, String>();
+        dto.map.put(3, "valid");
+        check(dto, VALID);
+        dto.map.put(3, "not valid");
+        check(dto, INVALID);
+        check(dto, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an explicit simple map value.
+     */
+    public void testImplicitSimpleMapValue() {
+        ImplicitSimpleMapTestDTO dto = new ImplicitSimpleMapTestDTO();
+        dto.map = new HashMap<Integer, String>();
+        dto.map.put(3, "valid");
+        check(dto, VALID);
+        dto.map.put(3, "not valid");
         check(dto, INVALID);
         check(dto, VALIDATION_OFF);
     }
@@ -160,7 +191,7 @@ public class ValueValidationOnSerializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a complex element value.
+     * Tests validation for an implicit list of complex elements.
      */
     public void testImplicitComplexListItem() {
         ImplicitComplexListItemTestDTO dto = new ImplicitComplexListItemTestDTO();
@@ -175,7 +206,7 @@ public class ValueValidationOnSerializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a complex element value.
+     * Tests validation for an explicit list of complex elements.
      */
     public void testExplicitComplexListItem() {
         ExplicitComplexListItemTestDTO dto = new ExplicitComplexListItemTestDTO();
@@ -183,6 +214,36 @@ public class ValueValidationOnSerializationTest extends TestCase {
         ComplexElementDTO itemDTO = new ComplexElementDTO();
         itemDTO.stringField1 = "valid";
         dto.listField.add(itemDTO);
+        check(dto, VALID);
+        itemDTO.stringField1 = null;
+        check(dto, INVALID);
+        check(dto, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an implicit map of complex elements..
+     */
+    public void testImplicitComplexMap() {
+        ImplicitComplexMapTestDTO dto = new ImplicitComplexMapTestDTO();
+        dto.mapField = new HashMap<String, ComplexElementDTO>();
+        ComplexElementDTO itemDTO = new ComplexElementDTO();
+        itemDTO.stringField1 = "valid";
+        dto.mapField.put("valid", itemDTO);
+        check(dto, VALID);
+        itemDTO.stringField1 = null;
+        check(dto, INVALID);
+        check(dto, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an explicit map of complex elements.
+     */
+    public void testExplicitComplexMap() {
+        ExplicitComplexMapTestDTO dto = new ExplicitComplexMapTestDTO();
+        dto.mapField = new HashMap<String, ComplexElementDTO>();
+        ComplexElementDTO itemDTO = new ComplexElementDTO();
+        itemDTO.stringField1 = "valid";
+        dto.mapField.put("valid", itemDTO);
         check(dto, VALID);
         itemDTO.stringField1 = null;
         check(dto, INVALID);
@@ -241,6 +302,20 @@ public class ValueValidationOnSerializationTest extends TestCase {
         @XmlElementList(implicit = true, items = @ListItem(name = "i", constraints = "pattern=\\w*"))
         List<String> stringList;
     }
+    
+    @XmlDataType(defaultElementName = "a")
+    static final class ExplicitSimpleMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(name = "b", implicit = false, key = @MapKey(name = "k", constraints = "min=3"),
+                values = @MapValue(name = "v", constraints = "pattern=\\w*"))
+        Map<Integer, String> map;
+    }
+
+    @XmlDataType(defaultElementName = "a")
+    static final class ImplicitSimpleMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(implicit = true, key = @MapKey(name = "k", constraints = "min=3"),
+                values = @MapValue(name = "v", constraints = "pattern=\\w*"))
+        Map<Integer, String> map;
+    }
 
     @XmlDataType(defaultElementName = "a")
     static final class ComplexElementTestDTO extends AbstractTestDTO {
@@ -268,6 +343,19 @@ public class ValueValidationOnSerializationTest extends TestCase {
         @XmlElementList(implicit = true, items = @ListItem(name = "i"))
         List<ComplexElementDTO> listField;
     }
+    
+    @XmlDataType(defaultElementName = "a")
+    static final class ExplicitComplexMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(name = "b", implicit = false, key = @MapKey(name = "k"), values = @MapValue(name = "v"))
+        Map<String, ComplexElementDTO> mapField;
+    }
+
+    @XmlDataType(defaultElementName = "a")
+    static final class ImplicitComplexMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(implicit = true, key = @MapKey(name = "k"), values = @MapValue(name = "v"))
+        Map<String, ComplexElementDTO> mapField;
+    }
+    
 
     private static final class ComplexElementDTOValidator implements Validator {
 

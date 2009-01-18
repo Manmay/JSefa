@@ -24,6 +24,7 @@ import static org.jsefa.common.annotation.AnnotationParameterNames.OBJECT_TYPE;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Map;
 
 import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.converter.SimpleTypeConverter;
@@ -166,12 +167,13 @@ public abstract class TypeMappingFactory<N, R extends TypeMappingRegistry<N>> {
                 N itemDataTypeName = getAnnotatedDataTypeName(itemAnnotation, field.getDeclaringClass());
                 if (itemDataTypeName != null) {
                     assertTypeMappingIsSimple(itemDataTypeName);
-                    assertNoNestedList(getTypeMappingRegistry().get(itemDataTypeName).getObjectType());
+                    assertNoCollectionType(getTypeMappingRegistry().get(itemDataTypeName).getObjectType());
                     itemTypeConverter = ((SimpleTypeMapping) getTypeMappingRegistry().get(itemDataTypeName))
                             .getSimpleTypeConverter();
                 } else {
-                    Class<?> itemObjectType = getListItemObjectType(itemAnnotation, field, true);
-                    assertNoNestedList(itemObjectType);
+                    Class<?> itemObjectType = getCollectionItemType(itemAnnotation, field, true);
+                    assertHasSimpleType(itemObjectType);
+                    assertNoCollectionType(itemObjectType);
                     itemTypeConverter = createSimpleTypeConverter(itemObjectType, null, itemAnnotation);
                 }
             }
@@ -189,19 +191,53 @@ public abstract class TypeMappingFactory<N, R extends TypeMappingRegistry<N>> {
     }
 
     /**
-     * Returns the type of the items of a list.
+     * Returns the type of the items of a collection.
      * 
      * @param annotation the annotation of the field
      * @param field the field
-     * @param fromListDeclarationAllowed true, if the field is a list which contains only items of one type so that
-     *                the type may be deduced from the generic parameter argument of the field; false otherwise.
+     * @param fromFieldDeclarationAllowed true, if the field is a collection which contains only values of one type so
+     *        that the type may be deduced from the actual parameter type of the parameterized type of the field; false
+     *        otherwise.
      * @return an object type
      */
-    protected final Class<?> getListItemObjectType(Annotation annotation, Field field,
-            boolean fromListDeclarationAllowed) {
+    protected final Class<?> getCollectionItemType(Annotation annotation, Field field,
+            boolean fromFieldDeclarationAllowed) {
         Class<?> objectType = AnnotationDataProvider.get(annotation, OBJECT_TYPE);
-        if (objectType == null && fromListDeclarationAllowed) {
-            objectType = ReflectionUtil.getListEntryObjectType(field);
+        if (objectType == null && fromFieldDeclarationAllowed) {
+            objectType = ReflectionUtil.getActualTypeParameter(field, 0);
+        }
+        return objectType;
+    }
+    
+    /**
+     * Returns the type of the values of a map.
+     * 
+     * @param annotation the annotation of the field
+     * @param field the field
+     * @param fromFieldDeclarationAllowed true, if the field is a map which contains only values of one type so
+     *        that the type may be deduced from the actual parameter type of the parameterized type of the field; false
+     *        otherwise.
+     * @return an object type
+     */
+    protected final Class<?> getMapValueType(Annotation annotation, Field field, boolean fromFieldDeclarationAllowed) {
+        Class<?> objectType = AnnotationDataProvider.get(annotation, OBJECT_TYPE);
+        if (objectType == null && fromFieldDeclarationAllowed) {
+            objectType = ReflectionUtil.getActualTypeParameter(field, 1);
+        }
+        return objectType;
+    }
+
+    /**
+     * Returns the type of the keys of a map.
+     * 
+     * @param annotation the annotation of the field
+     * @param field the field
+     * @return an object type
+     */
+    protected final Class<?> getMapKeyType(Annotation annotation, Field field) {
+        Class<?> objectType = AnnotationDataProvider.get(annotation, OBJECT_TYPE);
+        if (objectType == null) {
+            objectType = ReflectionUtil.getActualTypeParameter(field, 0);
         }
         return objectType;
     }
@@ -244,6 +280,17 @@ public abstract class TypeMappingFactory<N, R extends TypeMappingRegistry<N>> {
     protected final boolean hasCollectionType(Class<?> objectType) {
         return Collection.class.isAssignableFrom(objectType);
     }
+    
+    /**
+     * Returns true if and only if the given object type is a map type.
+     * 
+     * @param objectType the object type
+     * @return true, if the given object type is a map type; false otherwise.
+     */
+    protected final boolean hasMapType(Class<?> objectType) {
+        return Map.class.isAssignableFrom(objectType);
+    }
+    
 
     /**
      * Asserts that a type mapping exists for the given data type name.
@@ -272,14 +319,26 @@ public abstract class TypeMappingFactory<N, R extends TypeMappingRegistry<N>> {
     }
 
     /**
-     * Asserts that a list item is not itself a list.
+     * Asserts that a given object type is not a collection class.
      * 
-     * @param listItemObjectType the object type of the list item.
+     * @param objectType the object type to check
      * @throws AnnotationException if the assertion fails.
      */
-    protected final void assertNoNestedList(Class<?> listItemObjectType) {
-        if (hasCollectionType(listItemObjectType)) {
-            throw new AnnotationException("No lists inside lists allowed!");
+    protected final void assertNoCollectionType(Class<?> objectType) {
+        if (hasCollectionType(objectType)) {
+            throw new AnnotationException("No collections allowed here!");
+        }
+    }
+    
+    /**
+     * Asserts that a given object type is a simple type.
+     * 
+     * @param objectType the object type to check
+     * @throws AnnotationException if the assertion fails.
+     */
+    protected final void assertHasSimpleType(Class<?> objectType) {
+        if (!hasSimpleType(objectType)) {
+            throw new AnnotationException("Only simple types are allowed here!");
         }
     }
 

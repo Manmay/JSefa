@@ -65,9 +65,9 @@ public final class ElementMappingsBuilder {
      * @param dataTypeName the data type name
      * @param elementDescriptor the element descriptor
      * @param objectType the objectType
-     * @param fieldDescriptor the field descriptor
-     * @param validator the validator; may be null
-     * @param textMode the text mode
+     * @param fieldDescriptor the field descriptor; may be <code>null</code>
+     * @param validator the validator; may be <code>null</code>
+     * @param textMode the text mode; may be <code>null</code>
      */
     public void addMapping(QName dataTypeName, ElementDescriptor elementDescriptor, Class<?> objectType,
             FieldDescriptor fieldDescriptor, Validator validator, TextMode textMode) {

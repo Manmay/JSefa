@@ -27,6 +27,7 @@ import org.jsefa.common.accessor.ObjectAccessorProvider;
 import org.jsefa.common.mapping.ComplexTypeMapping;
 import org.jsefa.common.mapping.FieldDescriptor;
 import org.jsefa.common.mapping.ListTypeMapping;
+import org.jsefa.common.mapping.MapTypeMapping;
 import org.jsefa.common.mapping.NodeMapping;
 import org.jsefa.common.mapping.TypeMapping;
 import org.jsefa.common.mapping.TypeMappingRegistry;
@@ -75,6 +76,8 @@ public class TraversingValidatorFactory<N> {
             return createForComplexType((ComplexTypeMapping<N, ?, ?>) mapping);
         } else if (mapping instanceof ListTypeMapping) {
             return createForListType((ListTypeMapping<N, ?, ?>) mapping);
+        } else if (mapping instanceof MapTypeMapping) {
+            return createForMapType((MapTypeMapping<N, ?, ?, ?>) mapping);
         }
         return null;
     }
@@ -117,6 +120,25 @@ public class TraversingValidatorFactory<N> {
             }
         }
         return new TraversingCollectionValueValidator(validatorsByObjectType);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Validator createForMapType(MapTypeMapping<N, ?, ?, ?> mapping) {
+        Map<Class<?>, Validator> valueValidatorsByObjectType = new HashMap<Class<?>, Validator>();
+        for (NodeMapping<?, ?> nodeMapping : mapping.getValueNodeMappings()) {
+            if (valueValidatorsByObjectType.get(nodeMapping.getObjectType()) == null) {
+                Validator valueValidator = combine(nodeMapping.getValidator(), create(this.typeMappingRegistry
+                        .get((N) nodeMapping.getDataTypeName())));
+                if (valueValidator != null) {
+                    valueValidatorsByObjectType.put(nodeMapping.getObjectType(), valueValidator);
+                }
+            }
+        }
+        NodeMapping<?, ?> keyNodeMapping = mapping.getKeyNodeMapping();
+        Validator keyValidator = combine(keyNodeMapping.getValidator(),
+                create(this.typeMappingRegistry.get((N) keyNodeMapping.getDataTypeName())));
+        
+        return new TraversingMapValueValidator(keyValidator, valueValidatorsByObjectType);
     }
 
     private Validator combine(Validator validatorA, Validator validatorB) {

@@ -18,7 +18,6 @@ package org.jsefa.common.validator.traversal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,17 +28,18 @@ import org.jsefa.common.validator.ValidationResult;
 import org.jsefa.common.validator.Validator;
 
 
-final class TraversingCollectionValueValidator extends TraversingValidator {
+final class TraversingMapValueValidator extends TraversingValidator {
 
-    private final Map<Class<?>, Validator> validatorsByObjectType;
+    private Validator keyValidator;
 
-    @SuppressWarnings("unchecked")
-    TraversingCollectionValueValidator(Map<Class<?>, Validator> validatorsByObjectType) {
-        if (checkTriviality(validatorsByObjectType.values())) {
-            this.validatorsByObjectType = Collections.EMPTY_MAP;
-        } else {
-            this.validatorsByObjectType = new HashMap<Class<?>, Validator>(validatorsByObjectType);
+    private Map<Class<?>, Validator> valueValidatorsByObjectType;
+
+    TraversingMapValueValidator(Validator keyValidator, Map<Class<?>, Validator> valueValidatorsByObjectType) {
+        if (checkTriviality(keyValidator, valueValidatorsByObjectType)) {
+            return;
         }
+        this.keyValidator = keyValidator;
+        this.valueValidatorsByObjectType = new HashMap<Class<?>, Validator>(valueValidatorsByObjectType);
     }
 
     /**
@@ -53,19 +53,22 @@ final class TraversingCollectionValueValidator extends TraversingValidator {
             return ValidationResult.VALID;
         }
         List<ValidationError> errors = new ArrayList<ValidationError>();
-        for (Object item : (Collection<?>) object) {
-            Validator itemValidator = getItemValidator(getNormalizedObjectType(item));
-            if (itemValidator != null) {
-                errors.addAll(itemValidator.validate(item).getErrors());
+        for (Map.Entry<?, ?> entry : ((Map<?, ?>) object).entrySet()) {
+            if (this.keyValidator !=  null) {
+                errors.addAll(this.keyValidator.validate(entry.getKey()).getErrors());
+            }
+            Validator valueValidator = getValueValidator(getNormalizedObjectType(entry.getValue()));
+            if (valueValidator != null) {
+                errors.addAll(valueValidator.validate(entry.getValue()).getErrors());
             }
         }
         return ValidationResult.create(errors);
     }
 
-    private Validator getItemValidator(Class<?> objectType) {
-        return ReflectionUtil.getNearest(objectType, this.validatorsByObjectType);
+    private Validator getValueValidator(Class<?> objectType) {
+        return ReflectionUtil.getNearest(objectType, this.valueValidatorsByObjectType);
     }
-    
+
     private Class<?> getNormalizedObjectType(Object value) {
         Class<?> objectType = value.getClass();
         if (Collection.class.isAssignableFrom(objectType)) {
@@ -75,6 +78,14 @@ final class TraversingCollectionValueValidator extends TraversingValidator {
         }
         return objectType;
     }
-
+    
+    private boolean checkTriviality(Validator keyValidator, Map<?, Validator> valueValidators) {
+        Collection<Validator> allValidators = new ArrayList<Validator>(valueValidators.values());
+        if (keyValidator != null) {
+            allValidators.add(keyValidator);
+        }
+        return checkTriviality(allValidators);
+    }
+    
     
 }

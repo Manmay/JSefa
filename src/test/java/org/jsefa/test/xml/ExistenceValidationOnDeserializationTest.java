@@ -22,6 +22,7 @@ import static org.jsefa.test.xml.ExistenceValidationOnDeserializationTest.Mode.V
 import static org.jsefa.test.xml.ExistenceValidationOnDeserializationTest.Mode.VALIDATION_OFF;
 
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -31,17 +32,19 @@ import org.jsefa.common.config.ValidationMode;
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
 import org.jsefa.xml.annotation.ListItem;
+import org.jsefa.xml.annotation.MapKey;
+import org.jsefa.xml.annotation.MapValue;
 import org.jsefa.xml.annotation.XmlAttribute;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
+import org.jsefa.xml.annotation.XmlElementMap;
 import org.jsefa.xml.annotation.XmlTextContent;
 
 /**
  * Tests for testing deserialization with existence validation.
  * 
  * @author Norman Lahme-Huetig
- * 
  */
 public class ExistenceValidationOnDeserializationTest extends TestCase {
     enum Mode {
@@ -95,16 +98,16 @@ public class ExistenceValidationOnDeserializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a explicit simple list item value.
+     * Tests validation for a implicit simple list item value.
      */
     public void testImplicitSimpleListItem() {
         check("<a><i>valid</i></a>", ImplicitSimpleListItemTestDTO.class, VALID);
         check("<a>not valid</a>", ImplicitSimpleListItemTestDTO.class, INVALID);
         check("<a>not valid</a>", ImplicitSimpleListItemTestDTO.class, VALIDATION_OFF);
     }
-    
+
     /**
-     * Tests validation for a complex element value.
+     * Tests validation for an implicit list of complex elements.
      */
     public void testImplicitComplexListItem() {
         check("<a><i><f1>valid</f1></i></a>", ImplicitComplexListItemTestDTO.class, VALID);
@@ -114,13 +117,51 @@ public class ExistenceValidationOnDeserializationTest extends TestCase {
     }
 
     /**
-     * Tests validation for a complex element value.
+     * Tests validation for an explicit list of complex elements.
      */
     public void testExplicitComplexListItem() {
         check("<a><b><i><f1>valid</f1></i></b></a>", ExplicitComplexListItemTestDTO.class, VALID);
         check("<a><b><i><f2>valid</f2></i></b></a>", ExplicitComplexListItemTestDTO.class, VALID);
         check("<a></a>", ExplicitComplexListItemTestDTO.class, INVALID);
         check("<a></a>", ExplicitComplexListItemTestDTO.class, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for a explicit simple map.
+     */
+    public void testExplicitSimpleMap() {
+        check("<a><b><v k='x'>valid</v></b></a>", ExplicitSimpleMapTestDTO.class, VALID);
+        check("<a>not valid</a>", ExplicitSimpleMapTestDTO.class, INVALID);
+        check("<a>not valid</a>", ExplicitSimpleMapTestDTO.class, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for a explicit simple map.
+     */
+    public void testImplicitSimpleMap() {
+        check("<a><v k='x'>valid</v></a>", ImplicitSimpleMapTestDTO.class, VALID);
+        check("<a>not valid</a>", ImplicitSimpleMapTestDTO.class, INVALID);
+        check("<a>not valid</a>", ImplicitSimpleMapTestDTO.class, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an implicit map of complex elements.
+     */
+    public void testImplicitComplexMap() {
+        check("<a><v k='1'><f1>valid</f1></v></a>", ImplicitComplexMapTestDTO.class, VALID);
+        check("<a><v k='1'><f2>valid</f2></v></a>", ImplicitComplexMapTestDTO.class, VALID);
+        check("<a></a>", ImplicitComplexMapTestDTO.class, INVALID);
+        check("<a></a>", ImplicitComplexMapTestDTO.class, VALIDATION_OFF);
+    }
+
+    /**
+     * Tests validation for an explicit map of complex elements.
+     */
+    public void testExplicitComplexMap() {
+        check("<a><b><v k='1'><f1>valid</f1></v></b></a>", ExplicitComplexMapTestDTO.class, VALID);
+        check("<a><b><v k='1'><f2>valid</f2></v></b></a>", ExplicitComplexMapTestDTO.class, VALID);
+        check("<a></a>", ExplicitComplexMapTestDTO.class, INVALID);
+        check("<a></a>", ExplicitComplexMapTestDTO.class, VALIDATION_OFF);
     }
 
     @SuppressWarnings("unchecked")
@@ -168,6 +209,19 @@ public class ExistenceValidationOnDeserializationTest extends TestCase {
     }
 
     @XmlDataType(defaultElementName = "a")
+    static final class ExplicitSimpleMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(name = "b", implicit = false, key = @MapKey(name = "k"), values = @MapValue(name = "v"),
+                required = true)
+        Map<String, String> stringMap;
+    }
+
+    @XmlDataType(defaultElementName = "a")
+    static final class ImplicitSimpleMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(implicit = true, key = @MapKey(name = "k"), values = @MapValue(name = "v"), required = true)
+        Map<String, String> stringMap;
+    }
+
+    @XmlDataType(defaultElementName = "a")
     static final class ComplexElementTestDTO extends AbstractTestDTO {
         @XmlElement(name = "b", required = true)
         ComplexElementDTO complexField;
@@ -192,6 +246,19 @@ public class ExistenceValidationOnDeserializationTest extends TestCase {
     static final class ImplicitComplexListItemTestDTO extends AbstractTestDTO {
         @XmlElementList(implicit = true, items = @ListItem(name = "i"), required = true)
         List<ComplexElementDTO> listField;
+    }
+
+    @XmlDataType(defaultElementName = "a")
+    static final class ExplicitComplexMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(name = "b", implicit = false, key = @MapKey(name = "k"), values = @MapValue(name = "v"),
+                required = true)
+        Map<String, ComplexElementDTO> mapField;
+    }
+
+    @XmlDataType(defaultElementName = "a")
+    static final class ImplicitComplexMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(implicit = true, key = @MapKey(name = "k"), values = @MapValue(name = "v"), required = true)
+        Map<String, ComplexElementDTO> mapField;
     }
 
 }

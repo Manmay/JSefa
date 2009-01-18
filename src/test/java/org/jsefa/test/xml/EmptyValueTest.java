@@ -16,19 +16,24 @@
 
 package org.jsefa.test.xml;
 
+import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
-
-import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
 
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
 import org.jsefa.xml.annotation.ListItem;
+import org.jsefa.xml.annotation.MapKey;
+import org.jsefa.xml.annotation.MapValue;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
 import org.jsefa.xml.annotation.XmlElementList;
+import org.jsefa.xml.annotation.XmlElementMap;
 import org.jsefa.xml.annotation.XmlTextContent;
 
 /**
@@ -86,6 +91,17 @@ public class EmptyValueTest extends TestCase {
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
     }
 
+    /**
+     * Tests the correct serialization/deserialization of a DTO mapped to an empty element map.
+     */
+    public void testElementMap() {
+        ElementMapTestDTO dto = new ElementMapTestDTO();
+        dto.elementMap = new HashMap<String, String>();
+        String serializationResult = JSefaTestUtil.serialize(XML, dto);
+        assertEmptyElementWritten(serializationResult, "elementMap");
+        JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
+    }
+
     private void assertEmptyElementWritten(String serializationResult, String elementName) {
         boolean shortVersionFound = serializationResult.replaceAll(LINE_BREAK, " ").matches(
                 ".*<" + elementName + "\\s*/>.*");
@@ -117,4 +133,9 @@ public class EmptyValueTest extends TestCase {
         List<String> elementList;
     }
 
+    @XmlDataType()
+    static final class ElementMapTestDTO extends AbstractTestDTO {
+        @XmlElementMap(key = @MapKey(name = "key"), values = @MapValue(name = "value"))
+        Map<String, String> elementMap;
+    }
 }

@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -54,6 +55,7 @@ import org.jsefa.common.validator.BigDecimalValidator;
 import org.jsefa.common.validator.CollectionValidator;
 import org.jsefa.common.validator.IntegerValidator;
 import org.jsefa.common.validator.LongValidator;
+import org.jsefa.common.validator.MapValidator;
 import org.jsefa.common.validator.StringValidator;
 import org.jsefa.common.validator.provider.ValidatorProvider;
 
@@ -298,6 +300,7 @@ public abstract class Configuration<R extends TypeMappingRegistry<?>, E extends 
                 provider.registerValidatorType(long.class, LongValidator.class);
                 provider.registerValidatorType(BigDecimal.class, BigDecimalValidator.class);
                 provider.registerValidatorType(Collection.class, CollectionValidator.class);
+                provider.registerValidatorType(Map.class, MapValidator.class);
                 return provider;
             }
         };

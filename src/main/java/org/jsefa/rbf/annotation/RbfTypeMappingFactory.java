@@ -298,7 +298,7 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
     private String createIfAbsent(Field field, Record record, Record[] records) {
         String listItemDataTypeName = AnnotationDataProvider.get(record, DATA_TYPE_NAME);
         if (listItemDataTypeName == null) {
-            Class<?> listItemObjectType = getListItemObjectType(record, field, records.length == 1);
+            Class<?> listItemObjectType = getCollectionItemType(record, field, records.length == 1);
             assertHasComplexType(listItemObjectType, field);
             listItemDataTypeName = createComplexTypeMappingIfAbsent(listItemObjectType, true);
         } else {
@@ -312,7 +312,6 @@ public abstract class RbfTypeMappingFactory extends TypeMappingFactory<String, R
             throw new AnnotationException("Neither dataTypeName nor objectType is given for list item of field: "
                     + field.getName() + " of class " + field.getDeclaringClass().getName());
         }
-        assertNoNestedList(listItemObjectType);
         if (!hasComplexType(listItemObjectType)) {
             throw new AnnotationException("The sub record object type " + listItemObjectType.getName()
                     + " must have a data type annotation");

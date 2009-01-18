@@ -39,7 +39,7 @@ import org.jsefa.xml.annotation.XmlElementList;
 public class ShortSyntaxListTypeTest extends TestCase {
 
     /**
-     * Tests a list with <code>String</code> and <code>Integer</code> elements.
+     * Tests an explicit list with <code>String</code> elements.
      */
     public void testExplicitListWithStringElements() {
         ExplicitListWithStringElements list = new ExplicitListWithStringElements();
@@ -57,7 +57,7 @@ public class ShortSyntaxListTypeTest extends TestCase {
     }
 
     /**
-     * Tests a list with <code>String</code> and <code>Integer</code> elements.
+     * Tests an implicit list with <code>String</code> elements.
      */
     public void testImplicitListWithStringElements() {
         ImplicitListWithStringElements list = new ImplicitListWithStringElements();
