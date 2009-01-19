@@ -5,7 +5,7 @@
 	<groupId>org.jsefa</groupId>
 	<artifactId>jsefa</artifactId>
 	<name>Java Simple Exchange Format API</name>
-	<version>0.9.2.1-snapshot20081209</version>
+	<version>0.9.2.1-snapshot20090119</version>
 	<url>http://jsefa.sf.net</url>
 	<description>JSefa (Java Simple exchange format api) is a simple
 		library for stream-based serialization of java objects to XML, CSV,
