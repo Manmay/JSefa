@@ -62,7 +62,7 @@ public final class ComplexMapDemo {
 
     }
 
-    @XmlDataType(defaultElementName = "weekday-map")
+    @XmlDataType(defaultElementName = "person-map")
     private static final class PersonMapDTO {
         @XmlElementMap(implicit = true, key = @MapKey(name = "key"), values = @MapValue(name = "person"))
         Map<String, Person> map;
