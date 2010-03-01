@@ -30,8 +30,6 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-
 /**
  * Converter for <code>XmlDateTime</code> objects.<br>
  * The format is a single String describing the time zone, e. g. "GMT".
@@ -125,7 +123,7 @@ public class XmlDateTimeConverter implements SimpleTypeConverter {
 
     /**
      * Creates a new <code>GregorianCalendar</code> from the given <code>XMLGregorianCalendar</code>. The
-     * implementation is based on {@link XMLGregorianCalendarImpl#toGregorianCalendar} and improved for better
+     * implementation is based on {@link XMLGregorianCalendar#toGregorianCalendar} and improved for better
      * performance (using caching for time zones).
      * 
      * @param cal the <code>XMLGregorianCalendar</code> to convert
