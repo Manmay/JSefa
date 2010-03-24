@@ -17,12 +17,17 @@
 package org.jsefa.test.xml;
 
 import static org.jsefa.test.common.JSefaTestUtil.FormatType.XML;
+
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.jsefa.test.common.AbstractTestDTO;
 import org.jsefa.test.common.JSefaTestUtil;
+import org.jsefa.xml.annotation.ListItem;
 import org.jsefa.xml.annotation.XmlDataType;
 import org.jsefa.xml.annotation.XmlElement;
+import org.jsefa.xml.annotation.XmlElementList;
 
 /**
  * Tests to test the correct serialization/deserialization when a cycle in the type mapping graph exists.
@@ -31,32 +36,59 @@ import org.jsefa.xml.annotation.XmlElement;
  * 
  */
 public class TypeCycleTest extends TestCase {
-    
+
     /**
-     * Tests a simple cycle in the type mapping graph.
+     * Tests a cycle in the type mapping graph where the revisited type has subtypes which have not been mapped at the
+     * point of cycle detection.
      */
-    public void testCycle() {
+    public void testPolymorphicCycle() {
         TestDTO dto = new TestDTO();
-        dto.subDTOField = new SubDTO();
-        dto.subDTOField.simpleField = "Test";
+        TypeADTO typeDTO = new TypeADTO();
+        typeDTO.id = "id";
+        typeDTO.label = "label";
+        dto.type = typeDTO;
+        System.out.println(JSefaTestUtil.serialize(XML, dto));
         JSefaTestUtil.assertRepeatedRoundTripSucceeds(XML, dto);
-    }
-    
-    @XmlDataType
-    private static class TestDTO extends AbstractTestDTO {
-        @XmlElement
-        SubDTO subDTOField;
-    }
-    
-    @XmlDataType(subObjectTypes = SubDTO.class)
-    private static class SuperDTO extends AbstractTestDTO {
-        @XmlElement
-        SuperDTO superDTOField;
     }
 
     @XmlDataType
-    private static class SubDTO extends SuperDTO {
+    private static class TestDTO extends AbstractTestDTO {
         @XmlElement
-        String simpleField;
+        TypeDTO type;
     }
+
+    @XmlDataType(subObjectTypes = { TypeADTO.class, TypeBDTO.class })
+    private static class TypeDTO extends AbstractTestDTO {
+        @XmlElement
+        String id;
+    }
+
+    @XmlDataType(name = "TypeA")
+    private static class TypeADTO extends TypeDTO {
+        @XmlElement
+        String label;
+
+        @XmlElement
+        TypeContainerDTO typeContainer;
+
+    }
+
+    @XmlDataType(name = "TypeB")
+    private static class TypeBDTO extends TypeDTO {
+        @XmlElement
+        String label;
+
+        @XmlElement
+        TypeContainerDTO typeContainer;
+
+    }
+
+    @XmlDataType(name = "TypeContainer")
+    private static class TypeContainerDTO extends AbstractTestDTO {
+        @XmlElement
+        TypeDTO type;
+        @XmlElementList(items=@ListItem(name="list-type-entry"))
+        List<TypeDTO> typeList;
+    }
+
 }

@@ -143,8 +143,14 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
         QName dataTypeName = createComplexDataTypeName(objectType, namespaceManager);
         if (prepareToCreate(objectType, dataTypeName)) {
             for (Class<?> subObjectType : objectType.getAnnotation(XmlDataType.class).subObjectTypes()) {
-                QName subDataTypeName = createComplexTypeMappingIfAbsent(subObjectType);
+                QName subDataTypeName = createComplexDataTypeName(subObjectType, NamespaceManagerFactory
+                        .create(subObjectType));
+                // QName subDataTypeName =
+                // createComplexTypeMappingIfAbsent(subObjectType);
                 getTypeMappingRegistry().registerSubtypeRelation(dataTypeName, subDataTypeName);
+            }
+            for (Class<?> subObjectType : objectType.getAnnotation(XmlDataType.class).subObjectTypes()) {
+                createComplexTypeMappingIfAbsent(subObjectType);
             }
             Collection<XmlNodeMapping<?>> nodeMappings = new ArrayList<XmlNodeMapping<?>>();
             nodeMappings.addAll(createAttributeMappings(objectType, namespaceManager));
@@ -161,7 +167,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
         }
         return dataTypeName;
     }
-    
+
     private QName createListTypeMappingIfAbsent(Field field, NamespaceManager namespaceManager) {
         QName dataTypeName = createCollectionDataTypeName(field);
         if (prepareToCreate(Collection.class, dataTypeName)) {
@@ -199,8 +205,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<AttributeMapping> createAttributeMappings(Class<?> objectType,
-            NamespaceManager namespaceManager) {
+    private Collection<AttributeMapping> createAttributeMappings(Class<?> objectType, NamespaceManager namespaceManager) {
         Collection<AttributeMapping> result = new ArrayList<AttributeMapping>();
         for (Field field : AnnotatedFieldsProvider.getAnnotatedFields(objectType, XmlAttribute.class)) {
             XmlAttribute xmlAttribute = field.getAnnotation(XmlAttribute.class);
@@ -290,14 +295,13 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
 
         for (QName subDataTypeName : getTypeMappingRegistry().getDataTypeNameTreeElements(fieldDataTypeName)) {
             ElementDescriptor elementDescriptor = createElementDescriptor(field, subDataTypeName, namespaceManager);
-            Class<?> normalizedObjectType = getTypeMappingRegistry().get(subDataTypeName).getObjectType();
-
+            Class<?> subObjectType = getSubObjectType(field.getType(), subDataTypeName);
             elementMappingsBuilder.addMapping(subDataTypeName, elementDescriptor, new FieldDescriptor(field.getName(),
-                    normalizedObjectType), getValidatorFactory().createContextualValidator(normalizedObjectType, field,
+                    subObjectType), getValidatorFactory().createContextualValidator(subObjectType, field,
                     xmlElement, XmlDataType.class), getTextModeFromField(field));
         }
     }
-
+    
     private void addElementMappingsForElementList(Field field, QName fieldDataTypeName,
             NamespaceManager namespaceManager, ElementMappingsBuilder elementMappingsBuilder) {
         XmlElementList xmlElementList = field.getAnnotation(XmlElementList.class);
@@ -333,7 +337,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             QName dataTypeName = createForCollectionItemOrMapValueIfAbsent(field, annotation, annotations.length,
                     namespaceManager);
             for (QName subDataTypeName : getTypeMappingRegistry().getDataTypeNameTreeElements(dataTypeName)) {
-                Class<?> subObjectType = getTypeMappingRegistry().get(subDataTypeName).getObjectType();
+                Class<?> subObjectType = getSubObjectType(getTypeMappingRegistry().get(dataTypeName).getObjectType(), subDataTypeName);
                 if (!objectTypes.contains(subObjectType)) {
                     objectTypes.add(subObjectType);
                     ElementDescriptor elementDescriptor = createElementDescriptor(annotation, subDataTypeName,
@@ -346,6 +350,19 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                 }
             }
         }
+    }
+
+    private Class<?> getSubObjectType(Class<?> objectType, QName subDataTypeName) {
+        if (getTypeMappingRegistry().get(subDataTypeName) != null) {
+            return getTypeMappingRegistry().get(subDataTypeName).getObjectType();
+        }
+        for (Class<?> subObjectType : objectType.getAnnotation(XmlDataType.class).subObjectTypes()) {
+            if (subDataTypeName.equals(createComplexDataTypeName(subObjectType, NamespaceManagerFactory
+                    .create(subObjectType)))) {
+                return subObjectType;
+            }
+        }
+        throw new TypeMappingException("Unknown data type name: " + subDataTypeName);
     }
 
     private QName createForMapKeyIfAbsent(Field field, Annotation annotation, NamespaceManager namespaceManager) {
@@ -367,8 +384,8 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
         }
     }
 
-    private QName createForCollectionItemOrMapValueIfAbsent(Field field, Annotation annotation,
-            int itemOrValueCount, NamespaceManager namespaceManager) {
+    private QName createForCollectionItemOrMapValueIfAbsent(Field field, Annotation annotation, int itemOrValueCount,
+            NamespaceManager namespaceManager) {
         QName dataTypeName = getAnnotatedDataTypeName(annotation, namespaceManager);
         if (dataTypeName != null) {
             assertTypeMappingExists(dataTypeName);
@@ -377,11 +394,12 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             Class<?> objectType = (hasMapType(field.getType())) ? getMapValueType(annotation, field, singleType)
                     : getCollectionItemType(annotation, field, singleType);
             if (objectType == null) {
-                throw new AnnotationException("Object type not determinable for collection item or map value of field: "
-                        + field.getName() + " of class " + field.getDeclaringClass().getName());
+                throw new AnnotationException(
+                        "Object type not determinable for collection item or map value of field: " + field.getName()
+                                + " of class " + field.getDeclaringClass().getName());
             }
             dataTypeName = createIfAbsent(objectType, field, annotation);
-        }            
+        }
         TypeMapping<?> typeMapping = getTypeMappingRegistry().get(dataTypeName);
         if (typeMapping instanceof XmlListTypeMapping) {
             if (((XmlListTypeMapping) typeMapping).isImplicit()) {
@@ -406,8 +424,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
         return new AttributeDescriptor(name);
     }
 
-    private ElementDescriptor createElementDescriptor(Field field, QName dataTypeName,
-            NamespaceManager namespaceManager) {
+    private ElementDescriptor createElementDescriptor(Field field, QName dataTypeName, NamespaceManager namespaceManager) {
         QName name = QNameParser.parse(getAnnotatedName(field, field.getName()), true, namespaceManager);
         return new ElementDescriptor(name, dataTypeName);
     }
@@ -496,7 +513,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             return null;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private TextMode getTextModeFromField(Field field) {
         return (TextMode) AnnotationDataProvider.get(field, AnnotationParameterNames.TEXT_MODE, XmlElement.class,
