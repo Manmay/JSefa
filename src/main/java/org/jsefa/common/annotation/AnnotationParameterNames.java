@@ -33,6 +33,11 @@ public interface AnnotationParameterNames {
      * Name of the annotation parameter used to denote a name.
      */
     String NAME = "name";
+    
+    /**
+     * Name of the annotation parameter used to denote a default name.
+     */
+    String DEFAULT_NAME = "defaultName";
 
     /**
      * Name of the annotation parameter used to denote a data type name.

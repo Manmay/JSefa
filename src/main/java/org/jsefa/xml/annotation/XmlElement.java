@@ -46,6 +46,11 @@ public @interface XmlElement {
      * [prefix:]localname<br>
      */
     String name() default "";
+    
+    /**
+     * The type of default name if no explicit name is given.
+     */
+    DefaultName defaultName() default DefaultName.FIELD_NAME;
 
     /**
      * The name of the data type of the element this annotation describes. If not set, it must be determinable from

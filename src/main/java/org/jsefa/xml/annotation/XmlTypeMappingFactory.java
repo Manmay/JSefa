@@ -20,6 +20,7 @@ import static org.jsefa.common.annotation.AnnotationParameterNames.CONVERTER_TYP
 import static org.jsefa.common.annotation.AnnotationParameterNames.DATA_TYPE_NAME;
 import static org.jsefa.common.annotation.AnnotationParameterNames.FORMAT;
 import static org.jsefa.common.annotation.AnnotationParameterNames.NAME;
+import static org.jsefa.common.annotation.AnnotationParameterNames.DEFAULT_NAME;
 import static org.jsefa.common.annotation.AnnotationParameterNames.OBJECT_TYPE;
 import static org.jsefa.common.annotation.AnnotationParameterNames.TEXT_MODE;
 
@@ -294,14 +295,15 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
         XmlElement xmlElement = field.getAnnotation(XmlElement.class);
 
         for (QName subDataTypeName : getTypeMappingRegistry().getDataTypeNameTreeElements(fieldDataTypeName)) {
-            ElementDescriptor elementDescriptor = createElementDescriptor(field, subDataTypeName, namespaceManager);
             Class<?> subObjectType = getSubObjectType(field.getType(), subDataTypeName);
+            ElementDescriptor elementDescriptor = createElementDescriptor(field, subObjectType, subDataTypeName,
+                    namespaceManager);
             elementMappingsBuilder.addMapping(subDataTypeName, elementDescriptor, new FieldDescriptor(field.getName(),
-                    subObjectType), getValidatorFactory().createContextualValidator(subObjectType, field,
-                    xmlElement, XmlDataType.class), getTextModeFromField(field));
+                    subObjectType), getValidatorFactory().createContextualValidator(subObjectType, field, xmlElement,
+                    XmlDataType.class), getTextModeFromField(field));
         }
     }
-    
+
     private void addElementMappingsForElementList(Field field, QName fieldDataTypeName,
             NamespaceManager namespaceManager, ElementMappingsBuilder elementMappingsBuilder) {
         XmlElementList xmlElementList = field.getAnnotation(XmlElementList.class);
@@ -310,7 +312,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                     xmlElementList.items(), namespaceManager);
         }
         ElementDescriptor elementDescriptor = xmlElementList.implicit() ? new ElementDescriptor(null, fieldDataTypeName)
-                : createElementDescriptor(field, fieldDataTypeName, namespaceManager);
+                : createElementDescriptor(field, field.getDeclaringClass(), fieldDataTypeName, namespaceManager);
         elementMappingsBuilder.addMapping(fieldDataTypeName, elementDescriptor, new FieldDescriptor(field.getName(),
                 Collection.class), getValidatorFactory().createContextualValidator(Collection.class, field,
                 xmlElementList, XmlDataType.class), getTextModeFromField(field));
@@ -324,7 +326,7 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
                     xmlElementMap.values(), namespaceManager);
         }
         ElementDescriptor elementDescriptor = xmlElementMap.implicit() ? new ElementDescriptor(null, fieldDataTypeName)
-                : createElementDescriptor(field, fieldDataTypeName, namespaceManager);
+                : createElementDescriptor(field, field.getDeclaringClass(), fieldDataTypeName, namespaceManager);
         elementMappingsBuilder.addMapping(fieldDataTypeName, elementDescriptor, new FieldDescriptor(field.getName(),
                 Map.class), getValidatorFactory().createContextualValidator(Map.class, field, xmlElementMap,
                 XmlDataType.class), getTextModeFromField(field));
@@ -337,7 +339,8 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
             QName dataTypeName = createForCollectionItemOrMapValueIfAbsent(field, annotation, annotations.length,
                     namespaceManager);
             for (QName subDataTypeName : getTypeMappingRegistry().getDataTypeNameTreeElements(dataTypeName)) {
-                Class<?> subObjectType = getSubObjectType(getTypeMappingRegistry().get(dataTypeName).getObjectType(), subDataTypeName);
+                Class<?> subObjectType = getSubObjectType(getTypeMappingRegistry().get(dataTypeName).getObjectType(),
+                        subDataTypeName);
                 if (!objectTypes.contains(subObjectType)) {
                     objectTypes.add(subObjectType);
                     ElementDescriptor elementDescriptor = createElementDescriptor(annotation, subDataTypeName,
@@ -424,9 +427,25 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
         return new AttributeDescriptor(name);
     }
 
-    private ElementDescriptor createElementDescriptor(Field field, QName dataTypeName, NamespaceManager namespaceManager) {
-        QName name = QNameParser.parse(getAnnotatedName(field, field.getName()), true, namespaceManager);
+    private ElementDescriptor createElementDescriptor(Field field, Class<?> objectType, QName dataTypeName,
+            NamespaceManager namespaceManager) {
+        QName name = null;
+        String annotatedName = getAnnotatedName(field, null);
+        if (annotatedName != null) {
+            name = QNameParser.parse(annotatedName, true, namespaceManager);
+        } else {
+            if (AnnotationDataProvider.get(field, DEFAULT_NAME, XmlElement.class) == DefaultName.TYPE_DEFAULT_NAME) {
+                if (objectType.isAnnotationPresent(XmlDataType.class)) {
+                    name = QNameParser.parse(objectType.getAnnotation(XmlDataType.class).defaultElementName(), true,
+                            NamespaceManagerFactory.create(objectType));
+                }
+            }
+        }
+        if (name == null) {
+            name = QNameParser.parse(field.getName(), true, namespaceManager);
+        }
         return new ElementDescriptor(name, dataTypeName);
+
     }
 
     private ElementDescriptor createElementDescriptor(Annotation annotation, QName dataTypeName,
