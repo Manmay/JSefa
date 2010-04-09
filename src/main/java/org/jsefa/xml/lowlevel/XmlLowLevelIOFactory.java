@@ -31,8 +31,8 @@ import org.jsefa.xml.lowlevel.config.XmlLowLevelInitialConfigurationParameters;
  * This is the abstract base class for concrete factories. Each subclass must provide a static method
  * <code>create(XmlLowLevelConfiguration config)</code> as well as implement the abstract methods.
  * <p>
- * This class provides a static factory method {@link #createFactory(XmlLowLevelConfiguration)} to create an
- * instance of a concrete <code>XmlLowLevelIOFactory</code>.
+ * This class provides a static factory method {@link #createFactory(XmlLowLevelConfiguration)} to create an instance of
+ * a concrete <code>XmlLowLevelIOFactory</code>.
  * 
  * @author Norman Lahme-Huetig
  * 
@@ -48,11 +48,19 @@ public abstract class XmlLowLevelIOFactory implements LowLevelIOFactory {
      * @throws IOFactoryException
      */
     public static XmlLowLevelIOFactory createFactory(XmlLowLevelConfiguration config) {
+        Class<?> ioFactoryClass = null;
+        if (ReflectionUtil.hasClass("org.jsefa.xml.lowlevel.StaxBasedXmlLowLevelIOFactory")) {
+            ioFactoryClass = ReflectionUtil.getClass("org.jsefa.xml.lowlevel.StaxBasedXmlLowLevelIOFactory");
+        } else if (ReflectionUtil.hasClass("org.jsefa.xml.lowlevel.XmlPullBasedXmlLowLevelIOFactory")) {
+            ioFactoryClass = ReflectionUtil.getClass("org.jsefa.xml.lowlevel.XmlPullBasedXmlLowLevelIOFactory");
+        }
+
+        if (ioFactoryClass == null) {
+            throw new IOFactoryException("Failed to create an XmlLowLevelIOFactory");
+        }
         Class<XmlLowLevelIOFactory> factoryClass = InitialConfiguration.get(
-                XmlLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS,
-                StaxBasedXmlLowLevelIOFactory.class);
-        Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory",
-                XmlLowLevelConfiguration.class);
+                XmlLowLevelInitialConfigurationParameters.LOW_LEVEL_IO_FACTORY_CLASS, ioFactoryClass);
+        Method createMethod = ReflectionUtil.getMethod(factoryClass, "createFactory", XmlLowLevelConfiguration.class);
         if (createMethod == null) {
             throw new IOFactoryException("Failed to create an XmlLowLevelIOFactory. The factory " + factoryClass
                     + " does not contain the required static createFactory method.");

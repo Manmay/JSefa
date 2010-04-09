@@ -224,6 +224,34 @@ public final class ReflectionUtil {
         }
         return value;
     }
+    
+    /**
+     * Checks whether a given Class is available on the current platform.
+     * 
+     * @param clazz The full qualified name of the class to check.
+     * @return      <code>true</code> if class is available, <code>false</code> otherwise.
+     */
+    public static boolean hasClass(final String clazz) {
+        try {
+            return Class.forName(clazz) != null;
+        } catch (final ClassNotFoundException exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns a Class object which represents the class with the given name.
+     * 
+     * @param clazz The full qualified name of the class.
+     * @return      The Class object representing the class with the given name.
+     */
+    public static Class<?> getClass(final String clazz) {
+        try {
+            return Class.forName(clazz);
+        } catch (final ClassNotFoundException exception) {
+            throw new RuntimeException(exception);
+        }
+    }    
 
     private ReflectionUtil() {
     }

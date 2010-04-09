@@ -30,8 +30,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.jsefa.Deserializer;
 import org.jsefa.IOFactory;
 import org.jsefa.Serializer;
@@ -44,8 +42,8 @@ import org.jsefa.common.converter.EnumConverter;
 import org.jsefa.common.converter.IntegerConverter;
 import org.jsefa.common.converter.LongConverter;
 import org.jsefa.common.converter.SimpleListConverter;
+import org.jsefa.common.converter.SimpleTypeConverter;
 import org.jsefa.common.converter.StringConverter;
-import org.jsefa.common.converter.XMLGregorianCalendarConverter;
 import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.mapping.EntryPoint;
 import org.jsefa.common.mapping.TypeMappingRegistry;
@@ -279,7 +277,15 @@ public abstract class Configuration<R extends TypeMappingRegistry<?>, E extends 
                 provider.registerConverterType(Integer.class, IntegerConverter.class);
                 provider.registerConverterType(BigDecimal.class, BigDecimalConverter.class);
                 provider.registerConverterType(Date.class, DateConverter.class);
-                provider.registerConverterType(XMLGregorianCalendar.class, XMLGregorianCalendarConverter.class);
+                if (ReflectionUtil.hasClass("javax.xml.datatype.XMLGregorianCalendar")) {
+                    final Class<?> gregorianCalendar = ReflectionUtil.getClass("javax.xml.datatype.XMLGregorianCalendar");
+                    Class<? extends SimpleTypeConverter> gregorianConverter = null;
+
+                    if (ReflectionUtil.hasClass("org.jsefa.common.converter.XMLGregorianCalendarConverter")) {
+                        gregorianConverter = (Class<? extends SimpleTypeConverter>) ReflectionUtil.getClass("org.jsefa.common.converter.XMLGregorianCalendarConverter");
+                    }
+                    provider.registerConverterType(gregorianCalendar, gregorianConverter);
+                }                
                 provider.registerConverterType(Enum.class, EnumConverter.class);
                 provider.registerConverterType(Collection.class, SimpleListConverter.class);
                 return provider;

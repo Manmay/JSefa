@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jsefa</groupId>
-	<artifactId>jsefa</artifactId>
-	<name>Java Simple Exchange Format API</name>
-	<version>0.9.2.1-snapshot20090119</version>
+	<artifactId>jsefa-parent</artifactId>
+	<name>Java Simple Exchange Format API (parent)</name>
+	<version>0.9.3-SNAPSHOT</version>
 	<url>http://jsefa.sf.net</url>
 	<description>JSefa (Java Simple exchange format api) is a simple
 		library for stream-based serialization of java objects to XML, CSV,
@@ -46,6 +46,16 @@
 			</roles>
 		</developer>
 		<developer>
+			<id>sebhoss</id>
+			<name>Sebastian Hoß</name>
+			<email>matder@users.sourceforge.net</email>
+			<url>http://sf.net/users/sebhoss</url>
+			<timezone>CET</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+		<developer>
 			<id>matder</id>
 			<name>Matthias Derer</name>
 			<email>matder@users.sourceforge.net</email>
@@ -66,7 +76,11 @@
 			</roles>
 		</developer>
 	</developers>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
+	<modules>
+	<module>standard</module>
+	<module>android</module>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>
@@ -137,6 +151,12 @@
 	</reporting>
 	<dependencies>
 		<dependency>
+			<groupId>xmlpull</groupId>
+			<artifactId>xmlpull</artifactId>
+			<version>1.1.2.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.3</version>
@@ -187,7 +207,7 @@
 					<name>Java.net Repository for Maven</name>
 					<url>http://download.java.net/maven/2/</url>
 				</repository>
-        <!-- for StAX API -->
+				<!-- for StAX API -->
 				<repository>
 					<id>java.net</id>
 					<url>https://maven-repository.dev.java.net/nonav/repository</url>
