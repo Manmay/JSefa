@@ -283,8 +283,8 @@ public abstract class Configuration<R extends TypeMappingRegistry<?>, E extends 
 
                     if (ReflectionUtil.hasClass("org.jsefa.common.converter.XMLGregorianCalendarConverter")) {
                         gregorianConverter = (Class<? extends SimpleTypeConverter>) ReflectionUtil.getClass("org.jsefa.common.converter.XMLGregorianCalendarConverter");
+                        provider.registerConverterType(gregorianCalendar, gregorianConverter);
                     }
-                    provider.registerConverterType(gregorianCalendar, gregorianConverter);
                 }                
                 provider.registerConverterType(Enum.class, EnumConverter.class);
                 provider.registerConverterType(Collection.class, SimpleListConverter.class);
