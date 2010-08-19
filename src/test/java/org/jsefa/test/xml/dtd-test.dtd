@@ -1,4 +1,0 @@
-<!ELEMENT persons (person)+>
-<!ELEMENT person (name)>
-<!ELEMENT name (#PCDATA)>
-<!ENTITY schmidt "Schmidt">

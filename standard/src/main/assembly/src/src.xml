@@ -32,25 +32,25 @@
 	</files>
 	<fileSets>
 		<fileSet>
-			<directory>src/main/java</directory>
+			<directory>../src/main/java</directory>
 			<outputDirectory>src/main/java</outputDirectory>
 			<excludes>
 				<exclude>**/**/XmlPullBased*</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
-			<directory>src/test/java</directory>
+			<directory>../src/test/java</directory>
 			<outputDirectory>src/test/java</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>samples</directory>
+			<directory>../samples</directory>
 			<excludes>
 				<exclude>**/*.sh</exclude>
 			</excludes>
 			<outputDirectory>samples</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>samples</directory>
+			<directory>../samples</directory>
 			<includes>
 				<include>**/*.sh</include>
 			</includes>
@@ -67,7 +67,7 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory></directory>
+			<directory>../</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
 				<include>*.xml</include>
