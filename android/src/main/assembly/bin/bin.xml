@@ -20,17 +20,17 @@
       <filtered>true</filtered>
     </file>
     <file>
-      <source>changes.txt</source>
+      <source>../changes.txt</source>
       <outputDirectory></outputDirectory>
       <filtered>true</filtered>
     </file>
     <file>
-      <source>notice.txt</source>
+      <source>../notice.txt</source>
       <outputDirectory></outputDirectory>
       <filtered>true</filtered>
     </file>
     <file>
-      <source>license.txt</source>
+      <source>../license.txt</source>
       <outputDirectory></outputDirectory>
       <filtered>false</filtered>
     </file>
