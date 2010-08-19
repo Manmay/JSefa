@@ -35,40 +35,4 @@
       <filtered>false</filtered>
     </file>
   </files>
-  <fileSets>
-    <fileSet>
-      <directory>samples</directory>
-	  <excludes>
-        <exclude>**/*.sh</exclude>
-      </excludes>
-      <outputDirectory>samples</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>samples</directory>
-	  <includes>
-        <include>**/*.sh</include>
-      </includes>
-      <lineEnding>unix</lineEnding>
-      <fileMode>0554</fileMode>
-      <outputDirectory>samples</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>lib</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-      <excludes>
-        <exclude>junit*.jar</exclude>
-        <exclude>commons-lang*.jar</exclude>
-      </excludes>
-    </fileSet>
-    <fileSet>
-      <directory>src/main/assembly/bin</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>readme*</include>
-      </includes>
-    </fileSet>
-  </fileSets>
 </assembly>
