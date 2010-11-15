@@ -3,7 +3,7 @@
    ------------------
    Norman Lahme-Hütig
    ------------------
-   13.09.2008
+   15.11.2010
    ------------------
    
 Feature Highlights
@@ -137,6 +137,10 @@ Feature Highlights
   
     Some formats do not use a line break as a record delimiter but a special character instead. JSefa supports these formats.  
         
-    
+* Supported Platforms
+
+  * Standard Java platforms (starting with Java 1.5)
+  
+  * Android (starting with version 2.0)  
   
     

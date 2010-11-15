@@ -3,10 +3,10 @@
    ------------------
    Norman Lahme-Hütig
    ------------------
-   13.05.2007
+   15.11.2010
    ------------------
    
-Dependencies   
+Dependencies for standard (non android) version of JSefa  
   
   Included with JSefa are the following libraries because they are required either
 for building JSefa itself or for running the sample applications. Note that each

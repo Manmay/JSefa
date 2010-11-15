@@ -11,13 +11,13 @@ format. The mapping between java object types and types of the serialization
 format (e. g. xml complex element types) can be defined either by annotating the
 java classes or programmatically using a simple API. The current implementation
 supports XML, CSV and FLR (Fixed Length Record) - for XML on android it is based
-on XMLPull.
+on XmlPull.
 
-  XMLPull is a stream-based XML API available for android providing an iterator-
+  XmlPull is a stream-based XML API available for android providing an iterator-
 style interface ("pull"-mechanism in contrast to the "push"-mechanism provided by SAX).
 But XML Pull defines a low-level API not designed for directly serializing java objects
 and back again. On the other hand there is no high-level APIs like JAXB or Castor available
-for android. JSefa provides a convenient and performant approach to high-level
+for android. JSefa provides a convenient and high-performance approach to high-level
 streaming using an iterator-style interface. It has a layered API with the top layer
 allowing the streaming to be independent of the serialization format type (XML, CSV or
 whatever). The current implementation provides support for XML, CSV, and FLR.
@@ -48,4 +48,7 @@ A quick tutorial is available at http://jsefa.sourceforge.net/quick-tutorial.htm
 Some samples are shipped with all JSefa distributions. See the samples directory.
 A lot of JUnit tests are shipped with the JSefa source distribution; they may be
 of additional help to you in getting started with JSefa.
+
+Note that the provided tutorial and samples are not android-specific as there is no
+difference in using JSefa on android or on a desktop computer regarding the API.
   

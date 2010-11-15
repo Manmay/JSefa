@@ -3,7 +3,7 @@
    ------------------
    Norman Lahme-Hütig
    ------------------
-   13.05.2007
+   15.10.2010
    ------------------
    
 Quick Tutorial
@@ -122,7 +122,7 @@ deserializer.open(reader);
   
 ----------------------------------------------------------------------------
 while (deserializer.hasNext()) {
-    Person p = (Person) deserializer.next();
+    Person p = deserializer.next();
     // do something useful with it
 }
 ----------------------------------------------------------------------------
@@ -188,7 +188,7 @@ Deserializer deserializer = CsvIOFactory.createFactory(Person.class).createDeser
 StringReader reader = new StringReader(writer.toString());
 deserializer.open(reader);
 while (deserializer.hasNext()) {
-    Person p = (Person) deserializer.next();
+    Person p = deserializer.next();
     // do something useful with it
 }
 deserializer.close(true);
@@ -243,7 +243,7 @@ Deserializer deserializer = FlrIOFactory.createFactory(Person.class).createDeser
 StringReader reader = new StringReader(writer.toString());
 deserializer.open(reader);
 while (deserializer.hasNext()) {
-    Person p = (Person) deserializer.next();
+    Person p = deserializer.next();
     // do something useful with it
 }
 deserializer.close(true);

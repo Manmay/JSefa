@@ -3,9 +3,26 @@
    ------------------
    Norman Lahme-Hütig
    ------------------
-   13.09.2008
+   15.11.2010
    ------------------
    
+Changes in version 0.9.3
+
+* Bugfixes
+  
+  * Now uses always the prefix xml for the namespace URI http://www.w3.org/XML/1998/namespace (instead of a dynamically created one)
+  * Fix for polymorphic type cycles (see TypeCycleTest)
+  
+* New Features
+
+  * Android support by using XmlPull instead of JSR 173 (Stax) for the android version of JSefa.
+
+  * Added support for maps - see XmlElementMap and the two demos in the showcase dir: ComplexMapDemo and SimpleMapDemo.
+  
+  * Added defaultName annotation parameter to XmlElement annotation.
+    This allows for specifying the default name of an element if no explicit name is given.
+    Options are: 1) name of the field 2) default element name of the object type
+    
 Changes in version 0.9.2
 
 * Bugfixes

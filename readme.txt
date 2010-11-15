@@ -1,1 +1,1 @@
-See the specific readme.txt of standard or android.
+See the specific readme.txt in the standard or android subfolder.

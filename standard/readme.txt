@@ -19,7 +19,7 @@ and back again. On the other hand traditional high-level APIs like JAXB or Casto
 not stream-based, so that reading a xml document will generate java objects holding the
 data of the complete xml document in memory at the same time. Even the integration of StAX
 into JAXB 2.0 is only a first step to high-level streaming, as two independent APIs have
-to be used in parallel. JSefa provides a convenient and performant approach to high-level
+to be used in parallel. JSefa provides a convenient and high-performance approach to high-level
 streaming using an iterator-style interface. It has a layered API with the top layer
 allowing the streaming to be independent of the serialization format type (XML, CSV or
 whatever). The current implementation provides support for XML, CSV, and FLR.
