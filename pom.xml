@@ -103,16 +103,6 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/bin/bin-src.xml</descriptor>
-						<descriptor>src/main/assembly/bin/bin.xml</descriptor>
-						<descriptor>src/main/assembly/src/src.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
 		</plugins>
 		<extensions>
 			<extension>

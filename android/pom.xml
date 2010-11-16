@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.jsefa</groupId>
 		<artifactId>jsefa-parent</artifactId>
-		<version>0.9.3-SNAPSHOT</version>
+		<version>0.9.3.RELEASE</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -45,6 +45,18 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/bin/bin-src.xml</descriptor>
+						<descriptor>src/main/assembly/bin/bin.xml</descriptor>
+						<descriptor>src/main/assembly/src/src.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 	</build>
 	
