@@ -31,6 +31,13 @@ public class XmlPullBasedXmlLowLevelIOFactory extends XmlLowLevelIOFactory {
 
     private final XmlLowLevelConfiguration config;
 
+    /**
+     * Creates a new <code>XmlPullBasedXmlLowLevelIOFactory</code> for <code>XmlLowLevelSerializer</code>s and
+     * <code>XmlLowLevelDeserializer</code>s using the given configuration.
+     * 
+     * @param config the configuration object.
+     * @return a <code>XmlPullBasedXmlLowLevelIOFactory</code> factory
+     */
     public static XmlPullBasedXmlLowLevelIOFactory createFactory(final XmlLowLevelConfiguration config) {
         return new XmlPullBasedXmlLowLevelIOFactory(config);
     }
@@ -40,15 +47,15 @@ public class XmlPullBasedXmlLowLevelIOFactory extends XmlLowLevelIOFactory {
     }
 
     /**
+     * {@inheritDoc}
      */
-    @Override
     public XmlLowLevelDeserializer createDeserializer() {
         return new XmlPullBasedXmlLowLevelDeserializer(this.config);
     }
 
     /**
+     * {@inheritDoc}
      */
-    @Override
     public XmlLowLevelSerializer createSerializer() {
         return new XmlPullBasedXmlLowLevelSerializer(this.config);
     }

@@ -24,8 +24,11 @@
         implementation supports XML, CSV and FLR - for XML it is based on JSR
         173.</description>
 
-	<packaging>jar</packaging>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
+	<packaging>jar</packaging>
 
 	<build>
 		<sourceDirectory>../src/main/java</sourceDirectory>
@@ -44,4 +47,19 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<configLocation>../checkstyle.xml</configLocation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+	
+	
 </project>

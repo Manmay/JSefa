@@ -304,11 +304,11 @@ public final class XmlPullBasedXmlLowLevelSerializer implements XmlLowLevelSeria
         }
     }
 
-    private void writeLineBreak() throws IllegalArgumentException, IllegalStateException, IOException {
+    private void writeLineBreak() throws IOException {
         this.serializer.text(this.config.getLineBreak().toCharArray(), 0, this.config.getLineBreak().length());
     }
 
-    private void writeIdent() throws IllegalArgumentException, IllegalStateException, IOException {
+    private void writeIdent() throws IOException {
         final String lineIndentation = this.config.getLineIndentation();
         if (lineIndentation.length() > 0) {
             for (int i = 0; i < this.depth; i++) {

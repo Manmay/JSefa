@@ -132,14 +132,14 @@ public final class ElementDescriptor implements XmlNodeDescriptor {
     }
 
     private int calculateHashCode() {
-        int hashCode = 1;
+        int resultCode = 1;
         if (this.name != null) {
-            hashCode = 31 * hashCode + name.hashCode();
+            resultCode = 31 * resultCode + name.hashCode();
         }
         if (dataTypeName != null) {
-            hashCode = 31 * hashCode + dataTypeName.hashCode();
+            resultCode = 31 * resultCode + dataTypeName.hashCode();
         }
-        return hashCode;
+        return resultCode;
     }
 
 }

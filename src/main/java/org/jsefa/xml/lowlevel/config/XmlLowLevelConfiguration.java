@@ -157,9 +157,9 @@ public final class XmlLowLevelConfiguration extends LowLevelConfiguration {
         OnDemandObjectProvider DEFAULT_NAMESPACE_MANAGER_PROVIDER = new OnDemandObjectProvider() {
             @SuppressWarnings("unchecked")
             public NamespaceManager get() {
-                NamespaceManager namespaceManager = NamespaceManager.create();
-                namespaceManager.registerPreferredPrefix("xsi", NamespaceConstants.XML_SCHEMA_INSTANCE_URI);
-                return namespaceManager;
+                NamespaceManager newNamespaceManager = NamespaceManager.create();
+                newNamespaceManager.registerPreferredPrefix("xsi", NamespaceConstants.XML_SCHEMA_INSTANCE_URI);
+                return newNamespaceManager;
             }
         };
     }

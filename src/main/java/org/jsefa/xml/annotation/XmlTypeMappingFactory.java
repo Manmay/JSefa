@@ -206,7 +206,8 @@ public final class XmlTypeMappingFactory extends TypeMappingFactory<QName, XmlTy
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<AttributeMapping> createAttributeMappings(Class<?> objectType, NamespaceManager namespaceManager) {
+    private Collection<AttributeMapping> createAttributeMappings(Class<?> objectType, 
+    		NamespaceManager namespaceManager) {
         Collection<AttributeMapping> result = new ArrayList<AttributeMapping>();
         for (Field field : AnnotatedFieldsProvider.getAnnotatedFields(objectType, XmlAttribute.class)) {
             XmlAttribute xmlAttribute = field.getAnnotation(XmlAttribute.class);

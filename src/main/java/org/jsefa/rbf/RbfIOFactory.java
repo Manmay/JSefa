@@ -78,15 +78,15 @@ public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistr
                 config.getTypeMappingRegistry(), config.getObjectAccessorProvider());
         if (this.withPrefix) {
             this.entryPointsByPrefix = new ConcurrentHashMap<String, RbfEntryPoint>();
-            for (RbfEntryPoint entryPoint : config.getEntryPoints()) {
-                Validator validator = traversingValidatorFactory.create(entryPoint.getDataTypeName(), entryPoint
+            for (RbfEntryPoint anEntryPoint : config.getEntryPoints()) {
+                Validator validator = traversingValidatorFactory.create(anEntryPoint.getDataTypeName(), anEntryPoint
                         .getValidator());
-                RbfEntryPoint validationEntryPoint = new RbfEntryPoint(entryPoint.getDataTypeName(), entryPoint
+                RbfEntryPoint validationEntryPoint = new RbfEntryPoint(anEntryPoint.getDataTypeName(), anEntryPoint
                         .getDesignator(), validator);
-                Class objectType = getObjectType(entryPoint.getDataTypeName());
+                Class objectType = getObjectType(anEntryPoint.getDataTypeName());
                 assertPrefixDeclared(validationEntryPoint, objectType);
                 this.entryPointsByObjectType.put(objectType, validationEntryPoint);
-                this.entryPointsByPrefix.put(entryPoint.getDesignator(), validationEntryPoint);
+                this.entryPointsByPrefix.put(anEntryPoint.getDesignator(), validationEntryPoint);
             }
             assertPrefixContentualUniqueness(config.getEntryPoints());
             this.entryPoint = null;
@@ -206,8 +206,8 @@ public abstract class RbfIOFactory<C extends Configuration<RbfTypeMappingRegistr
      */
     private void assertPrefixContentualUniqueness(Collection<RbfEntryPoint> entryPoints) {
         Set<String> usedPrefixes = new HashSet<String>();
-        for (RbfEntryPoint entryPoint : entryPoints) {
-            assertPrefixContextualUniqueness(entryPoint.getDesignator(), entryPoint.getDataTypeName(), null,
+        for (RbfEntryPoint anEntryPoint : entryPoints) {
+            assertPrefixContextualUniqueness(anEntryPoint.getDesignator(), anEntryPoint.getDataTypeName(), null,
                     usedPrefixes);
         }
     }

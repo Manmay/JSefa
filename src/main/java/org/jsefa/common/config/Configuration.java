@@ -278,11 +278,12 @@ public abstract class Configuration<R extends TypeMappingRegistry<?>, E extends 
                 provider.registerConverterType(BigDecimal.class, BigDecimalConverter.class);
                 provider.registerConverterType(Date.class, DateConverter.class);
                 if (ReflectionUtil.hasClass("javax.xml.datatype.XMLGregorianCalendar")) {
-                    final Class<?> gregorianCalendar = ReflectionUtil.getClass("javax.xml.datatype.XMLGregorianCalendar");
+                    Class<?> gregorianCalendar = ReflectionUtil.getClass("javax.xml.datatype.XMLGregorianCalendar");
                     Class<? extends SimpleTypeConverter> gregorianConverter = null;
 
                     if (ReflectionUtil.hasClass("org.jsefa.common.converter.XMLGregorianCalendarConverter")) {
-                        gregorianConverter = (Class<? extends SimpleTypeConverter>) ReflectionUtil.getClass("org.jsefa.common.converter.XMLGregorianCalendarConverter");
+                        gregorianConverter = (Class<? extends SimpleTypeConverter>) ReflectionUtil.
+                        	getClass("org.jsefa.common.converter.XMLGregorianCalendarConverter");
                         provider.registerConverterType(gregorianCalendar, gregorianConverter);
                     }
                 }                

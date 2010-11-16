@@ -43,7 +43,7 @@ public class XmlIOFactoryImpl extends XmlIOFactory {
 
     private final XmlConfiguration config;
 
-    Map<ElementDescriptor, ElementMapping> entryElementMappingsByElementDescriptor;
+    private final Map<ElementDescriptor, ElementMapping> entryElementMappingsByElementDescriptor;
 
     private final Map<Class<?>, ElementMapping> entryElementMappingsByObjectType;
 
